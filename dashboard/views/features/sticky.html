@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sticky Messages</title>
+  
+  <link rel="icon" type="image/png" href="/logo.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <script>
+    const tailwind = window.tailwind || {}; tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { 
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'] 
+          },
+colors: { 
+  razor: "#FF3333",       // main green highlight
+  razorDark: "#CC2222"    // darker green accent
+}
+
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #6C53FF; }
+
+    /* Input Focus Glow */
+    .input-glow:focus {
+        box-shadow: 0 0 0 2px rgba(108, 83, 255, 0.3);
+        border-color: #6C53FF;
+    }
+    
+    /* Sticky Card Hover */
+    .sticky-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sticky-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        border-color: rgba(108, 83, 255, 0.4);
+    }
+  </style>
+
+<style>
+/* ═══════════════ Razor Custom Select ═══════════════ */
+.rzr-wrap{position:relative;width:100%;display:block}
+/* hide ::after chevrons on select-wrap parents */
+.rzr-wrap-parent.select-wrap::after,
+.rzr-wrap-parent::after{display:none!important;content:none!important}
+.rzr-trigger{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:10px 14px;
+  border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);
+  background:#0d0d1c;color:#fff;
+  cursor:pointer;font-size:14px;font-family:inherit;
+  min-height:44px;width:100%;
+  transition:border-color .15s,box-shadow .15s;
+  user-select:none;box-sizing:border-box;
+}
+.rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
+.rzr-trigger.is-open{
+  border-color:rgba(255,51,51,.6);
+  box-shadow:0 0 0 3px rgba(255,51,51,.1);
+}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
+.rzr-label.is-ph{color:#6b7280}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+/* panel is appended to body — these rules still apply via the class */
+.rzr-panel{
+  position:fixed;z-index:999999;
+  background:rgba(11,11,20,.98);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  overflow:hidden;
+  animation:rzrIn .16s ease;
+}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
+.rzr-search-inp{
+  display:block;width:100%;
+  background:#06060f;border:1px solid rgba(255,255,255,.09);
+  border-radius:7px;padding:6px 11px;
+  color:#fff;font-size:13px;font-family:inherit;
+  outline:none;box-sizing:border-box;transition:border-color .15s;
+}
+.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-search-inp::placeholder{color:#374151}
+.rzr-list{max-height:220px;overflow-y:auto;padding:5px}
+.rzr-list::-webkit-scrollbar{width:4px}
+.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:6px}
+.rzr-list::-webkit-scrollbar-thumb:hover{background:#FF3333}
+.rzr-item{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:6px;padding:8px 11px;border-radius:8px;
+  cursor:pointer;font-size:13px;color:#9ca3af;
+  transition:background .1s,color .1s;
+}
+.rzr-item:hover{background:rgba(255,255,255,.055);color:#fff}
+.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600}
+.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item.is-sel .rzr-item-chk{opacity:1}
+.rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
+/* ═══════════════ End Razor Custom Select ═══════════════ */
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body class="bg-[#0b0b14] text-white">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<div id="toast" class="fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-x-[400px] transition-transform duration-300 z-50">
+  <span id="toastMessage"></span>
+</div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+
+  <main class="flex-1 p-8">
+    
+    <div class="mb-8 flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight mb-1 flex items-center gap-3">
+          <svg class="w-8 h-8 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          Sticky Messages
+        </h1>
+        <p class="text-gray-400 text-sm ml-11">Pin dynamic messages to the bottom of your channels.</p>
+      </div>
+      
+      <div id="statusBadge" class="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
+        <span class="w-2 h-2 bg-razor rounded-full animate-pulse"></span>
+        <span id="activeCount" class="text-xs font-bold text-gray-300 uppercase tracking-wider">0 Active</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <div class="lg:col-span-4">
+        <div class="bg-[#1a1a2e] rounded-2xl p-6 border border-white/5 shadow-xl sticky top-6">
+          <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+            <svg class="w-5 h-5 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Create New Sticky
+          </h2>
+          
+          <div class="space-y-5">
+            
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Target Channel</label>
+                <div class="relative">
+                    <select id="channelSelect" class="w-full appearance-none bg-[#14142b] border border-white/10 rounded-xl px-4 py-3 text-sm input-glow outline-none transition-colors text-white font-medium">
+                        <option class="bg-[#14142b] text-gray-400">Loading channels...</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between mb-2">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Message Content</label>
+                    <span id="charCount" class="text-[10px] text-gray-600 font-mono">0 chars</span>
+                </div>
+                <textarea id="messageInput" rows="5" oninput="updateCharCount(this)" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-3 text-sm input-glow outline-none transition-colors text-white placeholder-gray-600 resize-none leading-relaxed" placeholder="Type the message you want to stick to the bottom..."></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Resend Frequency (Cap)</label>
+                <div class="relative">
+                    <input type="number" id="capInput" value="5" min="1" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-3 text-sm input-glow outline-none transition-colors text-white font-mono pl-12">
+                    <div class="absolute inset-y-0 left-0 flex items-center px-4 pointer-events-none text-gray-500 border-r border-white/5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    </div>
+                </div>
+                <p class="text-[10px] text-gray-500 mt-2">The bot will resend this message after <strong>every X messages</strong> sent by users.</p>
+            </div>
+
+            <!-- Embed toggle -->
+            <div class="flex items-center justify-between bg-[#14142b] border border-white/10 rounded-xl px-4 py-3">
+              <div>
+                <p class="text-sm font-semibold text-white">Send as Embed</p>
+                <p class="text-xs text-gray-500 mt-0.5">Wraps message in a coloured embed. Disable for plain text.</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer ml-4 flex-shrink-0">
+                <input type="checkbox" id="useEmbedToggle" class="sr-only peer" checked>
+                <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#6C53FF]"></div>
+              </label>
+            </div>
+
+            <!-- Ignore Bots toggle -->
+            <div class="flex items-center justify-between bg-[#14142b] border border-white/10 rounded-xl px-4 py-3">
+              <div>
+                <p class="text-sm font-semibold text-white">Ignore Bots</p>
+                <p class="text-xs text-gray-500 mt-0.5">Bot messages won't count toward the cap or trigger a resend.</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer ml-4 flex-shrink-0">
+                <input type="checkbox" id="ignoreBotsToggle" class="sr-only peer" checked>
+                <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#6C53FF]"></div>
+              </label>
+            </div>
+
+            <!-- Conversation Detection toggle -->
+            <div class="flex items-center justify-between bg-[#14142b] border border-white/10 rounded-xl px-4 py-3">
+              <div>
+                <p class="text-sm font-semibold text-white">Conversation Detection</p>
+                <p class="text-xs text-gray-500 mt-0.5">Suppresses the sticky during active back-and-forth conversations.</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer ml-4 flex-shrink-0">
+                <input type="checkbox" id="convoDetectionToggle" class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-razor"></div>
+              </label>
+            </div>
+
+            <!-- Conversation Window (only visible when convo detection is on) -->
+            <div id="convoWindowRow" style="display:none">
+              <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Conversation Window (seconds)</label>
+              <div class="relative">
+                <input type="number" id="convoWindowInput" value="8" min="2" max="60" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-3 text-sm input-glow outline-none transition-colors text-white font-mono pl-12">
+                <div class="absolute inset-y-0 left-0 flex items-center px-4 pointer-events-none text-gray-500 border-r border-white/5">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+              </div>
+              <p class="text-[10px] text-gray-500 mt-2">If 3+ messages arrive within this window, the sticky is suppressed.</p>
+            </div>
+
+            <!-- Embed colour (only visible when embed enabled) -->
+            <div id="embedColorRow">
+              <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Embed Colour</label>
+              <div class="flex gap-3 items-center">
+                <input type="text" id="embedColorHex" value="#6C53FF" maxlength="7"
+                  class="flex-1 bg-[#14142b] border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none input-glow font-mono"
+                  oninput="document.getElementById('embedColorPicker').value=this.value.match(/^#[0-9a-fA-F]{6}$/)?this.value:'#6C53FF'">
+                <input type="color" id="embedColorPicker" value="#6C53FF"
+                  class="w-12 h-12 rounded-xl border border-white/10 bg-transparent cursor-pointer flex-shrink-0"
+                  oninput="document.getElementById('embedColorHex').value=this.value">
+              </div>
+            </div>
+
+            <button onclick="createSticky()" class="w-full group relative flex items-center justify-center gap-2 bg-razor hover:bg-razor/90 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-razor/20 active:scale-95 mt-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                Create Sticky Message
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-8">
+        <div class="bg-[#1a1a2e] rounded-2xl border border-white/5 h-full flex flex-col min-h-[600px]">
+            <div class="p-6 border-b border-white/5 flex items-center gap-3">
+                <h2 class="text-lg font-bold text-white">Active Messages</h2>
+            </div>
+            
+            <div id="stickyList" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4 content-start">
+                <div class="col-span-full flex flex-col items-center justify-center h-64 text-gray-500 opacity-60">
+                    <svg class="w-16 h-16 mb-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                    <p class="text-sm font-medium">Loading sticky messages...</p>
+                </div>
+            </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="/sidebar.js"></script>
+
+<script>
+const guildId = location.pathname.split("/")[2];
+let activeStickies = [];
+let guildChannels = [];
+
+/* TOAST */
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  const msg = document.getElementById('toastMessage');
+  msg.innerText = message;
+  toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 z-50 text-white ${type === 'error' ? 'bg-red-600' : 'bg-red-600'}`;
+  toast.style.transform = 'translateX(0)';
+  setTimeout(() => toast.style.transform = 'translateX(400px)', 3000);
+}
+
+/* UI HELPERS */
+function updateCharCount(el) {
+    document.getElementById('charCount').innerText = `${el.value.length} chars`;
+}
+
+/* INIT */
+async function init() {
+  await loadChannels();
+  loadStickies();
+}
+
+async function loadChannels() {
+  try {
+    const res = await fetch(`/api/guild/${guildId}/channels`);
+    const chData = await res.json();
+    guildChannels = (Array.isArray(chData) ? chData : chData.channels) || [];
+    rzrPopulateChannels(document.getElementById('channelSelect'), chData, null, 'Select Channel');
+  } catch (e) { console.error(e); }
+}
+
+async function loadStickies() {
+  try {
+    const res = await fetch(`/api/guild/${guildId}/sticky`);
+    activeStickies = await res.json();
+    renderStickies();
+  } catch (e) { 
+    document.getElementById('stickyList').innerHTML = '<div class="col-span-full text-center text-red-400 py-10">Failed to load active messages</div>';
+  }
+}
+
+function renderStickies() {
+  const container = document.getElementById('stickyList');
+  document.getElementById('activeCount').innerText = `${activeStickies.length} Active`;
+  
+  if (!activeStickies.length) {
+    container.innerHTML = `
+      <div class="col-span-full flex flex-col items-center justify-center h-64 text-gray-500 opacity-60">
+        <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+        <p class="text-sm font-medium">No active sticky messages found</p>
+        <p class="text-xs mt-1">Create one using the form on the left.</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = activeStickies.map(s => {
+    const channelName = escapeHtml(guildChannels.find(c => c.id === s.Channel)?.name || s.Channel);
+    return `
+      <div class="sticky-card bg-[#14142b] p-5 rounded-2xl border border-white/5 relative group hover:border-razor/30 flex flex-col h-full">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+             <div class="w-8 h-8 rounded-lg bg-razor/10 flex items-center justify-center text-razor">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+             </div>
+             <div>
+                <span class="block text-xs text-gray-500 font-bold uppercase tracking-wide">Channel</span>
+                <span class="text-sm font-bold text-white">#${channelName}</span>
+             </div>
+          </div>
+          <div class="text-right">
+             <span class="block text-xs text-gray-500 font-bold uppercase tracking-wide">Cap</span>
+             <span class="text-sm font-mono text-razor">${s.Cap}</span>
+          </div>
+        </div>
+
+        <div class="flex-1 bg-black/20 rounded-xl p-3 mb-4 border border-white/5">
+            <p class="text-xs text-gray-400 line-clamp-4 font-mono leading-relaxed">${escapeHtml(s.Message)}</p>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-white/5">
+           <div class="flex items-center gap-2 flex-wrap">
+             <span class="text-[10px] text-gray-600 font-bold uppercase tracking-wider">Count: <span class="text-gray-400">${s.Count || 0}</span></span>
+             ${s.UseEmbed === false
+               ? '<span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/5 text-gray-400 border border-white/10">Plain Text</span>'
+               : `<span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border" style="background:${(s.EmbedColor||'#6C53FF')}22;color:${(s.EmbedColor||'#6C53FF')};border-color:${(s.EmbedColor||'#6C53FF')}55">Embed</span>`}
+             ${s.IgnoreBots !== false
+               ? '<span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20" title="Bot messages are ignored">No Bots</span>'
+               : '<span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/5 text-gray-500 border border-white/10" title="Bot messages count toward cap">Bots OK</span>'}
+             ${s.ConvoDetection
+               ? '<span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-razor/10 text-razor border border-razor/20" title="Conversation detection active">Convo 🔍</span>'
+               : ''}
+           </div>
+           <button onclick="deleteSticky('${s._id}')" class="text-xs font-bold text-red-400 hover:text-white bg-red-500/10 hover:bg-red-500/50 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1">
+             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+             Delete
+           </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function escapeHtml(text) {
+  if (!text) return "";
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+async function createSticky() {
+  const channelId      = document.getElementById('channelSelect').value;
+  const message        = document.getElementById('messageInput').value;
+  const cap            = document.getElementById('capInput').value;
+  const useEmbed       = document.getElementById('useEmbedToggle')?.checked !== false;
+  const embedColor     = document.getElementById('embedColorHex')?.value || '#6C53FF';
+  const ignoreBots     = document.getElementById('ignoreBotsToggle')?.checked !== false;
+  const convoDetection = !!document.getElementById('convoDetectionToggle')?.checked;
+  const convoWindowMs  = (parseInt(document.getElementById('convoWindowInput')?.value) || 8) * 1000;
+
+  if (!channelId || !message || !cap) {
+    showToast('Please fill all fields', 'error');
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/guild/${guildId}/sticky`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ channelId, message, cap: parseInt(cap), useEmbed, embedColor, ignoreBots, convoDetection, convoWindowMs })
+    });
+
+    if (res.ok) {
+      showToast('Sticky message created!');
+      document.getElementById('messageInput').value = '';
+      document.getElementById('charCount').innerText = '0 chars';
+      loadStickies();
+    } else {
+      const d = await res.json();
+      showToast(d.error || 'Failed to create', 'error');
+    }
+  } catch (e) { showToast('Error creating sticky message', 'error'); }
+}
+
+// Toggle embed color row visibility
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.getElementById('useEmbedToggle');
+  const colorRow = document.getElementById('embedColorRow');
+  if (toggle && colorRow) {
+    toggle.addEventListener('change', () => {
+      colorRow.style.display = toggle.checked ? '' : 'none';
+    });
+  }
+
+  const convoToggle = document.getElementById('convoDetectionToggle');
+  const convoWindowRow = document.getElementById('convoWindowRow');
+  if (convoToggle && convoWindowRow) {
+    convoToggle.addEventListener('change', () => {
+      convoWindowRow.style.display = convoToggle.checked ? '' : 'none';
+    });
+  }
+});
+
+async function deleteSticky(id) {
+  if (!confirm('Delete this sticky message?')) return;
+  try {
+    const res = await fetch(`/api/guild/${guildId}/sticky/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      showToast('Deleted successfully');
+      loadStickies();
+    }
+  } catch (e) { showToast('Error deleting', 'error'); }
+}
+
+init();
+</script>
+<!-- Razor Custom Select JS -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet();
+var openWrap=null;
+
+/* strip any html tags from option text just in case */
+function cleanText(t){
+  t=String(t||'');
+  var d=document.createElement('div');
+  d.innerHTML=t;
+  return (d.textContent||d.innerText||'').trim();
+}
+
+/* get clean option text */
+function optText(opt){
+  return cleanText(opt.text||opt.textContent||opt.label||'');
+}
+
+/* position panel relative to trigger using fixed coords */
+function positionPanel(wrap){
+  var r=wrap._t.getBoundingClientRect();
+  var p=wrap._p;
+  var panelH=p.offsetHeight||240;
+  var spaceBelow=window.innerHeight-r.bottom;
+  var spaceAbove=r.top;
+  var width=Math.max(r.width,160);
+  p.style.width=width+'px';
+  p.style.left=r.left+'px';
+  p.style.right='auto';
+  if(spaceBelow>=panelH||spaceBelow>=spaceAbove){
+    p.style.top=(r.bottom+4)+'px';
+    p.style.bottom='auto';
+  } else {
+    p.style.bottom=(window.innerHeight-r.top+4)+'px';
+    p.style.top='auto';
+  }
+}
+
+/* close on outside click */
+document.addEventListener('mousedown',function(e){
+  if(!openWrap)return;
+  if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);
+},true);
+
+/* close on scroll anywhere (reposition) */
+window.addEventListener('scroll',function(){
+  if(openWrap)positionPanel(openWrap);
+},true);
+window.addEventListener('resize',function(){
+  if(openWrap)positionPanel(openWrap);
+});
+
+function open_(wrap){
+  if(openWrap&&openWrap!==wrap)close_(openWrap);
+  openWrap=wrap;
+  buildList(wrap,'');
+  wrap._si.value='';
+  /* always show search */
+  wrap._sw.style.display='';
+  document.body.appendChild(wrap._p);
+  wrap._p.style.display='block';
+  wrap._t.classList.add('is-open');
+  wrap._t.setAttribute('aria-expanded','true');
+  /* position after display:block so offsetHeight is known */
+  requestAnimationFrame(function(){positionPanel(wrap);});
+  setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);
+}
+
+function close_(wrap){
+  if(!wrap)return;
+  if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);
+  wrap._p.style.display='none';
+  wrap._t.classList.remove('is-open');
+  wrap._t.setAttribute('aria-expanded','false');
+  if(openWrap===wrap)openWrap=null;
+}
+
+function buildList(wrap,q){
+  var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();
+  var opts=Array.from(sel.options).filter(function(o){
+    var t=optText(o);
+    return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);
+  });
+  if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}
+  list.innerHTML='';
+  opts.forEach(function(opt){
+    var it=document.createElement('div');
+    it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');
+    it.dataset.v=opt.value;
+    var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);
+    var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';
+    it.appendChild(tx);it.appendChild(ck);
+    it.addEventListener('mousedown',function(e){
+      e.preventDefault();e.stopPropagation();
+      sel.value=opt.value;
+      updateLabel(wrap);
+      close_(wrap);
+      sel.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    list.appendChild(it);
+  });
+}
+
+function updateLabel(wrap){
+  var sel=wrap._s,lbl=wrap._lb;
+  var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;
+  var text=opt?optText(opt):'';
+  if(text){
+    lbl.textContent=text;
+    /* treat index-0 empty-value options as placeholders */
+    lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));
+  } else {
+    lbl.textContent='Select\u2026';
+    lbl.classList.add('is-ph');
+  }
+  wrap._last=sel.value;
+}
+
+function wrapSelect(sel){
+  if(wrapped.has(sel))return;
+  if(sel.hasAttribute('data-rzr-skip'))return;
+  if(sel.size&&sel.size>1)return;
+  wrapped.add(sel);
+
+  /* mark parent to suppress ::after chevrons */
+  if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');
+
+  /* hide native */
+  sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';
+
+  /* hide sibling fake-chevron divs */
+  var sib=sel.nextElementSibling;
+  if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';
+
+  /* trigger */
+  var t=document.createElement('div');
+  t.className='rzr-trigger';
+  t.setAttribute('tabindex','0');
+  t.setAttribute('role','combobox');
+  t.setAttribute('aria-haspopup','listbox');
+  t.setAttribute('aria-expanded','false');
+  var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';
+  var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;
+  t.appendChild(lb);t.appendChild(cv);
+
+  /* panel — will be moved to body on open */
+  var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';
+  var sw=document.createElement('div');sw.className='rzr-panel-search';
+  var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;
+  sw.appendChild(si);
+  var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');
+  p.appendChild(sw);p.appendChild(l);
+
+  /* outer wrap */
+  var w=document.createElement('div');w.className='rzr-wrap';
+  w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;
+
+  w.appendChild(t);
+  /* panel stays in wrap until open — moved to body on open() */
+  w.appendChild(p);
+  sel.parentNode.insertBefore(w,sel);
+  w.appendChild(sel);
+
+  /* search */
+  si.addEventListener('input',function(){buildList(w,si.value);});
+  si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});
+
+  /* trigger events */
+  t.addEventListener('click',function(e){
+    e.stopPropagation();
+    openWrap===w?close_(w):open_(w);
+  });
+  t.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}
+    if(e.key==='Escape')close_(w);
+  });
+
+  /* watch option changes (async population: channels, roles) */
+  var mo=new MutationObserver(function(){
+    updateLabel(w);
+    if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}
+  });
+  mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});
+
+  /* poll for programmatic .value changes */
+  var pid=setInterval(function(){
+    if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}
+    if(sel.value!==w._last)updateLabel(w);
+  },150);
+
+  updateLabel(w);
+}
+
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+
+new MutationObserver(function(ms){
+  ms.forEach(function(m){
+    m.addedNodes.forEach(function(n){
+      if(n.nodeType!==1)return;
+      if(n.tagName==='SELECT')wrapSelect(n);
+      else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);
+    });
+  });
+}).observe(document.body,{childList:true,subtree:true});
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);
+else initAll();
+})();
+</script>
+<!-- End Razor Custom Select JS -->
+
+
+</body>
+</html>

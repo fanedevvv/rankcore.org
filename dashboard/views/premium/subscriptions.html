@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Subscriptions | Roco</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #05050c;
+      --surface:  #0c0c18;
+      --border:   #1a1a2e;
+      --border2:  #252540;
+      --text:     #e8e8f0;
+      --muted:    #5a5a7a;
+      --razor:    #FF3333;
+      --basic:    #3b82f6;
+      --pro:      #a855f7;
+      --elite:    #f59e0b;
+      --brand:    #8b5cf6;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: 'Sora', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: #222238; border-radius: 10px; }
+
+    /* ── page wrapper ── */
+    .page { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 52px 20px 100px; }
+
+    /* ── page header ── */
+    .page-header { margin-bottom: 44px; }
+    .page-eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--brand); background: rgba(139,92,246,.1); border: 1px solid rgba(139,92,246,.25);
+      border-radius: 999px; padding: 5px 12px; margin-bottom: 16px;
+    }
+    .page-title { font-size: 2rem; font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 8px; }
+    .page-subtitle { color: var(--muted); font-size: .9rem; }
+
+    /* ── section label ── */
+    .section-label {
+      font-size: .68rem; font-weight: 700; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--muted);
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── sub card ── */
+    .sub-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px 26px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .25s, box-shadow .25s;
+    }
+    .sub-card:hover { border-color: var(--border2); }
+    .sub-card .accent-bar {
+      position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 3px 0 0 3px;
+    }
+    .sub-card-inner { display: flex; gap: 18px; align-items: flex-start; }
+    .sub-icon {
+      width: 46px; height: 46px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .sub-body { flex: 1; min-width: 0; }
+    .sub-tier-name { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .sub-scope { font-size: .78rem; color: var(--muted); margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+    .sub-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .meta-chip {
+      font-size: .72rem; font-weight: 600; font-family: 'JetBrains Mono', monospace;
+      background: rgba(255,255,255,.04); border: 1px solid var(--border);
+      border-radius: 7px; padding: 3px 9px; color: #94a3b8;
+    }
+    .meta-chip.active { background: rgba(255,51,51,.07); border-color: rgba(255,51,51,.2); color: #ff3333; }
+    .meta-chip.expired { background: rgba(239,68,68,.07); border-color: rgba(239,68,68,.2); color: #f87171; }
+    .meta-chip.cancelled { background: rgba(251,191,36,.07); border-color: rgba(251,191,36,.2); color: #fbbf24; }
+    .sub-features { display: flex; flex-wrap: wrap; gap: 8px; }
+    .feature-tag {
+      font-size: .73rem; color: #94a3b8;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .feature-tag svg { opacity: .5; }
+    .sub-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; flex-shrink: 0; }
+
+    /* ── buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'Sora', sans-serif; font-size: .8rem; font-weight: 600;
+      border-radius: 10px; padding: 9px 16px; cursor: pointer;
+      border: none; transition: all .2s; white-space: nowrap; text-decoration: none;
+    }
+    .btn-outline {
+      background: transparent; border: 1px solid var(--border2); color: #94a3b8;
+    }
+    .btn-outline:hover { border-color: #64748b; color: var(--text); background: rgba(255,255,255,.03); }
+    .btn-manage {
+      background: rgba(139,92,246,.12); border: 1px solid rgba(139,92,246,.3); color: #c4b5fd;
+    }
+    .btn-manage:hover { background: rgba(139,92,246,.2); border-color: rgba(139,92,246,.5); }
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff;
+    }
+    .btn-primary:hover { filter: brightness(1.12); transform: translateY(-1px); }
+    .btn-danger {
+      background: transparent; border: 1px solid rgba(239,68,68,.25); color: #f87171;
+    }
+    .btn-danger:hover { background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.4); }
+    .btn-sm { padding: 7px 12px; font-size: .75rem; }
+
+    /* ── empty state ── */
+    .empty-card {
+      background: var(--surface); border: 1px dashed var(--border2);
+      border-radius: 18px; padding: 36px 24px; text-align: center;
+    }
+    .empty-icon { display:flex; align-items:center; justify-content:center; margin-bottom: 12px; }
+
+    /* ── upgrade nudge ── */
+    .upgrade-nudge {
+      background: linear-gradient(135deg, rgba(139,92,246,.08), rgba(59,130,246,.06));
+      border: 1px solid rgba(139,92,246,.25); border-radius: 18px;
+      padding: 22px 26px; display: flex; align-items: center; gap: 18px;
+    }
+    .nudge-icon {
+      width: 48px; height: 48px; border-radius: 14px; flex-shrink: 0;
+      background: rgba(139,92,246,.15); display: flex; align-items: center; justify-content: center;
+      color: var(--brand);
+    }
+    .nudge-body { flex: 1; }
+    .nudge-title { font-size: .95rem; font-weight: 700; color: #fff; margin-bottom: 3px; }
+    .nudge-sub { font-size: .8rem; color: var(--muted); }
+
+    /* ── cb perk banner ── */
+    .cb-perk-banner {
+      background: linear-gradient(135deg, rgba(139,92,246,.1), rgba(168,85,247,.06));
+      border: 1px solid rgba(139,92,246,.3); border-radius: 18px;
+      padding: 20px 24px; display: flex; align-items: center; gap: 16px; margin-bottom: 32px;
+    }
+    .cb-perk-icon {
+      width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+      background: rgba(139,92,246,.2); display: flex; align-items: center; justify-content: center;
+      color: #c4b5fd;
+    }
+
+    /* ── loading skeleton ── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface) 25%, rgba(255,255,255,.03) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 12px;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .skel-card { height: 110px; margin-bottom: 12px; border-radius: 20px; }
+
+    /* ── divider ── */
+    .divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+    /* ── loading spinner ── */
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.2); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; display: inline-block; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── back link ── */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .8rem; color: var(--muted); text-decoration: none;
+      margin-bottom: 28px; transition: color .2s;
+    }
+    .back-link:hover { color: var(--text); }
+
+    @media (max-width: 600px) {
+      .sub-card-inner { flex-direction: column; }
+      .sub-actions { flex-direction: row; align-items: flex-start; flex-wrap: wrap; }
+      .upgrade-nudge { flex-direction: column; align-items: flex-start; }
+      .cb-perk-banner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+  <div class="page">
+
+    <a href="/servers" class="back-link">
+      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      Back to servers
+    </a>
+
+    <!-- Header -->
+    <div class="page-header">
+      <div class="page-eyebrow">
+        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg>
+        Billing &amp; Subscriptions
+      </div>
+      <h1 class="page-title">Manage Premium</h1>
+      <p class="page-subtitle">View and manage all your active Roco subscriptions in one place.</p>
+    </div>
+
+    <!-- CB second-server perk banner (shown only when user has active branding) -->
+    <div class="cb-perk-banner" id="cb-perk-banner" style="display:none;">
+      <div class="cb-perk-icon">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg>
+      </div>
+      <div class="flex-1">
+        <div style="font-size:.88rem;font-weight:700;color:#c4b5fd;margin-bottom:3px;">Your CB bot runs on a dedicated server</div>
+        <div style="font-size:.78rem;color:#7c6f9a;">Custom Branding bots are hosted on an isolated VPS — crashes and restarts never affect your main server's bot.</div>
+      </div>
+      <div style="font-size:.7rem;font-family:'JetBrains Mono',monospace;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);border-radius:8px;padding:6px 11px;color:#a78bfa;white-space:nowrap;">Dedicated VPS</div>
+    </div>
+
+    <!-- Loading skeletons -->
+    <div id="loading-state">
+      <div class="skeleton skel-card"></div>
+      <div class="skeleton skel-card" style="opacity:.7;"></div>
+      <div class="skeleton skel-card" style="opacity:.4;"></div>
+    </div>
+
+    <!-- Main content (hidden until loaded) -->
+    <div id="main-content" style="display:none;">
+
+      <!-- Personal subscription -->
+      <div class="section-label">Personal Plan</div>
+      <div id="user-sub-container" style="margin-bottom:28px;"></div>
+
+      <!-- Upgrade nudge (shown if on free) -->
+      <div id="upgrade-nudge-section" style="display:none;margin-bottom:32px;">
+        <div class="upgrade-nudge">
+          <div class="nudge-icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+          </div>
+          <div class="nudge-body">
+            <div class="nudge-title">Unlock premium features</div>
+            <div class="nudge-sub">Anti-nuke, 24/7 music, image generation, custom branding and more.</div>
+          </div>
+          <a href="/premium" class="btn btn-primary" style="flex-shrink:0;">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            View Plans
+          </a>
+        </div>
+      </div>
+
+      <!-- Guild subscriptions -->
+      <div id="guild-subs-section" style="display:none;margin-bottom:28px;">
+        <div class="section-label">Server Plans</div>
+        <div id="guild-subs-container"></div>
+      </div>
+
+      <!-- Branding subscriptions -->
+      <div id="branding-section" style="display:none;margin-bottom:28px;">
+        <div class="section-label">Custom Branding</div>
+        <div id="branding-container"></div>
+      </div>
+
+      <!-- Add branding nudge -->
+      <div id="add-branding-nudge" style="margin-bottom:12px;">
+        <div class="empty-card" style="padding:24px;text-align:left;display:flex;align-items:center;gap:16px;">
+          <div style="width:40px;height:40px;border-radius:12px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#a78bfa;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:.88rem;font-weight:700;color:#e2e8f0;margin-bottom:2px;">Add Custom Branding to a server</div>
+            <div style="font-size:.78rem;color:var(--muted);">Give any server its own bot name, avatar, colours and status — €4.99/mo per server.</div>
+          </div>
+          <a href="/premium/branding" class="btn btn-manage btn-sm" style="flex-shrink:0;">
+            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            Add Branding
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+  (async () => {
+    const TIER_COLORS  = { basic: '#3b82f6', pro: '#a855f7', elite: '#f59e0b', branding: '#8b5cf6', free: '#475569' };
+    const TIER_BG      = { basic: 'rgba(59,130,246,.12)',  pro: 'rgba(168,85,247,.12)',  elite: 'rgba(245,158,11,.12)',  branding: 'rgba(139,92,246,.12)', free: 'rgba(71,85,105,.1)' };
+    const S = (p) => '<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
+    const TIER_ICON = {
+      free:     S('<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'),
+      basic:    S('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>'),
+      pro:      S('<path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/>'),
+      elite:    S('<path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/>'),
+      branding: S('<circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>'),
+    };
+
+    function fmtDate(d) {
+      if (!d) return '—';
+      return new Date(d).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+    }
+
+    function statusChip(sub) {
+      if (sub.cancelledAt && !sub.isActive) return `<span class="meta-chip cancelled">Cancelled</span>`;
+      if (!sub.isActive) return `<span class="meta-chip expired">Expired</span>`;
+      return `<span class="meta-chip active">● Active</span>`;
+    }
+
+    function billingChip(billing) {
+      if (!billing) return '';
+      return `<span class="meta-chip">${billing === 'yearly' ? 'Annual' : 'Monthly'}</span>`;
+    }
+
+    function expiryChip(sub) {
+      if (!sub.isActive || !sub.expiresAt) return '';
+      const days = Math.ceil((new Date(sub.expiresAt) - Date.now()) / 86400000);
+      if (days > 50 * 365) return `<span class="meta-chip">∞ Lifetime</span>`; // lifetime grants are stored as +100 years
+      const label = days <= 7 ? `⚠ Renews in ${days}d` : `Renews ${fmtDate(sub.expiresAt)}`;
+      return `<span class="meta-chip">${label}</span>`;
+    }
+
+    function tierFeatures(tier) {
+      const map = {
+        free:     ['Basic commands', 'Limited autoresponders'],
+        basic:    ['Anti-Nuke & Anti-Raid', 'Advanced Automod', '24/7 Music', '25 Autoresponders', 'Welcome images'],
+        pro:      ['Everything in Basic', 'Music Filters', 'Image Generation', 'VirusTotal', 'Mass Ban & Role', '75 Custom Commands'],
+        elite:    ['Everything in Pro', 'Unlimited everything', '/backup command', 'Priority Support'],
+        branding: ['Custom bot name & avatar', 'Brand embed colours', 'Custom status & activity', 'Dedicated VPS hosting'],
+      };
+      return (map[tier] || []).map(f => `
+        <span class="feature-tag">
+          <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          ${f}
+        </span>`).join('');
+    }
+
+    function renderSubCard(sub, guildName) {
+      const color  = TIER_COLORS[sub.tier]  || TIER_COLORS.free;
+      const bg     = TIER_BG[sub.tier]      || TIER_BG.free;
+      const icon   = TIER_ICON[sub.tier]    || TIER_ICON.free;
+      const scope  = sub.scope === 'guild'
+        ? `<svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/></svg> ${guildName || sub.guildId || 'Server'}`
+        : `<svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg> Personal account`;
+
+      const isDevGrant = sub.source === 'dev' || (!sub.subscriptionId && sub.isActive);
+
+      const actions = sub.isActive && !isDevGrant ? `
+        <button class="btn btn-manage btn-sm" onclick="openPortal()">
+          <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          Manage
+        </button>` : isDevGrant && sub.isActive ? `
+        <span class="btn btn-sm" style="background:rgba(71,85,105,.12);border:1px solid rgba(71,85,105,.25);color:#64748b;cursor:default;">
+          <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Dev Grant
+        </span>` : `
+        <a href="/premium" class="btn btn-outline btn-sm">
+          <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          Upgrade
+        </a>`;
+
+      return `
+        <div class="sub-card" style="margin-bottom:12px;">
+          <div class="accent-bar" style="background:${color};"></div>
+          <div class="sub-card-inner">
+            <div class="sub-icon" style="background:${bg};color:${color};">${icon}</div>
+            <div class="sub-body">
+              <div class="sub-tier-name">${sub.tierName}</div>
+              <div class="sub-scope">${scope}</div>
+              <div class="sub-meta">
+                ${statusChip(sub)}
+                ${billingChip(sub.billing)}
+                ${expiryChip(sub)}
+                ${sub.activatedAt ? `<span class="meta-chip">Since ${fmtDate(sub.activatedAt)}</span>` : ''}
+              </div>
+              <div class="sub-features">${tierFeatures(sub.tier)}</div>
+            </div>
+            <div class="sub-actions">${actions}</div>
+          </div>
+        </div>`;
+    }
+
+    async function openPortal() {
+      const btns = document.querySelectorAll('[onclick="openPortal()"]');
+      btns.forEach(b => { b.disabled = true; b.innerHTML = '<span class="spinner"></span>'; });
+      try {
+        const csrf = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+        const res  = await fetch('/api/premium/portal', { method: 'POST', headers: { 'X-Dashboard-Request': 'true', 'CSRF-Token': csrf } });
+        const data = await res.json();
+        if (data.url) { window.location.href = data.url; return; }
+        alert(data.error || 'Could not open billing portal.');
+      } catch { alert('Network error. Please try again.'); }
+      btns.forEach(b => { b.disabled = false; b.innerHTML = 'Manage'; });
+    }
+    window.openPortal = openPortal;
+
+    try {
+      const [subRes, serverRes] = await Promise.all([
+        fetch('/api/subscriptions', { headers: { 'X-Dashboard-Request': 'true' } }),
+        fetch('/api/servers',       { headers: { 'X-Dashboard-Request': 'true' } }),
+      ]);
+
+      const data      = await subRes.json();
+      const servers   = (await serverRes.json()).servers ?? [];
+      const guildMap  = Object.fromEntries(servers.map(s => [s.id, s.name]));
+
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('main-content').style.display  = 'block';
+
+      // Personal plan
+      document.getElementById('user-sub-container').innerHTML = renderSubCard(data.userSub, null);
+
+      // Free → show upgrade nudge
+      if (!data.userSub.isActive) {
+        document.getElementById('upgrade-nudge-section').style.display = 'block';
+      }
+
+      // Guild plans
+      if (data.guildSubs?.length > 0) {
+        document.getElementById('guild-subs-section').style.display = 'block';
+        document.getElementById('guild-subs-container').innerHTML = data.guildSubs.map(s => renderSubCard(s, guildMap[s.guildId])).join('');
+      }
+
+      // Branding
+      if (data.brandingSubs?.length > 0) {
+        document.getElementById('branding-section').style.display = 'block';
+        document.getElementById('branding-container').innerHTML = data.brandingSubs.map(s => renderSubCard(s, guildMap[s.guildId])).join('');
+        // Show CB dedicated server perk banner if any are active
+        if (data.brandingSubs.some(s => s.isActive)) {
+          document.getElementById('cb-perk-banner').style.display = 'flex';
+        }
+      }
+
+    } catch (err) {
+      document.getElementById('loading-state').innerHTML = `
+        <div class="empty-card">
+          <div class="empty-icon"><svg width="32" height="32" fill="none" stroke="#f87171" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></div>
+          <div style="font-weight:700;color:#e2e8f0;margin-bottom:6px;">Failed to load subscriptions</div>
+          <div style="font-size:.83rem;color:var(--muted);margin-bottom:16px;">There was a problem fetching your billing data.</div>
+          <button class="btn btn-outline" onclick="location.reload()">Try Again</button>
+        </div>`;
+      console.error(err);
+    }
+  })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>403 | Blacklisted</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/tailwind.css">
+  
+  <script>
+    const tailwind = window.tailwind || {}; tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: { 
+  razor: "#FF3333",   // main green highlight
+  error: "#FF4D4D",   // keep red for errors so it still stands out
+  dark: "#080505"     // very dark green/black background
+},
+          animation: {
+            'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+            'glitch': 'glitch 1s linear infinite',
+          },
+          keyframes: {
+            shake: {
+              '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+              '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+              '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+              '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+            },
+            glitch: {
+              '2%, 64%': { transform: 'translate(2px,0) skew(0deg)' },
+              '4%, 60%': { transform: 'translate(-2px,0) skew(0deg)' },
+              '62%': { transform: 'translate(0,0) skew(5deg)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { background-color: #050508; overflow: hidden; }
+    .bg-grid {
+      background-size: 40px 40px;
+      background-image: linear-gradient(to right, rgba(255, 51, 102, 0.05) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255, 51, 102, 0.05) 1px, transparent 1px);
+      mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+    }
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body class="min-h-screen flex items-center justify-center relative select-none">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+  <div class="fixed inset-0 bg-grid z-0"></div>
+  <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-error/10 rounded-full blur-[150px] animate-pulse"></div>
+
+  <div class="relative z-10 text-center px-6">
+    
+    <div class="mb-8 flex justify-center">
+      <div class="relative">
+        <div class="absolute -inset-4 bg-error/20 rounded-full blur-xl animate-pulse"></div>
+        <svg class="w-24 h-24 text-error animate-shake" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+      </div>
+    </div>
+
+    <h1 class="text-6xl md:text-8xl font-black text-white mb-2 tracking-tighter">
+      BLACKLISTED <span class="text-error inline-block animate-glitch">USER</span>
+    </h1>
+
+    <h2 class="text-xl font-bold text-gray-300 mb-6 uppercase tracking-widest">Error 403: Access Denied</h2>
+
+    <div class="max-w-md mx-auto bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 mb-8 transform hover:scale-105 transition-transform duration-300">
+      <p class="text-gray-400 text-lg leading-relaxed">
+        Your account has been blacklisted from using this dashboard. <br>
+        <span class="text-white font-bold">Contact support if you think this is a mistake. <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M320 0c17.7 0 32 14.3 32 32V96H472c39.8 0 72 32.2 72 72V440c0 39.8-32.2 72-72 72H168c-39.8 0-72-32.2-72-72V168c0-39.8 32.2-72 72-72H288V32c0-17.7 14.3-32 32-32zM208 384c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H208zm144 0c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H352zm-144-96c-8.8 0-16 7.2-16 16s7.2 16 16 16H400c8.8 0 16-7.2 16-16s-7.2-16-16-16H208zm96-128a48 48 0 1 0 0 96 48 48 0 1 0 0-96zm-80-64v32H208c-8.8 0-16 7.2-16 16s7.2 16 16 16H432c8.8 0 16-7.2 16-16s-7.2-16-16-16H304V96H208z"/></svg></span>
+      </p>
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="/" class="group relative inline-flex items-center gap-2 px-8 py-3.5 bg-white text-black rounded-xl font-bold transition-all hover:bg-gray-200">
+        <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Return Home
+      </a>
+      <a href="/gdpr" class="group relative inline-flex items-center gap-2 px-8 py-3.5 bg-error/10 text-error border border-error/30 rounded-xl font-bold transition-all hover:bg-error/20 hover:border-error/50">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>
+        </svg>
+        Privacy Controls
+      </a>
+    </div>
+
+  </div>
+
+  <div class="absolute bottom-5 left-5 text-error/30 font-mono text-xs">USER_BLACKLISTED</div>
+  <div class="absolute top-5 right-5 text-error/30 font-mono text-xs">ACCESS_DENIED</div> 
+
+</body>
+</html>

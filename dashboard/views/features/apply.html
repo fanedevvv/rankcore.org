@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staff Application</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --razor: #FF3333; --razor-glow: rgba(255,51,51,0.18);
+      --bg: #08080f; --bg2: #0f0f1c; --bg3: #161625; --bg4: #1d1d30;
+      --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+      --text: #f0f0f8; --text-muted: #6b6b8a; --text-dim: #9494b0;
+      --red: #f87171; --brand: #6C53FF; --brand-dim: rgba(108,83,255,0.15);
+      --warn: #fbbf24; --warn-dim: rgba(251,191,36,0.1);
+      --green: #EF4444; --green-dim: rgba(239,68,68,0.1);
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 1rem 4rem;
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 99px; }
+
+    /* ── Card ─────────────────────────────────────────────────────── */
+    .card {
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      border-radius: 1.25rem;
+      padding: 2rem;
+      width: 100%;
+      max-width: 640px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    /* ── Panel header ─────────────────────────────────────────────── */
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+    .panel-icon-wrap {
+      width: 52px; height: 52px;
+      border-radius: .875rem;
+      background: var(--brand-dim);
+      border: 1.5px solid rgba(108,83,255,0.25);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.6rem; /* for emoji fallback */
+    }
+    .panel-icon-wrap svg { display: block; }
+    .panel-name { font-size: 1.35rem; font-weight: 800; letter-spacing: -.02em; }
+    .panel-desc { font-size: .83rem; color: var(--text-muted); margin-top: .3rem; line-height: 1.45; }
+
+    /* ── Guild badge ──────────────────────────────────────────────── */
+    .guild-badge {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      border-radius: .75rem;
+      padding: .45rem .875rem;
+      font-size: .75rem;
+      color: var(--text-dim);
+      margin-bottom: 1.5rem;
+    }
+    .guild-icon { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; }
+
+    /* ── Form fields ──────────────────────────────────────────────── */
+    label {
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      margin-bottom: .45rem;
+    }
+    .field { margin-bottom: 1.25rem; }
+    input[type=text], textarea {
+      width: 100%;
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      border-radius: .75rem;
+      padding: .75rem 1rem;
+      font-size: .875rem;
+      color: var(--text);
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      resize: vertical;
+    }
+    input[type=text]:focus, textarea:focus {
+      border-color: rgba(108,83,255,0.5);
+      box-shadow: 0 0 0 3px rgba(108,83,255,0.1);
+    }
+    input[type=text].error, textarea.error {
+      border-color: rgba(248,113,113,0.6);
+    }
+    textarea { min-height: 100px; line-height: 1.5; }
+    .required-star { color: var(--red); }
+    .char-count { font-size: .68rem; color: var(--text-muted); text-align: right; margin-top: .3rem; }
+
+    /* ── Divider ──────────────────────────────────────────────────── */
+    .divider { border: none; border-top: 1.5px solid var(--border); margin: 1.5rem 0; }
+
+    /* ── Page indicator ───────────────────────────────────────────── */
+    .page-indicator {
+      display: flex; align-items: center; justify-content: center; gap: .4rem;
+      font-size: .75rem; color: var(--text-muted); margin-bottom: 1.5rem;
+    }
+
+    /* ── Step dots ────────────────────────────────────────────────── */
+    .step-dots { display: flex; gap: .4rem; justify-content: center; margin-bottom: 1.25rem; }
+    .dot { width: 8px; height: 8px; border-radius: 99px; background: var(--bg4); border: 1.5px solid var(--border); transition: all .2s; }
+    .dot.active { background: var(--brand); border-color: var(--brand); box-shadow: 0 0 8px rgba(108,83,255,.5); }
+    .dot.done   { background: var(--razor); border-color: var(--razor); }
+
+    /* ── Buttons ──────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      padding: .7rem 1.5rem; border-radius: .75rem;
+      font-size: .875rem; font-weight: 700;
+      cursor: pointer; border: none; font-family: inherit;
+      transition: all .2s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-primary {
+      background: var(--brand); color: #fff; width: 100%;
+      box-shadow: 0 4px 20px rgba(108,83,255,.25);
+    }
+    .btn-primary:hover:not(:disabled) { background: #5a45d4; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .btn-ghost {
+      background: var(--bg3); border: 1.5px solid var(--border);
+      color: var(--text-dim);
+    }
+    .btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+    .btn-row { display: flex; gap: .75rem; margin-top: 1.5rem; }
+    .btn-row .btn-primary { flex: 1; }
+
+    /* ── Alert banners ────────────────────────────────────────────── */
+    .banner {
+      display: flex; align-items: flex-start; gap: .6rem;
+      border-radius: .75rem; padding: .75rem 1rem;
+      font-size: .8rem; line-height: 1.5; margin-bottom: 1.25rem;
+    }
+    .banner svg { flex-shrink: 0; margin-top: 1px; }
+    .banner-warn  { background: var(--warn-dim);  border: 1.5px solid rgba(251,191,36,.3); color: var(--warn); }
+    .banner-error { background: rgba(248,113,113,.08); border: 1.5px solid rgba(248,113,113,.25); color: var(--red); }
+
+    /* ── State screens ────────────────────────────────────────────── */
+    .state-screen { text-align: center; padding: 2.5rem 0; }
+    .state-icon {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.25rem;
+    }
+    .state-icon.green { background: var(--green-dim); color: var(--green); border: 1.5px solid rgba(239,68,68,.25); }
+    .state-icon.red   { background: rgba(248,113,113,.08); color: var(--red); border: 1.5px solid rgba(248,113,113,.25); }
+    .state-icon.brand { background: var(--brand-dim); color: #a78bfa; border: 1.5px solid rgba(108,83,255,.25); }
+    .state-title { font-size: 1.15rem; font-weight: 800; letter-spacing: -.01em; margin-bottom: .5rem; }
+    .state-desc  { font-size: .875rem; color: var(--text-muted); line-height: 1.55; max-width: 360px; margin: 0 auto; }
+
+    /* ── Loading ──────────────────────────────────────────────────── */
+    .loading { text-align: center; padding: 3rem 0; color: var(--text-muted); }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 2.5px solid var(--border);
+      border-top-color: var(--brand);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Login prompt ─────────────────────────────────────────────── */
+    .login-prompt { text-align: center; padding: 2rem 0; }
+    .login-btn {
+      display: inline-flex; align-items: center; gap: .6rem;
+      padding: .75rem 1.75rem; background: #5865F2; color: #fff;
+      border-radius: .875rem; font-weight: 700; font-size: .9rem;
+      text-decoration: none; transition: all .2s;
+      box-shadow: 0 4px 16px rgba(88,101,242,.3);
+    }
+    .login-btn:hover { background: #4752c4; transform: translateY(-1px); }
+    .discord-logo { width: 20px; height: 20px; }
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<div class="card" id="mainCard">
+  <div class="loading" id="loadingState">
+    <div class="spinner"></div>
+    Loading application…
+  </div>
+</div>
+
+<!-- ── Lucide SVG helpers (inline, reused by JS) ───────────────────────────── -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- check-circle -->
+  <symbol id="ico-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/>
+  </symbol>
+  <!-- x-circle -->
+  <symbol id="ico-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+  </symbol>
+  <!-- shield-off -->
+  <symbol id="ico-shield-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19.69 14a6.9 6.9 0 0 0 .31-2V5l-8-3-3.16 1.18"/><path d="m2 2 20 20"/><path d="M4.73 4.73 4 5v7a8 8 0 0 0 12.46 6.62"/>
+  </symbol>
+  <!-- alert-triangle -->
+  <symbol id="ico-alert-triangle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>
+  </symbol>
+  <!-- file-text -->
+  <symbol id="ico-file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>
+  </symbol>
+  <!-- lock -->
+  <symbol id="ico-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+  </symbol>
+  <!-- clock -->
+  <symbol id="ico-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+  </symbol>
+  <!-- arrow-right -->
+  <symbol id="ico-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+  </symbol>
+  <!-- arrow-left -->
+  <symbol id="ico-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>
+  </symbol>
+  <!-- send -->
+  <symbol id="ico-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/>
+  </symbol>
+  <!-- loader-2 (spinner icon) -->
+  <symbol id="ico-loader" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+  </symbol>
+  <!-- log-in -->
+  <symbol id="ico-login" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/>
+  </symbol>
+  <!-- user -->
+  <symbol id="ico-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/>
+  </symbol>
+  <!-- server (for guild badge) -->
+  <symbol id="ico-server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/>
+  </symbol>
+</svg>
+
+<script>
+// ── SVG helper ────────────────────────────────────────────────────────────────
+function svg(id, size = 20, cls = '') {
+  return `<svg width="${size}" height="${size}" class="${cls}" aria-hidden="true"><use href="#ico-${id}"/></svg>`;
+}
+
+const pathParts = location.pathname.split('/');
+const guildId  = pathParts[2];
+const panelId  = pathParts[3];
+
+let panel     = null;
+let user      = null;
+let questions = [];
+let answers   = {};
+let page      = 0;
+const PER_PAGE = 5;
+
+function totalPages() { return Math.max(1, Math.ceil(questions.length / PER_PAGE)); }
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+async function init() {
+  const [userRes, panelRes] = await Promise.all([
+    fetch('/api/user/me').catch(() => null),
+    fetch(`/api/guild/${guildId}/staffapps/${panelId}/public`).catch(() => null),
+  ]);
+
+  if (!panelRes?.ok) {
+    const err = await panelRes?.json().catch(() => ({}));
+    showError(err?.error || 'Application not found or no longer available.');
+    return;
+  }
+
+  const panelData = await panelRes.json();
+  panel     = panelData.panel;
+  questions = panel.questions || [];
+
+  if (!panel.enabled) {
+    showError('This application is currently closed.');
+    return;
+  }
+
+  if (userRes?.ok) {
+    user = await userRes.json();
+    await checkEligibility();
+  } else {
+    showLoginPrompt();
+  }
+}
+
+// ── Error screen ──────────────────────────────────────────────────────────────
+function showError(msg) {
+  document.getElementById('mainCard').innerHTML = `
+    <div class="state-screen">
+      <div class="state-icon red">${svg('x-circle', 26)}</div>
+      <div class="state-title">Unavailable</div>
+      <div class="state-desc">${escHtml(msg)}</div>
+    </div>`;
+}
+
+// ── Login prompt ──────────────────────────────────────────────────────────────
+function showLoginPrompt() {
+  const redirect = encodeURIComponent(location.href);
+  document.getElementById('mainCard').innerHTML = `
+    <div class="panel-header">
+      <div class="panel-icon-wrap">${panelIconHtml()}</div>
+      <div>
+        <div class="panel-name">${escHtml(panel.name)}</div>
+        ${panel.description ? `<div class="panel-desc">${escHtml(panel.description)}</div>` : ''}
+      </div>
+    </div>
+    <hr class="divider"/>
+    <div class="login-prompt">
+      <div class="state-icon brand" style="margin-bottom:1.25rem">${svg('login', 24)}</div>
+      <div style="font-size:1rem;font-weight:700;margin-bottom:.5rem;">Sign in to apply</div>
+      <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:1.75rem;line-height:1.5">
+        You need to log in with Discord to submit this application.
+      </div>
+      <a class="login-btn" href="/auth/discord?redirect=${redirect}">
+        <svg class="discord-logo" viewBox="0 0 127.14 96.36" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
+        Login with Discord
+      </a>
+    </div>`;
+}
+
+// ── Eligibility check ─────────────────────────────────────────────────────────
+async function checkEligibility() {
+  try {
+    const res  = await fetch(`/api/guild/${guildId}/staffapps/${panelId}/eligibility`);
+    const data = await res.json();
+    if (!data.eligible) {
+      showEligibilityError(data.error || 'You are not eligible to apply.');
+      return;
+    }
+    renderForm(data.warning || null);
+  } catch {
+    renderForm();
+  }
+}
+
+function showEligibilityError(msg) {
+  // Determine which icon to show based on the error type
+  const isCooldown = msg.toLowerCase().includes('apply again') || msg.toLowerCase().includes('recently');
+  const iconId   = isCooldown ? 'clock' : 'lock';
+  const iconCls  = 'brand';
+
+  document.getElementById('mainCard').innerHTML = `
+    <div class="panel-header">
+      <div class="panel-icon-wrap">${panelIconHtml()}</div>
+      <div>
+        <div class="panel-name">${escHtml(panel.name)}</div>
+        ${panel.description ? `<div class="panel-desc">${escHtml(panel.description)}</div>` : ''}
+      </div>
+    </div>
+    <hr class="divider"/>
+    <div class="state-screen">
+      <div class="state-icon ${iconCls}" style="background:rgba(248,113,113,.08);color:var(--red);border-color:rgba(248,113,113,.25)">
+        ${svg(iconId, 26)}
+      </div>
+      <div class="state-title">Not Eligible to Apply</div>
+      <div class="state-desc">${escHtml(msg)}</div>
+    </div>`;
+}
+
+// ── Panel icon helper (emoji or generic clipboard icon) ───────────────────────
+function panelIconHtml() {
+  const e = panel?.emoji?.trim();
+  // If it's a real emoji (not a letter-only word), render it as text; otherwise use the icon
+  const isEmoji = e && /\p{Emoji}/u.test(e);
+  if (isEmoji) return `<span style="font-size:1.6rem;line-height:1">${escHtml(e)}</span>`;
+  return svg('file-text', 24);
+}
+
+// ── Render form ───────────────────────────────────────────────────────────────
+function renderForm(warningMsg) {
+  const card  = document.getElementById('mainCard');
+  const tp    = totalPages();
+  const pageQs = questions.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+
+  const dots = tp > 1
+    ? `<div class="step-dots">${Array.from({length: tp}, (_, i) =>
+        `<div class="dot ${i < page ? 'done' : i === page ? 'active' : ''}"></div>`
+      ).join('')}</div>`
+    : '';
+
+  const pageInd = tp > 1
+    ? `<div class="page-indicator">
+        ${svg('file-text', 13)}
+        Page ${page + 1} of ${tp}
+       </div>`
+    : '';
+
+  const fields = pageQs.map((q, i) => {
+    const absIdx = page * PER_PAGE + i;
+    const val    = answers[q.id] || '';
+    const isPara = q.style === 'paragraph';
+    const req    = q.required !== false;
+    return `
+      <div class="field">
+        <label>
+          ${escHtml(q.label)}
+          ${req ? `<span class="required-star">*</span>` : ''}
+        </label>
+        ${isPara
+          ? `<textarea
+               id="qa_${absIdx}"
+               maxlength="${q.maxLength || 1000}"
+               placeholder="${escHtml(q.placeholder || '')}"
+               oninput="trackAnswer('${q.id}',this.value);updateCount(this,'cc_${absIdx}')"
+             >${escHtml(val)}</textarea>
+             <div class="char-count" id="cc_${absIdx}">${val.length} / ${q.maxLength || 1000}</div>`
+          : `<input
+               type="text"
+               id="qa_${absIdx}"
+               maxlength="${q.maxLength || 1000}"
+               placeholder="${escHtml(q.placeholder || '')}"
+               value="${escHtml(val)}"
+               oninput="trackAnswer('${q.id}',this.value)"
+             />`
+        }
+      </div>`;
+  }).join('');
+
+  const isLast  = page === tp - 1;
+  const navBtns = tp > 1
+    ? `<div class="btn-row">
+        ${page > 0
+          ? `<button class="btn btn-ghost" onclick="goPage(${page - 1})">
+               ${svg('arrow-left', 15)} Back
+             </button>`
+          : ''}
+        ${isLast
+          ? `<button class="btn btn-primary" id="submitBtn" onclick="submitForm()">
+               ${svg('send', 15)} Submit Application
+             </button>`
+          : `<button class="btn btn-primary" onclick="goPage(${page + 1})">
+               Continue ${svg('arrow-right', 15)}
+             </button>`}
+      </div>`
+    : `<button class="btn btn-primary" id="submitBtn" onclick="submitForm()" style="margin-top:1.5rem">
+         ${svg('send', 15)} Submit Application
+       </button>`;
+
+  card.innerHTML = `
+    ${warningMsg
+      ? `<div class="banner banner-warn">
+           ${svg('alert-triangle', 15)}
+           <span>${escHtml(warningMsg)}</span>
+         </div>`
+      : ''}
+    <div class="panel-header">
+      <div class="panel-icon-wrap">${panelIconHtml()}</div>
+      <div>
+        <div class="panel-name">${escHtml(panel.name)}</div>
+        ${panel.description ? `<div class="panel-desc">${escHtml(panel.description)}</div>` : ''}
+      </div>
+    </div>
+    <div class="guild-badge">
+      ${svg('server', 14)}
+      <img class="guild-icon" src="https://cdn.discordapp.com/embed/avatars/0.png" id="guildIcon" onerror="this.style.display='none'"/>
+      <span id="guildName">Loading…</span>
+      &nbsp;·&nbsp;
+      ${svg('user', 13)}
+      Applying as&nbsp;<strong style="color:var(--text)">${escHtml(user.username)}</strong>
+    </div>
+    ${dots}
+    ${pageInd}
+    ${fields}
+    ${navBtns}`;
+
+  fetch(`/api/guild/${guildId}`).then(r => r.json()).then(g => {
+    const nm = document.getElementById('guildName');
+    const ic = document.getElementById('guildIcon');
+    if (nm) nm.textContent = g.name || 'Server';
+    if (ic && g.icon) ic.src = g.icon;
+  }).catch(() => {});
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function trackAnswer(qId, val) { answers[qId] = val; }
+
+function updateCount(el, ccId) {
+  const cc = document.getElementById(ccId);
+  if (cc) cc.textContent = `${el.value.length} / ${el.maxLength}`;
+}
+
+function goPage(newPage) {
+  const pageQs = questions.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+  for (const q of pageQs) {
+    if (q.required !== false && !(answers[q.id] || '').trim()) {
+      const idx = questions.indexOf(q);
+      const el  = document.getElementById(`qa_${idx}`);
+      if (el) { el.focus(); el.classList.add('error'); }
+      alert(`"${q.label}" is required.`);
+      return;
+    }
+  }
+  page = newPage;
+  renderForm();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Submit ────────────────────────────────────────────────────────────────────
+async function submitForm() {
+  for (const q of questions) {
+    if (q.required !== false && !(answers[q.id] || '').trim()) {
+      alert(`"${q.label}" is required.`);
+      return;
+    }
+  }
+
+  const btn = document.getElementById('submitBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `
+      <svg width="15" height="15" style="animation:spin .7s linear infinite" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24">
+        <use href="#ico-loader"/>
+      </svg>
+      Submitting…`;
+  }
+
+  try {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    const res  = await fetch(`/api/guild/${guildId}/staffapps/${panelId}/apply`, {
+      method:  'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token':  csrfToken,
+      },
+      body: JSON.stringify({ answers }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `${svg('send', 15)} Submit Application`;
+      }
+      // Show error inline instead of alert
+      const existing = document.querySelector('.banner-error');
+      if (existing) existing.remove();
+      const banner = document.createElement('div');
+      banner.className = 'banner banner-error';
+      banner.innerHTML = `${svg('x-circle', 15)}<span>${escHtml(data.error || 'Failed to submit application.')}</span>`;
+      document.getElementById('mainCard').prepend(banner);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // Success screen
+    document.getElementById('mainCard').innerHTML = `
+      <div class="state-screen">
+        <div class="state-icon green">${svg('check-circle', 28)}</div>
+        <div class="state-title">Application Submitted!</div>
+        <div class="state-desc">
+          Your application for <strong style="color:var(--text)">${escHtml(panel.name)}</strong>
+          has been received. You'll be notified of the outcome.
+        </div>
+      </div>`;
+  } catch {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `${svg('send', 15)} Submit Application`;
+    }
+    const banner = document.createElement('div');
+    banner.className = 'banner banner-error';
+    banner.innerHTML = `${svg('x-circle', 15)}<span>Network error — please try again.</span>`;
+    document.getElementById('mainCard').prepend(banner);
+  }
+}
+
+function escHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+init().catch(e => showError('Failed to load application: ' + e.message));
+</script>
+
+</body>
+</html>

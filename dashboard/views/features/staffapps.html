@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<title>Staff Applications</title>
+<link rel="icon" type="image/png" href="/logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/tailwind.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#080811;color:#fff;margin:0;padding:0;min-height:100vh}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:#FF333355}
+
+/* ── Layout ── */
+.page-wrap{display:flex;min-height:100vh}
+.main{flex:1;padding:20px 16px;min-width:0}
+@media(min-width:768px){.main{padding:28px 24px}}
+@media(min-width:1024px){.main{padding:36px 32px;max-width:1680px}}
+
+/* ── Toast ── */
+#toast{position:fixed;top:12px;right:12px;left:12px;padding:11px 16px;border-radius:12px;transform:translateY(-200px);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:9999;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+@media(min-width:480px){#toast{left:auto;min-width:220px;transform:translateX(300px)}#toast.show{transform:translateX(0)}}
+#toast.show{transform:translateY(0)}
+
+/* ── Page header ── */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.page-header-left{display:flex;align-items:center;gap:12px}
+.page-icon{width:44px;height:44px;border-radius:12px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.page-icon svg{width:20px;height:20px;color:#FF3333}
+.page-header h1{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0 0 3px}
+@media(min-width:640px){.page-header h1{font-size:26px}}
+.page-header p{font-size:12px;color:#6b7280;margin:0}
+.premium-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:linear-gradient(135deg,rgba(250,204,21,.15),rgba(251,146,60,.1));border:1px solid rgba(250,204,21,.3);border-radius:8px;font-size:11px;font-weight:700;color:#fbbf24}
+
+/* ── Tab bar ── */
+.tabs-bar{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;border-bottom:1px solid rgba(255,255,255,.06);margin:0 -16px 20px;padding:0 16px}
+.tabs-bar::-webkit-scrollbar{display:none}
+@media(min-width:768px){.tabs-bar{margin:0 0 24px;padding:0}}
+.tabs-inner{display:flex;white-space:nowrap;min-width:max-content}
+.tab-btn{position:relative;padding:10px 14px;font-size:12px;font-weight:700;color:#6b7280;background:none;border:none;cursor:pointer;transition:color .2s;font-family:inherit;white-space:nowrap}
+@media(min-width:480px){.tab-btn{padding:12px 18px;font-size:13px}}
+.tab-btn::after{content:'';position:absolute;bottom:-1px;left:0;width:0;height:2px;background:#FF3333;transition:width .3s;border-radius:2px}
+.tab-btn.active::after{width:100%}
+.tab-btn.active,.tab-btn:hover{color:#fff}
+
+/* ── Tab views ── */
+.tab-view{display:none}.tab-view.tab-active{animation:fadeUp .22s ease forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── Section card ── */
+.card{background:#111120;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:20px}
+@media(min-width:640px){.card{padding:22px 24px}}
+.card-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;margin:0 0 16px;color:#fff}
+.card-title svg{width:15px;height:15px;color:#FF3333;flex-shrink:0}
+.card-title .badge-sm{margin-left:auto;padding:2px 8px;border-radius:6px;font-size:10px;background:rgba(255,255,255,.06);color:#9ca3af;font-weight:600}
+.card-sub{font-size:11px;color:#4b5563;margin:-12px 0 14px}
+.divider{height:1px;background:rgba(255,255,255,.05);margin:14px 0}
+
+/* ── Grids ── */
+.grid-2{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:1024px){.grid-2{grid-template-columns:1fr 1fr}}
+.grid-3{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:768px){.grid-3{grid-template-columns:1fr 1fr}}
+@media(min-width:1200px){.grid-3{grid-template-columns:1fr 1fr 1fr}}
+.stack{display:flex;flex-direction:column;gap:14px}
+.stack-sm{display:flex;flex-direction:column;gap:10px}
+
+/* ── Form elements ── */
+.field-label{display:block;font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.field-hint{font-size:10px;color:#374151;margin-top:4px}
+.inp{width:100%;background:#0c0c1a;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 13px;font-size:13px;color:#fff;outline:none;transition:border-color .2s,box-shadow .2s;font-family:inherit;min-height:42px;-webkit-appearance:none}
+.inp::placeholder{color:#374151}
+.inp:focus{border-color:#FF3333;box-shadow:0 0 0 3px rgba(255,51,51,.12)}
+textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
+.inp-sm{padding:8px 12px;font-size:12px;min-height:36px}
+.inp-num{max-width:120px}
+
+/* ── Select wrap ── */
+.sel-wrap{position:relative}
+.sel-wrap::after{content:'';position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid #6b7280}
+
+/* ── Toggle ── */
+.tog-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:10px}
+.tog-info h3{font-weight:700;font-size:13px;margin:0 0 2px}
+.tog-info p{font-size:11px;color:#6b7280;margin:0}
+.tog-switch{position:relative;display:inline-block;width:42px;flex-shrink:0}
+.tog-cb{position:absolute;left:2px;top:2px;z-index:10;width:18px;height:18px;border-radius:50%;background:#fff;appearance:none;cursor:pointer;border:none;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.tog-cb:checked{transform:translateX(18px)}
+.tog-cb:checked+.tog-track{background:#FF3333;box-shadow:0 0 12px rgba(255,51,51,.3)}
+.tog-track{display:block;width:42px;height:22px;border-radius:999px;background:#1e1e36;cursor:pointer;transition:background .3s;border:1px solid rgba(255,255,255,.08)}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 18px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;transition:all .15s;border:none;font-family:inherit;min-height:42px;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-primary{background:#FF3333;color:#0b0b14;box-shadow:0 4px 20px rgba(255,51,51,.2)}
+.btn-primary:hover:not(:disabled){background:#CC2222}
+.btn-ghost{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.1)}
+.btn-ghost:hover:not(:disabled){background:rgba(255,255,255,.1)}
+.btn-danger{background:rgba(239,68,68,.08);color:#f87171;border:1px solid rgba(239,68,68,.18)}
+.btn-danger:hover:not(:disabled){background:rgba(239,68,68,.15)}
+.btn-full{width:100%}
+.btn svg{width:15px;height:15px;flex-shrink:0}
+
+/* ── Icon button ── */
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;cursor:pointer;background:transparent;border:none;color:#6b7280;transition:all .15s;flex-shrink:0}
+.icon-btn svg{width:14px;height:14px}
+.icon-btn-danger:hover{background:rgba(239,68,68,.12);color:#f87171}
+
+/* ── Overview stats ── */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
+@media(min-width:640px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
+.stat-card{background:#111120;border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:16px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#FF3333,#CC2222)}
+.stat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#4b5563;margin-bottom:6px}
+.stat-value{font-size:28px;font-weight:800;color:#fff;line-height:1;margin-bottom:2px}
+.stat-sub{font-size:10px;color:#4b5563}
+.chart-card{background:#111120;border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:18px}
+.chart-title{font-size:12px;font-weight:700;color:#9ca3af;margin:0 0 12px}
+#weeklyChart{width:100%;height:80px;display:block}
+
+/* ── Priority badges ── */
+.priority-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700}
+.priority-low{background:rgba(239,68,68,.12);color:#EF4444;border:1px solid rgba(239,68,68,.2)}
+.priority-medium{background:rgba(234,179,8,.12);color:#facc15;border:1px solid rgba(234,179,8,.2)}
+.priority-high{background:rgba(249,115,22,.12);color:#fb923c;border:1px solid rgba(249,115,22,.2)}
+.priority-urgent{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+
+/* ── Category items ── */
+.cat-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;transition:border-color .15s}
+.cat-item:hover{border-color:rgba(255,51,51,.2)}
+.cat-item-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.cat-emoji{width:32px;height:32px;background:rgba(255,51,51,.08);border:1px solid rgba(255,51,51,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.cat-item-info{display:flex;flex-direction:column;min-width:0}
+.cat-item-name{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cat-item-desc{font-size:10px;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.cat-item-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.cat-badge{padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.2)}
+
+/* ── Tag items ── */
+.tag-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px}
+.tag-item-left{display:flex;align-items:center;gap:8px}
+.tag-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.tag-emoji{font-size:13px}
+.tag-name{font-size:13px;font-weight:600}
+
+/* ── Role items ── */
+.role-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px}
+.role-item-left{display:flex;align-items:center;gap:8px}
+.role-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.role-name{font-size:13px;font-weight:600}
+
+/* ── Role add row ── */
+.role-add-row{display:flex;gap:8px;margin-bottom:10px}
+.role-add-row .sel-wrap{flex:1}
+
+/* ── Cat form grid ── */
+.cat-form-grid{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:480px){.cat-form-grid{grid-template-columns:1fr 1fr}}
+
+/* ── Color row ── */
+.color-row{display:flex;align-items:center;gap:10px}
+.color-pick{width:42px;height:42px;border-radius:10px;border:2px solid rgba(255,255,255,.1);cursor:pointer;background:transparent;padding:2px;flex-shrink:0}
+
+/* ── Embed preview ── */
+.embed-preview{background:#313338;border-radius:10px;overflow:hidden}
+.embed-inner{padding:14px 14px 14px 18px;position:relative}
+.embed-inner::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#6C53FF;border-radius:0 0 0 4px}
+.embed-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+#prev-thumb{width:56px;height:56px;border-radius:8px;object-fit:cover;display:none;flex-shrink:0}
+
+/* ── Transcript table ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tbl{width:100%;font-size:12px;color:#9ca3af;border-collapse:collapse;min-width:620px}
+.tbl thead tr{background:rgba(255,255,255,.04)}
+.tbl th{padding:11px 14px;text-align:left;font-size:10px;text-transform:uppercase;font-weight:700;color:#e5e7eb;letter-spacing:.06em;white-space:nowrap}
+.tbl td{padding:11px 14px;border-top:1px solid rgba(255,255,255,.04)}
+.tbl tbody tr:hover{background:rgba(255,255,255,.02)}
+.tbl-mono{font-family:'JetBrains Mono',monospace;font-size:11px}
+.tbl-bold{font-weight:700;color:#fff}
+.tbl-empty{padding:32px;text-align:center;color:#374151;font-style:italic}
+.tbl-err{color:#f87171}
+.tbl-actions{text-align:right}
+.tbl-btn{display:inline-flex;align-items:center;padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.tbl-btn-view{background:rgba(255,51,51,.08);color:#FF3333;border:1px solid rgba(255,51,51,.15);text-decoration:none;margin-right:4px}
+.tbl-btn-view:hover{background:rgba(255,51,51,.15)}
+.tbl-btn-del{background:rgba(239,68,68,.08);color:#f87171;border:1px solid rgba(239,68,68,.15)}
+.tbl-btn-del:hover{background:rgba(239,68,68,.15)}
+
+/* ── Empty state ── */
+.empty-state{text-align:center;padding:32px 16px;color:#374151;opacity:.7}
+.empty-state svg{width:36px;height:36px;margin:0 auto 10px;color:#374151}
+.empty-state p{font-size:12px}
+.empty-small{font-size:11px;color:#374151;font-style:italic;text-align:center;padding:12px 0;margin:0}
+
+/* ── Action row ── */
+.action-row{display:flex;gap:10px;padding-top:4px}
+.action-row .btn-primary{flex:1}
+
+/* ── Razor custom select (same as existing) ── */
+.rzr-wrap{position:relative;width:100%;display:block}
+.rzr-wrap-parent.sel-wrap::after,.rzr-wrap-parent::after{display:none!important}
+.rzr-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 13px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:#0c0c1a;color:#fff;cursor:pointer;font-size:13px;font-family:inherit;min-height:42px;width:100%;transition:border-color .15s,box-shadow .15s;user-select:none;box-sizing:border-box}
+.rzr-trigger:hover{border-color:rgba(255,255,255,.2)}
+.rzr-trigger.is-open{border-color:rgba(255,51,51,.6);box-shadow:0 0 0 3px rgba(255,51,51,.1)}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
+.rzr-label.is-ph{color:#374151}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+.rzr-panel{position:fixed;z-index:999999;background:rgba(8,8,17,.98);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);border-radius:12px;box-shadow:0 24px 60px rgba(0,0,0,.7);overflow:hidden;animation:rzrIn .16s ease}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1}}
+.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.06)}
+.rzr-search-inp{display:block;width:100%;background:#04040e;border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:6px 11px;color:#fff;font-size:12px;font-family:inherit;outline:none;box-sizing:border-box;transition:border-color .15s}
+.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-search-inp::placeholder{color:#1f2937}
+.rzr-list{max-height:220px;overflow-y:auto;padding:5px}
+.rzr-list::-webkit-scrollbar{width:3px}
+.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:6px}
+.rzr-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:12px;color:#9ca3af;transition:background .1s,color .1s}
+.rzr-item:hover{background:rgba(255,255,255,.05);color:#fff}
+.rzr-item.is-sel{background:rgba(255,51,51,.1);color:#FF3333;font-weight:600}
+.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item.is-sel .rzr-item-chk{opacity:1}
+.rzr-empty{padding:16px;text-align:center;color:#374151;font-size:12px}
+
+/* ── Feature info box ── */
+.feature-box{background:rgba(255,51,51,.04);border:1px solid rgba(255,51,51,.1);border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.feature-box svg{width:15px;height:15px;color:#FF3333;flex-shrink:0;margin-top:1px}
+.feature-box p{font-size:11px;color:#6b7280;margin:0;line-height:1.5}
+.feature-box strong{color:#9ca3af}
+</style>
+<style>
+/* Panel list items */
+.panel-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;cursor:pointer;transition:border-color .15s;margin-bottom:8px}
+.panel-item:hover{border-color:rgba(255,255,255,.12)}
+.panel-emoji{width:36px;height:36px;background:rgba(255,51,51,.08);border:1px solid rgba(255,51,51,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.panel-info{flex:1;min-width:0}
+.panel-name{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.panel-meta{font-size:10px;color:#6b7280;margin-top:2px;display:flex;gap:6px;flex-wrap:wrap}
+.panel-actions{display:flex;gap:6px;flex-shrink:0}
+/* Status pill */
+.status-pill{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700}
+.status-pill.pending{background:rgba(245,158,11,.1);color:#f59e0b;border:1px solid rgba(245,158,11,.2)}
+.status-pill.accepted{background:rgba(255,51,51,.1);color:#FF3333;border:1px solid rgba(255,51,51,.2)}
+.status-pill.denied{background:rgba(239,68,68,.08);color:#f87171;border:1px solid rgba(239,68,68,.18)}
+/* Question items */
+.q-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.q-item.mandatory{border-color:rgba(239,68,68,.2);background:rgba(239,68,68,.03)}
+.q-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.q-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.q-label.mandatory{color:#f87171}
+.q-label.optional{color:#FF3333}
+/* DM preview */
+.dm-preview{background:#1e1f2e;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.07)}
+.dm-preview-head{background:#17172a;padding:9px 14px;font-size:11px;font-weight:700;color:#6b7280;display:flex;align-items:center;gap:6px;border-bottom:1px solid rgba(255,255,255,.06)}
+.dm-preview-body{padding:14px;display:flex;flex-direction:column;gap:10px}
+.dm-msg{display:flex;gap:10px}
+.dm-avatar{width:30px;height:30px;border-radius:50%;background:rgba(255,51,51,.1);border:2px solid rgba(255,51,51,.25);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#FF3333;flex-shrink:0}
+.dm-bubble{flex:1;background:#25263a;border-radius:2px 8px 8px 8px;padding:8px 11px;font-size:12px;color:#dcddde;line-height:1.5}
+.dm-bubble.mandatory{border-left:3px solid #f87171}
+.dm-bubble.optional{border-left:3px solid #FF3333}
+/* Submissions table */
+.sub-tbl{width:100%;border-collapse:collapse}
+.sub-tbl th{padding:9px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:#6b7280;border-bottom:1px solid rgba(255,255,255,.06)}
+.sub-tbl td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
+.sub-tbl tr:last-child td{border-bottom:none}
+.sub-tbl tbody tr:hover td{background:rgba(255,255,255,.02);cursor:pointer}
+/* Info banner */
+.info-box{background:rgba(255,51,51,.04);border:1px solid rgba(255,51,51,.12);border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;margin-bottom:20px}
+.info-box svg{width:14px;height:14px;color:#FF3333;flex-shrink:0;margin-top:1px}
+.info-box p{font-size:11px;color:#6b7280;margin:0;line-height:1.5}
+.info-box strong{color:#9ca3af}
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-bg.open{opacity:1;pointer-events:all}
+.modal-box{background:#111120;border:1px solid rgba(255,255,255,.1);border-radius:16px;width:100%;max-width:640px;padding:24px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:15px;font-weight:800;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06)}
+.badge-new{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;background:rgba(255,51,51,.1);color:#FF3333;border:1px solid rgba(255,51,51,.2);vertical-align:middle}
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<div id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+<div class="page-wrap">
+<aside id="razor-sidebar"></aside>
+<main class="main">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-icon">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      </div>
+      <div>
+        <h1>Staff Applications <span class="badge-new">DM-Based</span></h1>
+        <p>Multi-panel apps — questions sent one-by-one via DM · Per-panel channels &amp; roles</p>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="openPanelModal()">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 5v14M5 12h14"/></svg>
+      New Panel
+    </button>
+  </div>
+
+  <div class="info-box">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16v-4M12 8h.01"/></svg>
+    <p><strong>DM-based applications are live.</strong> When someone clicks Apply, Roco DMs them each question one at a time. Answers are collected privately and posted to your submission channel. No messy in-server modals.</p>
+  </div>
+
+  <div class="tabs-bar"><div class="tabs-inner">
+    <button class="tab-btn active" onclick="showTab('panels',this)">Panels</button>
+    <button class="tab-btn" onclick="showTab('submissions',this)">Submissions</button>
+    <button class="tab-btn" onclick="showTab('preview',this)">DM Preview</button>
+    <button class="tab-btn" onclick="showTab('settings',this)">Settings</button>
+  </div></div>
+
+  <!-- PANELS — dropdown-driven single panel editor -->
+  <div id="tab-panels" class="tab-view tab-active" style="display:block">
+
+    <!-- Panel selector row -->
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:180px">
+          <label class="field-label" style="margin-bottom:6px">Active Panel</label>
+          <div class="sel-wrap">
+            <select id="panelSelector" class="inp" onchange="onPanelSelect()">
+              <option value="">— Select a panel —</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;padding-top:18px;flex-shrink:0">
+          <button id="editPanelBtn" class="btn btn-ghost" onclick="editSelectedPanel()" disabled>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            Edit
+          </button>
+          <button id="deletePanelBtn" class="btn btn-danger" onclick="deleteSelectedPanel()" disabled>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel detail view (shown when a panel is selected) -->
+    <div id="panelDetailView" style="display:none">
+      <div class="grid-2" style="align-items:start">
+
+        <!-- Left col: identity + behaviour -->
+        <div class="stack">
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              Panel Info
+            </p>
+            <div class="stack-sm">
+              <div>
+                <label class="field-label">Name</label>
+                <p id="dv-name" style="font-size:15px;font-weight:800;margin:0;color:#fff">—</p>
+              </div>
+              <div class="divider"></div>
+              <div style="display:flex;gap:16px;flex-wrap:wrap">
+                <div>
+                  <label class="field-label">Questions</label>
+                  <p id="dv-qcount" style="font-size:22px;font-weight:800;margin:0;color:#fff">—</p>
+                </div>
+                <div>
+                  <label class="field-label">Cooldown</label>
+                  <p id="dv-cooldown" style="font-size:22px;font-weight:800;margin:0;color:#fff">—</p>
+                </div>
+                <div>
+                  <label class="field-label">Status</label>
+                  <p id="dv-status" style="font-size:13px;font-weight:700;margin:0">—</p>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div>
+                <label class="field-label">Description</label>
+                <p id="dv-desc" style="font-size:12px;color:#6b7280;margin:0">—</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+              Channels &amp; Roles
+            </p>
+            <div class="stack-sm" style="font-size:12px">
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+                <span style="color:#6b7280;font-weight:600">Panel Channel</span>
+                <span id="dv-panelch" style="color:#fff;font-weight:600">—</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+                <span style="color:#6b7280;font-weight:600">Submission Channel</span>
+                <span id="dv-submitsch" style="color:#fff;font-weight:600">—</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+                <span style="color:#6b7280;font-weight:600">Results Channel</span>
+                <span id="dv-resultsch" style="color:#fff;font-weight:600">—</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+                <span style="color:#6b7280;font-weight:600">Staff Role (on accept)</span>
+                <span id="dv-staffrole" style="color:#fff;font-weight:600">—</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+                <span style="color:#6b7280;font-weight:600">Required Role</span>
+                <span id="dv-reqrole" style="color:#fff;font-weight:600">—</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0">
+                <span style="color:#6b7280;font-weight:600">Ping Role</span>
+                <span id="dv-pingrole" style="color:#fff;font-weight:600">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right col: questions list -->
+        <div class="card" style="height:fit-content">
+          <p class="card-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Questions
+            <span id="dv-qbadge" class="badge-sm">0</span>
+          </p>
+          <div id="dv-qlist" class="stack-sm">
+            <div class="empty-small">No questions configured.</div>
+          </div>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+            <button class="btn btn-ghost btn-full" onclick="editSelectedPanel()">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              Edit Questions &amp; Settings
+            </button>
+            <button class="btn btn-primary btn-full" id="postPanelBtn" onclick="postSelectedPanel()">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+              Post to Discord
+            </button>
+            <button class="btn btn-ghost btn-full" onclick="openDropdownModal()">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+              Post Combined Dropdown
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Empty state (no panels yet) -->
+    <div id="panelEmptyState">
+      <div class="empty-state">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:36px;height:36px;margin:0 auto 10px;color:#374151"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <p>No panels yet. Click <strong>New Panel</strong> to create your first.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SUBMISSIONS -->
+  <div id="tab-submissions" class="tab-view">
+    <div class="card">
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <div class="sel-wrap" style="flex:1;min-width:140px"><select class="inp" id="filterPanel" onchange="loadSubmissions()"><option value="">All panels</option></select></div>
+        <div class="sel-wrap" style="width:120px"><select class="inp" id="filterStatus" onchange="loadSubmissions()">
+          <option value="">All statuses</option><option value="pending">Pending</option>
+          <option value="accepted">Accepted</option><option value="denied">Denied</option>
+        </select></div>
+        <input class="inp" id="filterSearch" placeholder="Search username…" style="flex:2;min-width:140px" oninput="filterSubsClient()">
+      </div>
+      <div style="overflow-x:auto">
+        <table class="sub-tbl">
+          <thead><tr><th>Applicant</th><th>Panel</th><th>Status</th><th>Submitted</th><th></th></tr></thead>
+          <tbody id="subTableBody"><tr><td colspan="5" style="text-align:center;color:#374151;padding:20px">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- DM PREVIEW -->
+  <div id="tab-preview" class="tab-view">
+    <div class="card" style="max-width:500px">
+      <div class="card-title"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>DM Flow Preview</div>
+      <div class="dm-preview">
+        <div class="dm-preview-head"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Direct Messages · Roco Bot</div>
+        <div class="dm-preview-body">
+          <div class="dm-msg"><div class="dm-avatar">N</div><div class="dm-bubble">Hey <strong>Member</strong>! You've started the <strong>Moderator</strong> application for <strong>TSHE</strong>. I'll ask your questions one by one — just reply with your answer.</div></div>
+          <div class="dm-msg"><div class="dm-avatar">N</div><div class="dm-bubble mandatory"><span style="font-size:9px;font-weight:800;color:#f87171;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:3px">🔴 Q1 — Mandatory</span>Why do you want to join the staff team?</div></div>
+          <div class="dm-msg" style="flex-direction:row-reverse"><div class="dm-avatar" style="background:rgba(129,140,248,.1);border-color:rgba(129,140,248,.25);color:#818cf8">U</div><div class="dm-bubble" style="border-radius:8px 2px 8px 8px;background:#2d2f44;text-align:right">I've been here 2 years and want to give back to the community!</div></div>
+          <div class="dm-msg"><div class="dm-avatar">N</div><div class="dm-bubble optional"><span style="font-size:9px;font-weight:800;color:#FF3333;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:3px">🟢 Q2 — Optional</span>How many hours a week can you dedicate?</div></div>
+          <div class="dm-msg" style="justify-content:center"><div style="font-size:10px;color:#374151;font-style:italic">… questions continue …</div></div>
+          <div class="dm-msg"><div class="dm-avatar">N</div><div class="dm-bubble" style="background:#1a2a1a;border:1px solid rgba(255,51,51,.2)">✅ Application submitted! The staff team will review it shortly.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="tab-settings" class="tab-view">
+    <div class="card" style="max-width:600px">
+      <div class="card-title"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>Global Settings</div>
+      <div class="stack-sm">
+        <div class="tog-row">
+          <div class="tog-info"><h3>DM questions one-by-one <span class="badge-new">New</span></h3><p>Send questions via DM instead of in-server modal</p></div>
+          <div class="tog-switch"><input type="checkbox" class="tog-cb" id="gDmMode" checked><div class="tog-track"></div></div>
+        </div>
+        <div class="tog-row">
+          <div class="tog-info"><h3>Enforce mandatory question</h3><p>App cannot be submitted if Q1 is blank</p></div>
+          <div class="tog-switch"><input type="checkbox" class="tog-cb" id="gMandatory" checked><div class="tog-track"></div></div>
+        </div>
+        <div class="tog-row">
+          <div class="tog-info"><h3>Notify staff on new submission</h3><p>Ping configured role when a new application arrives</p></div>
+          <div class="tog-switch"><input type="checkbox" class="tog-cb" id="gPingStaff" checked><div class="tog-track"></div></div>
+        </div>
+        <div class="tog-row">
+          <div class="tog-info"><h3>Diff checker on review <span class="badge-new">New</span></h3><p>Highlight answer changes when a reviewer edits</p></div>
+          <div class="tog-switch"><input type="checkbox" class="tog-cb" id="gDiff" checked><div class="tog-track"></div></div>
+        </div>
+        <div>
+          <label class="field-label">DM Intro Message</label>
+          <textarea class="inp" id="gDmIntro" rows="2" placeholder="Hey {user}! You're applying for {panel} in {server}. Answer each question and your application will be reviewed soon."></textarea>
+          <div class="field-hint">Variables: {user}, {panel}, {server}</div>
+        </div>
+        <button class="btn btn-primary" onclick="saveGlobal()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          Save Settings
+        </button>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<!-- PANEL MODAL -->
+<div id="panelModal" class="modal-bg" onclick="if(event.target===this)closePanelModal()">
+  <div class="modal-box">
+    <div class="modal-title">
+      <svg width="18" height="18" fill="none" stroke="#FF3333" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      <span id="pmTitle">New Application Panel</span>
+    </div>
+    <div class="stack-sm" id="pmBody">
+      <div class="grid-2">
+        <div><label class="field-label">Panel Name *</label><input class="inp" id="pName" placeholder="e.g. Moderator" maxlength="50"></div>
+        <div><label class="field-label">Emoji</label><input class="inp" id="pEmoji" placeholder="📋" maxlength="8"></div>
+      </div>
+      <div><label class="field-label">Description</label><textarea class="inp" id="pDesc" rows="2" placeholder="What does this role involve?" maxlength="500"></textarea></div>
+      <div class="grid-2">
+        <div><label class="field-label">Panel Channel</label><div class="sel-wrap"><select class="inp" id="pPanelCh"><option value="">— Select —</option></select></div><div class="field-hint">Button posted here</div></div>
+        <div><label class="field-label">Submission Channel</label><div class="sel-wrap"><select class="inp" id="pSubmitCh"><option value="">— Select —</option></select></div><div class="field-hint">Completed apps sent here</div></div>
+      </div>
+      <div class="grid-2">
+        <div><label class="field-label">Diff Checker Channel <span class="badge-new">New</span></label><div class="sel-wrap"><select class="inp" id="pDiffCh"><option value="">Same as submission</option></select></div></div>
+        <div><label class="field-label">Denied Role <span class="badge-new">New</span></label><div class="sel-wrap"><select class="inp" id="pDeniedRole"><option value="">None</option></select></div></div>
+      </div>
+      <div class="grid-2">
+        <div><label class="field-label">Staff Role (on accept)</label><div class="sel-wrap"><select class="inp" id="pStaffRole"><option value="">None</option></select></div></div>
+        <div><label class="field-label">Required Role (to apply)</label><div class="sel-wrap"><select class="inp" id="pReqRole"><option value="">Anyone</option></select></div></div>
+      </div>
+      <div class="grid-2">
+        <div><label class="field-label">Ping Role</label><div class="sel-wrap"><select class="inp" id="pPingRole"><option value="">None</option></select></div></div>
+        <div><label class="field-label">Cooldown (hours)</label><input class="inp" type="number" id="pCooldown" value="0" min="0" max="720"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="tog-row">
+        <div class="tog-info"><h3>DM questions one-by-one <span class="badge-new">New</span></h3><p>Questions sent via DM, not in-server</p></div>
+        <div class="tog-switch"><input type="checkbox" class="tog-cb" id="pDmMode" checked><div class="tog-track"></div></div>
+      </div>
+      <div class="tog-row">
+        <div class="tog-info"><h3>DM on Accept</h3><p>Send congratulations DM to the applicant</p></div>
+        <div class="tog-switch"><input type="checkbox" class="tog-cb" id="pDmAccept" checked><div class="tog-track"></div></div>
+      </div>
+      <div class="tog-row">
+        <div class="tog-info"><h3>DM on Deny</h3><p>Notify applicant if denied</p></div>
+        <div class="tog-switch"><input type="checkbox" class="tog-cb" id="pDmDeny" checked><div class="tog-track"></div></div>
+      </div>
+      <div class="tog-row">
+        <div class="tog-info"><h3>Diff checker on review <span class="badge-new">New</span></h3><p>Highlight changes when reviewer edits an answer</p></div>
+        <div class="tog-switch"><input type="checkbox" class="tog-cb" id="pDiff" checked><div class="tog-track"></div></div>
+      </div>
+      <div class="tog-row">
+        <div class="tog-info"><h3>Enabled</h3><p>Allow new applications</p></div>
+        <div class="tog-switch"><input type="checkbox" class="tog-cb" id="pEnabled" checked><div class="tog-track"></div></div>
+      </div>
+      <div class="divider"></div>
+      <!-- Questions -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <label class="field-label" style="margin:0">Questions <span style="font-weight:400;color:#4b5563;text-transform:none;letter-spacing:0" id="qLimitLabel">(up to 25 questions)</span></label>
+          <button class="btn btn-ghost" id="addQBtn" onclick="addQuestion()" style="padding:5px 10px;font-size:11px;min-height:0">+ Add Question</button>
+        </div>
+        <div id="qList"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closePanelModal()">Cancel</button>
+      <button class="btn btn-primary" id="pmSaveBtn" onclick="savePanel()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+        Save Panel
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- DROPDOWN COMBINATION MODAL -->
+<div id="dropdownModal" class="modal-bg" onclick="if(event.target===this)closeDropdownModal()">
+  <div class="modal-box">
+    <div class="modal-title">
+      <svg width="18" height="18" fill="none" stroke="#FF3333" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
+      Post Combined Dropdown
+    </div>
+    <div class="stack-sm">
+      <div class="feature-box">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16v-4M12 8h.01"/></svg>
+        <p>Combine multiple application panels into a single select-menu message. Users pick which panel to apply for from the dropdown — no separate buttons needed.</p>
+      </div>
+      <div>
+        <label class="field-label">Channel to post in</label>
+        <div class="sel-wrap"><select class="inp" id="dd-channel"><option value="">— Select channel —</option></select></div>
+      </div>
+      <div>
+        <label class="field-label">Dropdown placeholder text</label>
+        <input class="inp" id="ddLabel" placeholder="Select an application to start" maxlength="100">
+      </div>
+      <div>
+        <label class="field-label" style="margin-bottom:8px">Select panels to include <span style="color:#4b5563;font-weight:400;text-transform:none;letter-spacing:0">(min 2)</span></label>
+        <div id="dd-panel-list" class="stack-sm"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeDropdownModal()">Cancel</button>
+      <button class="btn btn-primary" id="ddPostBtn" onclick="postDropdown()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+        Post Dropdown
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="/sidebar.js"></script>
+<script>
+'use strict';
+const guildId = location.pathname.split('/')[2];
+let panels = [], channels = [], roles = [], editingPanel = null, qCount = 0, allSubs = [];
+
+/* ── Toast ───────────────────────────────────────────────────────────────── */
+function toast(msg, ok) {
+  var t = document.getElementById('toast');
+  t.style.cssText = ok === false
+    ? 'background:#1e0b0d;border:1px solid rgba(239,68,68,.35);color:#f87171'
+    : 'background:#0b1e12;border:1px solid rgba(34,197,94,.25);color:#4ade80';
+  document.getElementById('toastIcon').textContent = ok === false ? '❌' : '✅';
+  document.getElementById('toastMsg').textContent  = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ── Tab switching ───────────────────────────────────────────────────────── */
+function showTab(n, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-view').forEach(v => { v.classList.remove('tab-active'); v.style.display = 'none'; });
+  btn.classList.add('active');
+  var el = document.getElementById('tab-' + n);
+  el.classList.add('tab-active'); el.style.display = 'block';
+  if (n === 'submissions') loadSubmissions();
+}
+
+/* ── Question limit (tier-based) ─────────────────────────────────────────── */
+function fetchTierLimit() {
+  return fetch('/api/guild/' + guildId + '/premium/tier')
+    .then(r => r.json())
+    .then(d => {
+      var limits = { free: 5, basic: 10, pro: 20, elite: 25 };
+      var lim = limits[d.tier] || 5;
+      window.MAX_QUESTIONS = lim;
+      var el = document.getElementById('qLimitLabel');
+      if (el) el.textContent = '(up to ' + lim + ' questions)';
+      return lim;
+    })
+    .catch(() => { window.MAX_QUESTIONS = 5; return 5; });
+}
+
+/* ── Panel modal open / close ────────────────────────────────────────────── */
+function openPanelModal(panel) {
+  editingPanel = panel || null;
+  qCount = 0;
+  document.getElementById('qList').innerHTML = '';
+  document.getElementById('pmTitle').textContent = panel ? 'Edit Application Panel' : 'New Application Panel';
+
+  // Clear fields
+  ['pName','pEmoji','pDesc'].forEach(id => {
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('pCooldown').value = 0;
+  ['pDmMode','pDmAccept','pDmDeny','pEnabled'].forEach(id => {
+    var el = document.getElementById(id); if (el) el.checked = true;
+  });
+  var diff = document.getElementById('pDiff'); if (diff) diff.checked = false;
+
+  if (panel) {
+    document.getElementById('pName').value  = panel.name        || '';
+    document.getElementById('pEmoji').value = panel.emoji       || '';
+    document.getElementById('pDesc').value  = panel.description || '';
+    document.getElementById('pCooldown').value = panel.cooldownHours || panel.cooldown || 0;
+
+    var dm  = document.getElementById('pDmMode');   if (dm)  dm.checked  = panel.dmMode    !== false;
+    var dma = document.getElementById('pDmAccept'); if (dma) dma.checked = panel.dmOnAccept !== false;
+    var dmd = document.getElementById('pDmDeny');   if (dmd) dmd.checked = panel.dmOnDeny   !== false;
+    var enb = document.getElementById('pEnabled');  if (enb) enb.checked = panel.enabled    !== false;
+
+    // Load all questions with their required flag
+    var qs = panel.questions || [];
+    qs.forEach(q => addQuestion(q.label || q.text || '', q.required !== false));
+
+    // Set select values after a short delay so the custom select renders
+    setTimeout(() => {
+      var fieldMap = {
+        pPanelCh:    panel.panelChannelId  || panel.panelChannel  || '',
+        pSubmitCh:   panel.logChannelId    || panel.submissionChannel || '',
+        pDiffCh:     panel.resultsChannelId|| panel.diffChannel   || '',
+        pDeniedRole: panel.deniedRoleId    || panel.deniedRole    || '',
+        pStaffRole:  panel.staffRoleId     || panel.staffRole     || '',
+        pReqRole:    panel.requiredRoleId  || panel.requiredRole  || '',
+        pPingRole:   panel.pingRoleId      || panel.pingRole      || '',
+      };
+      Object.entries(fieldMap).forEach(([id, val]) => {
+        var el = document.getElementById(id);
+        if (el && val) { el.value = val; el.dispatchEvent(new Event('change', { bubbles: true })); }
+      });
+    }, 80);
+  } else {
+    // New panel: pre-add one required question as a starting point
+    addQuestion('', true);
+  }
+
+  document.getElementById('panelModal').classList.add('open');
+}
+function closePanelModal() { document.getElementById('panelModal').classList.remove('open'); }
+
+/* ── Add / remove questions with per-question required toggle ─────────────── */
+function addQuestion(text, required) {
+  var maxQ = window.MAX_QUESTIONS || 25;
+  if (qCount >= maxQ) { toast('Max ' + maxQ + ' questions for your tier', false); return; }
+  qCount++;
+  var idx  = qCount;
+  var isReq = (required !== false); // default: required
+  var div  = document.createElement('div');
+  div.className = 'q-item' + (isReq ? ' mandatory' : ''); div.id = 'optQ_' + idx;
+  div.innerHTML =
+    '<div class="q-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
+      '<span class="q-num-label" id="optQ_lbl_' + idx + '" style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:' + (isReq ? '#f87171' : '#FF3333') + '">' +
+        (isReq ? '🔴 Q' + idx + ' — Required' : '🟢 Q' + idx + ' — Optional') +
+      '</span>' +
+      '<div style="display:flex;align-items:center;gap:8px">' +
+        '<label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:11px;font-weight:600;color:#9ca3af;user-select:none">' +
+          '<input type="checkbox" id="optQ_req_' + idx + '"' + (isReq ? ' checked' : '') + ' onchange="toggleRequired(' + idx + ')" style="accent-color:#FF3333;width:13px;height:13px;cursor:pointer"> Required' +
+        '</label>' +
+        (idx > 1 ? '<button class="btn btn-danger" style="padding:4px 10px;font-size:11px;min-height:0" onclick="removeQ(' + idx + ')">Remove</button>' : '') +
+      '</div>' +
+    '</div>' +
+    '<label class="field-label">Question Text</label>' +
+    '<input class="inp" id="optQ_text_' + idx + '" placeholder="e.g. Why do you want to join the staff team?" maxlength="300">';
+  document.getElementById('qList').appendChild(div);
+  if (text) document.getElementById('optQ_text_' + idx).value = text;
+  _renumberQuestions();
+  _updateAddBtn();
+}
+
+function toggleRequired(idx) {
+  var cb  = document.getElementById('optQ_req_' + idx);
+  var lbl = document.getElementById('optQ_lbl_' + idx);
+  var card = document.getElementById('optQ_' + idx);
+  var isReq = cb && cb.checked;
+  if (lbl) {
+    lbl.style.color = isReq ? '#f87171' : '#FF3333';
+    lbl.textContent = isReq ? '🔴 Q' + idx + ' — Required' : '🟢 Q' + idx + ' — Optional';
+  }
+  if (card) {
+    card.classList.toggle('mandatory', isReq);
+  }
+}
+
+function removeQ(idx) {
+  var el = document.getElementById('optQ_' + idx); if (el) el.remove();
+  qCount--; _renumberQuestions(); _updateAddBtn();
+}
+
+function _renumberQuestions() {
+  // Re-label Q numbers after add/remove
+  var items = document.getElementById('qList').querySelectorAll('.q-item');
+  items.forEach(function(item, i) {
+    var num = i + 1;
+    var id  = item.id.replace('optQ_', '');
+    var lbl = document.getElementById('optQ_lbl_' + id);
+    var cb  = document.getElementById('optQ_req_' + id);
+    if (lbl && cb) {
+      var isReq = cb.checked;
+      lbl.textContent = isReq ? '🔴 Q' + num + ' — Required' : '🟢 Q' + num + ' — Optional';
+      lbl.style.color = isReq ? '#f87171' : '#FF3333';
+    }
+  });
+}
+
+function _updateAddBtn() {
+  var maxQ = window.MAX_QUESTIONS || 25;
+  var btn = document.getElementById('addQBtn'); if (!btn) return;
+  btn.textContent = qCount >= maxQ
+    ? '✓ Max (' + qCount + '/' + maxQ + ')'
+    : '+ Add Question (' + qCount + '/' + maxQ + ')';
+}
+
+/* ── Save panel (create or update) ───────────────────────────────────────── */
+function savePanel() {
+  var name = document.getElementById('pName').value.trim();
+  if (!name) { toast('Panel name is required', false); return; }
+
+  // Collect all questions with their required flag from the toggles
+  var questions = [];
+  var items = document.getElementById('qList').querySelectorAll('.q-item');
+  items.forEach(function(item) {
+    var id   = item.id.replace('optQ_', '');
+    var txtEl = document.getElementById('optQ_text_' + id);
+    var reqEl = document.getElementById('optQ_req_' + id);
+    var text  = txtEl ? txtEl.value.trim() : '';
+    if (text) questions.push({ label: text, required: reqEl ? reqEl.checked : true, style: 'paragraph' });
+  });
+
+  if (!questions.length) { toast('Add at least one question', false); return; }
+
+  var body = {
+    name:        name,
+    emoji:       document.getElementById('pEmoji').value || '📋',
+    description: document.getElementById('pDesc').value.trim(),
+    // Use canonical field names the backend schema expects
+    panelChannelId:   document.getElementById('pPanelCh').value   || null,
+    logChannelId:     document.getElementById('pSubmitCh').value  || null,
+    resultsChannelId: document.getElementById('pDiffCh').value    || null,
+    deniedRoleId:     document.getElementById('pDeniedRole').value || null,
+    staffRoleId:      document.getElementById('pStaffRole').value  || null,
+    requiredRoleId:   document.getElementById('pReqRole').value    || null,
+    pingRoleId:       document.getElementById('pPingRole').value   || null,
+    cooldownHours:    parseInt(document.getElementById('pCooldown').value) || 0,
+    dmMode:     document.getElementById('pDmMode').checked,
+    dmOnAccept: document.getElementById('pDmAccept').checked,
+    dmOnDeny:   document.getElementById('pDmDeny').checked,
+    enabled:    document.getElementById('pEnabled').checked,
+    questions:  questions,
+  };
+
+  var saveBtn = document.getElementById('pmSaveBtn');
+  saveBtn.textContent = 'Saving…'; saveBtn.disabled = true;
+
+  var url    = editingPanel
+    ? '/api/guild/' + guildId + '/staffapps/' + editingPanel.panelId
+    : '/api/guild/' + guildId + '/staffapps';
+  var method = editingPanel ? 'PATCH' : 'POST';
+
+  fetch(url, { method: method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+    .then(r => r.json())
+    .then(d => {
+      if (d.success !== false && !d.error) {
+        toast(editingPanel ? 'Panel updated!' : 'Panel created!');
+        closePanelModal();
+        loadPanels();
+        // Auto-select the panel that was just created/edited
+        var newPanelId = d.panel?.panelId || d.panelId || null;
+        if (!editingPanel && newPanelId) {
+          setTimeout(() => {
+            var sel = document.getElementById('panelSelector');
+            if (sel) { sel.value = newPanelId; onPanelSelect(); }
+          }, 300);
+        }
+      } else {
+        toast(d.error || d.message || 'Save failed', false);
+      }
+    })
+    .catch(() => toast('Network error', false))
+    .finally(() => { saveBtn.textContent = 'Save Panel'; saveBtn.disabled = false; });
+}
+
+/* ── Load & render panel list → populate dropdown ────────────────────────── */
+function loadPanels() {
+  fetch('/api/guild/' + guildId + '/staffapps')
+    .then(r => r.json())
+    .then(data => {
+      panels = Array.isArray(data) ? data : (data.panels || []);
+
+      // Rebuild the filter dropdown (submissions tab)
+      var fSel = document.getElementById('filterPanel');
+      if (fSel) {
+        fSel.innerHTML = '<option value="">All panels</option>';
+        panels.forEach(p => {
+          var o = document.createElement('option');
+          o.value = p.panelId; o.textContent = p.name;
+          fSel.appendChild(o);
+        });
+      }
+
+      // Rebuild the panel selector dropdown
+      var sel = document.getElementById('panelSelector');
+      if (sel) {
+        var prev = sel.value;
+        sel.innerHTML = '<option value="">— Select a panel —</option>';
+        panels.forEach(p => {
+          var o = document.createElement('option');
+          o.value = p.panelId; o.textContent = (p.emoji || '📋') + ' ' + p.name;
+          sel.appendChild(o);
+        });
+        // Restore selection if still valid
+        if (prev && panels.find(p => p.panelId === prev)) {
+          sel.value = prev;
+          renderPanelDetail(panels.find(p => p.panelId === prev));
+        } else {
+          sel.value = '';
+          hidePanelDetail();
+        }
+      }
+
+      // Show/hide empty state
+      var empty = document.getElementById('panelEmptyState');
+      if (empty) empty.style.display = panels.length ? 'none' : 'block';
+    })
+    .catch(() => {});
+}
+
+function onPanelSelect() {
+  var sel = document.getElementById('panelSelector');
+  var panelId = sel ? sel.value : '';
+  var editBtn   = document.getElementById('editPanelBtn');
+  var deleteBtn = document.getElementById('deletePanelBtn');
+  if (editBtn)   editBtn.disabled   = !panelId;
+  if (deleteBtn) deleteBtn.disabled = !panelId;
+  if (!panelId) { hidePanelDetail(); return; }
+  var panel = panels.find(p => p.panelId === panelId);
+  if (panel) renderPanelDetail(panel);
+}
+
+function hidePanelDetail() {
+  var dv = document.getElementById('panelDetailView');
+  if (dv) dv.style.display = 'none';
+  var editBtn   = document.getElementById('editPanelBtn');
+  var deleteBtn = document.getElementById('deletePanelBtn');
+  if (editBtn)   editBtn.disabled   = true;
+  if (deleteBtn) deleteBtn.disabled = true;
+}
+
+function renderPanelDetail(p) {
+  var dv = document.getElementById('panelDetailView');
+  if (!dv) return;
+  dv.style.display = 'block';
+
+  var setText = function(id, v) { var el = document.getElementById(id); if (el) el.textContent = v || '—'; };
+  var setHTML = function(id, v) { var el = document.getElementById(id); if (el) el.innerHTML = v; };
+
+  setText('dv-name', (p.emoji || '📋') + ' ' + (p.name || 'Unnamed'));
+  setText('dv-qcount', (p.questions ? p.questions.length : 0) + ' q');
+  setText('dv-cooldown', p.cooldownHours ? p.cooldownHours + 'h' : 'None');
+  setText('dv-desc', p.description || 'No description set.');
+
+  // Status pill
+  var statusEl = document.getElementById('dv-status');
+  if (statusEl) {
+    statusEl.innerHTML = p.enabled !== false
+      ? '<span class="status-pill accepted">● Active</span>'
+      : '<span class="status-pill denied">● Disabled</span>';
+  }
+
+  // Resolve channel/role names from loaded arrays
+  function chName(id)   { var c = channels.find(x => x.id === id); return c ? '#' + c.name : (id ? '<span style="color:#4b5563">' + id.slice(0,8) + '…</span>' : '—'); }
+  function roleName(id) { var r = roles.find(x => x.id === id);   return r ? '@' + r.name : (id ? '<span style="color:#4b5563">' + id.slice(0,8) + '…</span>' : '—'); }
+
+  setHTML('dv-panelch',   chName(p.panelChannelId   || p.panelChannel));
+  setHTML('dv-submitsch', chName(p.logChannelId      || p.submissionChannel));
+  setHTML('dv-resultsch', chName(p.resultsChannelId  || p.diffChannel));
+  setHTML('dv-staffrole', roleName(p.staffRoleId     || p.staffRole));
+  setHTML('dv-reqrole',   roleName(p.requiredRoleId  || p.requiredRole));
+  setHTML('dv-pingrole',  roleName(p.pingRoleId      || p.pingRole));
+
+  // Questions list
+  var ql = document.getElementById('dv-qlist');
+  var qb = document.getElementById('dv-qbadge');
+  var qs = p.questions || [];
+  if (qb) qb.textContent = qs.length;
+  if (ql) {
+    if (!qs.length) {
+      ql.innerHTML = '<div class="empty-small">No questions configured.</div>';
+    } else {
+      ql.innerHTML = qs.map(function(q, i) {
+        var isReq = q.required !== false;
+        return '<div class="q-item' + (isReq ? ' mandatory' : '') + '">' +
+          '<div class="q-header">' +
+            '<span class="q-label ' + (isReq ? 'mandatory' : 'optional') + '">' +
+              (isReq ? '🔴 Q' + (i + 1) + ' — Required' : '🟢 Q' + (i + 1) + ' — Optional') +
+            '</span>' +
+          '</div>' +
+          '<div style="font-size:12px;color:#d1d5db;margin-top:4px">' + (q.label || q.text || '') + '</div>' +
+        '</div>';
+      }).join('');
+    }
+  }
+}
+
+function editSelectedPanel() {
+  var sel = document.getElementById('panelSelector');
+  var panelId = sel ? sel.value : '';
+  if (!panelId) return;
+  var panel = panels.find(p => p.panelId === panelId);
+  if (panel) openPanelModal(panel);
+}
+
+function deleteSelectedPanel() {
+  var sel = document.getElementById('panelSelector');
+  var panelId = sel ? sel.value : '';
+  if (!panelId) return;
+  deletePanel(panelId);
+}
+
+/* ── Delete panel ─────────────────────────────────────────────────────────── */
+function deletePanel(id) {
+  if (!confirm('Delete this panel? This cannot be undone.')) return;
+  fetch('/api/guild/' + guildId + '/staffapps/' + id, { method: 'DELETE' })
+    .then(r => r.json())
+    .then(d => {
+      if (d.success !== false && !d.error) {
+        toast('Panel deleted');
+        hidePanelDetail();
+        loadPanels();
+      }
+      else toast(d.error || 'Delete failed', false);
+    })
+    .catch(() => toast('Delete failed', false));
+}
+
+/* ── Post panel button to Discord channel ────────────────────────────────── */
+function postSelectedPanel() {
+  var sel = document.getElementById('panelSelector');
+  var panelId = sel ? sel.value : '';
+  if (!panelId) return;
+  var btn = document.getElementById('postPanelBtn');
+  if (btn) { btn.textContent = 'Posting…'; btn.disabled = true; }
+  fetch('/api/guild/' + guildId + '/staffapps/' + panelId + '/post', { method: 'POST' })
+    .then(r => r.json())
+    .then(d => {
+      if (d.success !== false && !d.error) toast('Panel posted to Discord!');
+      else toast(d.error || 'Failed to post panel', false);
+    })
+    .catch(() => toast('Network error', false))
+    .finally(() => { if (btn) { btn.textContent = 'Post to Discord'; btn.disabled = false; } });
+}
+
+/* ── Combined dropdown modal ─────────────────────────────────────────────── */
+function openDropdownModal() {
+  // Rebuild the channel select and panel checkboxes
+  var ddCh = document.getElementById('dd-channel');
+  if (ddCh) {
+    ddCh.innerHTML = '<option value="">— Select channel —</option>';
+    channels.forEach(function(c) {
+      var o = document.createElement('option'); o.value = c.id; o.textContent = '#' + c.name;
+      ddCh.appendChild(o);
+    });
+  }
+  var list = document.getElementById('dd-panel-list');
+  if (list) {
+    list.innerHTML = '';
+    panels.forEach(function(p) {
+      var row = document.createElement('label');
+      row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;cursor:pointer;';
+      row.innerHTML = '<input type="checkbox" data-pid="' + p.panelId + '" style="accent-color:#FF3333;width:14px;height:14px;flex-shrink:0">' +
+        '<span style="font-size:13px;font-weight:600">' + (p.emoji || '📋') + ' ' + p.name + '</span>';
+      list.appendChild(row);
+    });
+    if (!panels.length) list.innerHTML = '<div class="empty-small">No panels yet.</div>';
+  }
+  document.getElementById('ddLabel').value = '';
+  document.getElementById('dropdownModal').classList.add('open');
+}
+
+function closeDropdownModal() { document.getElementById('dropdownModal').classList.remove('open'); }
+
+function postDropdown() {
+  var channelId = document.getElementById('dd-channel').value;
+  if (!channelId) { toast('Select a channel first', false); return; }
+  var checked = Array.from(document.querySelectorAll('#dd-panel-list input[type="checkbox"]:checked'));
+  var panelIds = checked.map(function(cb) { return cb.dataset.pid; });
+  if (panelIds.length < 2) { toast('Select at least 2 panels to combine', false); return; }
+  var label = document.getElementById('ddLabel').value.trim() || 'Select an application to start';
+  var btn = document.getElementById('ddPostBtn');
+  if (btn) { btn.textContent = 'Posting…'; btn.disabled = true; }
+  fetch('/api/guild/' + guildId + '/staffapps/post-dropdown', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ channelId: channelId, panelIds: panelIds, placeholder: label }),
+  })
+    .then(r => r.json())
+    .then(d => {
+      if (d.success !== false && !d.error) {
+        toast('Dropdown posted to Discord!');
+        closeDropdownModal();
+      } else {
+        toast(d.error || 'Failed to post dropdown', false);
+      }
+    })
+    .catch(() => toast('Network error', false))
+    .finally(() => { if (btn) { btn.textContent = 'Post Dropdown'; btn.disabled = false; } });
+}
+
+/* ── Submissions ─────────────────────────────────────────────────────────── */
+function loadSubmissions() {
+  var panelId = document.getElementById('filterPanel').value;
+  var status  = document.getElementById('filterStatus').value;
+  var url = '/api/guild/' + guildId + '/staffapps/' + (panelId || 'submissions') + (panelId ? '/submissions' : '') + (status ? '?status=' + status : '');
+  fetch(url)
+    .then(r => r.json())
+    .then(data => { allSubs = Array.isArray(data) ? data : (data.submissions || []); renderSubs(allSubs); })
+    .catch(() => {});
+}
+function filterSubsClient() {
+  var q = document.getElementById('filterSearch').value.toLowerCase();
+  renderSubs(q ? allSubs.filter(s => (s.userTag || s.userId || '').toLowerCase().includes(q)) : allSubs);
+}
+function renderSubs(subs) {
+  var tb = document.getElementById('subTableBody');
+  if (!subs.length) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#374151;padding:20px;font-style:italic">No submissions found.</td></tr>'; return; }
+  tb.innerHTML = subs.map(s => {
+    var panelName = (panels.find(p => p.panelId === s.panelId) || {}).name || s.panelId || '—';
+    var sid = (s.submissionId || s._id || '').replace(/"/g, '');
+    return '<tr onclick="viewSub(\'' + sid + '\')" style="cursor:pointer">' +
+      '<td style="font-weight:600;color:#fff">' + (s.userTag || s.userId || '—') + '</td>' +
+      '<td style="color:#9ca3af">' + panelName + '</td>' +
+      '<td><span class="status-pill ' + (s.status || 'pending') + '">' + (s.status || 'pending') + '</span></td>' +
+      '<td style="color:#6b7280;font-size:11px">' + (s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '—') + '</td>' +
+      '<td><button class="btn btn-ghost" style="padding:4px 10px;font-size:11px;min-height:0">View</button></td>' +
+    '</tr>';
+  }).join('');
+}
+function escapeHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function closeSubModal() {
+  var el = document.getElementById('subDetailBackdrop');
+  if (el) el.remove();
+}
+
+function decideFromModal(sid, decision) {
+  var sub = allSubs.find(function(s) { return (s.submissionId || s._id) === sid; });
+  if (!sub) return;
+  var note = prompt(decision === 'accepted' ? 'Accept note (optional):' : 'Deny reason (optional):') || '';
+  fetch('/api/guild/' + guildId + '/staffapps/' + sub.panelId + '/submissions/' + sid + '/decision', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ decision: decision, note: note })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.success) {
+      toast(decision === 'accepted' ? '✅ Application accepted!' : '❌ Application denied.');
+      closeSubModal();
+      loadSubmissions();
+    } else toast(d.error || 'Failed', false);
+  })
+  .catch(function() { toast('Network error', false); });
+}
+
+function viewSub(id) {
+  var sub = allSubs.find(function(s) { return (s.submissionId || s._id) === id; });
+  if (!sub) return;
+  var panel = panels.find(function(p) { return p.panelId === sub.panelId; }) || {};
+
+  var statusColor = { pending: '#facc15', accepted: '#53FF6C', denied: '#f87171' };
+  var color = statusColor[sub.status] || '#facc15';
+
+  var answersHtml = (sub.answers || []).map(function(a) {
+    return '<div style="margin-bottom:14px">' +
+      '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#6b7280;margin-bottom:5px">' +
+        escapeHtml(a.label || a.questionId) +
+      '</div>' +
+      '<div style="font-size:13px;color:#e5e7eb;background:#0d0d1f;padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);white-space:pre-wrap;word-break:break-word">' +
+        escapeHtml(a.answer || '—') +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  var decisionBtns = sub.status === 'pending'
+    ? '<div style="display:flex;gap:10px;margin-top:20px">' +
+        '<button onclick="decideFromModal(\'' + id + '\',\'accepted\')" style="flex:1;padding:10px;background:#53FF6C22;border:1px solid #53FF6C55;color:#53FF6C;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px">✅ Accept</button>' +
+        '<button onclick="decideFromModal(\'' + id + '\',\'denied\')" style="flex:1;padding:10px;background:#f8717122;border:1px solid #f8717155;color:#f87171;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px">❌ Deny</button>' +
+      '</div>'
+    : (sub.reviewedBy
+        ? '<div style="margin-top:16px;padding:10px 14px;background:#0d0d1f;border-radius:8px;border:1px solid rgba(255,255,255,0.06);font-size:11px;color:#6b7280">' +
+            'Reviewed by ' + escapeHtml(sub.reviewedBy) + (sub.reviewNote ? ' — ' + escapeHtml(sub.reviewNote) : '') +
+          '</div>'
+        : '');
+
+  var html =
+    '<div id="subDetailBackdrop" onclick="closeSubModal()" style="position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px">' +
+    '<div onclick="event.stopPropagation()" style="background:#0a0a1a;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:28px 28px 22px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.6)">' +
+
+      // Header
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px">' +
+        '<div>' +
+          '<div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:4px">' + escapeHtml(sub.userTag || sub.userId || '—') + '</div>' +
+          '<div style="font-size:11px;color:#6b7280">' +
+            escapeHtml((panel.emoji || '📋') + ' ' + (panel.name || sub.panelId)) +
+            ' &nbsp;·&nbsp; ' +
+            (sub.createdAt ? new Date(sub.createdAt).toLocaleString() : '—') +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<span style="padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:' + color + '22;color:' + color + ';border:1px solid ' + color + '44">' + (sub.status || 'pending') + '</span>' +
+          '<button onclick="closeSubModal()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#9ca3af;border-radius:8px;cursor:pointer;padding:4px 10px;font-size:16px;line-height:1">&times;</button>' +
+        '</div>' +
+      '</div>' +
+
+      // Answers
+      '<div>' +
+        (answersHtml || '<div style="color:#6b7280;font-style:italic;font-size:13px">No answers recorded.</div>') +
+      '</div>' +
+
+      decisionBtns +
+
+      // Close button
+      '<button onclick="closeSubModal()" style="width:100%;margin-top:14px;padding:9px;background:transparent;border:1px solid rgba(255,255,255,0.08);color:#6b7280;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600">Close</button>' +
+    '</div></div>';
+
+  // Remove any existing modal first
+  closeSubModal();
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+function saveGlobal() { toast('Global settings saved!'); }
+
+/* ── Init ─────────────────────────────────────────────────────────────────── */
+Promise.all([
+  fetch('/api/guild/' + guildId + '/channels').then(r => r.json()).then(d => Array.isArray(d) ? d : (Array.isArray(d && d.channels) ? d.channels : [])).catch(() => []),
+  fetch('/api/guild/' + guildId + '/roles').then(r => r.ok ? r.json() : []).then(d => Array.isArray(d) ? d : (Array.isArray(d && d.roles) ? d.roles : [])).catch(() => []),
+  fetchTierLimit(),
+]).then(([chs, ros]) => {
+  channels = chs; roles = Array.isArray(ros) ? ros : [];
+  ['pPanelCh','pSubmitCh','pDiffCh'].forEach(id => {
+    var s = document.getElementById(id); if (!s) return;
+    chs.forEach(c => { var o = document.createElement('option'); o.value = c.id; o.textContent = '#' + c.name; s.appendChild(o); });
+  });
+  ['pDeniedRole','pStaffRole','pReqRole','pPingRole'].forEach(id => {
+    var s = document.getElementById(id); if (!s) return;
+    roles.filter(r => r.id !== guildId).forEach(r => { var o = document.createElement('option'); o.value = r.id; o.textContent = '@' + r.name; s.appendChild(o); });
+  });
+  loadPanels();
+});
+</script>
+<!-- Razor Custom Select -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet(),openWrap=null;
+function cleanText(t){var d=document.createElement('div');d.innerHTML=String(t||'');return(d.textContent||d.innerText||'').trim()}
+function optText(o){return cleanText(o.text||o.textContent||o.label||'')}
+function positionPanel(w){var r=w._t.getBoundingClientRect(),p=w._p,pH=p.offsetHeight||240,sw=window.innerHeight-r.bottom,sa=r.top,wd=Math.max(r.width,160);p.style.width=wd+'px';p.style.left=r.left+'px';p.style.right='auto';if(sw>=pH||sw>=sa){p.style.top=(r.bottom+4)+'px';p.style.bottom='auto'}else{p.style.bottom=(window.innerHeight-r.top+4)+'px';p.style.top='auto'}}
+document.addEventListener('mousedown',function(e){if(!openWrap)return;if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap)},true);
+window.addEventListener('scroll',function(){if(openWrap)positionPanel(openWrap)},true);
+window.addEventListener('resize',function(){if(openWrap)positionPanel(openWrap)});
+function open_(w){if(openWrap&&openWrap!==w)close_(openWrap);openWrap=w;buildList(w,'');w._si.value='';document.body.appendChild(w._p);w._p.style.display='block';w._t.classList.add('is-open');w._t.setAttribute('aria-expanded','true');requestAnimationFrame(function(){positionPanel(w)});setTimeout(function(){if(openWrap===w)w._si.focus()},30)}
+function close_(w){if(!w)return;if(w._p.parentNode)w._p.parentNode.removeChild(w._p);w._p.style.display='none';w._t.classList.remove('is-open');w._t.setAttribute('aria-expanded','false');if(openWrap===w)openWrap=null}
+function buildList(w,q){var sel=w._s,list=w._l,qlo=(q||'').toLowerCase();var opts=Array.from(sel.options).filter(function(o){var t=optText(o);return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1)});if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return}list.innerHTML='';opts.forEach(function(opt){var it=document.createElement('div');it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');it.dataset.v=opt.value;var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';it.appendChild(tx);it.appendChild(ck);it.addEventListener('mousedown',function(e){e.preventDefault();e.stopPropagation();sel.value=opt.value;updateLabel(w);close_(w);sel.dispatchEvent(new Event('change',{bubbles:true}))});list.appendChild(it)})}
+function updateLabel(w){var sel=w._s,lbl=w._lb,idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null,text=opt?optText(opt):'';if(text){lbl.textContent=text;lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''))}else{lbl.textContent='Select\u2026';lbl.classList.add('is-ph')}w._last=sel.value}
+function wrapSelect(sel){if(wrapped.has(sel))return;if(sel.hasAttribute('data-rzr-skip'))return;if(sel.size&&sel.size>1)return;wrapped.add(sel);if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';var t=document.createElement('div');t.className='rzr-trigger';t.setAttribute('tabindex','0');t.setAttribute('role','combobox');t.setAttribute('aria-haspopup','listbox');t.setAttribute('aria-expanded','false');var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;t.appendChild(lb);t.appendChild(cv);var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';var sw=document.createElement('div');sw.className='rzr-panel-search';var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;sw.appendChild(si);var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');p.appendChild(sw);p.appendChild(l);var w=document.createElement('div');w.className='rzr-wrap';w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;w.appendChild(t);w.appendChild(p);sel.parentNode.insertBefore(w,sel);w.appendChild(sel);si.addEventListener('input',function(){buildList(w,si.value)});si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus()}});t.addEventListener('click',function(e){e.stopPropagation();openWrap===w?close_(w):open_(w)});t.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w)}if(e.key==='Escape')close_(w)});var mo=new MutationObserver(function(){updateLabel(w);if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w)})}});mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});var pid=setInterval(function(){if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return}if(sel.value!==w._last)updateLabel(w)},150);updateLabel(w)}
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect)}
+new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType!==1)return;if(n.tagName==='SELECT')wrapSelect(n);else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect)})})}).observe(document.body,{childList:true,subtree:true});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);else initAll();
+})();
+</script>
+
+</body>
+</html>

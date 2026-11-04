@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Role System</title>
+  
+  <link rel="icon" type="image/png" href="/logo.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <script>
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+    const tailwind = window.tailwind || {}; tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { 
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'] 
+          },
+colors: { 
+    razor: "#FF3333",       // main green highlight
+    razorDark: "#CC2222"    // darker green accent
+}
+
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #6C53FF; }
+
+    /* Role Pill Hover Effect */
+    .role-pill .delete-btn { width: 0; opacity: 0; transition: all 0.2s ease; overflow: hidden; }
+    .role-pill:hover .delete-btn { width: 24px; opacity: 1; margin-left: 8px; }
+  </style>
+
+<style>
+/* ═══════════════ Razor Custom Select ═══════════════ */
+.rzr-wrap{position:relative;width:100%;display:block}
+/* hide ::after chevrons on select-wrap parents */
+.rzr-wrap-parent.select-wrap::after,
+.rzr-wrap-parent::after{display:none!important;content:none!important}
+.rzr-trigger{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:10px 14px;
+  border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);
+  background:#0d0d1c;color:#fff;
+  cursor:pointer;font-size:14px;font-family:inherit;
+  min-height:44px;width:100%;
+  transition:border-color .15s,box-shadow .15s;
+  user-select:none;box-sizing:border-box;
+}
+.rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
+.rzr-trigger.is-open{
+  border-color:rgba(255,51,51,.6);
+  box-shadow:0 0 0 3px rgba(255,51,51,.1);
+}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
+.rzr-label.is-ph{color:#6b7280}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+/* panel is appended to body — these rules still apply via the class */
+.rzr-panel{
+  position:fixed;z-index:999999;
+  background:rgba(11,11,20,.98);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  overflow:hidden;
+  animation:rzrIn .16s ease;
+}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
+.rzr-search-inp{
+  display:block;width:100%;
+  background:#06060f;border:1px solid rgba(255,255,255,.09);
+  border-radius:7px;padding:6px 11px;
+  color:#fff;font-size:13px;font-family:inherit;
+  outline:none;box-sizing:border-box;transition:border-color .15s;
+}
+.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-search-inp::placeholder{color:#374151}
+.rzr-list{max-height:220px;overflow-y:auto;padding:5px}
+.rzr-list::-webkit-scrollbar{width:4px}
+.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:6px}
+.rzr-list::-webkit-scrollbar-thumb:hover{background:#FF3333}
+.rzr-item{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:6px;padding:8px 11px;border-radius:8px;
+  cursor:pointer;font-size:13px;color:#9ca3af;
+  transition:background .1s,color .1s;
+}
+.rzr-item:hover{background:rgba(255,255,255,.055);color:#fff}
+.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600}
+.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item.is-sel .rzr-item-chk{opacity:1}
+.rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
+/* ═══════════════ End Razor Custom Select ═══════════════ */
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body class="bg-[#0b0b14] text-white">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<div id="toast" class="fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-x-[400px] transition-transform duration-300 z-50">
+  <span id="toastMessage"></span>
+</div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+
+  <main class="flex-1 p-8">
+    
+    <div class="mb-8 flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight mb-1 flex items-center gap-3">
+          <svg class="w-8 h-8 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          Auto Roles
+        </h1>
+        <p class="text-gray-400 text-sm ml-11">Automatically assign roles to new members upon joining.</p>
+      </div>
+      
+      <div id="statusBadge" class="flex items-center gap-2 px-3 py-1 bg-gray-500/10 border border-gray-500/20 rounded-full transition-colors">
+        <div id="statusDot" class="w-2 h-2 bg-gray-500 rounded-full"></div>
+        <span id="statusText" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Inactive</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <div class="lg:col-span-5 space-y-6">
+        <div class="bg-[#1a1a2e] rounded-2xl p-6 border border-white/5 shadow-xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 p-6 opacity-5">
+            <svg class="w-32 h-32 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+          </div>
+
+          <h2 class="text-lg font-bold text-white mb-6 relative z-10">Assign New Role</h2>
+          
+          <div class="space-y-4 relative z-10">
+            <div>
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Select Role</label>
+                <div class="relative">
+                    <select id="roleSelect" class="w-full appearance-none bg-[#14142b] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-razor transition-colors text-white font-medium">
+                        <option>Loading roles...</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Bot role must be higher than the selected role.
+                </p>
+            </div>
+
+            <button onclick="addRole()" class="w-full group relative flex items-center justify-center gap-2 bg-razor hover:bg-razor/90 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-razor/20 active:scale-95">
+                <svg class="w-5 h-5 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Add Auto Role
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-[#1a1a2e] rounded-2xl border border-white/5 overflow-hidden">
+            <div class="p-4 border-b border-white/5 bg-red-500/5">
+                <h3 class="text-sm font-bold text-red-400 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    Danger Zone
+                </h3>
+            </div>
+            <div class="p-5">
+                <p class="text-xs text-gray-400 mb-4">Disabling the system will remove all configured auto roles instantly.</p>
+                <button onclick="disableSystem()" class="w-full py-2 bg-transparent hover:bg-red-500/10 text-red-400 border border-red-500/30 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2">
+                    Disable System
+                </button>
+            </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7">
+        <div class="bg-[#1a1a2e] rounded-2xl border border-white/5 h-full flex flex-col min-h-[400px]">
+            <div class="p-6 border-b border-white/5 flex items-center justify-between">
+                <h2 class="text-lg font-bold text-white">Active Roles</h2>
+                <span id="roleCount" class="text-xs font-mono bg-white/5 px-2 py-1 rounded text-gray-400">0 Roles</span>
+            </div>
+            
+            <div id="roleListContainer" class="p-6 flex-1">
+                </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="/sidebar.js"></script>
+
+<script>
+const guildId = location.pathname.split("/")[2];
+let guildRoles = [];
+
+/* TOAST */
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  const msg = document.getElementById('toastMessage');
+  msg.innerText = message;
+  toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 z-50 text-white ${type === 'error' ? 'bg-red-600' : 'bg-red-600'}`;
+  toast.style.transform = 'translateX(0)';
+  setTimeout(() => toast.style.transform = 'translateX(400px)', 3000);
+}
+
+/* UPDATE STATUS */
+function updateStatus(isActive) {
+    const badge = document.getElementById('statusBadge');
+    const dot = document.getElementById('statusDot');
+    const text = document.getElementById('statusText');
+
+    if (isActive) {
+        badge.className = "flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full transition-colors";
+        dot.className = "w-2 h-2 bg-red-500 rounded-full animate-pulse";
+        text.className = "text-xs font-bold text-red-500 uppercase tracking-wider";
+        text.innerText = "Active";
+    } else {
+        badge.className = "flex items-center gap-2 px-3 py-1 bg-gray-500/10 border border-gray-500/20 rounded-full transition-colors";
+        dot.className = "w-2 h-2 bg-gray-500 rounded-full";
+        text.className = "text-xs font-bold text-gray-500 uppercase tracking-wider";
+        text.innerText = "Inactive";
+    }
+}
+
+/* FETCH DATA */
+async function init() {
+  // 1. Fetch Guild Roles
+  try {
+    const rolesRes = await fetch(`/api/guild/${guildId}/roles`);
+    guildRoles = await rolesRes.json();
+    
+    const select = document.getElementById('roleSelect');
+    select.innerHTML = `<option value="">Select a role...</option>` + guildRoles
+      .filter(r => r.name !== '@everyone' && !r.managed)
+      .map(r => `<option value="${escapeHtml(r.id)}" class="text-white">${escapeHtml(r.name)}</option>`)
+      .join('');
+  } catch (e) { console.error("Error fetching roles", e); }
+
+  // 2. Fetch Config
+  loadConfig();
+}
+
+async function loadConfig() {
+  try {
+    const res = await fetch(`/api/guild/${guildId}/autorole`);
+    const data = await res.json();
+    const roles = data.Roles || [];
+    renderActiveRoles(roles);
+    updateStatus(roles.length > 0);
+  } catch (e) { console.error("Error loading config", e); }
+}
+
+function renderActiveRoles(activeIds) {
+  const container = document.getElementById('roleListContainer');
+  document.getElementById('roleCount').innerText = `${activeIds.length} Roles`;
+
+  if (!activeIds.length) {
+    container.innerHTML = `
+        <div class="flex flex-col items-center justify-center h-full text-gray-500 opacity-60">
+            <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <p class="text-sm font-medium">No auto roles configured</p>
+        </div>`;
+    return;
+  }
+
+  // Flex wrap layout
+  let html = `<div class="flex flex-wrap gap-3 content-start">`;
+  
+  html += activeIds.map(id => {
+    const role = guildRoles.find(r => r.id === id) || { name: 'Unknown Role', color: 0 };
+    const colorHex = role.color ? '#' + role.color.toString(16).padStart(6, '0') : '#99aab5';
+    
+    // Tiny background tint based on role color
+    const bgStyle = role.color ? `background-color: ${colorHex}15; border-color: ${colorHex}30;` : 'background-color: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);';
+
+    return `
+      <div class="role-pill flex items-center h-10 pl-3 pr-3 rounded-full border transition-all cursor-default" style="${bgStyle}">
+        <div class="w-3 h-3 rounded-full mr-2 shadow-sm" style="background-color: ${colorHex}"></div>
+        <span class="text-sm font-bold text-gray-200">${escapeHtml(role.name)}</span>
+        <button onclick="removeRole('${id}')" class="delete-btn flex items-center justify-center h-5 w-5 bg-red-500 rounded-full text-white hover:bg-red-600 shadow-md">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    `;
+  }).join('');
+  
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+/* ACTIONS */
+async function addRole() {
+  const roleId = document.getElementById('roleSelect').value;
+  if (!roleId) return showToast('Please select a role first', 'error');
+
+  try {
+    const res = await fetch(`/api/guild/${guildId}/autorole`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roleId })
+    });
+    
+    if (res.ok) {
+      showToast('Role added successfully');
+      loadConfig();
+    } else {
+        const d = await res.json();
+        showToast(d.error || 'Failed to add role', 'error');
+    }
+  } catch (e) { showToast('Connection error', 'error'); }
+}
+
+async function removeRole(roleId) {
+  // Direct remove for smoother UX, maybe verify via modal if strict
+  if (!confirm('Remove this auto role?')) return;
+  
+  try {
+    const res = await fetch(`/api/guild/${guildId}/autorole/${roleId}`, { method: 'DELETE' });
+    if (res.ok) {
+      showToast('Role removed');
+      loadConfig();
+    }
+  } catch (e) { showToast('Connection error', 'error'); }
+}
+
+async function disableSystem() {
+  if (!confirm('Are you sure you want to disable the entire Auto Role system?')) return;
+  try {
+    const res = await fetch(`/api/guild/${guildId}/autorole`, { method: 'DELETE' });
+    if (res.ok) {
+      showToast('System disabled');
+      loadConfig();
+    }
+  } catch (e) { showToast('Error disabling system', 'error'); }
+}
+
+init();
+</script>
+<!-- Razor Custom Select JS -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet();
+var openWrap=null;
+
+/* strip any html tags from option text just in case */
+function cleanText(t){
+  t=String(t||'');
+  var d=document.createElement('div');
+  d.innerHTML=t;
+  return (d.textContent||d.innerText||'').trim();
+}
+
+/* get clean option text */
+function optText(opt){
+  return cleanText(opt.text||opt.textContent||opt.label||'');
+}
+
+/* position panel relative to trigger using fixed coords */
+function positionPanel(wrap){
+  var r=wrap._t.getBoundingClientRect();
+  var p=wrap._p;
+  var panelH=p.offsetHeight||240;
+  var spaceBelow=window.innerHeight-r.bottom;
+  var spaceAbove=r.top;
+  var width=Math.max(r.width,160);
+  p.style.width=width+'px';
+  p.style.left=r.left+'px';
+  p.style.right='auto';
+  if(spaceBelow>=panelH||spaceBelow>=spaceAbove){
+    p.style.top=(r.bottom+4)+'px';
+    p.style.bottom='auto';
+  } else {
+    p.style.bottom=(window.innerHeight-r.top+4)+'px';
+    p.style.top='auto';
+  }
+}
+
+/* close on outside click */
+document.addEventListener('mousedown',function(e){
+  if(!openWrap)return;
+  if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);
+},true);
+
+/* close on scroll anywhere (reposition) */
+window.addEventListener('scroll',function(){
+  if(openWrap)positionPanel(openWrap);
+},true);
+window.addEventListener('resize',function(){
+  if(openWrap)positionPanel(openWrap);
+});
+
+function open_(wrap){
+  if(openWrap&&openWrap!==wrap)close_(openWrap);
+  openWrap=wrap;
+  buildList(wrap,'');
+  wrap._si.value='';
+  /* always show search */
+  wrap._sw.style.display='';
+  document.body.appendChild(wrap._p);
+  wrap._p.style.display='block';
+  wrap._t.classList.add('is-open');
+  wrap._t.setAttribute('aria-expanded','true');
+  /* position after display:block so offsetHeight is known */
+  requestAnimationFrame(function(){positionPanel(wrap);});
+  setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);
+}
+
+function close_(wrap){
+  if(!wrap)return;
+  if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);
+  wrap._p.style.display='none';
+  wrap._t.classList.remove('is-open');
+  wrap._t.setAttribute('aria-expanded','false');
+  if(openWrap===wrap)openWrap=null;
+}
+
+function buildList(wrap,q){
+  var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();
+  var opts=Array.from(sel.options).filter(function(o){
+    var t=optText(o);
+    return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);
+  });
+  if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}
+  list.innerHTML='';
+  opts.forEach(function(opt){
+    var it=document.createElement('div');
+    it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');
+    it.dataset.v=opt.value;
+    var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);
+    var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';
+    it.appendChild(tx);it.appendChild(ck);
+    it.addEventListener('mousedown',function(e){
+      e.preventDefault();e.stopPropagation();
+      sel.value=opt.value;
+      updateLabel(wrap);
+      close_(wrap);
+      sel.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    list.appendChild(it);
+  });
+}
+
+function updateLabel(wrap){
+  var sel=wrap._s,lbl=wrap._lb;
+  var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;
+  var text=opt?optText(opt):'';
+  if(text){
+    lbl.textContent=text;
+    /* treat index-0 empty-value options as placeholders */
+    lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));
+  } else {
+    lbl.textContent='Select\u2026';
+    lbl.classList.add('is-ph');
+  }
+  wrap._last=sel.value;
+}
+
+function wrapSelect(sel){
+  if(wrapped.has(sel))return;
+  if(sel.hasAttribute('data-rzr-skip'))return;
+  if(sel.size&&sel.size>1)return;
+  wrapped.add(sel);
+
+  /* mark parent to suppress ::after chevrons */
+  if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');
+
+  /* hide native */
+  sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';
+
+  /* hide sibling fake-chevron divs */
+  var sib=sel.nextElementSibling;
+  if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';
+
+  /* trigger */
+  var t=document.createElement('div');
+  t.className='rzr-trigger';
+  t.setAttribute('tabindex','0');
+  t.setAttribute('role','combobox');
+  t.setAttribute('aria-haspopup','listbox');
+  t.setAttribute('aria-expanded','false');
+  var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';
+  var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;
+  t.appendChild(lb);t.appendChild(cv);
+
+  /* panel — will be moved to body on open */
+  var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';
+  var sw=document.createElement('div');sw.className='rzr-panel-search';
+  var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;
+  sw.appendChild(si);
+  var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');
+  p.appendChild(sw);p.appendChild(l);
+
+  /* outer wrap */
+  var w=document.createElement('div');w.className='rzr-wrap';
+  w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;
+
+  w.appendChild(t);
+  /* panel stays in wrap until open — moved to body on open() */
+  w.appendChild(p);
+  sel.parentNode.insertBefore(w,sel);
+  w.appendChild(sel);
+
+  /* search */
+  si.addEventListener('input',function(){buildList(w,si.value);});
+  si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});
+
+  /* trigger events */
+  t.addEventListener('click',function(e){
+    e.stopPropagation();
+    openWrap===w?close_(w):open_(w);
+  });
+  t.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}
+    if(e.key==='Escape')close_(w);
+  });
+
+  /* watch option changes (async population: channels, roles) */
+  var mo=new MutationObserver(function(){
+    updateLabel(w);
+    if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}
+  });
+  mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});
+
+  /* poll for programmatic .value changes */
+  var pid=setInterval(function(){
+    if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}
+    if(sel.value!==w._last)updateLabel(w);
+  },150);
+
+  updateLabel(w);
+}
+
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+
+new MutationObserver(function(ms){
+  ms.forEach(function(m){
+    m.addedNodes.forEach(function(n){
+      if(n.nodeType!==1)return;
+      if(n.tagName==='SELECT')wrapSelect(n);
+      else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);
+    });
+  });
+}).observe(document.body,{childList:true,subtree:true});
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);
+else initAll();
+})();
+</script>
+<!-- End Razor Custom Select JS -->
+
+
+</body>
+</html>

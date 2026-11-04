@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Halloween Countdown</title>
+
+<link rel="icon" href="/logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/tailwind.css">
+<script>
+window.tailwind = window.tailwind || {};
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace']
+      },
+      colors: {
+        colors: { 
+    razor: "#FF3333",       // main green highlight
+    razorDark: "#CC2222",   // darker green for accents/shadows
+    success: "#10B981",     // keep the same green for success
+    warning: "#F59E0B",     // keep amber/orange for warning
+    surface: "#2e1a1a"      // dark green background instead of purple/blue
+}
+
+      }
+    }
+  }
+}
+</script>
+
+<style>
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0b0b14; }
+::-webkit-scrollbar-thumb { background: #2d2d3d; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #F97316; }
+
+.toggle-checkbox:checked { transform: translateX(100%); }
+.toggle-checkbox:checked + .toggle-label {
+  background-color: #F97316;
+  box-shadow: 0 0 15px rgba(249,115,22,.4);
+}
+.toggle-label {
+  width: 44px;
+  height: 24px;
+  border-radius: 9999px;
+  background-color: #2b2b40;
+  border: 1px solid rgba(255,255,255,.1);
+}
+.toggle-checkbox {
+  left: 2px;
+  top: 2px;
+  transition: transform .25s ease;
+}
+
+#toast {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  transform: translateX(400px);
+  transition: transform 0.3s ease;
+  z-index: 50;
+  color: white;
+}
+</style>
+
+<style>
+/* ═══════════════ Razor Custom Select ═══════════════ */
+.rzr-wrap{position:relative;width:100%;display:block}
+/* hide ::after chevrons on select-wrap parents */
+.rzr-wrap-parent.select-wrap::after,
+.rzr-wrap-parent::after{display:none!important;content:none!important}
+.rzr-trigger{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:10px 14px;
+  border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);
+  background:#0d0d1c;color:#fff;
+  cursor:pointer;font-size:14px;font-family:inherit;
+  min-height:44px;width:100%;
+  transition:border-color .15s,box-shadow .15s;
+  user-select:none;box-sizing:border-box;
+}
+.rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
+.rzr-trigger.is-open{
+  border-color:rgba(255,51,51,.6);
+  box-shadow:0 0 0 3px rgba(255,51,51,.1);
+}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
+.rzr-label.is-ph{color:#6b7280}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+/* panel is appended to body — these rules still apply via the class */
+.rzr-panel{
+  position:fixed;z-index:999999;
+  background:rgba(11,11,20,.98);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  overflow:hidden;
+  animation:rzrIn .16s ease;
+}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
+.rzr-search-inp{
+  display:block;width:100%;
+  background:#06060f;border:1px solid rgba(255,255,255,.09);
+  border-radius:7px;padding:6px 11px;
+  color:#fff;font-size:13px;font-family:inherit;
+  outline:none;box-sizing:border-box;transition:border-color .15s;
+}
+.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-search-inp::placeholder{color:#374151}
+.rzr-list{max-height:220px;overflow-y:auto;padding:5px}
+.rzr-list::-webkit-scrollbar{width:4px}
+.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:6px}
+.rzr-list::-webkit-scrollbar-thumb:hover{background:#FF3333}
+.rzr-item{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:6px;padding:8px 11px;border-radius:8px;
+  cursor:pointer;font-size:13px;color:#9ca3af;
+  transition:background .1s,color .1s;
+}
+.rzr-item:hover{background:rgba(255,255,255,.055);color:#fff}
+.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600}
+.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item.is-sel .rzr-item-chk{opacity:1}
+.rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
+/* ═══════════════ End Razor Custom Select ═══════════════ */
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body class="bg-[#0b0b14] text-white font-sans">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<div id="toast"><span id="toastMessage"></span></div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+
+  <!-- CENTERED CONTENT -->
+  <main class="flex-1 flex justify-center">
+    <div class="w-full max-w-2xl px-8 py-16">
+
+      <!-- HEADER -->
+      <div class="mb-8 flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M310 10.6C310 4.8 305.3 0 299.5 0c-3.8 0-7.1 2-9 5.2c-2.8 4.7-6.1 9.2-9.6 13.5l0 0C271.7 30.4 256 50.7 256 72c0 30.9-25.1 56-56 56H176c-35.3 0-64 28.7-64 64v32h288V192c0-35.3-28.7-64-64-64H312c-30.9 0-56-25.1-56-56c0-21.3-15.7-41.6-24.9-53.3C217.9 4.8 212.5 0 206.5 0C200.7 0 196 4.8 196 10.6V56c0 13.3-10.7 24-24 24s-24-10.7-24-24V16c0-8.8-7.2-16-16-16s-16 7.2-16 16V56c0 13.3-10.7 24-24 24s-24-10.7-24-24V16c0-8.8-7.2-16-16-16S48 7.2 48 16v32c0 53 43 96 96 96h16v32c-88.4 0-160 71.6-160 160v16c0 44.2 35.8 80 80 80h320c44.2 0 80-35.8 80-80V336C480 247.6 408.4 176 320 176V144h16c53 0 96-43 96-96V16c0-8.8-7.2-16-16-16s-16 7.2-16 16v32c0 13.3-10.7 24-24 24s-24-10.7-24-24V16c0-8.8-7.2-16-16-16s-16 7.2-16 16v40c0 13.3-10.7 24-24 24s-24-10.7-24-24V10.6z"/></svg> Halloween Countdown
+          </h1>
+          <p class="text-gray-400 text-sm mt-1">
+            Automatically send daily countdown messages until Halloween.
+          </p>
+        </div>
+
+        <div id="statusBadge" class="flex items-center gap-2 px-3 py-1 rounded-full border">
+          <div class="w-2 h-2 rounded-full"></div>
+          <span class="text-xs font-bold uppercase tracking-wider"></span>
+        </div>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-[#1a1a2e] rounded-2xl p-6 border border-white/5">
+
+        <!-- ENABLE -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="font-bold text-lg">Enable Countdown</h3>
+            <p class="text-sm text-gray-400">Sends a message every day until Oct 31</p>
+          </div>
+
+          <div class="relative inline-block w-[44px]">
+            <input id="enabled" type="checkbox"
+              onchange="saveConfig()"
+              class="toggle-checkbox absolute w-5 h-5 bg-white rounded-full appearance-none cursor-pointer" />
+            <label class="toggle-label block cursor-pointer"></label>
+          </div>
+        </div>
+
+        <!-- CHANNEL -->
+<div class="mb-4">
+  <label class="text-xs uppercase text-gray-500 font-bold mb-2 block">
+    Channel
+  </label>
+
+  <select id="channel"
+    class="w-full bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-razor">
+    <option value="">Select a channel</option>
+  </select>
+</div>
+
+        <!-- ROLE -->
+<div class="mb-6">
+  <label class="text-xs uppercase text-gray-500 font-bold mb-2 block">
+    Ping Role (optional)
+  </label>
+
+  <select id="pingRole"
+    class="w-full bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-razor">
+    <option value="">No role</option>
+  </select>
+</div>
+
+        <!-- ACTIONS -->
+        <div class="flex gap-3">
+          <button onclick="saveConfig()"
+            class="bg-razor hover:bg-razor/90 px-6 py-2 rounded-xl font-bold shadow-lg shadow-razor/20 transition-all">
+            Save Settings
+          </button>
+
+          <button onclick="resetConfig()"
+            class="bg-red-500/10 hover:bg-red-500/20 text-red-400 px-6 py-2 rounded-xl font-bold transition-colors">
+            Reset
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/sidebar.js"></script>
+<script>
+const guildId = location.pathname.split("/")[2];
+
+function toast(msg, error = false) {
+  const t = document.getElementById("toast");
+  document.getElementById("toastMessage").innerText = msg;
+  t.style.background = error ? "#e74c3c" : "#F97316";
+  t.style.transform = "translateX(0)";
+  setTimeout(() => t.style.transform = "translateX(400px)", 3000);
+}
+
+async function loadConfig() {
+  await Promise.all([
+    loadChannels(),
+    loadRoles()
+  ]);
+
+  const res = await fetch(`/api/guild/${guildId}/halloween`);
+  const data = await res.json();
+
+  enabled.checked = data.Enabled;
+  channel.value = data.Channel || "";
+  pingRole.value = data.PingRole || "";
+
+  const badge = document.getElementById("statusBadge");
+  badge.className = `flex items-center gap-2 px-3 py-1 rounded-full border ${
+    data.Enabled
+      ? 'border-red-500/30 bg-red-500/10'
+      : 'border-gray-500/30 bg-gray-500/10'
+  }`;
+
+  badge.children[0].className = `w-2 h-2 rounded-full ${
+    data.Enabled ? 'bg-red-500 animate-pulse' : 'bg-gray-500'
+  }`;
+
+  badge.children[1].innerText = data.Enabled ? "ACTIVE" : "DISABLED";
+}
+
+
+
+async function saveConfig() {
+  await fetch(`/api/guild/${guildId}/halloween`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      Enabled: enabled.checked,
+      Channel: channel.value,
+      PingRole: pingRole.value
+    })
+  });
+
+  toast("Halloween settings saved");
+  loadConfig();
+}
+
+async function resetConfig() {
+  if (!confirm("Reset Halloween countdown settings?")) return;
+  await fetch(`/api/guild/${guildId}/halloween`, { method: "DELETE" });
+  toast("Settings reset");
+  loadConfig();
+}
+
+async function loadChannels() {
+  const res = await fetch(`/api/guild/${guildId}/channels`);
+  const data = await res.json();
+  rzrPopulateChannels(channel, data, null, 'Select a channel');
+}
+
+async function loadRoles() {
+  const res = await fetch(`/api/guild/${guildId}/roles`);
+  const roles = await res.json();
+
+  pingRole.innerHTML = `<option value="">No role</option>`;
+
+  for (const r of roles) {
+    // Skip @everyone
+    if (r.id === guildId) continue;
+
+    const opt = document.createElement("option");
+    opt.value = r.id;
+    opt.textContent = `@${r.name}`;
+
+    // Disable managed roles (bots / integrations)
+    if (r.managed) opt.disabled = true;
+
+    pingRole.appendChild(opt);
+  }
+}
+
+
+
+loadConfig();
+</script>
+<!-- Razor Custom Select JS -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet();
+var openWrap=null;
+
+/* strip any html tags from option text just in case */
+function cleanText(t){
+  t=String(t||'');
+  var d=document.createElement('div');
+  d.innerHTML=t;
+  return (d.textContent||d.innerText||'').trim();
+}
+
+/* get clean option text */
+function optText(opt){
+  return cleanText(opt.text||opt.textContent||opt.label||'');
+}
+
+/* position panel relative to trigger using fixed coords */
+function positionPanel(wrap){
+  var r=wrap._t.getBoundingClientRect();
+  var p=wrap._p;
+  var panelH=p.offsetHeight||240;
+  var spaceBelow=window.innerHeight-r.bottom;
+  var spaceAbove=r.top;
+  var width=Math.max(r.width,160);
+  p.style.width=width+'px';
+  p.style.left=r.left+'px';
+  p.style.right='auto';
+  if(spaceBelow>=panelH||spaceBelow>=spaceAbove){
+    p.style.top=(r.bottom+4)+'px';
+    p.style.bottom='auto';
+  } else {
+    p.style.bottom=(window.innerHeight-r.top+4)+'px';
+    p.style.top='auto';
+  }
+}
+
+/* close on outside click */
+document.addEventListener('mousedown',function(e){
+  if(!openWrap)return;
+  if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);
+},true);
+
+/* close on scroll anywhere (reposition) */
+window.addEventListener('scroll',function(){
+  if(openWrap)positionPanel(openWrap);
+},true);
+window.addEventListener('resize',function(){
+  if(openWrap)positionPanel(openWrap);
+});
+
+function open_(wrap){
+  if(openWrap&&openWrap!==wrap)close_(openWrap);
+  openWrap=wrap;
+  buildList(wrap,'');
+  wrap._si.value='';
+  /* always show search */
+  wrap._sw.style.display='';
+  document.body.appendChild(wrap._p);
+  wrap._p.style.display='block';
+  wrap._t.classList.add('is-open');
+  wrap._t.setAttribute('aria-expanded','true');
+  /* position after display:block so offsetHeight is known */
+  requestAnimationFrame(function(){positionPanel(wrap);});
+  setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);
+}
+
+function close_(wrap){
+  if(!wrap)return;
+  if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);
+  wrap._p.style.display='none';
+  wrap._t.classList.remove('is-open');
+  wrap._t.setAttribute('aria-expanded','false');
+  if(openWrap===wrap)openWrap=null;
+}
+
+function buildList(wrap,q){
+  var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();
+  var opts=Array.from(sel.options).filter(function(o){
+    var t=optText(o);
+    return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);
+  });
+  if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}
+  list.innerHTML='';
+  opts.forEach(function(opt){
+    var it=document.createElement('div');
+    it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');
+    it.dataset.v=opt.value;
+    var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);
+    var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';
+    it.appendChild(tx);it.appendChild(ck);
+    it.addEventListener('mousedown',function(e){
+      e.preventDefault();e.stopPropagation();
+      sel.value=opt.value;
+      updateLabel(wrap);
+      close_(wrap);
+      sel.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    list.appendChild(it);
+  });
+}
+
+function updateLabel(wrap){
+  var sel=wrap._s,lbl=wrap._lb;
+  var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;
+  var text=opt?optText(opt):'';
+  if(text){
+    lbl.textContent=text;
+    /* treat index-0 empty-value options as placeholders */
+    lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));
+  } else {
+    lbl.textContent='Select\u2026';
+    lbl.classList.add('is-ph');
+  }
+  wrap._last=sel.value;
+}
+
+function wrapSelect(sel){
+  if(wrapped.has(sel))return;
+  if(sel.hasAttribute('data-rzr-skip'))return;
+  if(sel.size&&sel.size>1)return;
+  wrapped.add(sel);
+
+  /* mark parent to suppress ::after chevrons */
+  if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');
+
+  /* hide native */
+  sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';
+
+  /* hide sibling fake-chevron divs */
+  var sib=sel.nextElementSibling;
+  if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';
+
+  /* trigger */
+  var t=document.createElement('div');
+  t.className='rzr-trigger';
+  t.setAttribute('tabindex','0');
+  t.setAttribute('role','combobox');
+  t.setAttribute('aria-haspopup','listbox');
+  t.setAttribute('aria-expanded','false');
+  var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';
+  var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;
+  t.appendChild(lb);t.appendChild(cv);
+
+  /* panel — will be moved to body on open */
+  var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';
+  var sw=document.createElement('div');sw.className='rzr-panel-search';
+  var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;
+  sw.appendChild(si);
+  var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');
+  p.appendChild(sw);p.appendChild(l);
+
+  /* outer wrap */
+  var w=document.createElement('div');w.className='rzr-wrap';
+  w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;
+
+  w.appendChild(t);
+  /* panel stays in wrap until open — moved to body on open() */
+  w.appendChild(p);
+  sel.parentNode.insertBefore(w,sel);
+  w.appendChild(sel);
+
+  /* search */
+  si.addEventListener('input',function(){buildList(w,si.value);});
+  si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});
+
+  /* trigger events */
+  t.addEventListener('click',function(e){
+    e.stopPropagation();
+    openWrap===w?close_(w):open_(w);
+  });
+  t.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}
+    if(e.key==='Escape')close_(w);
+  });
+
+  /* watch option changes (async population: channels, roles) */
+  var mo=new MutationObserver(function(){
+    updateLabel(w);
+    if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}
+  });
+  mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});
+
+  /* poll for programmatic .value changes */
+  var pid=setInterval(function(){
+    if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}
+    if(sel.value!==w._last)updateLabel(w);
+  },150);
+
+  updateLabel(w);
+}
+
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+
+new MutationObserver(function(ms){
+  ms.forEach(function(m){
+    m.addedNodes.forEach(function(n){
+      if(n.nodeType!==1)return;
+      if(n.tagName==='SELECT')wrapSelect(n);
+      else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);
+    });
+  });
+}).observe(document.body,{childList:true,subtree:true});
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);
+else initAll();
+})();
+</script>
+<!-- End Razor Custom Select JS -->
+
+
+</body>
+</html>

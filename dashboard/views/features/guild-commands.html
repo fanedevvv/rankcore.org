@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Command Manager</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <script>const tailwind=window.tailwind||{};tailwind.config={theme:{extend:{fontFamily:{sans:['\"Plus Jakarta Sans\"','sans-serif']},colors:{razor:"#FF3333"}}}}</script>
+  <style>
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#2d2d3d;border-radius:4px}::-webkit-scrollbar-thumb:hover{background:#FF3333}
+
+    .card{background:#161625;border-radius:16px;border:1px solid rgba(255,255,255,0.06);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
+
+    /* Toggle */
+    .toggle-wrap{position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0}
+    .toggle-wrap input{opacity:0;width:0;height:0;position:absolute}
+    .toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#252538;border-radius:24px;transition:.25s cubic-bezier(.4,0,.2,1);border:1px solid rgba(255,255,255,0.08)}
+    .toggle-slider:before{position:absolute;content:"";height:18px;width:18px;left:2px;bottom:2px;background:rgba(255,255,255,0.5);border-radius:50%;transition:.25s cubic-bezier(.4,0,.2,1)}
+    .toggle-wrap.is-saving .toggle-slider{opacity:0.5;cursor:not-allowed}
+    .toggle-wrap.is-saving .toggle-slider:before{animation:spin .6s linear infinite}
+    input:checked+.toggle-slider{background:#FF3333;border-color:#FF3333}
+    input:checked+.toggle-slider:before{transform:translateX(18px);background:#000}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Command rows */
+    .cmd-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);transition:background .15s,opacity .15s}
+    .cmd-row:hover{background:rgba(255,255,255,0.04)}
+    .cmd-row.is-disabled{opacity:0.4}
+    .cmd-row.bulk-active{opacity:1 !important;border-color:rgba(255,51,51,0.2)}
+    @keyframes fadeSlideIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+    .cmd-row{animation:fadeSlideIn .16s both}
+    .cmd-row:nth-child(1){animation-delay:.02s}.cmd-row:nth-child(2){animation-delay:.04s}
+    .cmd-row:nth-child(3){animation-delay:.06s}.cmd-row:nth-child(4){animation-delay:.08s}
+    .cmd-row:nth-child(n+5){animation-delay:.1s}
+
+    .cat-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#4b5563;padding:4px 0 10px;display:flex;align-items:center;gap:8px}
+    .cat-header:after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.05)}
+    .cat-count{background:rgba(255,255,255,0.05);border-radius:6px;padding:1px 6px;font-size:10px;color:#6b7280;font-weight:600}
+
+    /* Search */
+    .search-input{width:100%;background:#12121f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:13px;color:white;outline:none;transition:border-color .2s}
+    .search-input:focus{border-color:rgba(255,51,51,0.4);box-shadow:0 0 0 3px rgba(255,51,51,0.06)}
+    .search-input::placeholder{color:#4b5563}
+    .stats-pill{background:#12121f;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:6px 14px;font-size:12px;color:#6b7280;white-space:nowrap}
+
+    /* Bulk buttons */
+    .bulk-btn{transition:all .18s;cursor:pointer}
+    .bulk-btn:active:not(:disabled){transform:scale(0.97)}
+    .bulk-btn:disabled{opacity:0.5;cursor:not-allowed;pointer-events:none}
+    .active-filter{background:rgba(108,83,255,0.2)!important;color:#a799ff!important;border-color:rgba(108,83,255,0.4)!important}
+
+    /* ── Progress overlay ─────────────────────────────────── */
+    #bulkOverlay{
+      position:fixed;bottom:0;left:0;right:0;z-index:60;
+      background:linear-gradient(to top,rgba(9,9,11,0.98) 0%,rgba(9,9,11,0.88) 100%);
+      border-top:1px solid rgba(255,255,255,0.07);
+      padding:16px 24px 20px;
+      backdrop-filter:blur(12px);
+      transform:translateY(100%);
+      transition:transform .3s cubic-bezier(.4,0,.2,1);
+    }
+    #bulkOverlay.is-open{transform:translateY(0)}
+
+    /* Progress track */
+    .prog-track{width:100%;height:6px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;position:relative}
+    .prog-bar{height:100%;border-radius:99px;transition:width .25s ease;position:relative;overflow:hidden}
+    .prog-bar::after{
+      content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+      background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.25) 50%,transparent 100%);
+      animation:shimmer 1.2s infinite;
+    }
+    @keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+    .prog-bar.enable{background:linear-gradient(90deg,#CC2222,#FF3333)}
+    .prog-bar.disable{background:linear-gradient(90deg,#dc2626,#ef4444)}
+    .prog-bar.done{background:linear-gradient(90deg,#FF3333,#22d3ee)}
+    .prog-bar.done::after{display:none}
+
+    /* Step dots */
+    .step-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.15);transition:background .2s,transform .2s}
+    .step-dot.active{background:#FF3333;transform:scale(1.4)}
+    .step-dot.done{background:rgba(255,51,51,0.4)}
+    .step-dot.error{background:#ef4444}
+
+    /* Command flash during bulk */
+    @keyframes rowFlash{
+      0%{background:rgba(255,51,51,0.12);border-color:rgba(255,51,51,0.3)}
+      100%{background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.04)}
+    }
+    .cmd-row.flashed{animation:rowFlash .5s ease forwards}
+    @keyframes rowFlashOff{
+      0%{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.25)}
+      100%{background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.04)}
+    }
+    .cmd-row.flashed-off{animation:rowFlashOff .5s ease forwards}
+
+    /* Cancel button */
+    #bulkCancelBtn{transition:all .15s}
+    #bulkCancelBtn:hover{color:white}
+
+    /* Main layout */
+    .cmd-main{flex:1;padding:1.5rem 1.5rem 6rem;overflow-x:hidden;min-width:0}
+    @media(min-width:768px){.cmd-main{padding:2rem 2rem 6rem}}
+    @media(min-width:1024px){.cmd-main{padding:2rem 2.5rem 6rem}}
+
+    /* Edit description button */
+    .edit-desc-btn{opacity:0;transition:opacity .15s;flex-shrink:0;padding:3px 6px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:transparent;cursor:pointer;color:#6b7280}
+    .edit-desc-btn:hover{color:#FF3333;border-color:rgba(255,51,51,0.25);background:rgba(255,51,51,0.05)}
+    .cmd-row:hover .edit-desc-btn{opacity:1}
+    .desc-custom{color:#FF3333 !important}
+    .desc-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#FF3333;margin-right:4px;vertical-align:middle;flex-shrink:0}
+
+    /* Description modal */
+    #descModal{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px)}
+    #descModal.hidden{display:none}
+    #descModalBox{background:#161625;border:1px solid rgba(255,255,255,0.08);border-radius:16px;width:100%;max-width:480px;padding:1.5rem;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+    .desc-textarea{width:100%;background:#12121f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;font-size:13px;color:white;outline:none;resize:vertical;min-height:80px;font-family:inherit;transition:border-color .2s}
+    .desc-textarea:focus{border-color:rgba(255,51,51,0.4);box-shadow:0 0 0 3px rgba(255,51,51,0.06)}
+    .desc-textarea::placeholder{color:#4b5563}
+    .char-count{font-size:11px;text-align:right;margin-top:4px;transition:color .15s}
+    .char-count.warn{color:#f59e0b}
+    .char-count.over{color:#ef4444}
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body class="bg-[#0b0b14] text-white font-sans">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<!-- Toast -->
+<div id="toast" class="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium shadow-xl border transition-all duration-300 opacity-0 pointer-events-none" style="min-width:260px;background:#161625;border-color:rgba(255,255,255,0.08)">
+  <div id="toastIcon" class="w-5 h-5 flex-shrink-0"></div>
+  <span id="toastMsg"></span>
+</div>
+
+<!-- Bulk progress overlay (slides up from bottom) -->
+<div id="bulkOverlay">
+  <div class="max-w-2xl mx-auto">
+
+    <!-- Header row -->
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-3">
+        <div id="bulkIcon" class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(255,51,51,0.12)">
+          <svg id="bulkIconSvg" class="w-4 h-4 text-razor" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <div>
+          <p id="bulkLabel" class="text-sm font-bold text-white">Enabling all commands…</p>
+          <p id="bulkSub" class="text-xs text-gray-500 mt-0.5">Saving to database</p>
+        </div>
+      </div>
+      <button id="bulkCancelBtn" class="text-xs text-gray-600 hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5" style="display:none">
+        Cancel
+      </button>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="prog-track mb-3">
+      <div id="progBar" class="prog-bar enable" style="width:0%"></div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="flex items-center justify-between text-xs text-gray-500">
+      <div class="flex items-center gap-4">
+        <span><span id="progDone" class="text-white font-semibold tabular-nums">0</span> / <span id="progTotal">0</span> commands</span>
+        <span id="progPct" class="font-mono text-gray-600">0%</span>
+      </div>
+      <span id="progStatus" class="text-gray-600">Waiting…</span>
+    </div>
+
+    <!-- Step dots (visual pipeline stages) -->
+    <div class="flex items-center gap-2 mt-3">
+      <div class="flex gap-1.5 items-center">
+        <div class="step-dot active" id="dot0"></div>
+        <div class="step-dot" id="dot1"></div>
+        <div class="step-dot" id="dot2"></div>
+      </div>
+      <div class="flex-1 h-px bg-white/5"></div>
+      <span id="progEta" class="text-xs text-gray-600 font-mono"></span>
+    </div>
+
+  </div>
+</div>
+
+<!-- Description edit modal -->
+<div id="descModal" class="hidden">
+  <div id="descModalBox">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h3 class="text-sm font-bold text-white">Edit Command Description</h3>
+        <p id="descModalCmd" class="text-xs text-gray-500 mt-0.5 font-mono"></p>
+      </div>
+      <button onclick="closeDescModal()" class="text-gray-600 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="mb-1">
+      <p class="text-xs text-gray-500 mb-2">This replaces the description shown in Discord's command picker for this server. Leave blank to reset to default.</p>
+      <textarea id="descInput" class="desc-textarea" maxlength="100" placeholder="Enter a custom description…" oninput="updateCharCount()"></textarea>
+      <div class="flex items-center justify-between mt-1">
+        <p id="descDefault" class="text-xs text-gray-600 truncate mr-3"></p>
+        <p id="charCount" class="char-count text-gray-600">0 / 100</p>
+      </div>
+    </div>
+    <div class="flex gap-2 mt-4">
+      <button id="descResetBtn" onclick="resetDesc()" class="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-semibold text-gray-400 border border-white/10 hover:text-white hover:border-white/20 hover:bg-white/5 transition-all">
+        Reset to default
+      </button>
+      <div class="flex-1"></div>
+      <button onclick="closeDescModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-gray-400 border border-white/10 hover:bg-white/5 transition-all">Cancel</button>
+      <button id="descSaveBtn" onclick="saveDesc()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-razor/10 text-razor border border-razor/20 hover:bg-razor/20 transition-all">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+  <main class="cmd-main pt-16 lg:pt-0">
+
+    <!-- Header -->
+    <div class="mb-7 flex items-start justify-between gap-4 flex-wrap">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight mb-1">Command Manager</h1>
+        <p class="text-gray-400 text-sm">Enable or disable slash commands for this server. <code class="text-razor bg-razor/10 px-1.5 py-0.5 rounded text-xs">/help</code> is always on globally. <code class="text-razor bg-razor/10 px-1.5 py-0.5 rounded text-xs">/report</code> is also global.</p>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button id="enableAllBtn" onclick="bulkToggle(true)"
+          class="bulk-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-razor/10 text-razor border border-razor/20 hover:bg-razor/20 transition-all">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+          Enable All
+        </button>
+        <button id="disableAllBtn" onclick="bulkToggle(false)"
+          class="bulk-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 transition-all">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          Disable All
+        </button>
+        <button id="enabledOnlyBtn" onclick="toggleEnabledOnly(this)"
+          class="bulk-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10 transition-all"
+          title="Click to show only enabled commands">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+          Enabled Only
+        </button>
+      </div>
+    </div>
+
+    <!-- Search + Stats -->
+    <div class="card p-4 mb-5 flex items-center gap-3 flex-wrap">
+      <div class="relative flex-1 min-w-0">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input id="searchBox" type="text" placeholder="Search commands…" class="search-input pl-9" oninput="debouncedFilter(this.value)">
+      </div>
+      <div class="stats-pill flex-shrink-0">
+        <span id="enabledCount" class="text-razor font-semibold">0</span>
+        <span class="text-gray-600 mx-1">/</span>
+        <span id="totalCount">0</span>
+        <span class="ml-1">enabled</span>
+      </div>
+    </div>
+    <!-- Cap warning banner — shown when approaching/hitting 100 command limit -->
+    <div id="commandCapWarning" style="display:none;margin-bottom:12px;padding:8px 14px;border-radius:8px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#fca5a5;font-size:12.5px;font-weight:500;"></div>
+
+    <!-- Command list -->
+    <div id="commandList" class="space-y-5">
+      <div class="card p-6 flex items-center gap-3 text-gray-500 text-sm">
+        <svg class="w-4 h-4 animate-spin flex-shrink-0" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+        Loading commands…
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="/sidebar.js" nonce="<%= nonce %>"></script>
+<script nonce="<%= nonce %>">
+const guildId = location.pathname.split('/')[2];
+const COMMAND_CAP = 100; // Discord guild command limit
+let allCommands = [];
+let enabled = new Set();
+let descriptions = {};   // command name → custom description (or '' if default)
+let saving   = new Set();
+let bulkAborted = false;
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function toast(msg, ok=true, dur=3500){
+  const t=document.getElementById('toast'),icon=document.getElementById('toastIcon'),text=document.getElementById('toastMsg');
+  icon.innerHTML = ok
+    ? `<svg class="w-5 h-5 text-razor" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 15 4 10"/></svg>`
+    : `<svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+  text.textContent = msg;
+  t.style.borderColor = ok ? 'rgba(255,51,51,0.2)' : 'rgba(239,68,68,0.2)';
+  t.style.opacity = '1'; t.style.pointerEvents = 'auto';
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => { t.style.opacity='0'; t.style.pointerEvents='none'; }, dur);
+}
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+// escAttr: JSON-encode a value then HTML-escape it for safe embedding in an
+// HTML attribute. The browser HTML-decodes attributes before JS runs, so raw
+// JSON strings containing & " < > would break the inline event handler.
+function escAttr(v){ return esc(JSON.stringify(v)).replace(/"/g,'&quot;'); }
+
+// ── Count display ─────────────────────────────────────────────────────────────
+function countEnabled(){
+  let on = 0;
+  for(const c of allCommands){ if(c.name!=='help' && enabled.has(c.name)) on++; }
+  return on;
+}
+function updateCountDisplay(){
+  const on = countEnabled();
+  document.getElementById('enabledCount').textContent = on;
+  const capEl = document.getElementById('commandCapWarning');
+  if(capEl){
+    if(on >= COMMAND_CAP){
+      capEl.textContent = String.fromCharCode(9888,65039) + ' Command cap reached (' + on + '/' + COMMAND_CAP + ') — disable some before enabling more';
+      capEl.style.display = '';
+    } else if(on >= COMMAND_CAP - 10){
+      capEl.textContent = (COMMAND_CAP - on) + ' slot' + (COMMAND_CAP - on !== 1 ? 's' : '') + ' remaining (' + on + '/' + COMMAND_CAP + ')';
+      capEl.style.display = '';
+    } else {
+      capEl.style.display = 'none';
+    }
+  }
+}
+
+// ── Load ──────────────────────────────────────────────────────────────────────
+let showEnabledOnly = false;
+function toggleEnabledOnly(btn) {
+  showEnabledOnly = !showEnabledOnly;
+  btn.classList.toggle('active-filter', showEnabledOnly);
+  btn.title = showEnabledOnly ? 'Showing enabled only — click to show all' : 'Click to show only enabled commands';
+  load();
+}
+async function load(){
+  try {
+    const [availRes, enabledRes, descRes] = await Promise.all([
+      fetch(`/api/guild/${guildId}/commands/available${showEnabledOnly?'?enabledOnly=true':''}`),
+      fetch(`/api/guild/${guildId}/commands`),
+      fetch(`/api/guild/${guildId}/commands/descriptions`)
+    ]);
+    const availData = await availRes.json();
+    allCommands = Array.isArray(availData) ? availData : [];
+    const data = await enabledRes.json();
+    enabled = new Set(data.enabledCommands || []);
+    descriptions = (await descRes.json()) || {};
+
+    if (!allCommands.length) {
+      document.getElementById('commandList').innerHTML =
+        `<div class="card p-5"><p class="text-yellow-500 text-sm flex items-center gap-2">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Bot is starting up — refresh in a moment.</p></div>`;
+      return;
+    }
+    let total = 0;
+    for(const c of allCommands){ if(c.name!=='help') total++; }
+    document.getElementById('totalCount').textContent = total;
+    render(allCommands);
+  } catch(e) {
+    document.getElementById('commandList').innerHTML =
+      `<div class="card p-5"><p class="text-red-400 text-sm">Failed to load commands. Check your connection.</p></div>`;
+  }
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function render(cmds){
+  const grouped = {};
+  for(const cmd of cmds){
+    if(cmd.name==='help' || cmd.name==='report') continue;
+    (grouped[cmd.category] = grouped[cmd.category] || []).push(cmd);
+  }
+
+  const container = document.getElementById('commandList');
+  if(!Object.keys(grouped).length){
+    container.innerHTML = `<div class="card p-5"><p class="text-gray-500 text-sm">No commands found.</p></div>`;
+    return;
+  }
+
+  container.innerHTML = Object.entries(grouped).map(([cat, items]) => `
+    <div class="card p-5">
+      <div class="cat-header">
+        ${esc(cat)}
+        <span class="cat-count">${items.length}</span>
+      </div>
+      <div class="space-y-2">
+        ${items.map(cmd => {
+          const customDesc = descriptions[cmd.name];
+          const displayDesc = customDesc || cmd.description;
+          const isCustom = !!customDesc;
+          return `
+          <div class="cmd-row${enabled.has(cmd.name) ? '' : ' is-disabled'}" id="row-${esc(cmd.name)}">
+            <div class="flex-1 min-w-0 mr-3">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-mono text-sm text-white">/${esc(cmd.name)}</span>
+                ${cmd.premium ? `<span class="text-xs text-yellow-500 bg-yellow-500/10 px-1.5 py-0.5 rounded-md border border-yellow-500/20 font-semibold">Premium</span>` : ''}
+                ${isCustom ? `<span class="text-xs text-razor/70 bg-razor/5 px-1.5 py-0.5 rounded-md border border-razor/15 font-semibold">Custom</span>` : ''}
+              </div>
+              <p class="text-xs mt-0.5 truncate leading-relaxed${isCustom ? ' desc-custom' : ' text-gray-500'}">${isCustom ? `<span class="desc-dot"></span>` : ''}${esc(displayDesc)}</p>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <button class="edit-desc-btn" onclick="openDescModal('${esc(cmd.name)}', ${escAttr(cmd.description)})" title="Edit description">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <label class="toggle-wrap" title="${enabled.has(cmd.name)?'Disable':'Enable'} /${esc(cmd.name)}">
+                <input type="checkbox" ${enabled.has(cmd.name)?'checked':''} onchange="toggle('${esc(cmd.name)}',this)">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  updateCountDisplay();
+}
+
+// ── Search ────────────────────────────────────────────────────────────────────
+let filterTimer;
+function debouncedFilter(q){
+  clearTimeout(filterTimer);
+  filterTimer = setTimeout(() => filterCommands(q), 120);
+}
+function filterCommands(q){
+  const ql = q.toLowerCase().trim();
+  if(!ql){ render(allCommands); return; }
+  render(allCommands.filter(c =>
+    c.name.includes(ql) ||
+    c.description.toLowerCase().includes(ql) ||
+    (c.category||'').toLowerCase().includes(ql)
+  ));
+}
+
+// ── Single toggle ─────────────────────────────────────────────────────────────
+async function toggle(name, checkbox){
+  if(saving.has(name)){
+    checkbox.checked = !checkbox.checked;
+    return;
+  }
+  const isEnabled = checkbox.checked;
+
+  // Enforce 100-command cap before allowing an enable
+  if(isEnabled && countEnabled() >= COMMAND_CAP){
+    checkbox.checked = false;
+    toast(`Command cap reached (${COMMAND_CAP}/100) — disable some commands first`, false, 5000);
+    return;
+  }
+
+  const wrap = checkbox.closest('.toggle-wrap');
+  const row  = document.getElementById('row-'+name);
+
+  saving.add(name);
+  if(wrap) wrap.classList.add('is-saving');
+  if(row)  row.classList.toggle('is-disabled', !isEnabled);
+
+  try {
+    const r = await fetch(`/api/guild/${guildId}/commands/toggle`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ command: name, enabled: isEnabled })
+    });
+    const d = await r.json();
+    if(d.success){
+      isEnabled ? enabled.add(name) : enabled.delete(name);
+      updateCountDisplay();
+    } else {
+      toast(d.error || 'Failed to save', false);
+      checkbox.checked = !isEnabled;
+      if(row) row.classList.toggle('is-disabled', isEnabled);
+    }
+  } catch(e) {
+    toast('Network error — try again', false);
+    checkbox.checked = !isEnabled;
+    if(row) row.classList.toggle('is-disabled', isEnabled);
+  }
+
+  saving.delete(name);
+  if(wrap) wrap.classList.remove('is-saving');
+}
+
+// ── Progress overlay helpers ──────────────────────────────────────────────────
+function openProgress(isEnable, total){
+  const overlay  = document.getElementById('bulkOverlay');
+  const bar      = document.getElementById('progBar');
+  const label    = document.getElementById('bulkLabel');
+  const sub      = document.getElementById('bulkSub');
+  const icon     = document.getElementById('bulkIcon');
+  const iconSvg  = document.getElementById('bulkIconSvg');
+
+  bar.style.width  = '0%';
+  bar.className    = `prog-bar ${isEnable ? 'enable' : 'disable'}`;
+  label.textContent = isEnable ? 'Enabling all commands…' : 'Disabling all commands…';
+  sub.textContent   = 'Saving to database';
+  icon.style.background = isEnable ? 'rgba(255,51,51,0.12)' : 'rgba(239,68,68,0.12)';
+  iconSvg.className = `w-4 h-4 ${isEnable ? 'text-razor' : 'text-red-400'}`;
+  iconSvg.innerHTML = isEnable
+    ? `<path d="M5 13l4 4L19 7"/>`
+    : `<path d="M18 6L6 18M6 6l12 12"/>`;
+
+  document.getElementById('progDone').textContent  = '0';
+  document.getElementById('progTotal').textContent = total;
+  document.getElementById('progPct').textContent   = '0%';
+  document.getElementById('progStatus').textContent = 'Sending request…';
+  document.getElementById('progEta').textContent   = '';
+
+  // Reset dots
+  ['dot0','dot1','dot2'].forEach((id, i) => {
+    const d = document.getElementById(id);
+    d.className = 'step-dot' + (i===0?' active':'');
+  });
+
+  overlay.classList.add('is-open');
+  bulkAborted = false;
+}
+
+function updateProgress(done, total, status, isEnable){
+  const pct  = total > 0 ? Math.round((done / total) * 100) : 0;
+  document.getElementById('progBar').style.width = pct + '%';
+  document.getElementById('progDone').textContent = done;
+  document.getElementById('progPct').textContent  = pct + '%';
+  if(status) document.getElementById('progStatus').textContent = status;
+
+  // Advance step dots
+  if(done > 0 && done < total){
+    document.getElementById('dot0').className = 'step-dot done';
+    document.getElementById('dot1').className = 'step-dot active';
+  }
+}
+
+function finishProgress(success, isEnable, count){
+  const bar   = document.getElementById('progBar');
+  const label = document.getElementById('bulkLabel');
+  const sub   = document.getElementById('bulkSub');
+  const icon  = document.getElementById('bulkIcon');
+  const iconSvg = document.getElementById('bulkIconSvg');
+
+  if(success){
+    bar.style.width = '100%';
+    bar.className   = 'prog-bar done';
+    label.textContent = isEnable ? `All ${count} commands enabled` : `All ${count} commands disabled`;
+    sub.textContent   = 'Saved successfully';
+    icon.style.background = 'rgba(255,51,51,0.15)';
+    iconSvg.className = 'w-4 h-4 text-razor';
+    iconSvg.innerHTML = `<path d="M5 13l4 4L19 7"/>`;
+    document.getElementById('progStatus').textContent = 'Done ✓';
+    document.getElementById('progPct').textContent = '100%';
+    document.getElementById('progDone').textContent = count;
+    // Advance all dots
+    ['dot0','dot1','dot2'].forEach(id => { document.getElementById(id).className = 'step-dot done'; });
+  } else {
+    bar.className = 'prog-bar disable';
+    label.textContent = 'Operation failed';
+    sub.textContent   = 'See error above';
+    icon.style.background = 'rgba(239,68,68,0.12)';
+    iconSvg.className = 'w-4 h-4 text-red-400';
+    iconSvg.innerHTML = `<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>`;
+    document.getElementById('progStatus').textContent = 'Failed';
+    document.getElementById('dot1').className = 'step-dot error';
+    document.getElementById('dot2').className = 'step-dot error';
+  }
+
+  // Auto-dismiss after 2.5s
+  setTimeout(() => {
+    document.getElementById('bulkOverlay').classList.remove('is-open');
+  }, 2500);
+}
+
+// ── Bulk toggle (with progress) ───────────────────────────────────────────────
+async function bulkToggle(isEnable){
+  let names = allCommands.filter(c => c.name !== 'help').map(c => c.name);
+  if(!names.length) return;
+
+  // When enabling all, cap at COMMAND_CAP to stay within Discord's guild limit
+  if(isEnable && names.length > COMMAND_CAP){
+    toast(`Enabling first ${COMMAND_CAP} commands (Discord limit). Disable some to enable others.`, true, 5000);
+    names = names.slice(0, COMMAND_CAP);
+  }
+
+  // Lock both buttons
+  document.getElementById('enableAllBtn').disabled  = true;
+  document.getElementById('disableAllBtn').disabled = true;
+
+  // Open progress overlay
+  openProgress(isEnable, names.length);
+
+  // Animate the command rows immediately so user sees something happening
+  // Do this in chunks to avoid freezing the browser
+  const CHUNK = 30;
+  const flashClass = isEnable ? 'flashed' : 'flashed-off';
+  let flashIdx = 0;
+  function flashNextChunk(){
+    const end = Math.min(flashIdx + CHUNK, names.length);
+    for(let i = flashIdx; i < end; i++){
+      const row = document.getElementById('row-' + names[i]);
+      if(row){
+        row.classList.remove('flashed','flashed-off');
+        void row.offsetWidth; // trigger reflow for re-animation
+        row.classList.add(flashClass);
+      }
+    }
+    flashIdx = end;
+    if(flashIdx < names.length) requestAnimationFrame(flashNextChunk);
+  }
+  requestAnimationFrame(flashNextChunk);
+
+  // Fake progress during the single API call (0→80% over ~1.2s)
+  // This gives visual feedback while the DB write happens
+  let fakeProgress = 0;
+  const fakeTick = setInterval(() => {
+    if(fakeProgress < 80){
+      fakeProgress += Math.random() * 12 + 4;
+      fakeProgress = Math.min(fakeProgress, 80);
+      const shown = Math.round((fakeProgress / 100) * names.length);
+      updateProgress(shown, names.length,
+        fakeProgress < 40 ? 'Connecting…' : fakeProgress < 70 ? 'Writing to database…' : 'Almost done…',
+        isEnable
+      );
+    }
+  }, 120);
+
+  // Advance dot to step 1 immediately
+  document.getElementById('dot0').className = 'step-dot done';
+  document.getElementById('dot1').className = 'step-dot active';
+
+  let success = false;
+  try {
+    const r = await fetch(`/api/guild/${guildId}/commands/bulk`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ commands: names, enabled: isEnable })
+    });
+    const d = await r.json();
+
+    clearInterval(fakeTick);
+
+    if(d.success){
+      success = true;
+      // Update local state
+      names.forEach(n => isEnable ? enabled.add(n) : enabled.delete(n));
+      updateCountDisplay();
+
+      // Advance dot to step 2 before finishing
+      document.getElementById('dot1').className = 'step-dot done';
+      document.getElementById('dot2').className = 'step-dot active';
+
+      // Update toggles in-place (chunked to avoid jank)
+      let syncIdx = 0;
+      function syncNextChunk(){
+        const end = Math.min(syncIdx + CHUNK, names.length);
+        for(let i = syncIdx; i < end; i++){
+          const n   = names[i];
+          const cb  = document.querySelector(`#row-${n} input[type="checkbox"]`);
+          const row = document.getElementById('row-' + n);
+          if(cb)  cb.checked = isEnable;
+          if(row) row.classList.toggle('is-disabled', !isEnable);
+        }
+        syncIdx = end;
+        if(syncIdx < names.length) requestAnimationFrame(syncNextChunk);
+      }
+      requestAnimationFrame(syncNextChunk);
+
+      finishProgress(true, isEnable, names.length);
+      toast(isEnable ? `All ${names.length} commands enabled` : `All ${names.length} commands disabled`, true, 4000);
+    } else {
+      finishProgress(false, isEnable, 0);
+      toast(d.error || 'Bulk operation failed', false);
+    }
+  } catch(e) {
+    clearInterval(fakeTick);
+    finishProgress(false, isEnable, 0);
+    toast('Network error — check your connection and try again', false);
+  }
+
+  // Re-enable buttons
+  document.getElementById('enableAllBtn').disabled  = false;
+  document.getElementById('disableAllBtn').disabled = false;
+}
+
+// ── Description modal ─────────────────────────────────────────────────────────
+let _descCmd = null;
+let _descDefault = '';
+
+function openDescModal(cmdName, defaultDesc){
+  _descCmd     = cmdName;
+  _descDefault = defaultDesc;
+  const current = descriptions[cmdName] || '';
+  document.getElementById('descModalCmd').textContent = '/' + cmdName;
+  document.getElementById('descDefault').textContent  = 'Default: ' + defaultDesc;
+  document.getElementById('descInput').value          = current;
+  document.getElementById('descResetBtn').style.display = descriptions[cmdName] ? '' : 'none';
+  updateCharCount();
+  document.getElementById('descModal').classList.remove('hidden');
+  setTimeout(() => document.getElementById('descInput').focus(), 50);
+}
+
+function closeDescModal(){
+  document.getElementById('descModal').classList.add('hidden');
+  _descCmd = null;
+}
+
+function updateCharCount(){
+  const len = document.getElementById('descInput').value.length;
+  const el  = document.getElementById('charCount');
+  el.textContent = `${len} / 100`;
+  el.className = 'char-count ' + (len > 90 ? 'over' : len > 75 ? 'warn' : 'text-gray-600');
+}
+
+async function saveDesc(){
+  if(!_descCmd) return;
+  const description = document.getElementById('descInput').value.trim();
+  const btn = document.getElementById('descSaveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  try {
+    const r = await fetch(`/api/guild/${guildId}/commands/description`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ command: _descCmd, description })
+    });
+    const d = await r.json();
+    if(d.success){
+      if(description){
+        descriptions[_descCmd] = description;
+      } else {
+        delete descriptions[_descCmd];
+      }
+      render(allCommands.filter(c => {
+        const q = document.getElementById('searchBox').value.toLowerCase().trim();
+        if(!q) return true;
+        return c.name.includes(q) || c.description.toLowerCase().includes(q) || (c.category||'').toLowerCase().includes(q);
+      }));
+      toast(description ? `Description updated for /${_descCmd}` : `Description reset to default for /${_descCmd}`);
+      closeDescModal();
+    } else {
+      toast(d.error || 'Failed to save', false);
+    }
+  } catch(e) {
+    toast('Network error — try again', false);
+  }
+  btn.disabled = false;
+  btn.textContent = 'Save';
+}
+
+async function resetDesc(){
+  document.getElementById('descInput').value = '';
+  updateCharCount();
+  await saveDesc();
+}
+
+// Close modal on backdrop click
+document.getElementById('descModal').addEventListener('click', e => {
+  if(e.target === document.getElementById('descModal')) closeDescModal();
+});
+// Close on Escape
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && !document.getElementById('descModal').classList.contains('hidden')) closeDescModal();
+});
+
+load();
+</script>
+
+</body>
+</html>

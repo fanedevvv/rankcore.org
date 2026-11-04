@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Unavailable | Roco</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <script>
+    window.tailwind = window.tailwind || {};
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            razor: "#FF3333",
+            error: "#FF4D4D",
+            gold:  "#FFB547",
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg:        #060609;
+      --surface:   #0f0f1a;
+      --border:    rgba(255,255,255,0.07);
+      --text-muted:#6b7280;
+      --razor:     #FF3333;
+      --error:     #FF4D4D;
+      --gold:      #FFB547;
+      --warn:      #F59E0B;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: #fff;
+      user-select: none;
+    }
+
+    /* ── Background ── */
+    .bg-noise {
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 0;
+      background-size: 48px 48px;
+      background-image:
+        linear-gradient(to right,  rgba(245,158,11,0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(245,158,11,0.04) 1px, transparent 1px);
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+    }
+    .glow-orb {
+      position: fixed; z-index: 0; border-radius: 50%;
+      pointer-events: none;
+      filter: blur(120px);
+      animation: pulse-orb 6s ease-in-out infinite;
+    }
+    .orb-amber { width: 600px; height: 400px; background: rgba(245,158,11,0.07); top: -10%; left: 50%; transform: translateX(-50%); }
+    .orb-dim   { width: 400px; height: 400px; background: rgba(100,100,120,0.05); bottom: -10%; right: -5%; animation-delay: 3s; }
+
+    @keyframes pulse-orb {
+      0%,100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+      50%      { opacity: 1;   transform: translateX(-50%) scale(1.08); }
+    }
+
+    /* ── Card ── */
+    .card {
+      position: relative; z-index: 10;
+      width: 100%; max-width: 460px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 36px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.03),
+        0 32px 64px rgba(0,0,0,0.6),
+        0 0 80px rgba(245,158,11,0.05);
+      animation: card-in 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(24px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0)    scale(1);    }
+    }
+
+    /* ── Icon ── */
+    .icon-wrap {
+      width: 72px; height: 72px; border-radius: 16px;
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.2);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+    }
+
+    /* Pulsing ring around icon */
+    .icon-wrap::after {
+      content: '';
+      position: absolute;
+      width: 88px; height: 88px;
+      border-radius: 20px;
+      border: 1px solid rgba(245,158,11,0.15);
+      animation: ring-pulse 2s ease-in-out infinite;
+    }
+    @keyframes ring-pulse {
+      0%,100% { transform: scale(1);   opacity: 0.6; }
+      50%      { transform: scale(1.1); opacity: 0; }
+    }
+
+    /* ── Status dot ── */
+    .status-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--warn);
+      box-shadow: 0 0 6px rgba(245,158,11,0.8);
+      animation: blink 1.4s step-start infinite;
+      flex-shrink: 0;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.2; }
+    }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.2);
+      color: var(--warn);
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 99px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Heading ── */
+    .heading {
+      font-size: clamp(28px, 5vw, 36px);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+    .heading .accent { color: var(--warn); }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+      margin: 20px 0;
+    }
+
+    /* ── Info box ── */
+    .info-box {
+      background: rgba(245,158,11,0.05);
+      border: 1px solid rgba(245,158,11,0.12);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .info-box strong { color: rgba(255,255,255,0.8); font-weight: 600; }
+
+    /* ── Status rows ── */
+    .status-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .status-row .label { color: rgba(255,255,255,0.5); }
+    .status-row .value { font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .val-offline { color: var(--warn); }
+    .val-ok      { color: var(--razor); }
+
+    /* ── Retry countdown ── */
+    .retry-bar-wrap {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .retry-bar-wrap .timer-label { white-space: nowrap; }
+    .retry-track {
+      flex: 1; height: 3px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 99px; overflow: hidden;
+    }
+    .retry-fill {
+      height: 100%; width: 100%;
+      background: linear-gradient(to right, rgba(245,158,11,0.6), rgba(245,158,11,0.9));
+      border-radius: 99px;
+      transform-origin: right;
+      animation: drain 30s linear forwards;
+    }
+    @keyframes drain {
+      from { transform: scaleX(1); }
+      to   { transform: scaleX(0); }
+    }
+    #countdown { color: rgba(255,255,255,0.65); font-weight: 600; min-width: 28px; text-align: right; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 13px 20px;
+      border-radius: 12px; border: none;
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    }
+    .btn:hover  { transform: translateY(-2px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-reload {
+      background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.1));
+      border: 1px solid rgba(245,158,11,0.3);
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 10px;
+    }
+    .btn-reload:hover { background: rgba(245,158,11,0.2); border-color: rgba(245,158,11,0.5); }
+
+    .btn-support {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 8px;
+    }
+    .btn-support:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); }
+
+    /* ── Footer note ── */
+    .footer-note {
+      font-size: 11px; color: var(--text-muted);
+      margin-top: 16px; text-align: center;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .footer-note::before, .footer-note::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ── Corner labels ── */
+    .corner-label {
+      position: fixed; font-family: monospace; font-size: 10px;
+      color: rgba(245,158,11,0.2); letter-spacing: 0.1em; z-index: 1;
+    }
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+  <div class="bg-noise"></div>
+  <div class="bg-grid"></div>
+  <div class="glow-orb orb-amber"></div>
+  <div class="glow-orb orb-dim"></div>
+
+  <div class="card" style="margin: 24px; position:relative;">
+
+    <!-- Icon -->
+    <div class="icon-wrap" style="position:relative;">
+      <!-- Bot / robot icon -->
+      <svg width="32" height="32" fill="none" stroke="#F59E0B" stroke-width="1.75" viewBox="0 0 24 24">
+        <rect x="3" y="11" width="18" height="10" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 11V7m0 0a2 2 0 100-4 2 2 0 000 4z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8 15h.01M16 15h.01M8 19h8"/>
+      </svg>
+    </div>
+
+    <!-- Header -->
+    <div style="text-align:center; margin-bottom: 20px;">
+      <div class="badge">
+        <span class="status-dot"></span>
+        Bot Offline
+      </div>
+      <h1 class="heading">
+        Dashboard <span class="accent">Unavailable</span>
+      </h1>
+      <p style="font-size:14px; color:#6b7280; line-height:1.6; margin-top:8px;">
+        The <strong style="color:rgba(255,255,255,0.75);">Roco bot</strong> is currently offline.
+        The dashboard cannot function without it.
+      </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Status rows -->
+    <div class="status-row">
+      <span class="label">Dashboard server</span>
+      <span class="value val-ok">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="#FF3333"><circle cx="5" cy="5" r="5"/></svg>
+        Online
+      </span>
+    </div>
+    <div class="status-row" style="margin-bottom:16px;">
+      <span class="label">Discord bot process</span>
+      <span class="value val-offline">
+        <span class="status-dot"></span>
+        Offline
+      </span>
+    </div>
+
+    <!-- Info box -->
+    <div class="info-box">
+      The dashboard relies on the bot process being active to serve guild data,
+      handle commands, and authenticate sessions.<br>
+      <strong>If you're the owner</strong>, restart the bot process and refresh this page.
+    </div>
+
+    <!-- Auto-retry countdown -->
+    <div class="retry-bar-wrap">
+      <span class="timer-label">Auto-retrying in</span>
+      <div class="retry-track"><div class="retry-fill"></div></div>
+      <span id="countdown">30s</span>
+    </div>
+
+    <!-- Reload button -->
+    <button onclick="location.reload()" class="btn btn-reload">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5"/>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 9a9 9 0 0115-2.7M20 15a9 9 0 01-15 2.7"/>
+      </svg>
+      Retry Now
+    </button>
+
+    <!-- Support -->
+    <a href="/support" class="btn btn-support">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+      </svg>
+      Create a Support Ticket
+    </a>
+
+    <p class="footer-note">This page will auto-refresh every 30 seconds</p>
+  </div>
+
+  <span class="corner-label" style="bottom:16px; left:16px;">BOT_PROCESS_UNREACHABLE</span>
+  <span class="corner-label" style="top:16px; right:16px;">DASHBOARD_DEGRADED</span>
+
+  <script>
+    // Countdown + auto-reload every 30s
+    let seconds = 30;
+    const el = document.getElementById('countdown');
+    const interval = setInterval(() => {
+      seconds--;
+      el.textContent = seconds + 's';
+      if (seconds <= 0) {
+        clearInterval(interval);
+        location.reload();
+      }
+    }, 1000);
+  </script>
+
+</body>
+</html>

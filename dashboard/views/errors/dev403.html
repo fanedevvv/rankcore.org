@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>403 | Nice Try</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/tailwind.css">
+
+  <script>
+    const tailwind = window.tailwind || {}; tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+colors: {
+  razor: "#FF3333",   // main green highlight
+  error: "#FF4D4D",   // keep red for visibility
+  dark: "#080505"     // very dark green/black background
+},
+          animation: {
+            glitch: 'glitch 1s infinite',
+            shake: 'shake .4s ease-in-out infinite',
+            pulseGlow: 'pulseGlow 3s ease-in-out infinite'
+          },
+          keyframes: {
+            glitch: {
+              '0%': { transform: 'translate(0)' },
+              '20%': { transform: 'translate(-2px,2px)' },
+              '40%': { transform: 'translate(-2px,-2px)' },
+              '60%': { transform: 'translate(2px,2px)' },
+              '80%': { transform: 'translate(2px,-2px)' },
+              '100%': { transform: 'translate(0)' },
+            },
+            shake: {
+              '0%,100%': { transform: 'translateX(0)' },
+              '25%': { transform: 'translateX(-3px)' },
+              '75%': { transform: 'translateX(3px)' },
+            },
+            pulseGlow: {
+              '0%,100%': { opacity: .3 },
+              '50%': { opacity: .8 },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #050508;
+      overflow: hidden;
+    }
+    .bg-grid {
+      background-size: 40px 40px;
+      background-image:
+        linear-gradient(to right, rgba(255,59,107,.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,59,107,.06) 1px, transparent 1px);
+      mask-image: radial-gradient(circle at center, black 45%, transparent 100%);
+    }
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body class="min-h-screen flex items-center justify-center relative select-none">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+  <div class="fixed inset-0 bg-grid"></div>
+  <div class="fixed inset-0 flex items-center justify-center">
+    <div class="w-[600px] h-[600px] bg-error/10 blur-[180px] rounded-full animate-pulseGlow"></div>
+  </div>
+
+  <div class="relative z-10 text-center px-6 max-w-xl">
+
+    <h1 class="relative text-[120px] md:text-[160px] font-black tracking-tighter leading-none mb-4">
+      <span class="absolute inset-0 text-error blur-3xl opacity-40">403</span>
+      <span class="relative text-white animate-glitch">403</span>
+    </h1>
+
+    <h2 class="text-4xl font-black text-white mb-3">
+      NICE <span class="text-error animate-shake inline-block">TRY</span>
+    </h2>
+
+    <p class="text-gray-400 text-lg mb-8">
+      You don’t have permission to be here.<br>
+      Changing IDs, guessing URLs, or praying won’t help.
+    </p>
+
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-10 backdrop-blur-md">
+      <p class="text-gray-300 text-base leading-relaxed">
+        This area is locked for developers only.  
+        If you were supposed to be here, you wouldn’t be seeing this page.
+        <br><br>
+        <span class="text-white font-bold">Skill issue detected.</span> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M416 398.9c58.5-41.1 96-104.1 96-175C512 100.3 397.4 0 256 0S0 100.3 0 223.9c0 70.9 37.5 133.9 96 175v65.1c0 17.7 14.3 32 32 32H384c17.7 0 32-14.3 32-32V398.9zM96 480c-17.7 0-32 14.3-32 32s14.3 32 32 32h320c17.7 0 32-14.3 32-32s-14.3-32-32-32H96zm64-128l0-48-48-32C85.1 256 64 232.3 64 203.9C64 175.6 88 154 113.4 160.3l144-32c8.1-1.8 16.6-1.8 24.7 0l144 32C451.4 166.3 448 175.6 448 203.9C448 232.3 426.9 256 400 272l-48 32 0 48H96zm128-176a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm96 32a32 32 0 1 1 0-64 32 32 0 1 1 0 64z"/></svg>
+      </p>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/servers"
+         class="px-8 py-3.5 bg-white text-black rounded-xl font-bold hover:scale-105 transition">
+        Retreat
+      </a>
+
+      <a href="/support"
+         class="px-8 py-3.5 bg-white/5 text-white border border-white/10 rounded-xl font-bold hover:bg-white/10 transition">
+        Beg for Access
+      </a>
+    </div>
+
+  </div>
+
+  <div class="absolute bottom-5 left-5 text-error/30 font-mono text-xs">
+    ACCESS_DENIED_403
+  </div>
+  <div class="absolute top-5 right-5 text-error/30 font-mono text-xs">
+    NICE_TRY_BUDDY
+  </div>
+
+
+</body>
+</html>

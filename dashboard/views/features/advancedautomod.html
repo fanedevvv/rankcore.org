@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced AutoMod</title>
+<link rel="icon" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tailwind.css">
+<style>
+:root {
+  --accent: #FF3333;
+  --accent-dim: rgba(255,51,51,0.12);
+  --accent-mid: rgba(255,51,51,0.22);
+  --bg: #0b0b14;
+  --panel: #12121f;
+  --panel-raised: #1a1a2e;
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(255,51,51,0.2);
+  --text: #e2e8f0;
+  --text-muted: #6b7280;
+  --text-dim: #94a3b8;
+  --danger: #ff5353;
+  --warning: #ffb347;
+  --success: #4ade80;
+}
+*{box-sizing:border-box;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:#252538;border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--accent);}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;margin:0;}
+
+/* ── Toggle ─────────────────────────────────────────────────────── */
+.toggle-wrap{position:relative;display:inline-block;width:42px;height:23px;flex-shrink:0;}
+.toggle-wrap input{opacity:0;width:0;height:0;}
+.toggle-track{position:absolute;inset:0;background:#1e1e32;border-radius:999px;border:1px solid var(--border);cursor:pointer;transition:background .2s;}
+.toggle-track::before{content:'';position:absolute;left:2px;top:2px;width:17px;height:17px;background:#fff;border-radius:50%;transition:transform .2s;}
+input:checked+.toggle-track{background:var(--accent);}
+input:checked+.toggle-track::before{transform:translateX(19px);}
+
+/* ── Toast ───────────────────────────────────────────────────────── */
+#toast{position:fixed;top:1.25rem;right:1.25rem;padding:.8rem 1.3rem;border-radius:12px;transform:translateX(440px);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:99999;color:#fff;font-weight:600;font-size:.875rem;display:flex;align-items:center;gap:.5rem;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+
+/* ── Panels ──────────────────────────────────────────────────────── */
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:1.4rem;}
+.panel:hover{border-color:var(--border-hover);}
+
+/* ── Module cards ────────────────────────────────────────────────── */
+.modules-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+@media(max-width:700px){.modules-grid{grid-template-columns:1fr;}}
+.module-card{
+  background:var(--panel);border:1px solid var(--border);border-radius:16px;
+  padding:1.2rem 1.3rem;transition:border-color .2s;
+}
+.module-card:hover{border-color:var(--border-hover);}
+.module-card.full{grid-column:1/-1;}
+.module-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.85rem;}
+.module-title{font-weight:700;font-size:.98rem;margin:0 0 .2rem;}
+.module-desc{color:var(--text-muted);font-size:.76rem;line-height:1.45;}
+.module-badge{
+  font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:999px;
+  background:rgba(255,255,255,.06);color:var(--text-dim);white-space:nowrap;flex-shrink:0;
+  border:1px solid var(--border);
+}
+.module-exempt-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.7rem;}
+.exempt-btn{
+  font-size:.74rem;font-weight:600;color:var(--text-dim);
+  background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:7px;padding:.3rem .7rem;cursor:pointer;transition:all .15s;
+}
+.exempt-btn:hover{background:rgba(255,255,255,.09);color:var(--text);}
+.add-cond-btn{
+  font-size:.74rem;font-weight:600;color:var(--accent);
+  background:var(--accent-dim);border:1px solid rgba(255,51,51,.25);
+  border-radius:7px;padding:.3rem .8rem;cursor:pointer;transition:all .15s;
+}
+.add-cond-btn:hover{background:var(--accent-mid);}
+
+/* ── Condition rows ──────────────────────────────────────────────── */
+.cond-list{display:flex;flex-direction:column;gap:.4rem;}
+.cond-item{border-radius:9px;overflow:hidden;border:1px solid var(--border);}
+.cond-summary{
+  display:grid;grid-template-columns:26px 1fr 26px 26px;
+  align-items:center;gap:.4rem;
+  background:#0d0d1a;padding:.4rem .5rem;cursor:pointer;
+}
+.cond-summary:hover{background:#111120;}
+.cond-expand-btn{
+  width:22px;height:22px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:5px;
+  font-size:.85rem;color:var(--text-dim);cursor:pointer;transition:all .15s;flex-shrink:0;
+}
+.cond-expand-btn.open{background:var(--accent-dim);border-color:rgba(255,51,51,.3);color:var(--accent);}
+.cond-label{font-size:.78rem;font-weight:600;color:var(--text-dim);}
+.cond-channel-btn{
+  width:22px;height:22px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:5px;
+  font-size:.72rem;color:var(--text-muted);cursor:pointer;transition:all .15s;flex-shrink:0;
+  font-weight:700;
+}
+.cond-channel-btn:hover{background:rgba(99,179,237,.1);border-color:rgba(99,179,237,.3);color:#63b3ed;}
+.cond-del-btn{
+  width:22px;height:22px;display:flex;align-items:center;justify-content:center;
+  background:transparent;border:none;
+  font-size:.9rem;color:var(--text-muted);cursor:pointer;transition:all .15s;flex-shrink:0;
+}
+.cond-del-btn:hover{color:var(--danger);}
+.cond-detail{
+  background:#09090f;border-top:1px solid var(--border);
+  padding:.7rem .8rem;display:none;
+}
+.cond-detail.open{display:block;}
+.cond-fields{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.5rem;}
+@media(max-width:500px){.cond-fields{grid-template-columns:1fr 1fr;}}
+.field-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:.3rem;}
+
+/* ── Inputs ──────────────────────────────────────────────────────── */
+input[type="number"],input[type="text"],input[type="search"],select,textarea{
+  background:#09090f;border:1px solid var(--border);
+  color:var(--text);border-radius:9px;padding:.55rem .85rem;
+  font-family:inherit;font-size:.84rem;width:100%;
+  transition:border-color .2s,box-shadow .2s;outline:none;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,51,51,.1);}
+select option{background:#12121f;}
+textarea{resize:vertical;min-height:75px;}
+
+/* ── Buttons ─────────────────────────────────────────────────────── */
+.btn-icon{
+  width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+  border-radius:7px;border:1px solid var(--border);background:transparent;
+  color:var(--text-muted);cursor:pointer;transition:all .15s;flex-shrink:0;
+}
+.btn-icon:hover{background:rgba(255,83,83,.12);border-color:var(--danger);color:var(--danger);}
+.add-btn{
+  display:flex;align-items:center;gap:.4rem;
+  background:var(--accent-dim);border:1px solid rgba(255,51,51,.2);
+  color:var(--accent);border-radius:9px;padding:.45rem .9rem;
+  font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s;width:fit-content;
+}
+.add-btn:hover{background:var(--accent-mid);}
+.save-btn{
+  background:var(--accent);color:#0b0b14;font-weight:700;
+  padding:.55rem 1.4rem;border-radius:10px;border:none;cursor:pointer;
+  font-size:.875rem;white-space:nowrap;transition:opacity .15s;
+  box-shadow:0 4px 20px rgba(255,51,51,.25);font-family:inherit;
+}
+.save-btn:hover{opacity:.85;}
+
+/* ── Section separator ────────────────────────────────────────────── */
+.section-sep{
+  display:flex;align-items:center;gap:.75rem;margin:1.6rem 0 1rem;
+}
+.section-sep-label{
+  font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--text-muted);white-space:nowrap;
+}
+.section-sep-line{flex:1;border:none;border-top:1px solid var(--border);}
+
+/* ── Warn steps ───────────────────────────────────────────────────── */
+.warn-step{
+  display:grid;grid-template-columns:70px 115px 1fr 28px;
+  gap:.5rem;align-items:center;
+  background:#09090f;border:1px solid var(--border);
+  border-radius:10px;padding:.5rem .75rem;
+}
+.warn-step-label{
+  display:grid;grid-template-columns:70px 115px 1fr 28px;
+  gap:.5rem;padding:.3rem .75rem;
+  font-size:.68rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.07em;color:var(--text-muted);
+}
+
+/* ── Word groups ──────────────────────────────────────────────────── */
+.word-group{background:#09090f;border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;margin-bottom:.6rem;}
+.word-group-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;}
+.word-group-name{flex:1;font-weight:600;font-size:.85rem;}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.5rem;}
+.tag{
+  display:inline-flex;align-items:center;gap:.3rem;
+  background:rgba(255,255,255,.06);border:1px solid var(--border);
+  border-radius:6px;padding:.2rem .5rem;font-size:.76rem;color:var(--text-dim);
+}
+.tag button{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:.85rem;line-height:1;padding:0;}
+.tag button:hover{color:var(--danger);}
+.tag-input-row{display:flex;gap:.5rem;margin-top:.6rem;}
+
+/* ── Link groups ──────────────────────────────────────────────────── */
+.link-group{background:#09090f;border:1px solid var(--border);border-radius:12px;padding:.85rem 1rem;margin-bottom:.6rem;}
+
+/* ── Regex ────────────────────────────────────────────────────────── */
+.regex-rule{background:#09090f;border:1px solid var(--border);border-radius:12px;padding:.75rem .9rem;margin-bottom:.6rem;}
+
+/* ── Special filter card ─────────────────────────────────────────── */
+.filter-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.55rem 0;border-bottom:1px solid var(--border);
+}
+.filter-row:last-child{border-bottom:none;padding-bottom:0;}
+.filter-row-label{font-size:.84rem;font-weight:600;}
+.filter-row-sub{font-size:.73rem;color:var(--text-muted);margin-top:.1rem;}
+.filter-settings{
+  display:grid;grid-template-columns:1fr 1fr;gap:.6rem;
+  background:#09090f;border:1px solid var(--border);border-radius:10px;
+  padding:.75rem .85rem;margin-top:.5rem;
+}
+.filter-settings.hidden{display:none;}
+.fl{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:.3rem;}
+
+/* ── Divider ──────────────────────────────────────────────────────── */
+.divider{border:none;border-top:1px solid var(--border);margin:1.1rem 0;}
+</style>
+<style>
+/* ── Exempt Modal ────────────────────────────────────────────────── */
+#exemptModal{
+  position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);
+  z-index:9999;display:none;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .18s;
+}
+.exempt-modal-box{
+  background:var(--panel-raised);border:1px solid rgba(255,255,255,.1);
+  border-radius:18px;padding:1.6rem 1.7rem;width:100%;max-width:460px;
+  box-shadow:0 24px 64px rgba(0,0,0,.5);
+}
+.exempt-modal-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;}
+.exempt-modal-head h2{font-size:1.2rem;font-weight:800;margin:0;}
+.exempt-modal-head p{color:var(--text-muted);font-size:.78rem;margin:.25rem 0 0;}
+.exempt-close-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:.2rem;font-size:1.2rem;line-height:1;}
+.exempt-close-btn:hover{color:var(--text);}
+.exempt-mode-row{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;font-size:.83rem;color:var(--text-muted);}
+.exempt-mode-row span{flex-shrink:0;}
+.exempt-mode-sel{
+  background:var(--panel);border:1px solid var(--border);color:var(--text);
+  border-radius:8px;padding:.3rem .7rem;font-size:.82rem;font-family:inherit;cursor:pointer;
+  outline:none;
+}
+.exempt-mode-sel:focus{border-color:var(--accent);}
+.exempt-tags-wrap{
+  display:flex;flex-wrap:wrap;gap:.45rem;min-height:2.5rem;
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;
+  padding:.55rem .65rem;margin-bottom:.9rem;
+}
+.exempt-tag{
+  display:inline-flex;align-items:center;gap:.35rem;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  border-radius:7px;padding:.22rem .55rem;font-size:.78rem;font-weight:600;
+}
+.exempt-tag button{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:0 0 0 2px;font-size:.95rem;line-height:1;}
+.exempt-tag button:hover{color:var(--danger);}
+.exempt-tag-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.exempt-modal-foot{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1rem;}
+.exempt-done-btn{background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:.5rem 1rem;font-size:.85rem;font-weight:600;font-family:inherit;cursor:pointer;}
+.exempt-done-btn:hover{border-color:var(--accent);}
+.exempt-picker-label{font-size:.73rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem;}
+.exempt-picker-search{
+  width:100%;background:var(--panel);border:1px solid var(--border);
+  color:var(--text);border-radius:8px;padding:.42rem .75rem;
+  font-size:.83rem;font-family:inherit;outline:none;margin-bottom:.45rem;box-sizing:border-box;
+}
+.exempt-picker-search:focus{border-color:var(--accent);}
+#exemptPicker{
+  max-height:180px;overflow-y:auto;background:var(--panel);
+  border:1px solid var(--border);border-radius:10px;padding:.3rem;
+}
+.exempt-pick-item{
+  display:flex;align-items:center;gap:.5rem;padding:.42rem .65rem;
+  border-radius:7px;cursor:pointer;font-size:.83rem;transition:background .12s;
+}
+.exempt-pick-item:hover{background:rgba(255,255,255,.07);}
+.exempt-picker-loading{text-align:center;color:var(--text-muted);font-size:.8rem;padding:.75rem 0;}
+</style>
+
+<!-- Razor Custom Select CSS -->
+<style>
+.rzr-wrap{position:relative;width:100%;display:block}
+.rzr-wrap-parent.select-wrap::after,.rzr-wrap-parent::after{display:none!important;content:none!important}
+.rzr-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-radius:9px;border:1px solid rgba(255,255,255,0.08);background:#09090f;color:#fff;cursor:pointer;font-size:13px;font-family:inherit;min-height:36px;width:100%;transition:border-color .15s,box-shadow .15s;user-select:none;box-sizing:border-box;}
+.rzr-trigger:hover{border-color:rgba(255,255,255,0.18)}
+.rzr-trigger.is-open{border-color:rgba(255,51,51,.55);box-shadow:0 0 0 3px rgba(255,51,51,.09);}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
+.rzr-label.is-ph{color:#6b7280}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+.rzr-panel{position:fixed;z-index:999999;background:rgba(9,9,15,.98);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.75);overflow:hidden;animation:rzrIn .15s ease;}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.rzr-panel-search{padding:7px 7px 5px;border-bottom:1px solid rgba(255,255,255,.06)}
+.rzr-search-inp{display:block;width:100%;background:#06060e;border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:5px 10px;color:#fff;font-size:12px;font-family:inherit;outline:none;box-sizing:border-box;transition:border-color .15s;}
+.rzr-search-inp:focus{border-color:rgba(255,51,51,.4)}
+.rzr-search-inp::placeholder{color:#374151}
+.rzr-list{max-height:200px;overflow-y:auto;padding:4px}
+.rzr-list::-webkit-scrollbar{width:3px}
+.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:4px}
+.rzr-item{display:flex;align-items:center;justify-content:space-between;gap:5px;padding:7px 10px;border-radius:7px;cursor:pointer;font-size:12px;color:#9ca3af;transition:background .1s,color .1s;}
+.rzr-item:hover{background:rgba(255,255,255,.05);color:#fff}
+.rzr-item.is-sel{background:rgba(255,51,51,.12);color:#FF3333;font-weight:600}
+.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rzr-item-chk{flex-shrink:0;font-size:10px;color:#FF3333;opacity:0}
+.rzr-item.is-sel .rzr-item-chk{opacity:1}
+.rzr-empty{padding:14px;text-align:center;color:#374151;font-size:12px}
+</style>
+
+<link rel="stylesheet" href="/loading.css">
+<style>
+@keyframes nx-spin{to{transform:translate(-50%,-50%) rotate(360deg);}}
+@keyframes nx-bar-move{0%{margin-left:-40%}100%{margin-left:140%}}
+@keyframes nx-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)}50%{box-shadow:0 0 0 8px rgba(255,51,51,.07)}}
+@keyframes nx-dot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1.2);opacity:1}}
+</style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.08)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite"><img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'"></div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.1);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.2);font-family:system-ui,sans-serif">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+(function(){
+  function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+  setTimeout(hide,1500);
+})();
+</script>
+<script src="/loading.js" defer></script>
+
+<div id="toast">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+
+  <main class="flex-1 p-6 md:p-8" style="max-width:1060px;margin:0 auto;">
+
+    <!-- ── Header ──────────────────────────────────────────────────── -->
+    <div class="mb-6 flex items-start justify-between gap-4">
+      <div>
+        <h1 class="font-bold flex items-center gap-2 mb-1" style="font-size:1.5rem;">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--accent-dim);border:1px solid rgba(255,51,51,.2);border-radius:10px;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="18" height="18" fill="var(--accent)"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0z"/></svg>
+          </span>
+          Advanced AutoMod
+        </h1>
+        <p style="color:var(--text-muted);font-size:.83rem;">Rate limiting, escalation, word filters, invites, zalgo &amp; more — all in one place.</p>
+      </div>
+      <button class="save-btn" onclick="save()">Save Changes</button>
+    </div>
+
+    <!-- ── Global settings panel ────────────────────────────────────── -->
+    <div class="panel mb-5" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <div class="font-semibold" style="font-size:.88rem;">Enable AutoMod</div>
+          <div style="color:var(--text-muted);font-size:.73rem;margin-top:1px;">Activate all moderation rules</div>
+        </div>
+        <label class="toggle-wrap"><input id="status" type="checkbox"><span class="toggle-track"></span></label>
+      </div>
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <div class="font-semibold" style="font-size:.88rem;">Detect Bot Spam</div>
+          <div style="color:var(--text-muted);font-size:.73rem;margin-top:1px;">Apply rules to bots</div>
+        </div>
+        <label class="toggle-wrap"><input id="botSpam" type="checkbox"><span class="toggle-track"></span></label>
+      </div>
+      <div>
+        <div class="fl" style="margin-bottom:.35rem;">Log Channel</div>
+        <select id="logChannelId">
+          <option value="">None</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ══════════════════════ RATE LIMIT MODULES ══════════════════════ -->
+    <div class="section-sep">
+      <span class="section-sep-label">Rate Limit Filters</span>
+      <hr class="section-sep-line">
+    </div>
+
+    <div class="modules-grid" id="rate-modules-grid">
+
+      <!-- Spam -->
+      <div class="module-card" id="mod-messages">
+        <div class="module-header">
+          <div>
+            <div class="module-title">Spam</div>
+            <div class="module-desc">Take actions when a user sends messages too fast.</div>
+          </div>
+          <span class="module-badge" id="badge-messages">0 / ∞</span>
+        </div>
+        <div class="module-exempt-row">
+          <button class="exempt-btn" onclick="manageRoles('messages')">Manage roles</button>
+          <button class="exempt-btn" onclick="manageChannels('messages')">Manage channels</button>
+          <button class="add-cond-btn" onclick="addCondition('messages')">+ Add condition</button>
+        </div>
+        <div class="cond-list" id="conds-messages"></div>
+      </div>
+
+      <!-- Mentions -->
+      <div class="module-card" id="mod-mentions">
+        <div class="module-header">
+          <div>
+            <div class="module-title">Mentions</div>
+            <div class="module-desc">Take actions when a user mentions too many users in a short time.</div>
+          </div>
+          <span class="module-badge" id="badge-mentions">0 / ∞</span>
+        </div>
+        <div class="module-exempt-row">
+          <button class="exempt-btn" onclick="manageRoles('mentions')">Manage roles</button>
+          <button class="exempt-btn" onclick="manageChannels('mentions')">Manage channels</button>
+          <button class="add-cond-btn" onclick="addCondition('mentions')">+ Add condition</button>
+        </div>
+        <div class="cond-list" id="conds-mentions"></div>
+      </div>
+
+      <!-- Attachments -->
+      <div class="module-card" id="mod-attachments">
+        <div class="module-header">
+          <div>
+            <div class="module-title">Attachments</div>
+            <div class="module-desc">Take actions when a user sends too many attachments in a short time.</div>
+          </div>
+          <span class="module-badge" id="badge-attachments">0 / ∞</span>
+        </div>
+        <div class="module-exempt-row">
+          <button class="exempt-btn" onclick="manageRoles('attachments')">Manage roles</button>
+          <button class="exempt-btn" onclick="manageChannels('attachments')">Manage channels</button>
+          <button class="add-cond-btn" onclick="addCondition('attachments')">+ Add condition</button>
+        </div>
+        <div class="cond-list" id="conds-attachments"></div>
+      </div>
+
+      <!-- Emojis -->
+      <div class="module-card" id="mod-emojis">
+        <div class="module-header">
+          <div>
+            <div class="module-title">Emojis</div>
+            <div class="module-desc">Take actions when a user sends too many emojis in a short time.</div>
+          </div>
+          <span class="module-badge" id="badge-emojis">0 / ∞</span>
+        </div>
+        <div class="module-exempt-row">
+          <button class="exempt-btn" onclick="manageRoles('emojis')">Manage roles</button>
+          <button class="exempt-btn" onclick="manageChannels('emojis')">Manage channels</button>
+          <button class="add-cond-btn" onclick="addCondition('emojis')">+ Add condition</button>
+        </div>
+        <div class="cond-list" id="conds-emojis"></div>
+      </div>
+
+      <!-- Message Lines -->
+      <div class="module-card" id="mod-newlines">
+        <div class="module-header">
+          <div>
+            <div class="module-title">Message Lines</div>
+            <div class="module-desc">Take actions when a user sends too many message lines (large messages) in a short time.</div>
+          </div>
+          <span class="module-badge" id="badge-newlines">0 / ∞</span>
+        </div>
+        <div class="module-exempt-row">
+          <button class="exempt-btn" onclick="manageRoles('newlines')">Manage roles</button>
+          <button class="exempt-btn" onclick="manageChannels('newlines')">Manage channels</button>
+          <button class="add-cond-btn" onclick="addCondition('newlines')">+ Add condition</button>
+        </div>
+        <div class="cond-list" id="conds-newlines"></div>
+      </div>
+
+      <!-- Capitalization -->
+      <div class="module-card" id="mod-caps">
+        <div class="module-header">
+          <div>
+            <div class="module-title">Capitalization</div>
+            <div class="module-desc">Take actions when a user's message has too many capitalized letters.</div>
+          </div>
+          <span class="module-badge" id="badge-caps">0 / ∞</span>
+        </div>
+        <div class="module-exempt-row">
+          <button class="exempt-btn" onclick="manageRoles('caps')">Manage roles</button>
+          <button class="exempt-btn" onclick="manageChannels('caps')">Manage channels</button>
+          <button class="add-cond-btn" onclick="addCondition('caps')">+ Add condition</button>
+        </div>
+        <div class="cond-list" id="conds-caps"></div>
+      </div>
+
+      <!-- Duplicates -->
+      <div class="module-card" id="mod-duplicates">
+        <div class="module-header">
+          <div>
+            <div class="module-title">Duplicate Messages</div>
+            <div class="module-desc">Take actions when a user sends the same message repeatedly.</div>
+          </div>
+          <span class="module-badge" id="badge-duplicates">0 / ∞</span>
+        </div>
+        <div class="module-exempt-row">
+          <button class="exempt-btn" onclick="manageRoles('duplicates')">Manage roles</button>
+          <button class="exempt-btn" onclick="manageChannels('duplicates')">Manage channels</button>
+          <button class="add-cond-btn" onclick="addCondition('duplicates')">+ Add condition</button>
+        </div>
+        <div class="cond-list" id="conds-duplicates"></div>
+      </div>
+
+      <!-- Links -->
+      <div class="module-card" id="mod-links">
+        <div class="module-header">
+          <div>
+            <div class="module-title">Links</div>
+            <div class="module-desc">Take actions when a user's message includes links.</div>
+          </div>
+          <span class="module-badge" id="badge-links">0 / ∞</span>
+        </div>
+        <div class="module-exempt-row">
+          <button class="exempt-btn" onclick="manageRoles('links')">Manage roles</button>
+          <button class="exempt-btn" onclick="manageChannels('links')">Manage channels</button>
+          <button class="add-cond-btn" onclick="addCondition('links')">+ Add condition</button>
+        </div>
+        <div class="cond-list" id="conds-links"></div>
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════ SPECIAL FILTER MODULES ══════════════════ -->
+    <div class="section-sep" style="margin-top:1.6rem;">
+      <span class="section-sep-label">Special Filters</span>
+      <hr class="section-sep-line">
+    </div>
+
+    <div class="modules-grid">
+
+      <!-- Invites -->
+      <div class="module-card">
+        <div class="module-header" style="margin-bottom:.7rem;">
+          <div>
+            <div class="module-title">Invites</div>
+            <div class="module-desc">Take actions when a user posts a Discord invite link.</div>
+          </div>
+          <label class="toggle-wrap"><input id="filterInvites" type="checkbox" onchange="toggleFilterSection('inviteSection',this)"><span class="toggle-track"></span></label>
+        </div>
+        <div id="inviteSection" class="filter-settings hidden">
+          <div>
+            <div class="fl">Action</div>
+            <select id="inviteAction">
+              <option value="delete">Delete</option>
+              <option value="warn">Warn</option>
+              <option value="mute">Mute</option>
+              <option value="kick">Kick</option>
+              <option value="ban">Ban</option>
+            </select>
+          </div>
+          <div>
+            <div class="fl">Mute Duration (min)</div>
+            <input id="inviteMuteDuration" type="number" min="1" placeholder="10">
+          </div>
+          <div style="grid-column:1/-1;" class="flex items-center justify-between">
+            <div>
+              <div style="font-size:.82rem;font-weight:600;">Allow Own Server Invites</div>
+              <div style="font-size:.72rem;color:var(--text-muted);">Allow invites back to this server</div>
+            </div>
+            <label class="toggle-wrap"><input id="allowOwnInvites" type="checkbox"><span class="toggle-track"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zalgo Text -->
+      <div class="module-card">
+        <div class="module-header" style="margin-bottom:.7rem;">
+          <div>
+            <div class="module-title">Zalgo Text</div>
+            <div class="module-desc">Detect and remove distorted "zalgo" / diacritic-overload text.</div>
+          </div>
+          <label class="toggle-wrap"><input id="filterZalgo" type="checkbox" onchange="toggleFilterSection('zalgoSection',this)"><span class="toggle-track"></span></label>
+        </div>
+        <div id="zalgoSection" class="filter-settings hidden">
+          <div>
+            <div class="fl">Action</div>
+            <select id="zalgoAction">
+              <option value="delete">Delete</option>
+              <option value="warn">Warn</option>
+              <option value="mute">Mute</option>
+              <option value="kick">Kick</option>
+              <option value="ban">Ban</option>
+            </select>
+          </div>
+          <div>
+            <div class="fl">Mute Duration (min)</div>
+            <input id="zalgoMuteDuration" type="number" min="1" placeholder="10">
+          </div>
+          <div>
+            <div class="fl">Zalgo Threshold (0.0–1.0)</div>
+            <input id="zalgoThreshold" type="number" min="0" max="1" step="0.05" placeholder="0.20">
+          </div>
+        </div>
+      </div>
+
+      <!-- Mass Mention -->
+      <div class="module-card">
+        <div class="module-header" style="margin-bottom:.7rem;">
+          <div>
+            <div class="module-title">Mass Mention</div>
+            <div class="module-desc">Take action when a user pings @everyone or @here.</div>
+          </div>
+          <label class="toggle-wrap"><input id="filterMassMention" type="checkbox" onchange="toggleFilterSection('massMentionSection',this)"><span class="toggle-track"></span></label>
+        </div>
+        <div id="massMentionSection" class="filter-settings hidden">
+          <div>
+            <div class="fl">Action</div>
+            <select id="massMentionAction">
+              <option value="delete">Delete</option>
+              <option value="warn">Warn</option>
+              <option value="mute">Mute</option>
+              <option value="kick">Kick</option>
+              <option value="ban">Ban</option>
+            </select>
+          </div>
+          <div>
+            <div class="fl">Mute Duration (min)</div>
+            <input id="massMentionMuteDuration" type="number" min="1" placeholder="10">
+          </div>
+        </div>
+      </div>
+
+      <!-- Repeat Characters -->
+      <div class="module-card">
+        <div class="module-header" style="margin-bottom:.7rem;">
+          <div>
+            <div class="module-title">Repeat Characters</div>
+            <div class="module-desc">Detect messages with excessively repeated characters like "aaaaaaa".</div>
+          </div>
+          <label class="toggle-wrap"><input id="filterRepeatChar" type="checkbox" onchange="toggleFilterSection('repeatCharSection',this)"><span class="toggle-track"></span></label>
+        </div>
+        <div id="repeatCharSection" class="filter-settings hidden">
+          <div>
+            <div class="fl">Action</div>
+            <select id="repeatCharAction">
+              <option value="delete">Delete</option>
+              <option value="warn">Warn</option>
+              <option value="mute">Mute</option>
+              <option value="kick">Kick</option>
+              <option value="ban">Ban</option>
+            </select>
+          </div>
+          <div>
+            <div class="fl">Mute Duration (min)</div>
+            <input id="repeatCharMuteDuration" type="number" min="1" placeholder="10">
+          </div>
+          <div>
+            <div class="fl">Repeat Limit (chars)</div>
+            <input id="repeatCharLimit" type="number" min="3" placeholder="10">
+          </div>
+        </div>
+      </div>
+
+      <!-- Stickers -->
+      <div class="module-card">
+        <div class="module-header" style="margin-bottom:.7rem;">
+          <div>
+            <div class="module-title">Sticker Spam</div>
+            <div class="module-desc">Take actions when a user sends too many stickers.</div>
+          </div>
+          <label class="toggle-wrap"><input id="filterStickers" type="checkbox" onchange="toggleFilterSection('stickersSection',this)"><span class="toggle-track"></span></label>
+        </div>
+        <div id="stickersSection" class="filter-settings hidden">
+          <div>
+            <div class="fl">Action</div>
+            <select id="stickerAction">
+              <option value="delete">Delete</option>
+              <option value="warn">Warn</option>
+              <option value="mute">Mute</option>
+            </select>
+          </div>
+          <div>
+            <div class="fl">Mute Duration (min)</div>
+            <input id="stickerMuteDuration" type="number" min="1" placeholder="10">
+          </div>
+          <div>
+            <div class="fl">Sticker Limit (per msg)</div>
+            <input id="stickerLimit" type="number" min="1" placeholder="2">
+          </div>
+        </div>
+      </div>
+
+      <!-- Spoilers -->
+      <div class="module-card">
+        <div class="module-header" style="margin-bottom:.7rem;">
+          <div>
+            <div class="module-title">Spoiler Abuse</div>
+            <div class="module-desc">Take actions when a user sends too many spoiler tags.</div>
+          </div>
+          <label class="toggle-wrap"><input id="filterSpoilers" type="checkbox" onchange="toggleFilterSection('spoilersSection',this)"><span class="toggle-track"></span></label>
+        </div>
+        <div id="spoilersSection" class="filter-settings hidden">
+          <div>
+            <div class="fl">Action</div>
+            <select id="spoilerAction">
+              <option value="delete">Delete</option>
+              <option value="warn">Warn</option>
+              <option value="mute">Mute</option>
+            </select>
+          </div>
+          <div>
+            <div class="fl">Mute Duration (min)</div>
+            <input id="spoilerMuteDuration" type="number" min="1" placeholder="10">
+          </div>
+          <div>
+            <div class="fl">Spoiler Limit (per msg)</div>
+            <input id="spoilerLimit" type="number" min="1" placeholder="5">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════ WORD GROUPS ═══════════════════════════════ -->
+    <div class="section-sep" style="margin-top:1.6rem;">
+      <span class="section-sep-label">Words</span>
+      <hr class="section-sep-line">
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+        <div>
+          <div class="font-bold" style="font-size:.95rem;">Word Groups</div>
+          <div style="color:var(--text-muted);font-size:.76rem;margin-top:2px;">Create named word lists, each with its own action. Supports wildcard &amp; exact matching.</div>
+        </div>
+        <button class="add-btn" onclick="addWordGroup()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Group
+        </button>
+      </div>
+      <div id="wordGroupsList"></div>
+    </div>
+
+    <!-- ══════════════════════ LINK GROUPS ═══════════════════════════════ -->
+    <div class="section-sep" style="margin-top:1.6rem;">
+      <span class="section-sep-label">Link Groups</span>
+      <hr class="section-sep-line">
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+        <div>
+          <div class="font-bold" style="font-size:.95rem;">Link Groups</div>
+          <div style="color:var(--text-muted);font-size:.76rem;margin-top:2px;">Blacklist or whitelist specific domains per group.</div>
+        </div>
+        <button class="add-btn" onclick="addLinkGroup()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Group
+        </button>
+      </div>
+      <div id="linkGroupsList"></div>
+    </div>
+
+    <!-- ══════════════════════ WARN LADDER ═══════════════════════════════ -->
+    <div class="section-sep" style="margin-top:1.6rem;">
+      <span class="section-sep-label">Warns</span>
+      <hr class="section-sep-line">
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+        <div>
+          <div class="font-bold" style="font-size:.95rem;">Warning Escalation</div>
+          <div style="color:var(--text-muted);font-size:.76rem;margin-top:2px;">Define what happens when a user accumulates warnings. Steps are matched by exact warn count.</div>
+        </div>
+        <button class="add-btn" onclick="addWarnStep()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Step
+        </button>
+      </div>
+      <div class="warn-step-label">
+        <span>Warns</span><span>Action</span><span>Duration / Note</span><span></span>
+      </div>
+      <div id="warnStepsList" style="display:flex;flex-direction:column;gap:.4rem;margin-top:.25rem;"></div>
+      <div style="margin-top:1rem;background:rgba(255,179,71,.05);border:1px solid rgba(255,179,71,.15);border-radius:10px;padding:.65rem .9rem;font-size:.77rem;color:#cbd5e1;line-height:1.5;">
+        <span style="color:var(--warning);font-weight:700;">ℹ</span>
+        Warns accumulate per user across all triggers. Misses fall through to the nearest lower defined step.
+      </div>
+    </div>
+
+    <!-- ══════════════════════ REGEX RULES ═══════════════════════════════ -->
+    <div class="section-sep" style="margin-top:1.6rem;">
+      <span class="section-sep-label">Regex Rules</span>
+      <hr class="section-sep-line">
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+        <div>
+          <div class="font-bold" style="font-size:.95rem;">Regex Pattern Rules</div>
+          <div style="color:var(--text-muted);font-size:.76rem;margin-top:2px;">Advanced pattern matching. Test your patterns before saving.</div>
+        </div>
+        <button class="add-btn" onclick="addRegexRule()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Pattern
+        </button>
+      </div>
+      <div id="regexRulesList"></div>
+      <hr class="divider">
+      <div class="fl" style="margin-bottom:.5rem;">Regex Tester</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-bottom:.5rem;">
+        <input id="testPattern" type="text" placeholder="Pattern, e.g. https?://\\S+">
+        <input id="testInput" type="text" placeholder="Test string…">
+      </div>
+      <button onclick="testRegex()" style="background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text-dim);border-radius:8px;padding:.38rem .85rem;font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;">Test Match</button>
+      <div id="testResult" style="margin-top:.5rem;font-size:.8rem;"></div>
+    </div>
+
+    <div style="height:2rem;"></div>
+
+  </main>
+</div>
+
+<script src="/sidebar.js"></script>
+<script type="module" src="/js/advancedautomodmain.js"></script>
+
+<!-- Razor Custom Select JS -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet(),openWrap=null;
+function cleanText(t){t=String(t||'');var d=document.createElement('div');d.innerHTML=t;return(d.textContent||d.innerText||'').trim();}
+function optText(opt){return cleanText(opt.text||opt.textContent||opt.label||'');}
+function positionPanel(wrap){var r=wrap._t.getBoundingClientRect(),p=wrap._p,panelH=p.offsetHeight||200,spaceBelow=window.innerHeight-r.bottom,spaceAbove=r.top,width=Math.max(r.width,140);p.style.width=width+'px';p.style.left=r.left+'px';p.style.right='auto';if(spaceBelow>=panelH||spaceBelow>=spaceAbove){p.style.top=(r.bottom+3)+'px';p.style.bottom='auto';}else{p.style.bottom=(window.innerHeight-r.top+3)+'px';p.style.top='auto';}}
+document.addEventListener('mousedown',function(e){if(!openWrap)return;if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);},true);
+window.addEventListener('scroll',function(){if(openWrap)positionPanel(openWrap);},true);
+window.addEventListener('resize',function(){if(openWrap)positionPanel(openWrap);});
+function open_(wrap){if(openWrap&&openWrap!==wrap)close_(openWrap);openWrap=wrap;buildList(wrap,'');wrap._si.value='';wrap._sw.style.display='';document.body.appendChild(wrap._p);wrap._p.style.display='block';wrap._t.classList.add('is-open');wrap._t.setAttribute('aria-expanded','true');requestAnimationFrame(function(){positionPanel(wrap);});setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},25);}
+function close_(wrap){if(!wrap)return;if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);wrap._p.style.display='none';wrap._t.classList.remove('is-open');wrap._t.setAttribute('aria-expanded','false');if(openWrap===wrap)openWrap=null;}
+function buildList(wrap,q){var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();var opts=Array.from(sel.options).filter(function(o){var t=optText(o);return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);});if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}list.innerHTML='';opts.forEach(function(opt){var it=document.createElement('div');it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');it.dataset.v=opt.value;var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';it.appendChild(tx);it.appendChild(ck);it.addEventListener('mousedown',function(e){e.preventDefault();e.stopPropagation();sel.value=opt.value;updateLabel(wrap);close_(wrap);sel.dispatchEvent(new Event('change',{bubbles:true}));});list.appendChild(it);});}
+function updateLabel(wrap){var sel=wrap._s,lbl=wrap._lb;var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;var text=opt?optText(opt):'';if(text){lbl.textContent=text;lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));}else{lbl.textContent='Select…';lbl.classList.add('is-ph');}wrap._last=sel.value;}
+function wrapSelect(sel){if(wrapped.has(sel))return;if(sel.hasAttribute('data-rzr-skip'))return;if(sel.size&&sel.size>1)return;wrapped.add(sel);if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';var sib=sel.nextElementSibling;if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';var t=document.createElement('div');t.className='rzr-trigger';t.setAttribute('tabindex','0');t.setAttribute('role','combobox');t.setAttribute('aria-haspopup','listbox');t.setAttribute('aria-expanded','false');var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select…';var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;t.appendChild(lb);t.appendChild(cv);var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';var sw=document.createElement('div');sw.className='rzr-panel-search';var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search…';si.autocomplete='off';si.spellcheck=false;sw.appendChild(si);var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');p.appendChild(sw);p.appendChild(l);var w=document.createElement('div');w.className='rzr-wrap';w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;w.appendChild(t);w.appendChild(p);sel.parentNode.insertBefore(w,sel);w.appendChild(sel);si.addEventListener('input',function(){buildList(w,si.value);});si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});t.addEventListener('click',function(e){e.stopPropagation();openWrap===w?close_(w):open_(w);});t.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}if(e.key==='Escape')close_(w);});var mo=new MutationObserver(function(){updateLabel(w);if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}});mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});var pid=setInterval(function(){if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}if(sel.value!==w._last)updateLabel(w);},150);updateLabel(w);}
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType!==1)return;if(n.tagName==='SELECT')wrapSelect(n);else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);});});}).observe(document.body,{childList:true,subtree:true});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);else initAll();
+})();
+</script>
+
+
+<!-- ── Exempt Roles / Channels Modal ──────────────────────────────────────── -->
+<div id="exemptModal" onclick="if(event.target===this)closeExemptModal()">
+  <div class="exempt-modal-box">
+    <div class="exempt-modal-head">
+      <div>
+        <h2 id="exemptModalTitle">Roles</h2>
+        <p id="exemptModalSubtitle"></p>
+      </div>
+      <button class="exempt-close-btn" onclick="closeExemptModal()">&#x2715;</button>
+    </div>
+
+    <div class="exempt-mode-row">
+      <span>The following will be</span>
+      <select class="exempt-mode-sel" id="exemptModeSelect" onchange="onExemptModeChange(this.value)">
+        <option value="excluded">excluded</option>
+        <option value="included">included</option>
+      </select>
+      <span>:</span>
+    </div>
+
+    <div class="exempt-tags-wrap" id="exemptTagsWrap">
+      <span style="color:var(--text-muted);font-size:.78rem;align-self:center;">None added yet</span>
+    </div>
+
+    <div class="exempt-picker-label">Add from server</div>
+    <input class="exempt-picker-search" type="text" placeholder="Search&#x2026;" oninput="exemptPickerSearch(this.value)">
+    <div id="exemptPicker"></div>
+
+    <div class="exempt-modal-foot">
+      <button class="exempt-done-btn" onclick="closeExemptModal()">Done</button>
+      <button class="save-btn" onclick="closeExemptModal();save()">Save</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

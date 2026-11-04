@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" class="hub-mode">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Roco · Staff</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <link rel="stylesheet" href="/loading.css">
+  <link rel="stylesheet" href="/css/hub.css">
+  <style>
+    #nx-progress { position:fixed; top:0; left:0; height:2px; z-index:99998; pointer-events:none; background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555); box-shadow:0 0 10px rgba(255,51,51,.7); width:0%; opacity:0; }
+    #nx-loader { position:fixed; inset:0; z-index:999999; background:#05060a; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; transition:opacity .35s ease,visibility .35s ease }
+    @keyframes nx-spin { to { transform:translate(-50%,-50%) rotate(360deg) } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader"><div class="nx-bar-wrap"><div class="nx-bar"></div></div><div class="nx-ring"><div class="nx-logo"><img src="/logo.png" alt="" onerror="this.style.display='none'"></div><div class="nx-spin"></div></div><div class="nx-label">Loading<span class="nx-dots"><span></span><span></span><span></span></span></div></div>
+<script>
+  (function(){function h(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(h,80);});}else{setTimeout(h,80);}setTimeout(h,1500);})();
+</script>
+<script src="/loading.js" defer></script>
+
+<div class="flex min-h-screen" id="razor-content">
+  <aside id="razor-sidebar"></aside>
+  <main class="flex-1 overflow-x-hidden" style="position:relative;z-index:1;">
+
+    <div class="hub-header">
+      <a class="hub-header-back" href="/guild/${guildId}">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        Overview
+      </a>
+      <h1>Staff</h1>
+      <p>Manage staff applications, commands, recovery, ratings, and dashboard access</p>
+      <div class="hub-header-accent" style="background:#818cf8;"></div>
+    </div>
+
+    <div class="hub-search">
+      <div class="hub-search-wrap">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input class="hub-search-input" type="text" placeholder="Search staff..." autocomplete="off" spellcheck="false">
+        <button class="hub-search-clear" aria-label="Clear search">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="hub-search-count"></div>
+    </div>
+
+    <div class="hub-section" data-section="applications">
+      <div class="hub-section-header">Staff Applications</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/staffapps" class="hub-item" data-search="staff applications apply dm multi-panel questions forms">
+          <div class="hub-item-icon" style="background:rgba(129,140,248,0.12);color:#818cf8;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Staff Applications</div>
+            <div class="hub-item-desc">Multi-panel DM-based applications with custom questions sent one-by-one</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hub-section" data-section="commands">
+      <div class="hub-section-header">Staff Commands</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/inbuilt-commands" class="hub-item" data-search="staff commands promote infract warning suspension removal demote">
+          <div class="hub-item-icon" style="background:rgba(99,102,241,0.12);color:#6366f1;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Staff Commands</div>
+            <div class="hub-item-desc">Configure /promote and /infract — warning, suspension, demotion, and removal</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/staff-recovery" class="hub-item" data-search="staff recovery keys restore access lockout one-time regenerate">
+          <div class="hub-item-icon" style="background:rgba(245,158,11,0.12);color:#f59e0b;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Staff Recovery Keys</div>
+            <div class="hub-item-desc">Generate one-time keys to restore staff access if someone gets locked out</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hub-section" data-section="visibility">
+      <div class="hub-section-header">Staff Visibility</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/staff-rating" class="hub-item" data-search="staff rating stars reviews performance feedback">
+          <div class="hub-item-icon" style="background:rgba(251,191,36,0.12);color:#fbbf24;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Staff Rating</div>
+            <div class="hub-item-desc">Let members rate staff performance with stars and written reviews</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/staff-list" class="hub-item" data-search="staff list embed rank tiers auto-post team">
+          <div class="hub-item-icon" style="background:rgba(52,211,153,0.12);color:#34d399;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Staff List</div>
+            <div class="hub-item-desc">Auto-post and maintain a live staff list embed with rank tiers</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hub-section" data-section="access">
+      <div class="hub-section-header">Access Control</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/dashboard-roles" class="hub-item" data-search="dashboard roles staff access control panel permissions">
+          <div class="hub-item-icon" style="background:rgba(56,189,248,0.12);color:#38bdf8;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Dashboard Roles</div>
+            <div class="hub-item-desc">Control which staff roles can access this dashboard</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/connection-roles" class="hub-item" data-search="connection roles link discord linked accounts social">
+          <div class="hub-item-icon" style="background:rgba(167,139,250,0.12);color:#a78bfa;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Connection Roles</div>
+            <div class="hub-item-desc">Auto-assign roles when members link their Discord connection accounts</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<nav class="hub-tabs">[tabs]</nav>
+
+<script src="/sidebar.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.hub-tab[href]').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        var href = link.getAttribute('href');
+        if (window.__razorNavigate) window.__razorNavigate(href);
+        else location.href = href;
+      });
+    });
+
+    var searchInput = document.querySelector('.hub-search-input');
+    var searchClear = document.querySelector('.hub-search-clear');
+    var searchCount = document.querySelector('.hub-search-count');
+    if (!searchInput) return;
+
+    function filterFeatures() {
+      var q = searchInput.value.toLowerCase().trim();
+      var items = document.querySelectorAll('.hub-item');
+      var sections = document.querySelectorAll('.hub-section');
+      var visibleCount = 0;
+
+      items.forEach(function(item) {
+        var terms = item.getAttribute('data-search') || item.textContent.toLowerCase();
+        var match = !q || terms.indexOf(q) !== -1;
+        item.classList.toggle('hub-item-hidden', !match);
+        if (match) visibleCount++;
+      });
+
+      sections.forEach(function(sec) {
+        var visibleItems = sec.querySelectorAll('.hub-item:not(.hub-item-hidden)').length;
+        sec.classList.toggle('hub-section-hidden', visibleItems === 0);
+      });
+      document.querySelectorAll('.hub-section-header').forEach(function(hdr) {
+        var sec = hdr.closest('.hub-section');
+        hdr.classList.toggle('hub-section-hidden', sec && sec.classList.contains('hub-section-hidden'));
+      });
+
+      if (q) {
+        searchCount.textContent = visibleCount + ' feature' + (visibleCount !== 1 ? 's' : '') + ' found';
+        searchCount.classList.add('is-visible');
+        searchClear.classList.add('is-visible');
+      } else {
+        searchCount.classList.remove('is-visible');
+        searchClear.classList.remove('is-visible');
+      }
+    }
+
+    searchInput.addEventListener('input', filterFeatures);
+    searchClear.addEventListener('click', function() {
+      searchInput.value = '';
+      filterFeatures();
+      searchInput.focus();
+    });
+  });
+</script>
+
+</body>
+</html>

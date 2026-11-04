@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support Us | Roco Dashboard</title>
+  
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <script>
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+    const tailwind = window.tailwind || {}; tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: { 
+            razor: "#FF3333",
+            razorDark: "#CC2222",
+            dark: "#080505",
+            card: "#181010",
+            panel: "#0f0f13"
+          },
+          animation: {
+            'blob': 'blob 10s infinite',
+            'shimmer': 'shimmer 2s linear infinite',
+            'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+          },
+          keyframes: {
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            },
+            shimmer: {
+              '0%': { backgroundPosition: '200% 0' },
+              '100%': { backgroundPosition: '-200% 0' }
+            },
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(15px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { background-color: #050508; overflow-x: hidden; }
+    .bg-grid {
+      background-size: 60px 60px;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #050508; }
+    ::-webkit-scrollbar-thumb { background: #2d2d3d; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #FF3333; }
+    
+    .glass-card {
+      background: rgba(15, 15, 19, 0.8);
+      backdrop-filter: blur(12px);
+    }
+
+    /* Hacker Effect Canvas Styling */
+    .hacker-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+    .group:hover .hacker-canvas {
+      opacity: 0.15; /* Adjust visibility here */
+    }
+  </style>
+
+<style>
+/* ═══════════════ Razor Custom Select ═══════════════ */
+.rzr-wrap{position:relative;width:100%;display:block}
+/* hide ::after chevrons on select-wrap parents */
+.rzr-wrap-parent.select-wrap::after,
+.rzr-wrap-parent::after{display:none!important;content:none!important}
+.rzr-trigger{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:10px 14px;
+  border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);
+  background:#0d0d1c;color:#fff;
+  cursor:pointer;font-size:14px;font-family:inherit;
+  min-height:44px;width:100%;
+  transition:border-color .15s,box-shadow .15s;
+  user-select:none;box-sizing:border-box;
+}
+.rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
+.rzr-trigger.is-open{
+  border-color:rgba(255,51,51,.6);
+  box-shadow:0 0 0 3px rgba(255,51,51,.1);
+}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
+.rzr-label.is-ph{color:#6b7280}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+/* panel is appended to body — these rules still apply via the class */
+.rzr-panel{
+  position:fixed;z-index:999999;
+  background:rgba(11,11,20,.98);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  overflow:hidden;
+  animation:rzrIn .16s ease;
+}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
+.rzr-search-inp{
+  display:block;width:100%;
+  background:#06060f;border:1px solid rgba(255,255,255,.09);
+  border-radius:7px;padding:6px 11px;
+  color:#fff;font-size:13px;font-family:inherit;
+  outline:none;box-sizing:border-box;transition:border-color .15s;
+}
+.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-search-inp::placeholder{color:#374151}
+.rzr-list{max-height:220px;overflow-y:auto;padding:5px}
+.rzr-list::-webkit-scrollbar{width:4px}
+.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:6px}
+.rzr-list::-webkit-scrollbar-thumb:hover{background:#FF3333}
+.rzr-item{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:6px;padding:8px 11px;border-radius:8px;
+  cursor:pointer;font-size:13px;color:#9ca3af;
+  transition:background .1s,color .1s;
+}
+.rzr-item:hover{background:rgba(255,255,255,.055);color:#fff}
+.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600}
+.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item.is-sel .rzr-item-chk{opacity:1}
+.rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
+/* ═══════════════ End Razor Custom Select ═══════════════ */
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body class="text-white antialiased min-h-screen relative">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+  <div class="fixed inset-0 bg-grid -z-10"></div>
+  <div class="fixed top-0 -left-20 w-64 md:w-96 h-64 md:h-96 bg-razor/10 rounded-full blur-[80px] md:blur-[120px] animate-blob -z-10"></div>
+  <div class="fixed bottom-0 -right-20 w-64 md:w-96 h-64 md:h-96 bg-blue-600/10 rounded-full blur-[80px] md:blur-[120px] animate-blob animation-delay-2000 -z-10"></div>
+
+  <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-[#050508]/80 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 md:gap-3 group">
+        <div class="relative">
+          <div class="absolute -inset-1 bg-gradient-to-r from-razor to-blue-600 rounded-xl blur opacity-25 group-hover:opacity-75 transition duration-500"></div>
+          <div class="relative w-8 h-8 md:w-10 md:h-10 bg-[#101015] rounded-lg md:rounded-xl flex items-center justify-center border border-white/10">
+            <svg class="w-5 h-5 md:w-6 md:h-6 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+        </div>
+        <span class="text-lg md:text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Roco</span>
+      </a>
+      <div class="flex items-center gap-4">
+        <a href="/" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Back to Dashboard</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="pt-24 md:pt-32 pb-20 px-4 md:px-6 max-w-7xl mx-auto">
+    
+    <div class="max-w-3xl mb-12 animate-fade-in-up">
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">Support <span class="text-razor">Roco</span></h1>
+      <p class="text-gray-400 text-lg leading-relaxed">
+        Your contributions keep our servers running and help us develop new features. 
+        Choose a tier that works for you. All transactions are securely handled by Stripe.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-4 mb-8 p-4 glass-card border border-white/5 rounded-2xl w-fit animate-fade-in-up" style="animation-delay: 100ms">
+        <span class="text-sm font-semibold text-gray-300">Display Currency:</span>
+        <div class="relative">
+            <select id="currencySelect" class="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-2 pr-10 text-sm font-bold text-razor focus:outline-none cursor-pointer hover:bg-white/10 transition-all">
+                <option value="EUR" selected>EUR (€)</option>
+                <option value="USD">USD ($)</option>
+                <option value="GBP">GBP (£)</option>
+            </select>
+            <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </div>
+    </div>
+
+    <div id="donationGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up" style="animation-delay: 200ms">
+    </div>
+
+    <div class="mt-12 text-center text-gray-500 text-sm animate-fade-in-up" style="animation-delay: 400ms">
+        <p>Questions? Join our Discord community for support.</p>
+    </div>
+  </main>
+
+  <script>
+    const donationGrid = document.getElementById('donationGrid');
+    const currencySelect = document.getElementById('currencySelect');
+
+    const donations = [
+      { label: "Starter", amountGBP: 1, stripeLink: "https://donate.stripe.com/bJecN473o9Bv3cMaqsgUM0f", desc: "A small token of appreciation." },
+      { label: "Supporter", amountGBP: 3, stripeLink: "https://donate.stripe.com/cNi4gy87sfZT7t2eGIgUM0g", desc: "Helps us cover basic hosting." },
+      { label: "Plus", amountGBP: 5, stripeLink: "https://donate.stripe.com/8x25kCevQ8xr14EgOQgUM0h", desc: "Our most popular support tier." },
+      { label: "Premium", amountGBP: 10, stripeLink: "https://donate.stripe.com/3cIbJ0bjEeVPbJiaqsgUM0i", desc: "Significant help for the project." },
+      { label: "Elite", amountGBP: 20, stripeLink: "https://donate.stripe.com/fZu9AS3Rc6pjbJidCEgUM0j", desc: "True patron of Roco development." },
+      { label: "Legend", amountGBP: 50, stripeLink: "https://donate.stripe.com/8x2eVc0F03d76oY8ikgUM0k", desc: "The ultimate contribution." },
+    ];
+
+    const rates = { GBP: 1, USD: 1.26, EUR: 1.14 };
+    const symbols = { GBP: '£', USD: '$', EUR: '€' };
+
+    function initHackerEffect(canvas) {
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+
+      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@&%*";
+      const fontSize = 10;
+      const columns = canvas.width / fontSize;
+      const drops = Array(Math.floor(columns)).fill(1);
+
+      function draw() {
+        ctx.fillStyle = 'rgba(5, 8, 5, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#FF3333';
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = characters.charAt(Math.floor(Math.random() * characters.length));
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+          
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+      }
+      setInterval(draw, 33);
+    }
+
+    function renderCards() {
+      const selected = currencySelect.value;
+      donationGrid.innerHTML = donations.map((d, i) => {
+        const converted = (d.amountGBP * rates[selected]).toFixed(2);
+        
+        return `
+          <div class="group relative bg-[#0f0f13] border border-white/5 rounded-2xl overflow-hidden hover:border-razor/30 transition-all duration-300 shadow-xl shadow-black/50 animate-fade-in-up" style="animation-delay: ${i * 50}ms">
+            <canvas class="hacker-canvas"></canvas>
+            
+            <div class="relative glass-card p-8 rounded-2xl flex flex-col h-full transition-transform duration-300 group-hover:scale-[1.01] z-10">
+              <div class="mb-6">
+                <h3 class="text-razor font-bold uppercase tracking-widest text-xs mb-2">${escapeHtml(d.label)}</h3>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-4xl font-extrabold text-white">${symbols[selected]}${converted}</span>
+                  <span class="text-gray-500 text-sm">one-time</span>
+                </div>
+              </div>
+              
+              <p class="text-gray-400 text-sm mb-8 flex-grow leading-relaxed">
+                ${d.desc}
+              </p>
+
+              <a href="${d.stripeLink}" target="_blank" class="relative flex items-center justify-center w-full py-4 bg-razor hover:bg-razorDark text-black font-bold rounded-xl transition-all shadow-lg shadow-razor/10 overflow-hidden group/btn">
+                <span class="relative z-10">Donate Now</span>
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]"></div>
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Initialize canvas effects for all rendered cards
+      document.querySelectorAll('.hacker-canvas').forEach(initHackerEffect);
+    }
+
+    currencySelect.addEventListener('change', renderCards);
+    renderCards();
+  </script>
+<!-- Razor Custom Select JS -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet();
+var openWrap=null;
+
+/* strip any html tags from option text just in case */
+function cleanText(t){
+  t=String(t||'');
+  var d=document.createElement('div');
+  d.innerHTML=t;
+  return (d.textContent||d.innerText||'').trim();
+}
+
+/* get clean option text */
+function optText(opt){
+  return cleanText(opt.text||opt.textContent||opt.label||'');
+}
+
+/* position panel relative to trigger using fixed coords */
+function positionPanel(wrap){
+  var r=wrap._t.getBoundingClientRect();
+  var p=wrap._p;
+  var panelH=p.offsetHeight||240;
+  var spaceBelow=window.innerHeight-r.bottom;
+  var spaceAbove=r.top;
+  var width=Math.max(r.width,160);
+  p.style.width=width+'px';
+  p.style.left=r.left+'px';
+  p.style.right='auto';
+  if(spaceBelow>=panelH||spaceBelow>=spaceAbove){
+    p.style.top=(r.bottom+4)+'px';
+    p.style.bottom='auto';
+  } else {
+    p.style.bottom=(window.innerHeight-r.top+4)+'px';
+    p.style.top='auto';
+  }
+}
+
+/* close on outside click */
+document.addEventListener('mousedown',function(e){
+  if(!openWrap)return;
+  if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);
+},true);
+
+/* close on scroll anywhere (reposition) */
+window.addEventListener('scroll',function(){
+  if(openWrap)positionPanel(openWrap);
+},true);
+window.addEventListener('resize',function(){
+  if(openWrap)positionPanel(openWrap);
+});
+
+function open_(wrap){
+  if(openWrap&&openWrap!==wrap)close_(openWrap);
+  openWrap=wrap;
+  buildList(wrap,'');
+  wrap._si.value='';
+  /* always show search */
+  wrap._sw.style.display='';
+  document.body.appendChild(wrap._p);
+  wrap._p.style.display='block';
+  wrap._t.classList.add('is-open');
+  wrap._t.setAttribute('aria-expanded','true');
+  /* position after display:block so offsetHeight is known */
+  requestAnimationFrame(function(){positionPanel(wrap);});
+  setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);
+}
+
+function close_(wrap){
+  if(!wrap)return;
+  if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);
+  wrap._p.style.display='none';
+  wrap._t.classList.remove('is-open');
+  wrap._t.setAttribute('aria-expanded','false');
+  if(openWrap===wrap)openWrap=null;
+}
+
+function buildList(wrap,q){
+  var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();
+  var opts=Array.from(sel.options).filter(function(o){
+    var t=optText(o);
+    return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);
+  });
+  if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}
+  list.innerHTML='';
+  opts.forEach(function(opt){
+    var it=document.createElement('div');
+    it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');
+    it.dataset.v=opt.value;
+    var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);
+    var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';
+    it.appendChild(tx);it.appendChild(ck);
+    it.addEventListener('mousedown',function(e){
+      e.preventDefault();e.stopPropagation();
+      sel.value=opt.value;
+      updateLabel(wrap);
+      close_(wrap);
+      sel.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    list.appendChild(it);
+  });
+}
+
+function updateLabel(wrap){
+  var sel=wrap._s,lbl=wrap._lb;
+  var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;
+  var text=opt?optText(opt):'';
+  if(text){
+    lbl.textContent=text;
+    /* treat index-0 empty-value options as placeholders */
+    lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));
+  } else {
+    lbl.textContent='Select\u2026';
+    lbl.classList.add('is-ph');
+  }
+  wrap._last=sel.value;
+}
+
+function wrapSelect(sel){
+  if(wrapped.has(sel))return;
+  if(sel.hasAttribute('data-rzr-skip'))return;
+  if(sel.size&&sel.size>1)return;
+  wrapped.add(sel);
+
+  /* mark parent to suppress ::after chevrons */
+  if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');
+
+  /* hide native */
+  sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';
+
+  /* hide sibling fake-chevron divs */
+  var sib=sel.nextElementSibling;
+  if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';
+
+  /* trigger */
+  var t=document.createElement('div');
+  t.className='rzr-trigger';
+  t.setAttribute('tabindex','0');
+  t.setAttribute('role','combobox');
+  t.setAttribute('aria-haspopup','listbox');
+  t.setAttribute('aria-expanded','false');
+  var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';
+  var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;
+  t.appendChild(lb);t.appendChild(cv);
+
+  /* panel — will be moved to body on open */
+  var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';
+  var sw=document.createElement('div');sw.className='rzr-panel-search';
+  var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;
+  sw.appendChild(si);
+  var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');
+  p.appendChild(sw);p.appendChild(l);
+
+  /* outer wrap */
+  var w=document.createElement('div');w.className='rzr-wrap';
+  w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;
+
+  w.appendChild(t);
+  /* panel stays in wrap until open — moved to body on open() */
+  w.appendChild(p);
+  sel.parentNode.insertBefore(w,sel);
+  w.appendChild(sel);
+
+  /* search */
+  si.addEventListener('input',function(){buildList(w,si.value);});
+  si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});
+
+  /* trigger events */
+  t.addEventListener('click',function(e){
+    e.stopPropagation();
+    openWrap===w?close_(w):open_(w);
+  });
+  t.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}
+    if(e.key==='Escape')close_(w);
+  });
+
+  /* watch option changes (async population: channels, roles) */
+  var mo=new MutationObserver(function(){
+    updateLabel(w);
+    if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}
+  });
+  mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});
+
+  /* poll for programmatic .value changes */
+  var pid=setInterval(function(){
+    if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}
+    if(sel.value!==w._last)updateLabel(w);
+  },150);
+
+  updateLabel(w);
+}
+
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+
+new MutationObserver(function(ms){
+  ms.forEach(function(m){
+    m.addedNodes.forEach(function(n){
+      if(n.nodeType!==1)return;
+      if(n.tagName==='SELECT')wrapSelect(n);
+      else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);
+    });
+  });
+}).observe(document.body,{childList:true,subtree:true});
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);
+else initAll();
+})();
+</script>
+<!-- End Razor Custom Select JS -->
+
+
+</body>
+</html>

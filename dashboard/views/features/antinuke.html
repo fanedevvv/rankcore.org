@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anti-Nuke System</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tailwind.css">
+<style>
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,51,51,0.3); border-radius: 99px; }
+
+  .toggle-wrap { position: relative; display: inline-flex; align-items: center; width: 44px; height: 24px; }
+  .toggle-wrap input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: #2a2a3e; border-radius: 99px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.08); }
+  .slider:before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 2px; background: #555; border-radius: 50%; transition: 0.3s; }
+  input:checked + .slider { background: rgba(255,51,51,0.25); border-color: #FF3333; }
+  input:checked + .slider:before { transform: translateX(18px); background: #FF3333; }
+
+  .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; }
+  .card-header { padding: 20px 24px 0; }
+  .card-body { padding: 20px 24px 24px; }
+
+  .tab-btn { padding: 8px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+  .tab-btn.active { background: rgba(255,51,51,0.15); color: #FF3333; }
+  .tab-btn:hover:not(.active) { background: rgba(255,255,255,0.05); color: #ccc; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .event-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); transition: 0.2s; }
+  .event-row:hover { border-color: rgba(255,51,51,0.15); background: rgba(255,51,51,0.03); }
+
+  select, input[type=text], input[type=number] {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    color: white;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  select:focus, input:focus { border-color: rgba(255,51,51,0.5); }
+  select option { background: #1a1a2e; }
+
+  .btn-primary { background: #FF3333; color: #0a0a12; font-weight: 700; border-radius: 10px; padding: 10px 20px; font-size: 13px; cursor: pointer; transition: 0.2s; border: none; }
+  .btn-primary:hover { background: #6dff83; transform: translateY(-1px); }
+  .btn-ghost { background: rgba(255,255,255,0.06); color: #ccc; font-weight: 600; border-radius: 10px; padding: 8px 16px; font-size: 13px; cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,255,255,0.08); }
+  .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+  .btn-danger { background: rgba(255,60,60,0.15); color: #ff4444; font-weight: 600; border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,60,60,0.2); }
+  .btn-danger:hover { background: rgba(255,60,60,0.25); }
+
+  #toast { position: fixed; top: 20px; right: 20px; z-index: 999; padding: 14px 20px; border-radius: 12px; font-weight: 600; font-size: 14px; transform: translateX(420px); transition: 0.35s cubic-bezier(.4,0,.2,1); max-width: 320px; display: flex; align-items: center; gap: 10px; border: 1px solid; }
+  #toast.show { transform: translateX(0); }
+  #toast.success { background: rgba(255,51,51,0.15); border-color: rgba(255,51,51,0.4); color: #FF3333; }
+  #toast.error { background: rgba(255,60,60,0.15); border-color: rgba(255,60,60,0.4); color: #ff6060; }
+
+  .badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; }
+  .badge-green { background: rgba(255,51,51,0.15); color: #FF3333; }
+  .badge-yellow { background: rgba(255,200,60,0.15); color: #ffc83c; }
+  .badge-red { background: rgba(255,60,60,0.15); color: #ff6060; }
+  .badge-gray { background: rgba(255,255,255,0.08); color: #888; }
+
+  .log-row { padding: 12px 16px; border-radius: 10px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+  .log-row + .log-row { margin-top: 8px; }
+
+  .section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #FF3333; margin-bottom: 12px; }
+  .divider { border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 20px 0; }
+</style>
+
+<style>
+/* ═══════════════ Razor Custom Select ═══════════════ */
+.rzr-wrap{position:relative;width:100%;display:block}
+/* hide ::after chevrons on select-wrap parents */
+.rzr-wrap-parent.select-wrap::after,
+.rzr-wrap-parent::after{display:none!important;content:none!important}
+.rzr-trigger{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:10px 14px;
+  border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);
+  background:#0d0d1c;color:#fff;
+  cursor:pointer;font-size:14px;font-family:inherit;
+  min-height:44px;width:100%;
+  transition:border-color .15s,box-shadow .15s;
+  user-select:none;box-sizing:border-box;
+}
+.rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
+.rzr-trigger.is-open{
+  border-color:rgba(255,51,51,.6);
+  box-shadow:0 0 0 3px rgba(255,51,51,.1);
+}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
+.rzr-label.is-ph{color:#6b7280}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+/* panel is appended to body — these rules still apply via the class */
+.rzr-panel{
+  position:fixed;z-index:999999;
+  background:rgba(11,11,20,.98);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  overflow:hidden;
+  animation:rzrIn .16s ease;
+}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
+.rzr-search-inp{
+  display:block;width:100%;
+  background:#06060f;border:1px solid rgba(255,255,255,.09);
+  border-radius:7px;padding:6px 11px;
+  color:#fff;font-size:13px;font-family:inherit;
+  outline:none;box-sizing:border-box;transition:border-color .15s;
+}
+.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-search-inp::placeholder{color:#374151}
+.rzr-list{max-height:220px;overflow-y:auto;padding:5px}
+.rzr-list::-webkit-scrollbar{width:4px}
+.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:6px}
+.rzr-list::-webkit-scrollbar-thumb:hover{background:#FF3333}
+.rzr-item{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:6px;padding:8px 11px;border-radius:8px;
+  cursor:pointer;font-size:13px;color:#9ca3af;
+  transition:background .1s,color .1s;
+}
+.rzr-item:hover{background:rgba(255,255,255,.055);color:#fff}
+.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600}
+.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item.is-sel .rzr-item-chk{opacity:1}
+.rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
+/* ═══════════════ End Razor Custom Select ═══════════════ */
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body style="background: #0a0a14; color: #e0e0e0; min-height: 100vh;">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<div id="toast"><span id="toastIcon"></span><span id="toastMsg"></span></div>
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+
+  <main class="flex-1 p-8" style="max-width: 900px; margin: 0 auto;">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold flex items-center gap-3">
+          <span style="font-size:28px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0z"/></svg></span> Anti-Nuke
+        </h1>
+        <p style="color:#666; font-size:13px; margin-top:4px;">Protect your server from unauthorized destructive actions</p>
+      </div>
+      <div class="flex gap-3 items-center">
+        <div id="statusBadge" class="badge badge-gray">Loading...</div>
+        <button class="btn-primary" onclick="saveAll()">Save Changes</button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex gap-2 mb-6" style="overflow-x:auto; padding-bottom:4px;">
+      <button class="tab-btn active" onclick="switchTab('general', this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M495.9 166.6c3.2 8.7.5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6.3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.2 11 11.5 22.4 15.9 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 0 0 0 160z"/></svg> General</button>
+      <button class="tab-btn" onclick="switchTab('events', this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M0 416c0 17.7 14.3 32 32 32l54.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 448c17.7 0 32-14.3 32-32s-14.3-32-32-32l-246.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 384c-17.7 0-32 14.3-32 32zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-32.8 0-61 19.7-73.3 48L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l246.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48l54.7 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-54.7 0c-12.3-28.3-40.5-48-73.3-48zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm73.3-64C253 35.7 224.8 16 192 16s-61 19.7-73.3 48L32 64C14.3 64 0 78.3 0 96s14.3 32 32 32l86.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 128c17.7 0 32-14.3 32-32s-14.3-32-32-32L265.3 64z"/></svg> Event Controls</button>
+      <button class="tab-btn" onclick="switchTab('access', this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M144 160A80 80 0 1 0 144 0a80 80 0 1 0 0 160zm368 0A80 80 0 1 0 512 0a80 80 0 1 0 0 160z"/><path d="M0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM609.3 512H471.4c5.4-9.4 8.6-20.3 8.6-32v-8c0-60.7-27.1-115.2-69.8-151.8c2.4-.1 4.7-.2 7.1-.2h61.4C578.2 320 640 381.8 640 457.4c0 30.2-24.4 54.6-54.6 54.6H609.3z"/></svg> Access</button>
+      <button class="tab-btn" onclick="switchTab('alerts', this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416H416c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3C263.8 504.5 244.3 512 224 512s-39.8-7.5-45.3-18.7c-3.8-7.7-1.6-17 5.5-21.8l14.4-9.6c3.5-2.3 7.6-3.5 11.8-3.5h28.2c4.2 0 8.3 1.2 11.8 3.5l14.4 9.6c7.1 4.7 9.3 14.1 5.5 21.8z"/></svg> Alerts</button>
+      <button class="tab-btn" onclick="switchTab('logs', this)" id="logsTabBtn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM112 192H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2 16 16 16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2 16 16 16zm0 64h128c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2 16 16 16z"/></svg> Logs</button>
+    </div>
+
+    <!-- ===== TAB: GENERAL ===== -->
+    <div id="tab-general" class="tab-panel active">
+
+      <!-- Enable toggle -->
+      <div class="card mb-4">
+        <div class="card-body flex justify-between items-center">
+          <div>
+            <div class="font-bold mb-1">Enable Anti-Nuke Protection</div>
+            <div style="color:#666; font-size:13px;">All configured protections run when enabled</div>
+          </div>
+          <label class="toggle-wrap">
+            <input type="checkbox" id="enabled">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Global action -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="section-title">Global Punishment Action</div>
+          <p style="color:#666; font-size:13px; margin-bottom:14px;">Default action applied to all events unless overridden per-event.</p>
+          <div class="grid grid-cols-2 gap-3" id="actionCards">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== TAB: EVENTS ===== -->
+    <div id="tab-events" class="tab-panel">
+      <div class="card">
+        <div class="card-body">
+          <div class="flex justify-between items-center mb-4">
+            <div class="section-title" style="margin-bottom:0;">Event Protections</div>
+            <div class="flex gap-2">
+              <button class="btn-ghost" style="font-size:12px;padding:6px 12px;" onclick="toggleAllEvents(true)">Enable All</button>
+              <button class="btn-ghost" style="font-size:12px;padding:6px 12px;" onclick="toggleAllEvents(false)">Disable All</button>
+            </div>
+          </div>
+          <div id="eventList" class="space-y-2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TAB: ACCESS ===== -->
+    <div id="tab-access" class="tab-panel">
+
+      <!-- Whitelist -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="section-title">Whitelisted Users</div>
+          <p style="color:#666; font-size:13px; margin-bottom:14px;">These users are fully exempt from all anti-nuke checks.</p>
+          <div class="flex gap-3 mb-4">
+            <input id="wlUserId" type="text" placeholder="User ID (e.g. 123456789012345678)" class="flex-1 px-4 py-2 text-sm font-mono">
+            <button class="btn-primary" onclick="addWhitelist()">Add User</button>
+          </div>
+          <div id="whitelistList" class="space-y-2"></div>
+        </div>
+      </div>
+
+      <!-- Trusted Roles -->
+      <div class="card">
+        <div class="card-body">
+          <div class="section-title">Trusted Roles</div>
+          <p style="color:#666; font-size:13px; margin-bottom:14px;">All members with these roles bypass anti-nuke checks.</p>
+          <div class="flex gap-3 mb-4">
+            <select id="trustedRoleSelect" class="flex-1 px-4 py-2 text-sm">
+              <option value="">Select a role...</option>
+            </select>
+            <button class="btn-primary" onclick="addTrustedRole()">Add Role</button>
+          </div>
+          <div id="trustedRoleList" class="space-y-2"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== TAB: ALERTS ===== -->
+    <div id="tab-alerts" class="tab-panel">
+
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="section-title">Log Channel</div>
+          <p style="color:#666; font-size:13px; margin-bottom:14px;">Alerts will be sent to this channel whenever anti-nuke triggers.</p>
+          <select id="logChannel" class="w-full px-4 py-3 text-sm">
+            <option value="">— Disabled —</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="section-title">Alert Ping</div>
+          <p style="color:#666; font-size:13px; margin-bottom:14px;">Ping a specific role when an alert fires.</p>
+          <select id="alertPingRole" class="w-full px-4 py-3 text-sm">
+            <option value="">— None —</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body flex justify-between items-center">
+          <div>
+            <div class="font-bold mb-1">DM Server Owner</div>
+            <div style="color:#666; font-size:13px;">Send a direct message to the server owner on every trigger</div>
+          </div>
+          <label class="toggle-wrap">
+            <input type="checkbox" id="dmOwner">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== TAB: LOGS ===== -->
+    <div id="tab-logs" class="tab-panel">
+      <div class="card">
+        <div class="card-body">
+          <div class="flex justify-between items-center mb-4">
+            <div class="section-title" style="margin-bottom:0;">Recent Actions (last 50)</div>
+            <button class="btn-danger" onclick="clearLogs()">Clear Logs</button>
+          </div>
+          <div id="logsList">
+            <div style="color:#555; text-align:center; padding:40px;">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+const guildId = location.pathname.split("/")[2];
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let state = {
+  enabled: false,
+  action: 'log',
+  logChannelId: null,
+  alertPing: null,
+  dmOwner: false,
+  whitelist: [],
+  trustedRoles: [],
+  events: {},
+};
+let channels = [];
+let roles = [];
+
+const EVENT_KEYS = [
+  'memberKick','memberBan','banRemove','roleCreate','roleDelete','roleUpdate',
+  'channelCreate','channelDelete','channelUpdate','webhookCreate','botAdd',
+  'emojiCreate','emojiDelete','guildUpdate','memberRoleUpdate','integrationCreate'
+];
+const EVENT_LABELS = {
+  memberKick:'Member Kick', memberBan:'Member Ban', banRemove:'Ban Remove',
+  roleCreate:'Role Create', roleDelete:'Role Delete', roleUpdate:'Role Perms Update',
+  channelCreate:'Channel Create', channelDelete:'Channel Delete', channelUpdate:'Channel Update',
+  webhookCreate:'Webhook Create', botAdd:'Bot Add', emojiCreate:'Emoji Create',
+  emojiDelete:'Emoji Delete', guildUpdate:'Server Update', memberRoleUpdate:'Dangerous Role Grant',
+  integrationCreate:'Integration Create'
+};
+const EVENT_ICONS = {
+  memberKick:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M64 480H128v32c0 8.8 7.2 16 16 16H272c8.8 0 16-7.2 16-16V480H384c35.3 0 64-28.7 64-64V256h40.6c59.3 0 107.4-48.1 107.4-107.4v-5.3c0-45.4-18-89-50.1-121L517.8 39.7C503 24.7 482.9 16 462 16H392c-35.3 0-64 28.7-64 64V352H128.6C92.7 352 64 380.7 64 416.4V480zM384 416V320H448v96c0 17.7-14.3 32-32 32s-32-14.3-32-32z"/></svg>', memberBan:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M78.6 5C69.1-2.4 55.6-1.5 47 7L7 47c-8.5 8.5-9.4 22-2.1 31.6l80 104c4.5 5.9 11.6 9.4 19 9.4h54.1l109 109c-14.7 29.8-10.2 66.7 13.4 90.3s60.5 28.1 90.3 13.4L402.4 345l83 83c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0l-16 16c-12.5 12.5-12.5 32.8 0 45.3l-74.7-74.7 79.8-79.8 28 28c7.5 7.5 17.7 11.7 28.3 11.7H544.1c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32H441.4c-10.6 0-20.8 4.2-28.3 11.7l-79.8 79.8L224.2 142c-4.5-4.5-9.4-8.4-14.6-11.6L78.6 5z"/></svg>', banRemove:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M144 144c0-44.2 35.8-80 80-80c31.9 0 59.4 18.6 72.3 45.7c7.6 16 26.7 22.8 42.6 15.2s22.8-26.7 15.2-42.6C331 33.7 281.5 0 224 0C144.5 0 80 64.5 80 144v48H64c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V256c0-35.3-28.7-64-64-64H144V144z"/></svg>', roleCreate:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M0 32C0 14.3 14.3 0 32 0H80c17.7 0 32 14.3 32 32v48h32V32c0-17.7 14.3-32 32-32h48c17.7 0 32 14.3 32 32v48c17.7 0 32 14.3 32 32v64c0 10.3-4.9 19.4-12.5 25.2C256.2 237.8 229.6 256 200 256s-56.2-18.2-75.5-54.8C116.9 195.4 112 186.3 112 176V112c0-17.7 14.3-32 32-32V32zm288 0c0-17.7 14.3-32 32-32h48c17.7 0 32 14.3 32 32v48h32V32c0-17.7 14.3-32 32-32h48c17.7 0 32 14.3 32 32v48c17.7 0 32 14.3 32 32v64c0 10.3-4.9 19.4-12.5 25.2C475.8 266.3 449.2 284 420 284s-55.8-17.7-75.5-54.8c-7.6-5.8-12.5-14.9-12.5-25.2V112c0-17.7 14.3-32 32-32V32z"/></svg>', roleDelete:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>',
+  roleUpdate:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7.2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8.2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24v112c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0-64 0 32 32 0 0 0 64 0z"/></svg>', channelCreate:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M480 32c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9L381.7 53c-48 48-113.1 75-181 75H192 160 128c-35.3 0-64 28.7-64 64v96c0 35.3 28.7 64 64 64v128c0 17.7 14.3 32 32 32H288c17.7 0 32-14.3 32-32V352l8.7 0c67.9 0 133 27 181 75l43.6 43.6c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V300.4c18.6-8.8 32-32.5 32-60.4s-13.4-51.6-32-60.4V32z"/></svg>', channelDelete:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>', channelUpdate:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.3 89.8l-11.3 11.3-22.6 22.6L5.1 369.5c-10 10-10 26.2 0 36.2l128 128c10 10 26.2 10 36.2 0l221.3-221.3c.5-.5 .9-1 1.3-1.5l23.5-23.5zM377.9 216.9L284.8 124l48.5-48.5 93.1 93.1-48.5 48.5z"/></svg>',
+  webhookCreate:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372.7 74 321.7 105.5 290.2L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.8l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"/></svg>', botAdd:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M320 0c17.7 0 32 14.3 32 32V96H472c39.8 0 72 32.2 72 72V440c0 39.8-32.2 72-72 72H168c-39.8 0-72-32.2-72-72V168c0-39.8 32.2-72 72-72H288V32c0-17.7 14.3-32 32-32zM208 384c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H208zm144 0c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H352zm-144-96c-8.8 0-16 7.2-16 16s7.2 16 16 16H400c8.8 0 16-7.2 16-16s-7.2-16-16-16H208zm96-128a48 48 0 1 0 0 96 48 48 0 1 0 0-96zm-80-64v32H208c-8.8 0-16 7.2-16 16s7.2 16 16 16H432c8.8 0 16-7.2 16-16s-7.2-16-16-16H304V96H208z"/></svg>', emojiCreate:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM164.1 325.5C182 346.2 212.6 368 256 368s74-21.8 91.9-42.5c5.8-6.8 16-7.6 22.8-1.8s7.6 16 1.8 22.8C349.8 372.1 311.1 400 256 400s-93.8-27.9-116.5-53.5c-5.8-6.8-5-17 1.8-22.8s17-5 22.8 1.8zm-44.9-116.7a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>', emojiDelete:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm-80-208H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H176c-8.8 0-16-7.2-16-16s7.2-16 16-16zm-4-112a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>',
+  guildUpdate:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M243.4 2.6l-224 96c-14 6-21.8 21-18.7 35.8S16.8 160 32 160v8c0 13.3 10.7 24 24 24H456c13.3 0 24-10.7 24-24v-8c15.2 0 28.3-10.7 31.3-25.6s-4.8-29.9-18.7-35.8l-224-96c-8.1-3.4-17.2-3.4-25.2 0zM128 224H64V420.3c-.6 .3-1.2 .7-1.8 1.1l-48 32c-11.7 7.8-17 22.4-12.9 35.9S17.9 512 32 512H480c14.1 0 26.5-9.2 30.6-22.7s-1.1-28.1-12.9-35.9l-48-32c-.6-.4-1.2-.7-1.8-1.1V224H384V416H344V224H280V416H232V224H168V416H128V224z"/></svg>', memberRoleUpdate:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M256 0c17.7 0 32 14.3 32 32V42.4c93.7 13.9 166.8 92.9 166.8 190c0 30.9-7.7 60-21.3 85.6l27.5 27.5c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0l-19-19C374.1 379.3 344.2 390 313 393.7c-3.3 .4-6.7 .6-10.1 .6H209.1c-3.4 0-6.8-.2-10.1-.6C167.8 390 137.9 379.3 125.3 371.8l-19 19c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l27.5-27.5C74.9 292.4 67.2 263.3 67.2 232.4c0-97.1 73.1-176.1 166.8-190V32c0-17.7 14.3-32 32-32zM160 232.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96s-96 43-96 96z"/></svg>', integrationCreate:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M96 0C78.3 0 64 14.3 64 32v96h64V32c0-17.7-14.3-32-32-32zm128 0c-17.7 0-32 14.3-32 32v96h64V32c0-17.7-14.3-32-32-32zM32 224c-35.3 0-64 28.7-64 64c0 35.3 28.7 64 64 64v64c0 53 43 96 96 96h128c53 0 96-43 96-96v-64c35.3 0 64-28.7 64-64c0-35.3-28.7-64-64-64H32z"/></svg>'
+};
+const ACTION_OPTIONS = [
+  { value:'inherit', label:'Inherit Global' },
+  { value:'log', label:'Log Only' },
+  { value:'kick', label:'Kick' },
+  { value:'ban', label:'Ban' },
+  { value:'stripRoles', label:'Strip Roles' },
+  { value:'timeout', label:'Timeout' },
+];
+const GLOBAL_ACTIONS = [
+  { value:'log', label:'Log Only', icon:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM112 192H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2 16 16 16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2 16 16 16zm0 64h128c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2 16 16 16z"/></svg>', desc:'Record the event, no punishment' },
+  { value:'kick', label:'Kick', icon:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M64 480H128v32c0 8.8 7.2 16 16 16H272c8.8 0 16-7.2 16-16V480H384c35.3 0 64-28.7 64-64V256h40.6c59.3 0 107.4-48.1 107.4-107.4v-5.3c0-45.4-18-89-50.1-121L517.8 39.7C503 24.7 482.9 16 462 16H392c-35.3 0-64 28.7-64 64V352H128.6C92.7 352 64 380.7 64 416.4V480zM384 416V320H448v96c0 17.7-14.3 32-32 32s-32-14.3-32-32z"/></svg>', desc:'Remove user from server' },
+  { value:'ban', label:'Ban', icon:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M78.6 5C69.1-2.4 55.6-1.5 47 7L7 47c-8.5 8.5-9.4 22-2.1 31.6l80 104c4.5 5.9 11.6 9.4 19 9.4h54.1l109 109c-14.7 29.8-10.2 66.7 13.4 90.3s60.5 28.1 90.3 13.4L402.4 345l83 83c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0l-16 16c-12.5 12.5-12.5 32.8 0 45.3l-74.7-74.7 79.8-79.8 28 28c7.5 7.5 17.7 11.7 28.3 11.7H544.1c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32H441.4c-10.6 0-20.8 4.2-28.3 11.7l-79.8 79.8L224.2 142c-4.5-4.5-9.4-8.4-14.6-11.6L78.6 5z"/></svg>', desc:'Permanently ban the user' },
+  { value:'stripRoles', label:'Strip Roles', icon:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M192 64a64 64 0 1 0 -128 0A64 64 0 1 0 192 64zm160 288a64 64 0 1 0 0 128 64 64 0 1 0 0-128zm-82.3-14.4L424.8 256l-155.1-81.6-74.3 141.2c6.1-1.1 12.2-1.6 18.6-1.6c44.9 0 84.3 24.1 105.9 60.3L384 312.1l-74.3-37.4 24-45.8C351 253.4 367.7 256 384 256c35.3 0 64 28.7 64 64v8c0 17.7-14.3 32-32 32H288c-17.7 0-32-14.3-32-32v-8c0-11 2.8-21.4 7.7-30.4zM384 192c17.7 0 32-14.3 32-32V88l52.7-30.1c9.1-5.2 13.4-15.9 10.3-25.9s-12.3-17-22.8-17H336c-17.7 0-32 14.3-32 32V160c0 17.7 14.3 32 32 32h48z"/></svg>', desc:'Remove all manageable roles' },
+  { value:'timeout', label:'Timeout', icon:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M301.1 34.8C312.6 40 320 51.4 320 64V448c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352H64c-35.3 0-64-28.7-64-64V224c0-35.3 28.7-64 64-64h67.8L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3zm197.8 96.6c7.7-6.4 19-5.4 25.5 2.3l24.4 29.4C568.5 187.7 576 211.1 576 240s-7.5 52.3-27.2 77.3l-24.4 29.4c-6.5 7.8-17.8 8.8-25.5 2.3s-8.8-17.8-2.3-25.5l24.4-29.4C536.5 278.3 544 259.3 544 240s-7.5-38.3-23-54.2l-24.4-29.4c-6.5-7.8-5.5-19 2.3-25.5zm-62.2 75c7.7-6.4 19-5.4 25.5 2.3l24.4 29.4C502.4 255.3 512 271.3 512 288s-9.6 32.7-25.4 50.7l-24.4 29.4c-6.5 7.8-17.8 8.8-25.5 2.3s-8.8-17.8-2.3-25.5l24.4-29.4C470.5 306.9 480 297.8 480 288s-9.5-18.9-21.4-27.6l-24.4-29.4c-6.5-7.8-5.5-19 2.3-25.5z"/></svg>', desc:'Mute for 28 days (max)' },
+];
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  document.getElementById('toastIcon').innerHTML = type === 'success' ? '✓' : '✕';
+  el.className = `show ${type}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = el.className.replace('show',''); }, 3500);
+}
+
+// ─── Tabs ─────────────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'logs') loadLogs();
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+async function init() {
+  const [dataRes, chRes, rolesRes] = await Promise.all([
+    fetch(`/api/guild/${guildId}/antinuke`),
+    fetch(`/api/guild/${guildId}/channels`),
+    fetch(`/api/guild/${guildId}/roles`),
+  ]);
+
+  state = await dataRes.json();
+  const chRaw = await chRes.json().catch(() => ({}));
+  // chRaw is now {channels, _categories}; keep flat array for legacy chip usage
+  channels = (Array.isArray(chRaw) ? chRaw : chRaw.channels) || [];
+  window._antinukeChData = chRaw; // for grouped select
+  roles = await rolesRes.json().catch(() => []);
+
+  applyState();
+}
+
+function applyState() {
+  // Status badge
+  const badge = document.getElementById('statusBadge');
+  badge.className = `badge ${state.enabled ? 'badge-green' : 'badge-red'}`;
+  badge.textContent = state.enabled ? 'Protected' : 'Disabled';
+
+  // General
+  document.getElementById('enabled').checked = !!state.enabled;
+  renderActionCards(state.action || 'log');
+
+  // Events
+  renderEventList();
+
+  // Alerts
+  rzrPopulateChannels(document.getElementById('logChannel'), window._antinukeChData || channels, state.logChannelId, '— Disabled —');
+  populateSelect('alertPingRole', roles, state.alertPing, '— None —', r => ({ value: r.id, label: `@${escapeHtml(r.name)}` }));
+  document.getElementById('dmOwner').checked = !!state.dmOwner;
+
+  // Access
+  renderWhitelist();
+  populateSelect('trustedRoleSelect', roles, null, 'Select a role...', r => ({ value: r.id, label: `@${escapeHtml(r.name)}` }));
+  renderTrustedRoles();
+}
+
+function populateSelect(id, items, selectedValue, placeholder, mapper) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = `<option value="">${placeholder}</option>` +
+    items.map(i => {
+      const { value, label } = mapper(i);
+      return `<option value="${escapeHtml(value)}" ${value === selectedValue ? 'selected' : ''}>${label}</option>`;
+    }).join('');
+}
+
+// ─── Action Cards ─────────────────────────────────────────────────────────────
+function renderActionCards(selected) {
+  document.getElementById('actionCards').innerHTML = GLOBAL_ACTIONS.map(a => `
+    <div onclick="selectAction('${a.value}')" id="action_${a.value}"
+      class="cursor-pointer rounded-xl p-4 border transition-all"
+      style="background:${selected === a.value ? 'rgba(255,51,51,0.08)' : 'rgba(255,255,255,0.02)'};
+             border-color:${selected === a.value ? 'rgba(255,51,51,0.4)' : 'rgba(255,255,255,0.06)'}">
+      <div class="text-2xl mb-1">${a.icon}</div>
+      <div class="font-bold text-sm">${escapeHtml(a.label)}</div>
+      <div style="color:#666;font-size:12px;margin-top:2px;">${a.desc}</div>
+    </div>
+  `).join('');
+}
+
+function selectAction(val) {
+  state.action = val;
+  renderActionCards(val);
+}
+
+// ─── Event List ───────────────────────────────────────────────────────────────
+function renderEventList() {
+  document.getElementById('eventList').innerHTML = EVENT_KEYS.map(key => {
+    const ev = state.events?.[key] || {};
+    const enabled = ev.enabled !== false;
+    const action = ev.action || 'inherit';
+    const threshold = ev.threshold ?? 0;
+    const window_ = ev.thresholdWindow ?? 10;
+
+    return `
+      <div class="event-row" id="evrow_${key}">
+        <span style="font-size:18px;">${EVENT_ICONS[key]}</span>
+        <div class="flex-1">
+          <div class="font-semibold text-sm">${EVENT_LABELS[key]}</div>
+          <div class="flex gap-3 mt-2 flex-wrap">
+            <select onchange="updateEvent('${key}','action',this.value)" class="text-xs py-1 px-2" style="font-size:12px;">
+              ${ACTION_OPTIONS.map(o => `<option value="${o.value}" ${action===o.value?'selected':''}>${escapeHtml(o.label)}</option>`).join('')}
+            </select>
+            <label class="flex items-center gap-1" style="font-size:12px;color:#888;">
+              Trigger after
+              <input type="number" min="0" max="20" value="${threshold}"
+                onchange="updateEvent('${key}','threshold',parseInt(this.value))"
+                class="w-12 text-center py-1 px-2 text-xs" style="font-size:12px;">
+              actions in
+              <input type="number" min="1" max="300" value="${window_}"
+                onchange="updateEvent('${key}','thresholdWindow',parseInt(this.value))"
+                class="w-14 text-center py-1 px-2 text-xs" style="font-size:12px;">
+              s
+            </label>
+          </div>
+        </div>
+        <label class="toggle-wrap" style="flex-shrink:0;">
+          <input type="checkbox" ${enabled ? 'checked' : ''} onchange="updateEvent('${key}','enabled',this.checked)">
+          <span class="slider"></span>
+        </label>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateEvent(key, field, value) {
+  if (!state.events) state.events = {};
+  if (!state.events[key]) state.events[key] = {};
+  state.events[key][field] = value;
+}
+
+function toggleAllEvents(enabled) {
+  EVENT_KEYS.forEach(k => {
+    if (!state.events) state.events = {};
+    if (!state.events[k]) state.events[k] = {};
+    state.events[k].enabled = enabled;
+  });
+  renderEventList();
+}
+
+// ─── Whitelist ────────────────────────────────────────────────────────────────
+function renderWhitelist() {
+  const el = document.getElementById('whitelistList');
+  if (!state.whitelist?.length) {
+    el.innerHTML = `<div style="color:#444;font-size:13px;text-align:center;padding:16px;">No whitelisted users</div>`;
+    return;
+  }
+  el.innerHTML = state.whitelist.map(id => `
+    <div class="flex items-center justify-between log-row">
+      <span class="font-mono text-sm" style="color:#aaa;">${id}</span>
+      <button class="btn-danger" onclick="removeWhitelist('${escapeHtml(id)}')">Remove</button>
+    </div>
+  `).join('');
+}
+
+async function addWhitelist() {
+  const id = document.getElementById('wlUserId').value.trim();
+  if (!id || !/^\d{17,20}$/.test(id)) return toast('Enter a valid Discord user ID', 'error');
+  const res = await fetch(`/api/guild/${guildId}/antinuke/whitelist`, {
+    method:'POST', credentials:'include',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ userId: id })
+  });
+  if (res.ok) {
+    if (!state.whitelist.includes(id)) state.whitelist.push(id);
+    document.getElementById('wlUserId').value = '';
+    renderWhitelist();
+    toast('User added to whitelist');
+  } else toast('Failed to add user', 'error');
+}
+
+async function removeWhitelist(id) {
+  const res = await fetch(`/api/guild/${guildId}/antinuke/whitelist/${id}`, { method:'DELETE', credentials:'include' });
+  if (res.ok) {
+    state.whitelist = state.whitelist.filter(x => x !== id);
+    renderWhitelist();
+    toast('User removed');
+  } else toast('Failed to remove', 'error');
+}
+
+// ─── Trusted Roles ────────────────────────────────────────────────────────────
+function renderTrustedRoles() {
+  const el = document.getElementById('trustedRoleList');
+  if (!state.trustedRoles?.length) {
+    el.innerHTML = `<div style="color:#444;font-size:13px;text-align:center;padding:16px;">No trusted roles</div>`;
+    return;
+  }
+  el.innerHTML = state.trustedRoles.map(id => {
+    const role = roles.find(r => r.id === id);
+    return `
+      <div class="flex items-center justify-between log-row">
+        <span class="text-sm font-semibold">${role ? `@${escapeHtml(role.name)}` : id}</span>
+        <button class="btn-danger" onclick="removeTrustedRole('${escapeHtml(id)}')">Remove</button>
+      </div>
+    `;
+  }).join('');
+}
+
+async function addTrustedRole() {
+  const id = document.getElementById('trustedRoleSelect').value;
+  if (!id) return toast('Select a role first', 'error');
+  const res = await fetch(`/api/guild/${guildId}/antinuke/trusted-roles`, {
+    method:'POST', credentials:'include',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ roleId: id })
+  });
+  if (res.ok) {
+    if (!state.trustedRoles) state.trustedRoles = [];
+    if (!state.trustedRoles.includes(id)) state.trustedRoles.push(id);
+    renderTrustedRoles();
+    toast('Trusted role added');
+  } else toast('Failed to add role', 'error');
+}
+
+async function removeTrustedRole(id) {
+  const res = await fetch(`/api/guild/${guildId}/antinuke/trusted-roles/${id}`, { method:'DELETE', credentials:'include' });
+  if (res.ok) {
+    state.trustedRoles = state.trustedRoles.filter(x => x !== id);
+    renderTrustedRoles();
+    toast('Role removed');
+  } else toast('Failed to remove', 'error');
+}
+
+// ─── Logs ─────────────────────────────────────────────────────────────────────
+async function loadLogs() {
+  const res = await fetch(`/api/guild/${guildId}/antinuke/logs`);
+  const logs = await res.json();
+  const el = document.getElementById('logsList');
+  if (!logs.length) {
+    el.innerHTML = `<div style="color:#444;text-align:center;padding:40px;">No logs yet</div>`;
+    return;
+  }
+
+  const actionColors = { 'User Banned':'#ff6060', 'User Kicked':'#ffaa30', 'Roles Stripped':'#aa80ff',
+    'User Timed Out (28d)':'#66aaff', 'Logged Alert':'#888', 'Punishment Failed (Hierarchy/Perms)':'#ff4444' };
+
+  el.innerHTML = logs.map(l => {
+    const color = actionColors[l.actionTaken] || '#888';
+    const date = new Date(l.timestamp);
+    return `
+      <div class="log-row">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <span style="font-size:12px;font-weight:700;color:${color};background:${color}22;padding:2px 10px;border-radius:99px;">${l.actionTaken}</span>
+            <span style="font-size:13px;font-weight:600;">${l.type}</span>
+          </div>
+          <span style="font-size:11px;color:#444;">${date.toLocaleString()}</span>
+        </div>
+        <div style="font-size:12px;color:#666;margin-top:6px;">${l.details}</div>
+        <div style="font-size:11px;color:#555;margin-top:4px;font-family:monospace;">by ${l.executorTag} (${l.executorId})</div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function clearLogs() {
+  if (!confirm('Clear all punishment logs?')) return;
+  const res = await fetch(`/api/guild/${guildId}/antinuke/logs`, { method:'DELETE', credentials:'include' });
+  if (res.ok) { toast('Logs cleared'); loadLogs(); }
+  else toast('Failed to clear logs', 'error');
+}
+
+// ─── Save All ─────────────────────────────────────────────────────────────────
+async function saveAll() {
+  const saveBtn = document.querySelector('.btn-primary');
+  saveBtn.textContent = 'Saving...';
+  saveBtn.disabled = true;
+
+  try {
+    const configBody = {
+      enabled: document.getElementById('enabled').checked,
+      action: state.action,
+      logChannelId: document.getElementById('logChannel').value || null,
+      alertPing: document.getElementById('alertPingRole').value || null,
+      dmOwner: document.getElementById('dmOwner').checked,
+    };
+
+    const [configRes, eventsRes] = await Promise.all([
+      fetch(`/api/guild/${guildId}/antinuke/config`, {
+        method:'POST', credentials:'include',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(configBody)
+      }),
+      fetch(`/api/guild/${guildId}/antinuke/events`, {
+        method:'POST', credentials:'include',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ events: state.events || {} })
+      })
+    ]);
+
+    if (configRes.ok && eventsRes.ok) {
+      state.enabled = configBody.enabled;
+      document.getElementById('statusBadge').className = `badge ${state.enabled ? 'badge-green' : 'badge-red'}`;
+      document.getElementById('statusBadge').textContent = state.enabled ? 'Protected' : 'Disabled';
+      toast('Configuration saved!');
+    } else {
+      toast('Failed to save configuration', 'error');
+    }
+  } catch (e) {
+    toast('Network error', 'error');
+  }
+
+  saveBtn.textContent = 'Save Changes';
+  saveBtn.disabled = false;
+}
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+init();
+</script>
+<script src="/sidebar.js"></script>
+<!-- Razor Custom Select JS -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet();
+var openWrap=null;
+
+/* strip any html tags from option text just in case */
+function cleanText(t){
+  t=String(t||'');
+  var d=document.createElement('div');
+  d.innerHTML=t;
+  return (d.textContent||d.innerText||'').trim();
+}
+
+/* get clean option text */
+function optText(opt){
+  return cleanText(opt.text||opt.textContent||opt.label||'');
+}
+
+/* position panel relative to trigger using fixed coords */
+function positionPanel(wrap){
+  var r=wrap._t.getBoundingClientRect();
+  var p=wrap._p;
+  var panelH=p.offsetHeight||240;
+  var spaceBelow=window.innerHeight-r.bottom;
+  var spaceAbove=r.top;
+  var width=Math.max(r.width,160);
+  p.style.width=width+'px';
+  p.style.left=r.left+'px';
+  p.style.right='auto';
+  if(spaceBelow>=panelH||spaceBelow>=spaceAbove){
+    p.style.top=(r.bottom+4)+'px';
+    p.style.bottom='auto';
+  } else {
+    p.style.bottom=(window.innerHeight-r.top+4)+'px';
+    p.style.top='auto';
+  }
+}
+
+/* close on outside click */
+document.addEventListener('mousedown',function(e){
+  if(!openWrap)return;
+  if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);
+},true);
+
+/* close on scroll anywhere (reposition) */
+window.addEventListener('scroll',function(){
+  if(openWrap)positionPanel(openWrap);
+},true);
+window.addEventListener('resize',function(){
+  if(openWrap)positionPanel(openWrap);
+});
+
+function open_(wrap){
+  if(openWrap&&openWrap!==wrap)close_(openWrap);
+  openWrap=wrap;
+  buildList(wrap,'');
+  wrap._si.value='';
+  /* always show search */
+  wrap._sw.style.display='';
+  document.body.appendChild(wrap._p);
+  wrap._p.style.display='block';
+  wrap._t.classList.add('is-open');
+  wrap._t.setAttribute('aria-expanded','true');
+  /* position after display:block so offsetHeight is known */
+  requestAnimationFrame(function(){positionPanel(wrap);});
+  setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);
+}
+
+function close_(wrap){
+  if(!wrap)return;
+  if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);
+  wrap._p.style.display='none';
+  wrap._t.classList.remove('is-open');
+  wrap._t.setAttribute('aria-expanded','false');
+  if(openWrap===wrap)openWrap=null;
+}
+
+function buildList(wrap,q){
+  var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();
+  var opts=Array.from(sel.options).filter(function(o){
+    var t=optText(o);
+    return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);
+  });
+  if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}
+  list.innerHTML='';
+  opts.forEach(function(opt){
+    var it=document.createElement('div');
+    it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');
+    it.dataset.v=opt.value;
+    var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);
+    var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';
+    it.appendChild(tx);it.appendChild(ck);
+    it.addEventListener('mousedown',function(e){
+      e.preventDefault();e.stopPropagation();
+      sel.value=opt.value;
+      updateLabel(wrap);
+      close_(wrap);
+      sel.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    list.appendChild(it);
+  });
+}
+
+function updateLabel(wrap){
+  var sel=wrap._s,lbl=wrap._lb;
+  var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;
+  var text=opt?optText(opt):'';
+  if(text){
+    lbl.textContent=text;
+    /* treat index-0 empty-value options as placeholders */
+    lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));
+  } else {
+    lbl.textContent='Select\u2026';
+    lbl.classList.add('is-ph');
+  }
+  wrap._last=sel.value;
+}
+
+function wrapSelect(sel){
+  if(wrapped.has(sel))return;
+  if(sel.hasAttribute('data-rzr-skip'))return;
+  if(sel.size&&sel.size>1)return;
+  wrapped.add(sel);
+
+  /* mark parent to suppress ::after chevrons */
+  if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');
+
+  /* hide native */
+  sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';
+
+  /* hide sibling fake-chevron divs */
+  var sib=sel.nextElementSibling;
+  if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';
+
+  /* trigger */
+  var t=document.createElement('div');
+  t.className='rzr-trigger';
+  t.setAttribute('tabindex','0');
+  t.setAttribute('role','combobox');
+  t.setAttribute('aria-haspopup','listbox');
+  t.setAttribute('aria-expanded','false');
+  var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';
+  var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;
+  t.appendChild(lb);t.appendChild(cv);
+
+  /* panel — will be moved to body on open */
+  var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';
+  var sw=document.createElement('div');sw.className='rzr-panel-search';
+  var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;
+  sw.appendChild(si);
+  var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');
+  p.appendChild(sw);p.appendChild(l);
+
+  /* outer wrap */
+  var w=document.createElement('div');w.className='rzr-wrap';
+  w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;
+
+  w.appendChild(t);
+  /* panel stays in wrap until open — moved to body on open() */
+  w.appendChild(p);
+  sel.parentNode.insertBefore(w,sel);
+  w.appendChild(sel);
+
+  /* search */
+  si.addEventListener('input',function(){buildList(w,si.value);});
+  si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});
+
+  /* trigger events */
+  t.addEventListener('click',function(e){
+    e.stopPropagation();
+    openWrap===w?close_(w):open_(w);
+  });
+  t.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}
+    if(e.key==='Escape')close_(w);
+  });
+
+  /* watch option changes (async population: channels, roles) */
+  var mo=new MutationObserver(function(){
+    updateLabel(w);
+    if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}
+  });
+  mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});
+
+  /* poll for programmatic .value changes */
+  var pid=setInterval(function(){
+    if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}
+    if(sel.value!==w._last)updateLabel(w);
+  },150);
+
+  updateLabel(w);
+}
+
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+
+new MutationObserver(function(ms){
+  ms.forEach(function(m){
+    m.addedNodes.forEach(function(n){
+      if(n.nodeType!==1)return;
+      if(n.tagName==='SELECT')wrapSelect(n);
+      else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);
+    });
+  });
+}).observe(document.body,{childList:true,subtree:true});
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);
+else initAll();
+})();
+</script>
+<!-- End Razor Custom Select JS -->
+
+
+</body>
+</html>

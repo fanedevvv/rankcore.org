@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uptime Monitor</title>
+
+<link rel="icon" href="/logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=gg+sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/tailwind.css">
+<script>
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+window.tailwind = window.tailwind || {};
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+        discord: ['"gg sans"', 'sans-serif']
+      },
+colors: {
+    razor: "#FF3333",         // main green highlight
+    discordBg: "#2a1f1f",     // dark green background replacing grey
+    discordDark: "#221818",   // darker green for panels
+    discordHover: "#302323"   // slightly lighter green for hover states
+}
+
+    }
+  }
+}
+</script>
+
+<style>
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0b0b14; }
+::-webkit-scrollbar-thumb { background: #2d2d3d; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #6C53FF; }
+
+#toast {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  transform: translateX(400px);
+  transition: transform 0.3s ease;
+  z-index: 50;
+  color: white;
+}
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body class="bg-[#0b0b14] text-white font-sans">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<div id="toast"><span id="toastMessage"></span></div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+
+  <main class="flex-1 p-8 max-w-4xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold flex items-center gap-3 mb-1">
+        ⏱ Uptime Monitor
+      </h1>
+      <p class="text-gray-400 text-sm">
+        Monitor your URLs and get alerted when they go offline.
+      </p>
+    </div>
+
+    <!-- Add / Update URL -->
+    <div class="bg-[#1a1a2e] p-6 rounded-2xl border border-white/5 mb-6">
+      <h3 class="font-bold mb-4">Add / Update URL</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+        <input id="url"
+          placeholder="https://example.com"
+          class="bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 font-mono focus:outline-none focus:border-razor">
+
+        <input id="name"
+          placeholder="Optional name"
+          class="bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 font-mono focus:outline-none focus:border-razor">
+
+        <input id="channel"
+          placeholder="Alert channel ID (admin only)"
+          class="bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 font-mono focus:outline-none focus:border-razor">
+
+        <label class="flex items-center gap-2">
+          <input id="alertDM" type="checkbox" checked class="accent-razor">
+          DM Alerts
+        </label>
+
+        <button onclick="addURL()"
+          class="bg-razor hover:bg-razor/90 rounded-xl font-bold px-6 py-3 shadow-lg shadow-razor/20 transition-all col-span-1 md:col-span-4">
+          Add / Update URL
+        </button>
+      </div>
+    </div>
+
+    <!-- URL List -->
+    <div id="uptimeList" class="space-y-4"></div>
+
+  </main>
+</div>
+
+<script src="/sidebar.js" nonce="<%= nonce %>"></script>
+
+<script nonce="<%= nonce %>">
+const guildId = location.pathname.split("/")[2];
+
+function showToast(msg, error = false) {
+  const toast = document.getElementById("toast");
+  document.getElementById("toastMessage").innerText = msg;
+  toast.style.background = error ? "#e74c3c" : "#6C53FF";
+  toast.style.transform = "translateX(0)";
+  setTimeout(() => toast.style.transform = "translateX(400px)", 3000);
+}
+
+async function loadURLs() {
+  const res = await fetch(`/api/guild/${guildId}/uptime`);
+  const data = await res.json();
+
+  const list = document.getElementById("uptimeList");
+  list.innerHTML = data.map(u => `
+    <div class="bg-[#1a1a2e] p-5 rounded-2xl border border-white/5 flex justify-between items-center">
+      <div>
+        <p class="font-bold">${escapeHtml(u.Name || u.URL)}</p>
+        <p class="text-sm text-gray-400">
+          Status:
+          <span class="${u.LastStatus === 'online' ? 'text-red-400' : 'text-red-400'} font-bold">
+            ${u.LastStatus || 'online'}
+          </span>
+        </p>
+        <p class="text-xs text-gray-500">
+          DM Alerts: ${u.AlertDM ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.2 0z"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3l105.3 105.3c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256l105.3-105.4z"/></svg>'} 
+          | Channel: ${u.AlertChannel ? `<code>${escapeHtml(u.AlertChannel)}</code>` : '—'}
+        </p>
+      </div>
+      <button onclick="deleteURL('${encodeURIComponent(u.URL)}')"
+        class="text-red-400 hover:text-red-300 font-bold transition-colors">
+        Remove
+      </button>
+    </div>
+  `).join("");
+}
+
+async function addURL() {
+  const url = document.getElementById("url").value.trim();
+  const name = document.getElementById("name").value.trim();
+  const channel = document.getElementById("channel").value.trim() || null;
+  const alertDM = document.getElementById("alertDM").checked;
+
+  if (!url) return showToast("URL cannot be empty", true);
+
+  const res = await fetch(`/api/guild/${guildId}/uptime`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ URL: url, Name: name, AlertDM: alertDM, AlertChannel: channel })
+  });
+
+  if (res.ok) showToast("URL added/updated successfully");
+  else showToast("Failed to add URL", true);
+
+  document.getElementById("url").value = "";
+  document.getElementById("name").value = "";
+  document.getElementById("channel").value = "";
+  document.getElementById("alertDM").checked = true;
+
+  loadURLs();
+}
+
+async function deleteURL(url) {
+  const res = await fetch(`/api/guild/${guildId}/uptime/${url}`, { method: "DELETE" });
+  res.ok ? showToast("URL removed") : showToast("Failed to remove URL", true);
+  loadURLs();
+}
+
+loadURLs();
+</script>
+
+</body>
+</html>

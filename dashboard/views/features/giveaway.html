@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Giveaway Manager</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tailwind.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --green: #FF3333;
+  --green-dark: #CC2222;
+  --bg: #0b0b14;
+  --surface: #1a1a2e;
+  --surface2: #13132a;
+  --border: rgba(255,255,255,.06);
+  --border-hover: rgba(255,51,51,.25);
+  --text: #e2e8f0;
+  --muted: #6b7280;
+  --muted2: #4b5563;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  margin: 0;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,51,51,.3); }
+
+/* ── Layout ── */
+.page-wrapper { display: flex; min-height: 100vh; }
+.main-content { flex: 1; padding: 16px; min-width: 0; }
+@media (min-width: 768px) { .main-content { padding: 28px 32px; } }
+
+/* ── Toast ── */
+#toast {
+  position: fixed; top: 12px; right: 12px; left: 12px;
+  padding: 12px 16px; border-radius: 12px;
+  transform: translateY(-120px); transition: transform .3s cubic-bezier(.4,0,.2,1);
+  z-index: 9999; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+@media (min-width: 480px) {
+  #toast { left: auto; min-width: 260px; transform: translateX(500px); transition: transform .3s; }
+  #toast.show { transform: translateX(0); }
+}
+#toast.show { transform: translateY(0); }
+
+/* ── Page header ── */
+.page-header { margin-bottom: 24px; }
+.page-header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.page-header-icon {
+  width: 42px; height: 42px; border-radius: 11px;
+  background: rgba(255,51,51,.1); border: 1px solid rgba(255,51,51,.2);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.page-header-icon svg { width: 20px; height: 20px; color: var(--green); }
+.page-header h1 { font-size: 22px; font-weight: 800; letter-spacing: -.02em; margin: 0; color: #fff; }
+@media (min-width: 640px) { .page-header h1 { font-size: 26px; } }
+.page-header p { color: var(--muted); font-size: 13px; margin: 0 0 0 54px; }
+
+/* ── Stats strip ── */
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px;
+  transition: border-color .2s;
+}
+.stat-card:hover { border-color: rgba(255,51,51,.15); }
+.stat-card-val { font-size: 22px; font-weight: 800; letter-spacing: -.02em; line-height: 1; }
+.stat-card-val.green { color: var(--green); }
+.stat-card-val.white { color: #fff; }
+.stat-card-val.gray  { color: var(--muted); }
+.stat-card-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-top: 5px; }
+
+/* ── Tabs ── */
+.tabs-wrap {
+  overflow-x: auto; scrollbar-width: none;
+  border-bottom: 1px solid var(--border);
+  margin: 0 -16px 20px; padding: 0 16px;
+}
+.tabs-wrap::-webkit-scrollbar { display: none; }
+@media (min-width: 768px) { .tabs-wrap { margin: 0 0 24px; padding: 0; } }
+.tabs-inner { display: flex; gap: 0; white-space: nowrap; min-width: max-content; }
+.tab-btn {
+  position: relative; padding: 11px 16px;
+  font-size: 13px; font-weight: 700;
+  color: var(--muted); background: none; border: none;
+  cursor: pointer; transition: color .2s;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex; align-items: center; gap: 6px;
+}
+.tab-btn::after {
+  content: ''; position: absolute; bottom: -1px; left: 0;
+  width: 0; height: 2px; background: var(--green);
+  transition: width .25s; border-radius: 99px;
+}
+.tab-btn.active::after { width: 100%; }
+.tab-btn.active, .tab-btn:hover { color: #fff; }
+.tab-count {
+  font-size: 10px; font-weight: 700; padding: 1px 6px;
+  background: rgba(255,255,255,.08); border-radius: 99px;
+  color: var(--muted); letter-spacing: .02em;
+}
+.tab-btn.active .tab-count { background: rgba(255,51,51,.15); color: var(--green); }
+
+/* ── Section card ── */
+.section-card {
+  background: var(--surface); border-radius: 14px;
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.25);
+  margin-bottom: 16px;
+}
+.section-card-title {
+  font-size: 13px; font-weight: 700; color: #fff;
+  display: flex; align-items: center; gap: 8px; margin: 0 0 18px;
+}
+.section-card-title svg { width: 15px; height: 15px; color: var(--green); flex-shrink: 0; }
+.section-card-title .title-badge {
+  font-size: 10px; font-weight: 700; padding: 2px 7px;
+  background: rgba(255,51,51,.1); color: var(--green);
+  border-radius: 99px; border: 1px solid rgba(255,51,51,.2);
+}
+
+/* ── Form fields ── */
+.field-label {
+  display: block; font-size: 10px; font-weight: 700;
+  color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px;
+}
+.inp {
+  width: 100%; background: #0f0f20;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 10px; padding: 10px 14px;
+  font-size: 14px; color: #fff; outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  min-height: 44px;
+}
+.inp::placeholder { color: var(--muted2); }
+.inp:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(255,51,51,.12); }
+.inp option { background: #1a1a2e; }
+textarea.inp { min-height: 80px; resize: vertical; }
+
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: ''; position: absolute; right: 14px; top: 50%;
+  transform: translateY(-50%); pointer-events: none;
+  width: 0; height: 0;
+  border-left: 5px solid transparent; border-right: 5px solid transparent;
+  border-top: 5px solid var(--muted);
+}
+select.inp { appearance: none; padding-right: 36px; }
+
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+@media (max-width: 560px) { .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; } }
+@media (max-width: 720px) { .form-grid-3 { grid-template-columns: 1fr 1fr; } }
+
+.form-row { margin-bottom: 14px; }
+.form-hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+/* ── Buttons ── */
+.btn-primary {
+  background: var(--green); color: #0b0b14;
+  border: none; border-radius: 10px;
+  padding: 10px 20px; font-weight: 800; font-size: 14px;
+  cursor: pointer; transition: all .15s;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: inline-flex; align-items: center; gap: 7px;
+  box-shadow: 0 4px 18px rgba(255,51,51,.25);
+  min-height: 44px;
+}
+.btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
+.btn-primary:active { transform: scale(.97); }
+.btn-primary:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn-ghost {
+  background: rgba(255,255,255,.05); color: var(--text);
+  border: 1px solid rgba(255,255,255,.1); border-radius: 9px;
+  padding: 7px 13px; font-weight: 700; font-size: 12px;
+  cursor: pointer; transition: all .15s;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: inline-flex; align-items: center; gap: 5px;
+  white-space: nowrap;
+}
+.btn-ghost:hover { background: rgba(255,255,255,.1); color: #fff; }
+.btn-ghost:active { transform: scale(.97); }
+
+.btn-danger {
+  background: rgba(239,68,68,.07); color: #f87171;
+  border: 1px solid rgba(239,68,68,.2); border-radius: 9px;
+  padding: 7px 11px; font-weight: 700; font-size: 12px;
+  cursor: pointer; transition: all .15s;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.btn-danger:hover { background: rgba(239,68,68,.15); }
+.btn-danger:active { transform: scale(.97); }
+
+.btn-warning {
+  background: rgba(251,191,36,.07); color: #fbbf24;
+  border: 1px solid rgba(251,191,36,.2); border-radius: 9px;
+  padding: 7px 13px; font-weight: 700; font-size: 12px;
+  cursor: pointer; transition: all .15s;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.btn-warning:hover { background: rgba(251,191,36,.15); }
+.btn-warning:active { transform: scale(.97); }
+
+/* ── Giveaway card ── */
+.g-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px 18px;
+  transition: border-color .2s, transform .15s;
+  margin-bottom: 10px;
+}
+.g-card:hover { border-color: var(--border-hover); }
+.g-card.ended { opacity: .72; }
+.g-card.ended:hover { border-color: rgba(255,255,255,.12); opacity: .85; }
+
+.g-card-top {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 12px;
+  margin-bottom: 12px;
+}
+.g-card-left { min-width: 0; flex: 1; }
+.g-card-prize {
+  font-size: 15px; font-weight: 800; color: #fff;
+  margin-bottom: 5px; line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.g-card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 99px;
+  font-size: 10px; font-weight: 700; letter-spacing: .04em;
+}
+.badge-active { background: rgba(255,51,51,.12); color: var(--green); border: 1px solid rgba(255,51,51,.25); }
+.badge-ended  { background: rgba(156,163,175,.1); color: #9ca3af; border: 1px solid rgba(156,163,175,.2); }
+.g-card-id { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted2); }
+
+.g-card-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex-shrink: 0; }
+
+.g-card-stats {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  padding-top: 11px; border-top: 1px solid var(--border);
+}
+.g-stat { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); }
+.g-stat svg { width: 13px; height: 13px; flex-shrink: 0; }
+.g-stat strong { color: var(--text); font-weight: 600; }
+
+.winners-box {
+  margin-top: 10px; padding: 10px 12px;
+  background: rgba(251,191,36,.04);
+  border: 1px solid rgba(251,191,36,.12);
+  border-radius: 8px; font-size: 12px;
+}
+.winners-box-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #fbbf24; margin-bottom: 4px; }
+.winner-id { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #fde68a; }
+
+.g-description { font-size: 12px; color: var(--muted); margin-top: 8px; font-style: italic; }
+
+/* ── Bonus toggle area ── */
+.bonus-panel {
+  background: rgba(255,51,51,.04);
+  border: 1px solid rgba(255,51,51,.1);
+  border-radius: 10px; padding: 14px;
+  margin-top: 4px;
+}
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center; padding: 52px 24px;
+  color: var(--muted2);
+}
+.empty-state svg { width: 40px; height: 40px; margin: 0 auto 12px; opacity: .3; display: block; }
+.empty-state p { font-size: 14px; margin: 0 0 16px; }
+.empty-state .sub { font-size: 12px; color: var(--muted2); }
+
+/* ── Modal overlay ── */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 500; padding: 16px;
+}
+.modal {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 16px; padding: 24px;
+  width: 100%; max-width: 520px;
+  max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0,0,0,.6);
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.modal-header h2 { font-size: 16px; font-weight: 800; color: #fff; margin: 0; }
+.modal-close {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: rgba(255,255,255,.05); border: none;
+  cursor: pointer; color: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.modal-close:hover { background: rgba(255,255,255,.1); color: #fff; }
+.modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+
+/* ── Loading skeleton ── */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,.04) 25%, rgba(255,255,255,.08) 50%, rgba(255,255,255,.04) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+.hidden { display: none !important; }
+
+/* ── Divider ── */
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+</style>
+
+<style>
+/* ═══════════════ Razor Custom Select ═══════════════ */
+.rzr-wrap{position:relative;width:100%;display:block}
+/* hide ::after chevrons on select-wrap parents */
+.rzr-wrap-parent.select-wrap::after,
+.rzr-wrap-parent::after{display:none!important;content:none!important}
+.rzr-trigger{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:10px 14px;
+  border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);
+  background:#0d0d1c;color:#fff;
+  cursor:pointer;font-size:14px;font-family:inherit;
+  min-height:44px;width:100%;
+  transition:border-color .15s,box-shadow .15s;
+  user-select:none;box-sizing:border-box;
+}
+.rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
+.rzr-trigger.is-open{
+  border-color:rgba(255,51,51,.6);
+  box-shadow:0 0 0 3px rgba(255,51,51,.1);
+}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
+.rzr-label.is-ph{color:#6b7280}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+/* panel is appended to body — these rules still apply via the class */
+.rzr-panel{
+  position:fixed;z-index:999999;
+  background:rgba(11,11,20,.98);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  overflow:hidden;
+  animation:rzrIn .16s ease;
+}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
+.rzr-search-inp{
+  display:block;width:100%;
+  background:#06060f;border:1px solid rgba(255,255,255,.09);
+  border-radius:7px;padding:6px 11px;
+  color:#fff;font-size:13px;font-family:inherit;
+  outline:none;box-sizing:border-box;transition:border-color .15s;
+}
+.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-search-inp::placeholder{color:#374151}
+.rzr-list{max-height:220px;overflow-y:auto;padding:5px}
+.rzr-list::-webkit-scrollbar{width:4px}
+.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:6px}
+.rzr-list::-webkit-scrollbar-thumb:hover{background:#FF3333}
+.rzr-item{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:6px;padding:8px 11px;border-radius:8px;
+  cursor:pointer;font-size:13px;color:#9ca3af;
+  transition:background .1s,color .1s;
+}
+.rzr-item:hover{background:rgba(255,255,255,.055);color:#fff}
+.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600}
+.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item.is-sel .rzr-item-chk{opacity:1}
+.rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
+/* ═══════════════ End Razor Custom Select ═══════════════ */
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<script>
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+</script>
+
+<div id="toast"></div>
+
+<div class="page-wrapper">
+  <div id="razor-sidebar"></div>
+  <main class="main-content">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div class="page-header-top">
+        <div class="page-header-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/>
+            <path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/>
+            <path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/>
+          </svg>
+        </div>
+        <h1>Giveaway Manager</h1>
+      </div>
+      <p>Create, manage, and reroll giveaways directly from your dashboard</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-card-val green" id="s-active">—</div>
+        <div class="stat-card-label">Active</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-val white" id="s-total">—</div>
+        <div class="stat-card-label">Total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-val gray" id="s-ended">—</div>
+        <div class="stat-card-label">Ended</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-wrap">
+      <div class="tabs-inner">
+        <button class="tab-btn active" id="tab-btn-active" onclick="tab('active')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Active <span class="tab-count" id="count-active">0</span>
+        </button>
+        <button class="tab-btn" id="tab-btn-ended" onclick="tab('ended')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+          Ended <span class="tab-count" id="count-ended">0</span>
+        </button>
+        <button class="tab-btn" id="tab-btn-create" onclick="tab('create')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Giveaway
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Tab -->
+    <div id="panel-active">
+      <div id="list-active">
+        <!-- skeleton -->
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px">
+          <div class="skeleton" style="width:55%;height:16px;margin-bottom:10px"></div>
+          <div class="skeleton" style="width:30%;height:11px;margin-bottom:14px"></div>
+          <div style="display:flex;gap:16px">
+            <div class="skeleton" style="width:70px;height:11px"></div>
+            <div class="skeleton" style="width:80px;height:11px"></div>
+            <div class="skeleton" style="width:90px;height:11px"></div>
+          </div>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;opacity:.5">
+          <div class="skeleton" style="width:45%;height:16px;margin-bottom:10px"></div>
+          <div class="skeleton" style="width:25%;height:11px;margin-bottom:14px"></div>
+          <div style="display:flex;gap:16px">
+            <div class="skeleton" style="width:60px;height:11px"></div>
+            <div class="skeleton" style="width:75px;height:11px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ended Tab -->
+    <div id="panel-ended" class="hidden">
+      <div id="list-ended"></div>
+    </div>
+
+    <!-- Create Tab -->
+    <div id="panel-create" class="hidden">
+      <div class="section-card">
+        <div class="section-card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+          New Giveaway
+          <span class="title-badge">Bot will post instantly</span>
+        </div>
+
+        <div class="form-grid-2 form-row">
+          <div>
+            <label class="field-label">Prize <span style="color:#ef4444">*</span></label>
+            <input class="inp" id="f-prize" type="text" placeholder="e.g. Discord Nitro 1 Month" maxlength="256">
+          </div>
+          <div>
+            <label class="field-label">Channel <span style="color:#ef4444">*</span></label>
+            <div class="select-wrap">
+              <select class="inp" id="f-channel">
+                <option value="">Loading channels...</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid-3 form-row">
+          <div>
+            <label class="field-label">Winners <span style="color:#ef4444">*</span></label>
+            <input class="inp" id="f-winners" type="number" placeholder="1" min="1" max="20" value="1">
+          </div>
+          <div>
+            <label class="field-label">Duration <span style="color:#ef4444">*</span></label>
+            <input class="inp" id="f-duration" type="text" placeholder="e.g. 1h, 30m, 2d">
+            <p class="form-hint">Supports: s, m, h, d (min 5s, max 30d)</p>
+          </div>
+          <div>
+            <label class="field-label">Required Role</label>
+            <div class="select-wrap">
+              <select class="inp" id="f-req-role">
+                <option value="">Anyone can enter</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="field-label">Description <span style="color:var(--muted2)">(optional)</span></label>
+          <textarea class="inp" id="f-desc" rows="2" placeholder="Extra info shown in the giveaway embed..."></textarea>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="form-row">
+          <label class="field-label">Bonus Role <span style="color:var(--muted2)">(optional)</span></label>
+          <div class="select-wrap" style="max-width:320px">
+            <select class="inp" id="f-bon-role">
+              <option value="">None — everyone gets equal entries</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="bon-wrap" class="bonus-panel hidden">
+          <label class="field-label">Bonus Entries for role members</label>
+          <input class="inp" id="f-bon-entries" type="number" placeholder="2" min="1" max="10" value="2" style="max-width:160px">
+          <p class="form-hint">Members with the bonus role receive this many extra entries into the draw.</p>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:12px;margin-top:20px;flex-wrap:wrap">
+          <button class="btn-primary" id="create-btn" onclick="createGiveaway()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg>
+            Launch Giveaway
+          </button>
+          <span style="font-size:12px;color:var(--muted2)">The bot will post immediately in the selected channel.</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── Edit Modal ── -->
+<div class="overlay hidden" id="m-edit" onclick="handleOverlayClick(event,'m-edit')">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF3333" stroke-width="2" style="display:inline;margin-right:6px;vertical-align:-2px"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Edit Giveaway
+      </h2>
+      <button class="modal-close" onclick="closeM('m-edit')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <input type="hidden" id="e-id">
+    <div class="form-row">
+      <label class="field-label">Prize</label>
+      <input class="inp" id="e-prize" type="text" maxlength="256">
+    </div>
+    <div class="form-grid-2 form-row">
+      <div>
+        <label class="field-label">Winners</label>
+        <input class="inp" id="e-winners" type="number" min="1" max="20">
+      </div>
+      <div>
+        <label class="field-label">Extend by <span style="color:var(--muted2)">(optional)</span></label>
+        <input class="inp" id="e-extend" type="text" placeholder="e.g. 30m, 1h">
+        <p class="form-hint">Adds time to the current end date.</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeM('m-edit')">Cancel</button>
+      <button class="btn-primary" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Reroll Modal ── -->
+<div class="overlay hidden" id="m-reroll" onclick="handleOverlayClick(event,'m-reroll')">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header">
+      <h2>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF3333" stroke-width="2" style="display:inline;margin-right:6px;vertical-align:-2px"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+        Reroll Winners
+      </h2>
+      <button class="modal-close" onclick="closeM('m-reroll')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <input type="hidden" id="r-id">
+    <p style="font-size:13px;color:var(--muted);margin:0 0 16px;line-height:1.6">Select new winners at random from all entrants. Leave blank to keep the original winner count.</p>
+    <div class="form-row">
+      <label class="field-label">Number of Winners</label>
+      <input class="inp" id="r-count" type="number" min="1" max="20" placeholder="Leave blank to use original count" style="max-width:100%">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeM('m-reroll')">Cancel</button>
+      <button class="btn-primary" onclick="doReroll()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+        Reroll
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="/sidebar.js"></script>
+<script>
+const guildId = location.pathname.split('/')[2];
+const API = '/api/guild/' + guildId;
+let all = [];
+let currentTab = 'active';
+
+/* ── Toast ── */
+function toast(msg, ok) {
+  const el = document.getElementById('toast');
+  el.innerHTML = (ok === false
+    ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+    : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>') +
+    '<span>' + escapeHtml(msg) + '</span>';
+  el.style.background = ok === false ? '#dc2626' : '#DC2626';
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+/* ── Tabs ── */
+function tab(name) {
+  currentTab = name;
+  ['active','ended','create'].forEach(t => {
+    document.getElementById('panel-' + t).classList.toggle('hidden', t !== name);
+    document.getElementById('tab-btn-' + t).classList.toggle('active', t === name);
+  });
+  if (name === 'active') renderList('active');
+  if (name === 'ended')  renderList('ended');
+}
+
+/* ── Modal helpers ── */
+function openM(id)  { document.getElementById(id).classList.remove('hidden'); }
+function closeM(id) { document.getElementById(id).classList.add('hidden'); }
+function handleOverlayClick(e, id) {
+  if (e.target === document.getElementById(id)) closeM(id);
+}
+
+/* ── Load guild meta (channels + roles) ── */
+async function loadGuildMeta() {
+  const r = await fetch(API + '/giveaway/channels').catch(() => null);
+  if (!r || !r.ok) return;
+  const d = await r.json();
+  if (d.error) return;
+
+  const chEl = document.getElementById('f-channel');
+  // Group by category
+  const byParent = {};
+  d.channels.forEach(c => {
+    const key = c.parent || 'Uncategorized';
+    if (!byParent[key]) byParent[key] = [];
+    byParent[key].push(c);
+  });
+  let chHTML = '<option value="">Select a channel...</option>';
+  Object.entries(byParent).sort((a,b) => a[0].localeCompare(b[0])).forEach(([parent, chs]) => {
+    chHTML += '<optgroup label="' + escapeHtml(parent) + '">' +
+      chs.map(c => '<option value="' + c.id + '">#' + escapeHtml(c.name) + '</option>').join('') +
+      '</optgroup>';
+  });
+  chEl.innerHTML = chHTML;
+
+  const roleOpts = '<option value="">None</option>' +
+    d.roles.map(r => '<option value="' + r.id + '">@' + escapeHtml(r.name) + '</option>').join('');
+  document.getElementById('f-req-role').innerHTML = '<option value="">Anyone can enter</option>' +
+    d.roles.map(r => '<option value="' + r.id + '">@' + escapeHtml(r.name) + '</option>').join('');
+  document.getElementById('f-bon-role').innerHTML = roleOpts;
+}
+
+/* ── Load all giveaways ── */
+async function loadAll() {
+  try {
+    const r = await fetch(API + '/giveaways');
+    const d = await r.json();
+    all = d.giveaways || [];
+    const active = all.filter(g => !g.hasEnded).length;
+    const ended  = all.length - active;
+    document.getElementById('s-active').textContent = active;
+    document.getElementById('s-total').textContent  = all.length;
+    document.getElementById('s-ended').textContent  = ended;
+    document.getElementById('count-active').textContent = active;
+    document.getElementById('count-ended').textContent  = ended;
+    if (currentTab === 'active') renderList('active');
+    if (currentTab === 'ended')  renderList('ended');
+  } catch (e) {
+    document.getElementById('list-active').innerHTML =
+      '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>Failed to load giveaways</p><span class="sub">Check your connection and try again</span></div>';
+  }
+}
+
+/* ── Render list ── */
+function renderList(type) {
+  const items = all.filter(g => type === 'active' ? !g.hasEnded : g.hasEnded);
+  const el = document.getElementById('list-' + type);
+  if (!items.length) {
+    el.innerHTML = type === 'active'
+      ? '<div class="empty-state">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>' +
+          '<p>No active giveaways</p>' +
+          '<span class="sub">Switch to the <b>New Giveaway</b> tab to start one</span>' +
+        '</div>'
+      : '<div class="empty-state">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>' +
+          '<p>No ended giveaways yet</p>' +
+          '<span class="sub">Ended giveaways will appear here</span>' +
+        '</div>';
+    return;
+  }
+  el.innerHTML = items.map(g => buildCard(g)).join('');
+}
+
+/* ── Build giveaway card ── */
+function buildCard(g) {
+  const ended = g.hasEnded;
+  const ts = new Date(g.endTime);
+
+  const actions = !ended
+    ? `<button class="btn-ghost" onclick="openEdit('${escapeHtml(g.giveawayId)}')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit
+       </button>
+       <button class="btn-warning" onclick="doEnd('${escapeHtml(g.giveawayId)}')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>End
+       </button>`
+    : `<button class="btn-ghost" onclick="openReroll('${escapeHtml(g.giveawayId)}')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>Reroll
+       </button>`;
+
+  const deleteBtn = `<button class="btn-danger" onclick="doDelete('${escapeHtml(g.giveawayId)}')" title="Delete giveaway">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+  </button>`;
+
+  const timeLabel = ended
+    ? 'Ended ' + ts.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' })
+    : 'Ends in ' + reltime(ts);
+
+  const winnersSection = ended && g.winnersChosen && g.winnersChosen.length
+    ? `<div class="winners-box">
+        <div class="winners-box-label">🏆 Winners</div>
+        <div>${g.winnersChosen.map(id => '<span class="winner-id">&lt;@' + id + '&gt;</span>').join('<span style="color:var(--muted2);margin:0 4px">·</span>')}</div>
+       </div>`
+    : '';
+
+  const descSection = g.description
+    ? `<div class="g-description">"${escapeHtml(g.description)}"</div>`
+    : '';
+
+  const roleTags = [
+    g.requiredRole ? `<span class="g-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><strong>Role required</strong></span>` : '',
+    g.bonusRole    ? `<span class="g-stat"><svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><strong style="color:#fbbf24">Bonus entries</strong></span>` : '',
+  ].filter(Boolean).join('');
+
+  return `<div class="g-card${ended ? ' ended' : ''}">
+    <div class="g-card-top">
+      <div class="g-card-left">
+        <div class="g-card-meta" style="margin-bottom:6px">
+          <span class="badge ${ended ? 'badge-ended' : 'badge-active'}">${ended ? 'ENDED' : 'ACTIVE'}</span>
+          <span class="g-card-id">${escapeHtml(g.giveawayId)}</span>
+        </div>
+        <div class="g-card-prize">${escapeHtml(g.prize)}</div>
+        ${descSection}
+      </div>
+      <div class="g-card-actions">
+        ${actions}
+        ${deleteBtn}
+      </div>
+    </div>
+    <div class="g-card-stats">
+      <span class="g-stat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>
+        <strong>${g.uniqueEntrants}</strong> entrant${g.uniqueEntrants !== 1 ? 's' : ''}
+      </span>
+      <span class="g-stat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 010-5C7 4 8 7 8 7s1-3 3.5-3a2.5 2.5 0 010 5H10"/><path d="M6 9v11"/><path d="M18 9v11"/><rect x="6" y="14" width="12" height="6"/></svg>
+        <strong>${g.winners}</strong> winner${g.winners > 1 ? 's' : ''}
+      </span>
+      <span class="g-stat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        ${timeLabel}
+      </span>
+      ${roleTags}
+    </div>
+    ${winnersSection}
+  </div>`;
+}
+
+/* ── Create giveaway ── */
+async function createGiveaway() {
+  const btn   = document.getElementById('create-btn');
+  const prize = document.getElementById('f-prize').value.trim();
+  const ch    = document.getElementById('f-channel').value;
+  const win   = document.getElementById('f-winners').value;
+  const dur   = document.getElementById('f-duration').value.trim();
+  const desc  = document.getElementById('f-desc').value.trim();
+  const rr    = document.getElementById('f-req-role').value;
+  const br    = document.getElementById('f-bon-role').value;
+  const be    = document.getElementById('f-bon-entries').value;
+
+  if (!prize) return toast('Prize is required.', false);
+  if (!ch)    return toast('Please select a channel.', false);
+  if (!dur)   return toast('Duration is required (e.g. 1h, 30m).', false);
+
+  btn.disabled = true;
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Creating...';
+
+  try {
+    const r = await fetch(API + '/giveaways', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prize, channelId: ch, winners: win, duration: dur,
+        description: desc || null, requiredRole: rr || null,
+        bonusRole: br || null, bonusEntries: br ? be : null }),
+    });
+    const d = await r.json();
+    if (!d.success) return toast(d.error || 'Failed to create giveaway.', false);
+    toast('Giveaway launched successfully!');
+    ['f-prize','f-duration','f-desc','f-bon-entries'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-winners').value = '1';
+    document.getElementById('f-channel').selectedIndex = 0;
+    document.getElementById('f-req-role').value = '';
+    document.getElementById('f-bon-role').value = '';
+    document.getElementById('bon-wrap').classList.add('hidden');
+    await loadAll();
+    tab('active');
+  } catch { toast('Network error. Please try again.', false); }
+  finally {
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg> Launch Giveaway';
+  }
+}
+
+/* ── End giveaway ── */
+async function doEnd(id) {
+  if (!confirm('End this giveaway now and draw winners?')) return;
+  const r = await fetch(API + '/giveaways/' + id + '/end', { method: 'POST' });
+  const d = await r.json();
+  if (!d.success) return toast(d.error || 'Failed to end giveaway.', false);
+  toast('Giveaway ended — winners drawn!');
+  loadAll();
+}
+
+/* ── Edit modal ── */
+function openEdit(id) {
+  const g = all.find(x => x.giveawayId === id);
+  if (!g) return;
+  document.getElementById('e-id').value      = id;
+  document.getElementById('e-prize').value   = g.prize;
+  document.getElementById('e-winners').value = g.winners;
+  document.getElementById('e-extend').value  = '';
+  openM('m-edit');
+}
+
+async function saveEdit() {
+  const id = document.getElementById('e-id').value;
+  const r = await fetch(API + '/giveaways/' + id, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      prize:          document.getElementById('e-prize').value.trim(),
+      winners:        document.getElementById('e-winners').value,
+      extendDuration: document.getElementById('e-extend').value.trim() || null,
+    }),
+  });
+  const d = await r.json();
+  if (!d.success) return toast(d.error || 'Failed to update giveaway.', false);
+  toast('Giveaway updated!');
+  closeM('m-edit');
+  loadAll();
+}
+
+/* ── Reroll modal ── */
+function openReroll(id) {
+  document.getElementById('r-id').value    = id;
+  document.getElementById('r-count').value = '';
+  openM('m-reroll');
+}
+
+async function doReroll() {
+  const id    = document.getElementById('r-id').value;
+  const count = document.getElementById('r-count').value;
+  const r = await fetch(API + '/giveaways/' + id + '/reroll', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ winners: count || null }),
+  });
+  const d = await r.json();
+  if (!d.success) return toast(d.error || 'Failed to reroll.', false);
+  toast('Rerolled! New winners drawn.');
+  closeM('m-reroll');
+  loadAll();
+}
+
+/* ── Delete ── */
+async function doDelete(id) {
+  if (!confirm('Delete this giveaway? Active giveaways will be marked as cancelled in Discord.')) return;
+  const r = await fetch(API + '/giveaways/' + id, { method: 'DELETE' });
+  const d = await r.json();
+  if (!d.success) return toast(d.error || 'Failed to delete.', false);
+  toast('Giveaway deleted.');
+  loadAll();
+}
+
+/* ── Relative time ── */
+function reltime(date) {
+  const diff = date - Date.now();
+  if (diff <= 0) return 'a moment';
+  const s = Math.floor(diff / 1000);
+  if (s < 60) return s + 's';
+  const m = Math.floor(s / 60);
+  if (m < 60) return m + 'm';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ' + (m % 60) + 'm';
+  const days = Math.floor(h / 24);
+  return days + 'd ' + (h % 24) + 'h';
+}
+
+/* ── Spin keyframe ── */
+const style = document.createElement('style');
+style.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
+document.head.appendChild(style);
+
+/* ── Init ── */
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('f-bon-role').addEventListener('change', function() {
+    document.getElementById('bon-wrap').classList.toggle('hidden', !this.value);
+  });
+  loadGuildMeta();
+  loadAll();
+});
+
+// Refresh active timer every 30s
+setInterval(() => {
+  if (currentTab === 'active') renderList('active');
+}, 30000);
+</script>
+<!-- Razor Custom Select JS -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet();
+var openWrap=null;
+
+/* strip any html tags from option text just in case */
+function cleanText(t){
+  t=String(t||'');
+  var d=document.createElement('div');
+  d.innerHTML=t;
+  return (d.textContent||d.innerText||'').trim();
+}
+
+/* get clean option text */
+function optText(opt){
+  return cleanText(opt.text||opt.textContent||opt.label||'');
+}
+
+/* position panel relative to trigger using fixed coords */
+function positionPanel(wrap){
+  var r=wrap._t.getBoundingClientRect();
+  var p=wrap._p;
+  var panelH=p.offsetHeight||240;
+  var spaceBelow=window.innerHeight-r.bottom;
+  var spaceAbove=r.top;
+  var width=Math.max(r.width,160);
+  p.style.width=width+'px';
+  p.style.left=r.left+'px';
+  p.style.right='auto';
+  if(spaceBelow>=panelH||spaceBelow>=spaceAbove){
+    p.style.top=(r.bottom+4)+'px';
+    p.style.bottom='auto';
+  } else {
+    p.style.bottom=(window.innerHeight-r.top+4)+'px';
+    p.style.top='auto';
+  }
+}
+
+/* close on outside click */
+document.addEventListener('mousedown',function(e){
+  if(!openWrap)return;
+  if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);
+},true);
+
+/* close on scroll anywhere (reposition) */
+window.addEventListener('scroll',function(){
+  if(openWrap)positionPanel(openWrap);
+},true);
+window.addEventListener('resize',function(){
+  if(openWrap)positionPanel(openWrap);
+});
+
+function open_(wrap){
+  if(openWrap&&openWrap!==wrap)close_(openWrap);
+  openWrap=wrap;
+  buildList(wrap,'');
+  wrap._si.value='';
+  /* always show search */
+  wrap._sw.style.display='';
+  document.body.appendChild(wrap._p);
+  wrap._p.style.display='block';
+  wrap._t.classList.add('is-open');
+  wrap._t.setAttribute('aria-expanded','true');
+  /* position after display:block so offsetHeight is known */
+  requestAnimationFrame(function(){positionPanel(wrap);});
+  setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);
+}
+
+function close_(wrap){
+  if(!wrap)return;
+  if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);
+  wrap._p.style.display='none';
+  wrap._t.classList.remove('is-open');
+  wrap._t.setAttribute('aria-expanded','false');
+  if(openWrap===wrap)openWrap=null;
+}
+
+function buildList(wrap,q){
+  var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();
+  var opts=Array.from(sel.options).filter(function(o){
+    var t=optText(o);
+    return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);
+  });
+  if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}
+  list.innerHTML='';
+  opts.forEach(function(opt){
+    var it=document.createElement('div');
+    it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');
+    it.dataset.v=opt.value;
+    var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);
+    var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';
+    it.appendChild(tx);it.appendChild(ck);
+    it.addEventListener('mousedown',function(e){
+      e.preventDefault();e.stopPropagation();
+      sel.value=opt.value;
+      updateLabel(wrap);
+      close_(wrap);
+      sel.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    list.appendChild(it);
+  });
+}
+
+function updateLabel(wrap){
+  var sel=wrap._s,lbl=wrap._lb;
+  var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;
+  var text=opt?optText(opt):'';
+  if(text){
+    lbl.textContent=text;
+    /* treat index-0 empty-value options as placeholders */
+    lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));
+  } else {
+    lbl.textContent='Select\u2026';
+    lbl.classList.add('is-ph');
+  }
+  wrap._last=sel.value;
+}
+
+function wrapSelect(sel){
+  if(wrapped.has(sel))return;
+  if(sel.hasAttribute('data-rzr-skip'))return;
+  if(sel.size&&sel.size>1)return;
+  wrapped.add(sel);
+
+  /* mark parent to suppress ::after chevrons */
+  if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');
+
+  /* hide native */
+  sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';
+
+  /* hide sibling fake-chevron divs */
+  var sib=sel.nextElementSibling;
+  if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';
+
+  /* trigger */
+  var t=document.createElement('div');
+  t.className='rzr-trigger';
+  t.setAttribute('tabindex','0');
+  t.setAttribute('role','combobox');
+  t.setAttribute('aria-haspopup','listbox');
+  t.setAttribute('aria-expanded','false');
+  var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';
+  var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;
+  t.appendChild(lb);t.appendChild(cv);
+
+  /* panel — will be moved to body on open */
+  var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';
+  var sw=document.createElement('div');sw.className='rzr-panel-search';
+  var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;
+  sw.appendChild(si);
+  var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');
+  p.appendChild(sw);p.appendChild(l);
+
+  /* outer wrap */
+  var w=document.createElement('div');w.className='rzr-wrap';
+  w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;
+
+  w.appendChild(t);
+  /* panel stays in wrap until open — moved to body on open() */
+  w.appendChild(p);
+  sel.parentNode.insertBefore(w,sel);
+  w.appendChild(sel);
+
+  /* search */
+  si.addEventListener('input',function(){buildList(w,si.value);});
+  si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});
+
+  /* trigger events */
+  t.addEventListener('click',function(e){
+    e.stopPropagation();
+    openWrap===w?close_(w):open_(w);
+  });
+  t.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}
+    if(e.key==='Escape')close_(w);
+  });
+
+  /* watch option changes (async population: channels, roles) */
+  var mo=new MutationObserver(function(){
+    updateLabel(w);
+    if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}
+  });
+  mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});
+
+  /* poll for programmatic .value changes */
+  var pid=setInterval(function(){
+    if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}
+    if(sel.value!==w._last)updateLabel(w);
+  },150);
+
+  updateLabel(w);
+}
+
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+
+new MutationObserver(function(ms){
+  ms.forEach(function(m){
+    m.addedNodes.forEach(function(n){
+      if(n.nodeType!==1)return;
+      if(n.tagName==='SELECT')wrapSelect(n);
+      else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);
+    });
+  });
+}).observe(document.body,{childList:true,subtree:true});
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);
+else initAll();
+})();
+</script>
+<!-- End Razor Custom Select JS -->
+
+
+</body>
+</html>

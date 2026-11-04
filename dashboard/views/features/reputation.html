@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reputation</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tailwind.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0b0b14; }
+::-webkit-scrollbar-thumb { background: #2d2d3d; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #FF3333; }
+
+#toast {
+  position: fixed; top: 1rem; right: 1rem; z-index: 100;
+  padding: .8rem 1.4rem; border-radius: .75rem; font-weight: 600; font-size: .875rem;
+  color: white; transform: translateX(440px); transition: transform .3s ease; pointer-events: none;
+}
+
+.card {
+  background: #13131f; border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 1rem; padding: 1.5rem;
+}
+
+.rep-row {
+  display: flex; align-items: center; gap: 1rem;
+  background: #0e0e1a; border: 1px solid rgba(255,255,255,0.05);
+  border-radius: .75rem; padding: .9rem 1.1rem;
+  transition: border-color .15s;
+}
+.rep-row:hover { border-color: rgba(255,51,51,.15); }
+
+.rank-badge {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; font-weight: 800; flex-shrink: 0;
+}
+.rank-1 { background: rgba(251,191,36,.15); color: #fbbf24; border: 1px solid rgba(251,191,36,.3); }
+.rank-2 { background: rgba(156,163,175,.15); color: #9ca3af; border: 1px solid rgba(156,163,175,.3); }
+.rank-3 { background: rgba(180,83,9,.15); color: #b45309; border: 1px solid rgba(180,83,9,.3); }
+.rank-n { background: rgba(255,255,255,.05); color: #6b7280; border: 1px solid rgba(255,255,255,.08); }
+
+.avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: #1e1e30; display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; font-weight: 700; color: #FF3333; flex-shrink: 0;
+}
+
+.rep-bar-track { height: 4px; background: rgba(255,255,255,0.06); border-radius: 999px; flex: 1; overflow: hidden; }
+.rep-bar-fill  { height: 100%; background: linear-gradient(90deg, #FF3333, #CC2222); border-radius: 999px; transition: width .5s ease; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .5rem 1rem; border-radius: .6rem; font-weight: 600; font-size: .85rem;
+  cursor: pointer; transition: all .15s; border: none; outline: none;
+}
+.btn-primary { background: #FF3333; color: #050c07; }
+.btn-primary:hover { background: #CC2222; }
+.btn-ghost { background: transparent; color: #9ca3af; border: 1px solid rgba(255,255,255,0.08); }
+.btn-ghost:hover { background: rgba(255,255,255,0.04); color: white; }
+.btn-danger { background: rgba(239,68,68,.1); color: #ef4444; border: 1px solid rgba(239,68,68,.2); }
+.btn-danger:hover { background: rgba(239,68,68,.2); }
+
+input, select {
+  background: #0e0e1a; border: 1px solid rgba(255,255,255,0.08);
+  border-radius: .6rem; padding: .6rem 1rem; color: white; font-family: inherit;
+  font-size: .875rem; outline: none; transition: border-color .15s;
+}
+input:focus, select:focus { border-color: #FF3333; }
+input::placeholder { color: #4b5563; }
+
+.empty-state { text-align: center; padding: 3rem 1rem; color: #4b5563; }
+.pagination { display: flex; align-items: center; gap: .5rem; justify-content: center; margin-top: 1.25rem; }
+.page-btn { width: 32px; height: 32px; border-radius: .5rem; display: flex; align-items: center; justify-content: center; font-size: .8rem; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: #9ca3af; transition: all .15s; }
+.page-btn:hover, .page-btn.active { background: rgba(255,51,51,.1); border-color: rgba(255,51,51,.3); color: #FF3333; }
+
+.edit-modal {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.7); align-items: center; justify-content: center;
+}
+.edit-modal.open { display: flex; }
+.modal-box {
+  background: #13131f; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 1.25rem; padding: 1.75rem; width: 100%; max-width: 420px;
+}
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body class="bg-[#0b0b14] text-white min-h-screen flex">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<aside id="razor-sidebar"></aside>
+<div id="toast"></div>
+
+<!-- Edit Modal -->
+<div class="edit-modal" id="editModal" onclick="closeEdit(event)">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold mb-1">Edit Reputation</h3>
+    <p class="text-sm text-gray-400 mb-4">Manually adjust a user's rep score.</p>
+    <input type="hidden" id="editUserId">
+    <div class="mb-3">
+      <label class="text-xs text-gray-400 block mb-1">User ID</label>
+      <input id="editUserDisplay" type="text" disabled class="w-full opacity-50">
+    </div>
+    <div class="mb-4">
+      <label class="text-xs text-gray-400 block mb-1">Reputation Points</label>
+      <input id="editRep" type="number" min="0" class="w-full">
+    </div>
+    <div class="flex gap-2 justify-end">
+      <button class="btn btn-ghost" onclick="closeEdit()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="ml-64 flex-1 p-8">
+
+  <!-- Header -->
+  <div class="mb-8 flex items-start justify-between">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold">Reputation</h1>
+        <p class="text-sm text-gray-400 mt-0.5">View and manage the community reputation leaderboard.</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button class="btn btn-ghost" onclick="loadRep()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.29"/></svg>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-3 gap-4 mb-6">
+    <div class="card text-center">
+      <p class="text-2xl font-bold text-[#FF3333]" id="stat-users">—</p>
+      <p class="text-xs text-gray-400 mt-1">Ranked Users</p>
+    </div>
+    <div class="card text-center">
+      <p class="text-2xl font-bold text-yellow-400" id="stat-total">—</p>
+      <p class="text-xs text-gray-400 mt-1">Total Rep Given</p>
+    </div>
+    <div class="card text-center">
+      <p class="text-2xl font-bold text-violet-400" id="stat-top">—</p>
+      <p class="text-xs text-gray-400 mt-1">Highest Rep Score</p>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="card mb-5">
+    <div class="flex gap-3 items-center">
+      <div class="relative flex-1">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" class="absolute left-3 top-1/2 -translate-y-1/2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input id="searchInput" type="text" placeholder="Search by user ID…" class="w-full pl-9" oninput="debounceSearch()">
+      </div>
+      <select id="sortOrder" onchange="renderRep()" class="min-w-44">
+        <option value="desc">Highest first</option>
+        <option value="asc">Lowest first</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="card">
+    <div id="repList">
+      <div class="empty-state">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5" class="mx-auto mb-3">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        <p class="text-sm">Loading leaderboard…</p>
+      </div>
+    </div>
+    <div id="pagination" class="pagination"></div>
+  </div>
+</div>
+
+<script src="/sidebar.js"></script>
+<script>
+const guildId = location.pathname.split('/')[2];
+let allRep = [];
+let page = 1;
+const PER_PAGE = 20;
+let searchTimer;
+
+function showToast(msg, ok = true) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = ok ? '#FF3333' : '#ef4444';
+  t.style.color = ok ? '#050c07' : 'white';
+  t.style.transform = 'translateX(0)';
+  setTimeout(() => t.style.transform = 'translateX(440px)', 3000);
+}
+
+function debounceSearch() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { page = 1; renderRep(); }, 200);
+}
+
+async function loadRep() {
+  try {
+    const r = await fetch(`/api/guild/${guildId}/reputation`);
+    allRep = await r.json();
+    updateStats();
+    page = 1;
+    renderRep();
+  } catch { showToast('Failed to load reputation data', false); }
+}
+
+function updateStats() {
+  const total = allRep.reduce((s, u) => s + (u.reps || 0), 0);
+  const top   = allRep.reduce((m, u) => Math.max(m, u.reps || 0), 0);
+  document.getElementById('stat-users').textContent = allRep.length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-top').textContent   = top;
+}
+
+function filtered() {
+  const q    = document.getElementById('searchInput').value.trim().toLowerCase();
+  const sort = document.getElementById('sortOrder').value;
+  let data   = q ? allRep.filter(u => (u.userId||'').includes(q)) : [...allRep];
+  data.sort((a,b) => sort === 'asc' ? (a.reps||0)-(b.reps||0) : (b.reps||0)-(a.reps||0));
+  return data;
+}
+
+function renderRep() {
+  const data   = filtered();
+  const total  = data.length;
+  const pages  = Math.ceil(total / PER_PAGE);
+  const slice  = data.slice((page-1)*PER_PAGE, page*PER_PAGE);
+  const maxRep = data[0]?.reps || 1;
+  const el     = document.getElementById('repList');
+
+  if (!slice.length) {
+    el.innerHTML = `<div class="empty-state">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5" class="mx-auto mb-3">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+      <p class="text-sm">No users found.</p>
+    </div>`;
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+
+  const globalOffset = (page-1)*PER_PAGE;
+
+  el.innerHTML = `<div class="space-y-2">` + slice.map((u, i) => {
+    const rank    = globalOffset + i + 1;
+    const rankCls = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':'rank-n';
+    const initials = (u.userId||'U').slice(0,2).toUpperCase();
+    const pct     = maxRep > 0 ? Math.round(((u.reps||0)/maxRep)*100) : 0;
+
+    return `<div class="rep-row">
+      <div class="rank-badge ${rankCls}">${rank}</div>
+      <div class="avatar">${initials}</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="font-mono text-sm text-gray-300">${escapeHtml(u.userId||'Unknown')}</span>
+          ${u.highestRating ? `<span class="text-xs text-yellow-400 font-semibold">${escapeHtml(u.highestRating)}</span>` : ''}
+        </div>
+        ${u.latestReason && u.latestReason !== 'No reason.' ? `<p class="text-xs text-gray-500 truncate">${escapeHtml(u.latestReason)}</p>` : ''}
+        <div class="flex items-center gap-2 mt-2">
+          <div class="rep-bar-track"><div class="rep-bar-fill" style="width:${pct}%"></div></div>
+        </div>
+      </div>
+      <div class="text-right flex-shrink-0">
+        <p class="text-lg font-bold text-[#FF3333]">${u.reps||0}</p>
+        <p class="text-xs text-gray-500">rep</p>
+      </div>
+      <button class="btn btn-ghost" style="padding:.35rem .7rem" onclick="openEdit('${escapeHtml(u.userId||'')}',${u.reps||0})">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+      <button class="btn btn-danger" style="padding:.35rem .7rem" onclick="deleteUser('${escapeHtml(u.userId||'')}')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      </button>
+    </div>`;
+  }).join('') + `</div>`;
+
+  // Pagination
+  const pg = document.getElementById('pagination');
+  if (pages <= 1) { pg.innerHTML = ''; return; }
+  let html = '';
+  if (page > 1) html += `<button class="page-btn" onclick="goPage(${page-1})">&#8249;</button>`;
+  for (let i=1; i<=pages; i++) {
+    if (i===1||i===pages||Math.abs(i-page)<=1)
+      html += `<button class="page-btn ${i===page?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    else if (Math.abs(i-page)===2)
+      html += `<span class="text-gray-600 px-1 text-sm">…</span>`;
+  }
+  if (page < pages) html += `<button class="page-btn" onclick="goPage(${page+1})">&#8250;</button>`;
+  pg.innerHTML = html;
+}
+
+function goPage(n) { page = n; renderRep(); window.scrollTo(0,0); }
+
+function openEdit(userId, reps) {
+  document.getElementById('editUserId').value      = userId;
+  document.getElementById('editUserDisplay').value = userId;
+  document.getElementById('editRep').value         = reps;
+  document.getElementById('editModal').classList.add('open');
+}
+
+function closeEdit(e) {
+  if (!e || e.target === document.getElementById('editModal'))
+    document.getElementById('editModal').classList.remove('open');
+}
+
+async function saveEdit() {
+  const userId = document.getElementById('editUserId').value;
+  const reps   = parseInt(document.getElementById('editRep').value);
+  if (isNaN(reps) || reps < 0) return showToast('Invalid rep value', false);
+  try {
+    const r = await fetch(`/api/guild/${guildId}/reputation/${userId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content||'' },
+      body: JSON.stringify({ reps }),
+    });
+    if (!r.ok) throw new Error();
+    showToast('Reputation updated');
+    closeEdit();
+    loadRep();
+  } catch { showToast('Failed to update reputation', false); }
+}
+
+async function deleteUser(userId) {
+  if (!confirm(`Reset reputation for ${userId}?`)) return;
+  try {
+    const r = await fetch(`/api/guild/${guildId}/reputation/${userId}`, {
+      method: 'DELETE',
+      headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content||'' },
+    });
+    if (!r.ok) throw new Error();
+    showToast('Reputation reset');
+    loadRep();
+  } catch { showToast('Failed to reset reputation', false); }
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+loadRep();
+</script>
+
+</body>
+</html>

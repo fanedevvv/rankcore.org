@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roco — Status</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #07090f;
+    --surface:   #0d1018;
+    --surface2:  #131720;
+    --border:    #1c2235;
+    --border2:   #263050;
+    --green:     #22c55e;
+    --green-bg:  rgba(34,197,94,0.10);
+    --green-bd:  rgba(34,197,94,0.28);
+    --red:       #f43f5e;
+    --red-bg:    rgba(244,63,94,0.10);
+    --red-bd:    rgba(244,63,94,0.28);
+    --orange:    #fb923c;
+    --orange-bg: rgba(251,146,60,0.10);
+    --orange-bd: rgba(251,146,60,0.28);
+    --blue:      #6366f1;
+    --blue-bg:   rgba(99,102,241,0.10);
+    --blue-bd:   rgba(99,102,241,0.28);
+    --text:      #e2e8f8;
+    --muted:     #4a5470;
+    --muted2:    #7c89a8;
+  }
+
+  /* ── Infrastructure / VPS tab ──────────────────────────────────────────────── */
+  .vps-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px; }
+  @media(max-width:900px){ .vps-grid { grid-template-columns:1fr; } }
+
+  .vps-card { background:var(--surface); border:1px solid var(--border); border-radius:20px; overflow:hidden; transition:border-color 0.3s, box-shadow 0.3s; position:relative; }
+  .vps-card.online  { border-color:rgba(34,197,94,0.28); }
+  .vps-card.offline { border-color:rgba(244,63,94,0.28); }
+  .vps-card.loading { border-color:var(--border); }
+  .vps-card.online:hover  { box-shadow:0 4px 32px rgba(34,197,94,0.07); }
+  .vps-card.offline:hover { box-shadow:0 4px 32px rgba(244,63,94,0.07); }
+
+  .vps-card-glow { position:absolute; inset:0; pointer-events:none; border-radius:20px; transition:opacity 0.4s; opacity:0; }
+  .vps-card.online  .vps-card-glow { background:radial-gradient(ellipse 70% 35% at 50% 0%,rgba(34,197,94,0.07) 0%,transparent 70%); opacity:1; }
+  .vps-card.offline .vps-card-glow { background:radial-gradient(ellipse 70% 35% at 50% 0%,rgba(244,63,94,0.07) 0%,transparent 70%); opacity:1; }
+
+  /* Card header */
+  .vps-card-head { padding:22px 24px 18px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; gap:12px; position:relative; }
+  .vps-card-title { font-size:17px; font-weight:800; color:var(--text); letter-spacing:-0.3px; }
+  .vps-card-subtitle { font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); margin-top:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .vps-region-tag { font-family:'Space Mono',monospace; font-size:8px; font-weight:700; padding:2px 6px; border-radius:4px; text-transform:uppercase; letter-spacing:0.6px; background:var(--surface2); border:1px solid var(--border2); color:var(--muted2); }
+  .vps-role-tag { font-family:'Space Mono',monospace; font-size:9px; font-weight:700; padding:3px 9px; border-radius:6px; text-transform:uppercase; letter-spacing:0.8px; flex-shrink:0; }
+  .vps-role-tag.main { background:var(--blue-bg); border:1px solid var(--blue-bd); color:var(--blue); }
+  .vps-role-tag.cb   { background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.28); color:#c084fc; }
+
+  .vps-status-badge { display:inline-flex; align-items:center; gap:6px; font-family:'Space Mono',monospace; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:1px; padding:4px 10px; border-radius:20px; margin-top:8px; }
+  .vps-status-badge.online  { background:var(--green-bg); border:1px solid var(--green-bd); color:#4ade80; }
+  .vps-status-badge.offline { background:var(--red-bg);   border:1px solid var(--red-bd);   color:#fb7185; }
+  .vps-status-badge.loading { background:var(--surface2); border:1px solid var(--border2);  color:var(--muted2); }
+  .vps-status-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .vps-status-badge.online  .vps-status-dot { background:var(--green); box-shadow:0 0 6px var(--green); animation:blink 2s infinite; }
+  .vps-status-badge.offline .vps-status-dot { background:var(--red); }
+  .vps-status-badge.loading .vps-status-dot { background:var(--muted2); animation:shimmer 1.5s infinite; }
+
+  /* Card body sections */
+  .vps-card-body { padding:0; }
+  .vps-section { padding:20px 24px; border-bottom:1px solid var(--border); }
+  .vps-section:last-child { border-bottom:none; }
+  .vps-section-title { font-family:'Space Mono',monospace; font-size:8px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); margin-bottom:14px; display:flex; align-items:center; gap:6px; }
+  .vps-section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* Metric bars */
+  .vps-metric { margin-bottom:16px; }
+  .vps-metric:last-child { margin-bottom:0; }
+  .vps-metric-row { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:7px; gap:8px; }
+  .vps-metric-label { font-family:'Space Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); }
+  .vps-metric-value { font-family:'Space Mono',monospace; font-size:11px; color:var(--text); white-space:nowrap; }
+  .vps-metric-value em { font-style:normal; color:var(--muted2); font-size:10px; }
+  .vps-bar-track { height:7px; background:var(--surface2); border-radius:7px; overflow:hidden; border:1px solid var(--border); }
+  .vps-bar-fill  { height:100%; border-radius:7px; transition:width 0.8s cubic-bezier(0.4,0,0.2,1); }
+  .vps-bar-fill.good { background:linear-gradient(90deg, #16a34a, #22c55e); }
+  .vps-bar-fill.warn { background:linear-gradient(90deg, #d97706, #fb923c); }
+  .vps-bar-fill.crit { background:linear-gradient(90deg, #be123c, #f43f5e); box-shadow:0 0 10px rgba(244,63,94,0.35); }
+  .vps-bar-fill.shimmer { background:linear-gradient(90deg, var(--border) 25%, var(--border2) 50%, var(--border) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; width:40%; }
+
+  /* Quick-stat pill grid */
+  .vps-pills { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .vps-pill { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 12px; }
+  .vps-pill-lbl { font-family:'Space Mono',monospace; font-size:8px; text-transform:uppercase; letter-spacing:1.2px; color:var(--muted); margin-bottom:5px; }
+  .vps-pill-val { font-family:'Space Mono',monospace; font-size:13px; font-weight:700; color:var(--text); }
+  .vps-pill-val.warn { color:var(--orange); }
+  .vps-pill-val.crit { color:var(--red); }
+  .vps-pill-val.good { color:var(--green); }
+
+  /* Specs grid (2-col) */
+  .vps-specs { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .vps-spec { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 13px; }
+  .vps-spec-lbl { font-family:'Space Mono',monospace; font-size:8px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:5px; }
+  .vps-spec-val { font-size:12px; font-weight:600; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .vps-spec-val.mono { font-family:'Space Mono',monospace; font-size:10px; font-weight:400; }
+
+  /* Network I/O */
+  .vps-net-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .vps-net-pill { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:11px 13px; display:flex; align-items:center; gap:9px; }
+  .vps-net-icon { width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .vps-net-icon.rx { background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.2); color:var(--green); }
+  .vps-net-icon.tx { background:var(--blue-bg); border:1px solid var(--blue-bd); color:var(--blue); }
+  .vps-net-pill-lbl { font-family:'Space Mono',monospace; font-size:8px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:3px; }
+  .vps-net-pill-val { font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:var(--text); }
+
+  /* PM2 process list */
+  .vps-pm2-row { display:grid; grid-template-columns:auto 1fr auto auto; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--border); }
+  .vps-pm2-row:last-child { border-bottom:none; padding-bottom:0; }
+  .vps-pm2-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .vps-pm2-dot.online  { background:var(--green); box-shadow:0 0 6px rgba(34,197,94,0.6); }
+  .vps-pm2-dot.stopped { background:var(--muted); }
+  .vps-pm2-dot.errored { background:var(--red); }
+  .vps-pm2-name { font-size:12px; font-weight:600; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .vps-pm2-uptime { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted2); white-space:nowrap; }
+  .vps-pm2-meta { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted2); white-space:nowrap; text-align:right; }
+
+  /* Top procs */
+  .vps-topproc-row { display:grid; grid-template-columns:1fr auto auto; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--border); }
+  .vps-topproc-row:last-child { border-bottom:none; padding-bottom:0; }
+  .vps-topproc-cmd { font-size:11px; font-weight:600; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .vps-topproc-user { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted2); }
+  .vps-topproc-pct { font-family:'Space Mono',monospace; font-size:10px; font-weight:700; color:var(--muted2); text-align:right; white-space:nowrap; }
+  .vps-topproc-pct.hot { color:var(--orange); }
+  .vps-topproc-pct.crit { color:var(--red); }
+
+  /* Error state */
+  .vps-offline-msg { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:52px 24px; text-align:center; gap:12px; }
+  .vps-offline-icon { width:48px; height:48px; border-radius:14px; background:var(--red-bg); border:1px solid var(--red-bd); display:flex; align-items:center; justify-content:center; color:var(--red); }
+
+  /* Refresh control */
+  .vps-refresh-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .vps-refresh-note { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); }
+  .vps-refresh-btn { font-family:'Space Mono',monospace; font-size:9px; padding:5px 12px; border-radius:6px; border:1px solid var(--border2); background:transparent; color:var(--muted2); cursor:pointer; transition:all 0.15s; text-transform:uppercase; letter-spacing:0.5px; }
+  .vps-refresh-btn:hover { border-color:var(--blue); color:var(--blue); }
+  .vps-refresh-btn.spinning { opacity:0.5; cursor:default; }
+
+  /* Temp */
+  .vps-temp { font-family:'Space Mono',monospace; font-size:11px; }
+  .vps-temp.hot  { color:var(--orange); }
+  .vps-temp.crit { color:var(--red); }
+
+  [data-theme="light"] {
+    --bg:        #f3f4f9;
+    --surface:   #ffffff;
+    --surface2:  #eaecf6;
+    --border:    #d8ddef;
+    --border2:   #b8c2df;
+    --text:      #111827;
+    --muted:     #8692b0;
+    --muted2:    #4a5470;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; min-height:100vh; background-image:radial-gradient(ellipse 70% 35% at 50% -5%,rgba(99,102,241,0.09) 0%,transparent 65%); transition:background 0.3s,color 0.3s; }
+
+  /* Header */
+  header { border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); background:rgba(7,9,15,0.85); }
+  [data-theme="light"] header { background:rgba(243,244,249,0.92); }
+  .header-inner { max-width:1100px; margin:0 auto; padding:11px 24px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .logo { display:flex; align-items:center; gap:10px; font-size:17px; font-weight:800; color:var(--text); letter-spacing:-0.5px; flex-shrink:0; text-decoration:none; }
+  .logo-icon { width:28px; height:28px; background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; box-shadow:0 2px 12px rgba(99,102,241,0.35); }
+  .version-tag { font-family:'Space Mono',monospace; font-size:10px; background:var(--surface2); border:1px solid var(--border2); color:var(--muted2); padding:2px 7px; border-radius:4px; }
+  .header-right { display:flex; align-items:center; gap:7px; flex-wrap:nowrap; overflow:hidden; }
+  /* Simplify toggle */
+  .simplify-btn { display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 10px; border-radius:6px; border:1px solid var(--border2); background:var(--surface); color:var(--muted2); cursor:pointer; transition:all 0.15s; font-family:'Space Mono',monospace; font-size:10px; white-space:nowrap; flex-shrink:0; user-select:none; }
+  .simplify-btn:hover { border-color:var(--blue); color:var(--blue); }
+  .simplify-btn.active { background:var(--blue-bg); border-color:var(--blue-bd); color:var(--blue); }
+  .simplify-dot { width:7px; height:7px; border-radius:50%; background:currentColor; opacity:0.55; flex-shrink:0; transition:opacity 0.15s,box-shadow 0.15s; }
+  .simplify-btn.active .simplify-dot { opacity:1; box-shadow:0 0 6px currentColor; }
+  .mitem-has-desc { cursor:help; }
+  .live-indicator { display:flex; align-items:center; gap:5px; }
+  .live-dot { width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:blink 2s infinite; }
+  .live-label { font-family:'Space Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted2); }
+  .clock { font-family:'Space Mono',monospace; font-size:11px; color:var(--muted); white-space:nowrap; }
+  .icon-btn { width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:6px; border:1px solid var(--border2); background:var(--surface); color:var(--muted2); cursor:pointer; transition:all 0.15s; font-size:13px; flex-shrink:0; }
+  .icon-btn:hover { border-color:var(--blue); color:var(--blue); }
+  .icon-btn:disabled { opacity:0.4; cursor:default; pointer-events:none; }
+  .refresh-btn { position:relative; display:inline-flex; align-items:center; gap:7px; height:30px; padding:0 10px 0 6px; border-radius:6px; border:1px solid var(--border2); background:var(--surface); color:var(--muted2); cursor:pointer; transition:all 0.15s; font-family:'Space Mono',monospace; font-size:10px; white-space:nowrap; flex-shrink:0; }
+  .refresh-btn:hover { border-color:var(--blue); color:var(--blue); }
+  .refresh-btn:hover .countdown-ring { stroke:var(--blue); }
+  .refresh-btn:disabled { opacity:0.4; cursor:default; pointer-events:none; }
+  .countdown-wrap { position:relative; width:20px; height:20px; flex-shrink:0; }
+  .countdown-svg { transform:rotate(-90deg); display:block; }
+  .countdown-bg { fill:none; stroke:var(--border2); stroke-width:2.5; }
+  .countdown-ring { fill:none; stroke:var(--muted2); stroke-width:2.5; stroke-linecap:round; transition:stroke-dashoffset 1s linear; }
+  .countdown-num { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-size:7px; color:var(--muted2); pointer-events:none; }
+  .refresh-label {}
+
+  /* Tab nav */
+  .tab-nav { border-bottom:1px solid var(--border); position:sticky; top:53px; z-index:90; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); background:rgba(7,9,15,0.78); }
+  [data-theme="light"] .tab-nav { background:rgba(243,244,249,0.88); }
+  .tab-nav-inner { max-width:1100px; margin:0 auto; padding:0 24px; display:flex; overflow-x:auto; scrollbar-width:none; }
+  .tab-nav-inner::-webkit-scrollbar { display:none; }
+  .page-tab { display:inline-flex; align-items:center; gap:6px; padding:10px 14px; font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.7px; color:var(--muted); cursor:pointer; border:none; background:none; border-bottom:2px solid transparent; transition:all 0.15s; white-space:nowrap; margin-bottom:-1px; }
+  .page-tab:hover { color:var(--text); }
+  .page-tab.active { color:var(--blue); border-bottom-color:var(--blue); }
+  .page-tab .tab-badge { background:var(--red-bg); border:1px solid var(--red-bd); color:#f87191; font-size:8px; padding:1px 5px; border-radius:8px; display:none; }
+  .page-tab .tab-badge.show { display:inline-block; }
+  .page-tab .tab-count { background:var(--surface2); border:1px solid var(--border); color:var(--muted2); font-size:8px; padding:1px 5px; border-radius:8px; }
+
+  /* Main */
+  main { max-width:1100px; margin:0 auto; padding:28px 24px; }
+  .page-panel { display:none; }
+  .page-panel.active { display:block; }
+
+  /* Skeleton / error */
+  .skeleton { border-radius:12px; padding:14px 20px; margin-bottom:24px; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; gap:10px; color:var(--muted); font-size:13px; }
+  .spinner { width:13px; height:13px; border-radius:50%; border:2px solid var(--border2); border-top-color:var(--blue); animation:spin 0.8s linear infinite; flex-shrink:0; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .api-error { display:none; border-radius:8px; padding:10px 16px; margin-bottom:14px; font-size:11px; color:var(--muted2); background:var(--surface2); border:1px solid var(--border2); font-family:'Space Mono',monospace; }
+  .api-error.show { display:block; }
+
+  /* Banner */
+  .banner { border-radius:14px; padding:16px 22px; margin-bottom:22px; display:flex; align-items:center; gap:14px; font-size:15px; font-weight:700; transition:all 0.35s; letter-spacing:-0.2px; }
+  .bdot { width:9px; height:9px; border-radius:50%; flex-shrink:0; animation:blink 2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
+  .banner.op  { background:var(--green-bg);  border:1px solid var(--green-bd);  color:#4ade80; }
+  .banner.deg { background:var(--red-bg);    border:1px solid var(--red-bd);    color:#fb7185; }
+  .banner.str { background:var(--orange-bg); border:1px solid var(--orange-bd); color:#fdba74; }
+  .banner.rec { background:rgba(34,211,238,0.08); border:1px solid rgba(34,211,238,0.25); color:#67e8f9; }
+  .banner.op  .bdot { background:var(--green);  box-shadow:0 0 10px var(--green); }
+  .banner.deg .bdot { background:var(--red);    box-shadow:0 0 10px var(--red); }
+  .banner.str .bdot { background:var(--orange); box-shadow:0 0 10px var(--orange); }
+  .banner.rec .bdot { background:#22d3ee; box-shadow:0 0 10px #22d3ee; animation:blink 0.9s infinite; }
+  .banner-sub { font-size:11px; font-weight:400; opacity:0.65; margin-left:auto; white-space:nowrap; font-family:'Space Mono',monospace; }
+
+  /* Stats strip */
+  .stats-strip { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:20px; }
+  @media(max-width:800px){ .stats-strip { grid-template-columns:repeat(3,1fr); } }
+  @media(max-width:480px){ .stats-strip { grid-template-columns:1fr 1fr; } }
+  .stat { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 18px; transition:border-color 0.2s,transform 0.2s; }
+  .stat:hover { border-color:var(--border2); }
+  .stat-lbl { font-family:'Space Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:8px; }
+  .stat-num { font-size:24px; font-weight:800; color:var(--text); letter-spacing:-1.5px; line-height:1; }
+  .stat-sub { font-size:11px; color:var(--muted); margin-top:5px; }
+  .ping-good { color:var(--green); }
+  .ping-ok   { color:var(--orange); }
+  .ping-bad  { color:var(--red); }
+
+  /* Uptime */
+  .uptime-section { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px 22px; margin-bottom:14px; }
+  .section-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:8px; }
+  .section-hdr-title { font-family:'Space Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); display:flex; align-items:center; gap:8px; }
+  .uptime-tabs { display:flex; gap:5px; }
+  .utab { font-family:'Space Mono',monospace; font-size:9px; padding:3px 9px; border-radius:5px; border:1px solid var(--border2); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; text-transform:uppercase; letter-spacing:0.5px; }
+  .utab.active { background:var(--blue-bg); border-color:var(--blue-bd); color:var(--blue); }
+  .utab:hover:not(.active) { border-color:var(--muted); color:var(--text); }
+  .uptime-panel { display:none; }
+  .uptime-panel.active { display:block; }
+  .uptime-bar { display:flex; gap:2px; align-items:flex-end; height:36px; }
+  .uptime-tick { flex:1; border-radius:3px; min-width:3px; cursor:pointer; position:relative; transition:opacity 0.15s,transform 0.1s; }
+  .uptime-tick:hover { opacity:0.75; transform:scaleY(1.1); transform-origin:bottom; }
+  .uptime-tick.ok      { background:var(--green); height:100%; }
+  .uptime-tick.partial { background:var(--orange); height:70%; }
+  .uptime-tick.down    { background:var(--red); height:35%; }
+  .uptime-tick.nodata  { background:var(--border2); height:45%; opacity:0.4; }
+  .uptime-tick.loading { background:var(--border2); height:55%; animation:shimmer 1.5s infinite; }
+  @keyframes shimmer { 0%,100%{opacity:0.3}50%{opacity:0.7} }
+  .uptime-bar-footer { display:flex; justify-content:space-between; margin-top:7px; font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); }
+  .uptime-bar-pct { text-align:center; }
+  .tick-tooltip { position:fixed; z-index:999; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:8px 12px; font-family:'Space Mono',monospace; font-size:10px; color:var(--text); pointer-events:none; white-space:nowrap; box-shadow:0 8px 24px rgba(0,0,0,0.5); display:none; }
+  .tick-tooltip.show { display:block; }
+  .tt-date { font-size:11px; font-weight:700; margin-bottom:3px; }
+  .tt-ping { color:var(--muted2); }
+
+  /* Ping chart */
+  .ping-chart-wrap { margin-top:20px; padding-top:20px; border-top:1px solid var(--border); }
+  .ping-chart-label { font-family:'Space Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
+  .ping-now { font-family:'Space Mono',monospace; font-size:10px; }
+  canvas#ping-canvas { width:100%; height:64px; display:block; border-radius:6px; }
+  .response-band { display:flex; align-items:center; gap:8px; margin-top:10px; }
+  .rband-bar { flex:1; height:6px; border-radius:3px; background:var(--border); overflow:hidden; }
+  .rband-fill { height:100%; border-radius:3px; transition:width 0.6s ease; }
+  .rband-label { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); width:36px; text-align:right; white-space:nowrap; }
+  .rband-title { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted2); width:30px; flex-shrink:0; }
+
+  /* Cards */
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:14px; margin-bottom:10px; overflow:hidden; transition:border-color 0.2s; }
+  .card:hover { border-color:var(--border2); }
+  .card-head { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; cursor:pointer; user-select:none; gap:10px; }
+  .card-left { display:flex; align-items:center; gap:12px; min-width:0; flex:1; }
+  .cicon { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; background:var(--surface2); border:1px solid var(--border); color:var(--muted2); }
+  .cname { font-size:14px; font-weight:700; color:var(--text); }
+  .cdesc { font-size:11px; color:var(--muted); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .card-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .expbtn { font-family:'Space Mono',monospace; font-size:9px; padding:3px 9px; border-radius:5px; border:1px solid var(--border2); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; }
+  .expbtn:hover { border-color:var(--muted); color:var(--text); }
+  .badge { font-family:'Space Mono',monospace; font-size:10px; font-weight:700; padding:4px 10px; border-radius:20px; white-space:nowrap; }
+  .b-op  { background:var(--green-bg);  border:1px solid var(--green-bd);  color:#4ade80; }
+  .b-deg { background:var(--red-bg);    border:1px solid var(--red-bd);    color:#fb7185; }
+  .b-str { background:var(--orange-bg); border:1px solid var(--orange-bd); color:#fdba74; }
+  .card-body { display:block; padding:0 20px; max-height:0; overflow:hidden; transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1),padding 0.2s; }
+  .card-body.open { max-height:9999px; padding:0 20px 20px; }
+  .desc-block { font-size:13px; color:var(--muted2); line-height:1.75; padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid var(--border); }
+  .desc-block strong { color:var(--text); }
+  .ping-pill { display:inline-block; font-family:'Space Mono',monospace; font-size:10px; padding:2px 8px; border-radius:20px; margin-left:6px; vertical-align:middle; background:var(--surface2); border:1px solid var(--border2); color:var(--muted2); }
+  .ping-pill.good { border-color:var(--green-bd); color:#4ade80; background:var(--green-bg); }
+  .ping-pill.ok   { border-color:var(--orange-bd); color:#fdba74; background:var(--orange-bg); }
+  .ping-pill.bad  { border-color:var(--red-bd); color:#fb7185; background:var(--red-bg); }
+  .sec-lbl { font-family:'Space Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); margin-bottom:10px; }
+  .mgroup { margin-bottom:16px; }
+  .mgroup-name { font-family:'Space Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:7px; padding-left:2px; }
+  .mlist { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:6px; }
+  .mitem { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:8px 11px; display:flex; align-items:center; gap:7px; }
+  .mdot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .mdot.operational { background:var(--green); box-shadow:0 0 6px rgba(34,197,94,0.5); }
+  .mdot.degraded    { background:var(--red);   box-shadow:0 0 6px rgba(244,63,94,0.5); }
+  .mdot.starting    { background:var(--orange); animation:blink 1.2s infinite; }
+  .mname { font-size:12px; font-weight:600; color:var(--text); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .mstate { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); text-transform:uppercase; flex-shrink:0; }
+
+  /* Filter bar */
+  .filter-bar { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; align-items:center; }
+  .filter-search { flex:1; min-width:160px; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:7px 12px; color:var(--text); font-family:'Space Mono',monospace; font-size:11px; outline:none; transition:border-color 0.15s; }
+  .filter-search::placeholder { color:var(--muted); }
+  .filter-search:focus { border-color:var(--blue); }
+  .filter-pills { display:flex; gap:5px; flex-wrap:wrap; }
+  .fpill { font-family:'Space Mono',monospace; font-size:9px; padding:4px 10px; border-radius:5px; border:1px solid var(--border2); background:transparent; color:var(--muted); cursor:pointer; transition:all 0.15s; text-transform:uppercase; white-space:nowrap; }
+  .fpill.active { background:var(--blue-bg); border-color:var(--blue-bd); color:var(--blue); }
+  .fpill.fp-green.active { background:var(--green-bg); border-color:var(--green-bd); color:#4ade80; }
+  .fpill.fp-orange.active { background:var(--orange-bg); border-color:var(--orange-bd); color:#fdba74; }
+  .fpill:hover:not(.active) { border-color:var(--muted); color:var(--text); }
+
+  /* Granular grid */
+  .gran-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; margin-top:4px; }
+  .gran-item { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 13px; display:flex; align-items:center; gap:9px; transition:border-color 0.15s,background 0.15s; }
+  .gran-item:hover { border-color:var(--border2); background:var(--surface2); }
+  .gran-item.item-disabled { opacity:0.6; }
+  .gran-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .gran-item.item-enabled  .gran-dot { background:var(--green); box-shadow:0 0 6px rgba(34,197,94,0.4); }
+  .gran-item.item-disabled .gran-dot { background:var(--orange); }
+  .gran-name { font-size:12px; font-weight:600; color:var(--text); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .gran-cat  { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); flex-shrink:0; }
+  .gran-state { font-family:'Space Mono',monospace; font-size:8px; padding:2px 6px; border-radius:4px; flex-shrink:0; }
+  .gran-item.item-enabled  .gran-state { background:var(--green-bg);  color:#4ade80; border:1px solid var(--green-bd); }
+  .gran-item.item-disabled .gran-state { background:var(--orange-bg); color:#fdba74; border:1px solid var(--orange-bd); }
+  .gran-group-hdr { font-family:'Space Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); margin:18px 0 8px; padding-left:2px; display:flex; align-items:center; gap:8px; }
+  .gran-group-hdr::after { content:''; flex:1; height:1px; background:var(--border); }
+  .gran-group-count { font-size:8px; background:var(--surface2); border:1px solid var(--border); color:var(--muted); padding:1px 5px; border-radius:4px; }
+  .gran-empty { text-align:center; padding:52px 0; color:var(--muted); font-family:'Space Mono',monospace; font-size:12px; }
+  .gran-empty-icon { font-size:32px; margin-bottom:10px; opacity:0.25; }
+
+  /* Summary bar */
+  .summary-bar { display:flex; gap:8px; flex-wrap:wrap; }
+  .sum-chip { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:20px; font-family:'Space Mono',monospace; font-size:10px; }
+  .sum-chip.sc-green  { background:var(--green-bg);  border:1px solid var(--green-bd);  color:#4ade80; }
+  .sum-chip.sc-orange { background:var(--orange-bg); border:1px solid var(--orange-bd); color:#fdba74; }
+  .sum-chip.sc-muted  { background:var(--surface2);  border:1px solid var(--border);    color:var(--muted2); }
+
+  /* Overview 2-col */
+  .overview-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+  @media(max-width:720px){ .overview-grid { grid-template-columns:1fr; } }
+  .info-box { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px 22px; }
+  .info-box-title { font-family:'Space Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); margin-bottom:14px; }
+  .health-row { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--border); }
+  .health-row:last-child { border-bottom:none; }
+  .health-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .health-dot.ok   { background:var(--green); box-shadow:0 0 6px rgba(34,197,94,0.5); }
+  .health-dot.err  { background:var(--red);   box-shadow:0 0 6px rgba(244,63,94,0.5); }
+  .health-dot.warn { background:var(--orange); }
+  .health-name { font-size:13px; font-weight:600; color:var(--text); flex:1; }
+  .health-val  { font-family:'Space Mono',monospace; font-size:11px; color:var(--muted2); }
+  .mini-inc { padding:10px 0; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; gap:10px; }
+  .mini-inc:last-child { border-bottom:none; padding-bottom:0; }
+  .mini-inc-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+  .mini-inc-dot.ongoing  { background:var(--red); animation:blink 1.2s infinite; }
+  .mini-inc-dot.resolved { background:var(--green); }
+  .mini-inc-title { font-size:12px; font-weight:600; color:var(--text); }
+  .mini-inc-time  { font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); margin-top:2px; }
+  .mini-none { font-family:'Space Mono',monospace; font-size:11px; color:var(--muted); text-align:center; padding:24px 0; }
+
+  /* Incidents */
+  .incident { border-left:2px solid var(--border2); padding:0 0 24px 20px; position:relative; }
+  .incident:last-child { padding-bottom:0; }
+  .incident::before { content:''; width:8px; height:8px; border-radius:50%; position:absolute; left:-5px; top:4px; background:var(--muted); }
+  .incident.resolved::before { background:var(--green); }
+  .incident.ongoing::before  { background:var(--red); animation:blink 1.2s infinite; }
+  .inc-time  { font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); margin-bottom:4px; display:flex; align-items:center; gap:8px; }
+  .inc-dur   { font-size:9px; color:var(--muted); opacity:0.7; }
+  .inc-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:5px; letter-spacing:-0.2px; }
+  .inc-body  { font-size:12px; color:var(--muted2); line-height:1.7; }
+  .inc-tag   { display:inline-block; font-family:'Space Mono',monospace; font-size:9px; padding:2px 7px; border-radius:4px; font-weight:700; margin-left:6px; vertical-align:middle; }
+  .inc-tag.resolved { background:var(--green-bg); color:#4ade80; border:1px solid var(--green-bd); }
+  .inc-tag.ongoing  { background:var(--red-bg);   color:#fb7185; border:1px solid var(--red-bd); }
+  .inc-updates { margin-top:10px; }
+  .inc-update { font-size:11px; color:var(--muted2); padding:7px 10px; background:var(--surface2); border-radius:6px; margin-bottom:5px; border-left:2px solid var(--border2); }
+  .inc-update-time { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); margin-bottom:2px; }
+  .no-incidents { font-size:13px; color:var(--muted); text-align:center; padding:48px 0; font-family:'Space Mono',monospace; }
+
+  /* Footer / toast / offline */
+  footer { border-top:1px solid var(--border); padding:20px 24px; text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); max-width:1100px; margin:52px auto 0; }
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:10px 18px; font-family:'Space Mono',monospace; font-size:11px; color:var(--text); z-index:9999; box-shadow:0 8px 32px rgba(0,0,0,0.5); white-space:nowrap; transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s; opacity:0; pointer-events:none; }
+  .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+  .offline-bar { position:fixed; top:0; left:0; right:0; z-index:500; background:var(--red-bg); border-bottom:1px solid var(--red-bd); color:#fb7185; font-family:'Space Mono',monospace; font-size:10px; text-align:center; padding:6px; transform:translateY(-100%); transition:transform 0.3s; }
+  .offline-bar.show { transform:translateY(0); }
+
+  /* Icons */
+  .ri { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .ri svg { width:1em; height:1em; fill:currentColor; display:block; }
+  .icon-btn .ri svg { width:14px; height:14px; }
+  .expbtn .ri svg  { width:11px; height:11px; }
+  .refresh-btn .ri svg { width:13px; height:13px; }
+
+  /* Animations */
+  .fade-in { animation:fadeIn 0.4s ease both; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none} }
+
+  /* Mobile */
+  @media(max-width:640px){
+    .header-inner { padding:10px 14px; gap:8px; flex-wrap:wrap; }
+    .logo { font-size:16px; }
+    .version-tag { display:none; }
+    .header-right { gap:6px; overflow:visible; flex-wrap:wrap; justify-content:flex-end; }
+    .header-right .clock { display:none; }
+    .header-right .live-indicator { display:none; }
+    .simplify-btn { font-size:9px; padding:0 8px; height:28px; gap:5px; }
+    .simplify-dot { width:6px; height:6px; }
+    .icon-btn { width:28px; height:28px; }
+    .refresh-btn { padding:0 6px 0 5px; height:28px; }
+    .refresh-label { display:none; }
+    .page-tab { padding:9px 10px; font-size:9px; gap:5px; letter-spacing:0.3px; }
+    .tab-nav-inner { padding:0 10px; }
+    main { padding:14px 14px; }
+    .banner { padding:12px 16px; font-size:13px; gap:10px; }
+    .banner-sub { display:none; }
+    .stats-strip { grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+    .stat { padding:12px 14px; }
+    .stat-num { font-size:20px; }
+    .stat-lbl { font-size:8px; letter-spacing:1px; }
+    .uptime-section { padding:14px 16px; }
+    .uptime-bar  { gap:1px; overflow:hidden; width:100%; }
+    .uptime-tick { min-width:2px; }
+    .overview-grid { grid-template-columns:1fr; gap:10px; }
+    .info-box { padding:14px 16px; }
+    .card-head { padding:12px 16px; }
+    .card-body.open { padding:0 16px 16px; }
+    .card-right .expbtn { display:none; }
+    .mlist { grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:5px; }
+    .mitem { padding:7px 10px; }
+    .gran-grid { grid-template-columns:1fr; }
+    .filter-bar { flex-direction:column; gap:8px; }
+    .filter-search { min-width:unset; width:100%; }
+    .filter-pills { width:100%; overflow-x:auto; flex-wrap:nowrap; padding-bottom:2px; }
+    .fpill { flex-shrink:0; }
+    .section-hdr { gap:6px; }
+    .summary-bar { gap:5px; }
+    .sum-chip { font-size:9px; padding:3px 8px; }
+    .inc-title { font-size:13px; }
+    .incident { padding:0 0 18px 14px; }
+    footer { margin-top:32px; padding:14px; font-size:9px; }
+  }
+
+  @media(max-width:400px){
+    .simplify-btn .simplify-label { display:none; }
+    .header-inner { padding:8px 10px; }
+    main { padding:12px 10px; }
+    .uptime-tick { min-width:1px; }
+    .stats-strip { gap:6px; }
+    .stat { padding:9px 10px; }
+    .stat-num { font-size:17px; }
+    .page-tab { padding:8px 8px; font-size:8px; }
+    .mlist { grid-template-columns:1fr; }
+    .ping-chart-wrap { margin-top:14px; padding-top:14px; }
+  }
+
+  /* CB Bots section */
+  .cb-bot-row { display:flex; align-items:center; gap:14px; padding:12px 0; border-bottom:1px solid var(--border); }
+  .cb-bot-row:last-child { border-bottom:none; }
+  .cb-bot-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .cb-bot-dot.running      { background:var(--green);  box-shadow:0 0 8px rgba(34,197,94,0.5); }
+  .cb-bot-dot.starting,
+  .cb-bot-dot.reconnecting { background:var(--orange); animation:blink 1s infinite; }
+  .cb-bot-dot.error        { background:var(--red);    box-shadow:0 0 8px rgba(244,63,94,0.5); }
+  .cb-bot-dot.stopped,
+  .cb-bot-dot.stopping     { background:var(--border2); }
+  .cb-bot-info  { flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+  .cb-bot-name  { font-size:13px; font-weight:600; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .cb-bot-tag   { font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); }
+  .cb-bot-error { font-size:10px; color:var(--red); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .cb-bot-meta  { display:flex; gap:16px; flex-shrink:0; }
+  .cb-bot-stat  { display:flex; flex-direction:column; align-items:flex-end; gap:1px; }
+  .cb-bot-stat-lbl { font-family:'Space Mono',monospace; font-size:8px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); }
+  .cb-bot-stat-val { font-family:'Space Mono',monospace; font-size:11px; color:var(--muted2); }
+  .cb-bot-stat-val.good { color:var(--green); }
+  .cb-bot-stat-val.warn { color:var(--orange); }
+  .cb-bot-stat-val.err  { color:var(--red); }
+  .cb-none { color:var(--muted); font-size:12px; padding:10px 0; font-family:'Space Mono',monospace; }
+  @media(max-width:500px){
+    .cb-bot-meta { gap:8px; }
+    .cb-bot-tag { display:none; }
+  }
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<div class="offline-bar" id="offline-bar">&#9889; You're offline — status may be stale</div>
+<div class="toast" id="toast"></div>
+<div class="tick-tooltip" id="tick-tooltip">
+  <div class="tt-date" id="tt-date"></div>
+  <div class="tt-state" id="tt-state"></div>
+  <div class="tt-ping" id="tt-ping"></div>
+</div>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="/servers">
+      <div class="logo-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width:1em;height:1em;fill:currentColor"><path d="M349.4 44.6c5.9-13.7 1.5-29.7-10.6-38.5s-28.6-8-39.9 1.8l-256 224c-10 8.8-13.6 22.9-8.9 35.3S50.7 288 64 288H175.5L98.6 467.4c-5.9 13.7-1.5 29.7 10.6 38.5s28.6 8 39.9-1.8l256-224c10-8.8 13.6-22.9 8.9-35.3S397.3 224 384 224H272.5L349.4 44.6z"/></svg></div>
+      Roco
+      <span class="version-tag" id="version-tag">v2.0.5</span>
+    </a>
+    <div class="header-right">
+      <div class="live-indicator"><span class="live-dot"></span><span class="live-label">Live</span></div>
+      <div class="clock" id="clock">—</div>
+      <button class="icon-btn" title="Toggle theme" onclick="toggleTheme()"><span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg></span></button>
+      <button class="simplify-btn" id="simplify-btn" title="Simplify names for non-technical users" onclick="toggleSimplify()"><span class="simplify-dot"></span><span class="simplify-label">Simplify</span></button>
+      <button class="icon-btn" title="Copy link" onclick="copyLink()"><span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></span></button>
+      <button class="refresh-btn" id="refresh-btn" onclick="forceRefresh()">
+        <div class="countdown-wrap">
+          <svg class="countdown-svg" width="20" height="20" viewBox="0 0 20 20">
+            <circle class="countdown-bg" cx="10" cy="10" r="7"/>
+            <circle class="countdown-ring" id="countdown-ring" cx="10" cy="10" r="7" stroke-dasharray="43.98" stroke-dashoffset="0"/>
+          </svg>
+          <div class="countdown-num" id="countdown-num">30</div>
+        </div>
+        <span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></span>
+        <span class="refresh-label">Refresh</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <div class="tab-nav-inner">
+    <button class="page-tab active" data-tab="overview"  onclick="switchPageTab('overview',this)">
+      <span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></span>
+      Overview
+      <span class="tab-badge" id="tab-badge-overview"></span>
+    </button>
+    <button class="page-tab" data-tab="modules" onclick="switchPageTab('modules',this)">
+      <span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg></span>
+      Modules
+      <span class="tab-count" id="tab-count-modules">—</span>
+    </button>
+    <button class="page-tab" data-tab="commands" onclick="switchPageTab('commands',this)">
+      <span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z"/></svg></span>
+      Commands
+      <span class="tab-count" id="tab-count-commands">—</span>
+    </button>
+    <button class="page-tab" data-tab="events" onclick="switchPageTab('events',this)">
+      <span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z"/></svg></span>
+      Events
+      <span class="tab-count" id="tab-count-events">—</span>
+    </button>
+    <button class="page-tab" data-tab="systems" onclick="switchPageTab('systems',this)">
+      <span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 9H9v6h6V9zm-2 4h-2v-2h2v2zm8-2V9h-2V7c0-1.1-.9-2-2-2h-2V3h-2v2h-2V3H9v2H7c-1.1 0-2 .9-2 2v2H3v2h2v2H3v2h2v2c0 1.1.9 2 2 2h2v2h2v-2h2v2h2v-2h2c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2zm-4 6H7V7h10v10z"/></svg></span>
+      Systems
+      <span class="tab-count" id="tab-count-systems">—</span>
+    </button>
+    <button class="page-tab" data-tab="incidents" onclick="switchPageTab('incidents',this)">
+      <span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></span>
+      Incidents
+      <span class="tab-badge" id="tab-badge-incidents"></span>
+    </button>
+    <button class="page-tab" data-tab="custombots" onclick="switchPageTab('custombots',this)">
+      <span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a5 5 0 1 1 0 10A5 5 0 0 1 12 2zm0 12c5.33 0 8 2.67 8 4v2H4v-2c0-1.33 2.67-4 8-4z"/></svg></span>
+      Custom Bots
+      <span class="tab-count" id="tab-count-custombots">—</span>
+    </button>
+    <button class="page-tab" data-tab="infrastructure" onclick="switchPageTab('infrastructure',this)">
+      <span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 3H4v10c0 1.1.9 2 2 2h3v2H7v2h10v-2h-2v-2h3c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 12H4V3h16v12z"/></svg></span>
+      Infrastructure
+    </button>
+  </div>
+</nav>
+
+<main>
+  <div class="skeleton" id="loading-skeleton"><div class="spinner"></div>Fetching live status&hellip;</div>
+  <div class="api-error" id="api-error">Live data unavailable &mdash; will retry automatically.</div>
+
+  <!-- OVERVIEW TAB -->
+  <div class="page-panel active" id="panel-overview">
+    <div class="banner op fade-in" id="banner" style="display:none">
+      <div class="bdot"></div>
+      <span id="banner-txt">All systems operational</span>
+      <span class="banner-sub" id="banner-sub"></span>
+    </div>
+    <div class="stats-strip fade-in">
+      <div class="stat"><div class="stat-lbl">Commands</div><div class="stat-num" id="s-cmds">—</div><div class="stat-sub" id="s-cats">—</div></div>
+      <div class="stat"><div class="stat-lbl">Modules</div><div class="stat-num" id="s-mods">—</div><div class="stat-sub">running</div></div>
+      <div class="stat"><div class="stat-lbl">Guilds</div><div class="stat-num" id="s-guilds">—</div><div class="stat-sub">servers</div></div>
+      <div class="stat"><div class="stat-lbl">Ping</div><div class="stat-num" id="s-ping">—</div><div class="stat-sub" id="s-uptime">—</div></div>
+      <div class="stat"><div class="stat-lbl">Uptime (90d)</div><div class="stat-num" id="s-uptime-pct">—</div><div class="stat-sub" id="s-last-inc">—</div></div>
+    </div>
+    <div class="uptime-section fade-in">
+      <div class="section-hdr">
+        <span class="section-hdr-title">Uptime History</span>
+        <div class="uptime-tabs">
+          <button class="utab active" onclick="switchTab('hourly',this)">24h</button>
+          <button class="utab" onclick="switchTab('weekly',this)">7d</button>
+          <button class="utab" onclick="switchTab('monthly',this)">30d</button>
+          <button class="utab" onclick="switchTab('quarterly',this)">90d</button>
+        </div>
+      </div>
+      <div class="uptime-panel active" id="panel-hourly"><div class="uptime-bar" id="uptime-bar-hourly" style="height:32px;"></div><div class="uptime-bar-footer"><span>24h ago</span><span id="ub-pct-hourly" class="uptime-bar-pct">—</span><span>Now</span></div></div>
+      <div class="uptime-panel" id="panel-weekly"><div class="uptime-bar" id="uptime-bar-weekly" style="height:32px;"></div><div class="uptime-bar-footer"><span>7d ago</span><span id="ub-pct-weekly" class="uptime-bar-pct">—</span><span>Today</span></div></div>
+      <div class="uptime-panel" id="panel-monthly"><div class="uptime-bar" id="uptime-bar-monthly" style="height:32px;"></div><div class="uptime-bar-footer"><span>30d ago</span><span id="ub-pct-monthly" class="uptime-bar-pct">—</span><span>Today</span></div></div>
+      <div class="uptime-panel" id="panel-quarterly"><div class="uptime-bar" id="uptime-bar-quarterly" style="height:32px;"></div><div class="uptime-bar-footer"><span>90d ago</span><span id="ub-pct-quarterly" class="uptime-bar-pct">—</span><span>Today</span></div></div>
+      <div class="ping-chart-wrap">
+        <div class="ping-chart-label"><span>Response Latency (last 48 snapshots)</span><span id="ping-now-val" class="ping-now ping-good">—</span></div>
+        <canvas id="ping-canvas" height="64"></canvas>
+        <div id="response-bands" style="margin-top:10px;"></div>
+      </div>
+    </div>
+    <div class="overview-grid fade-in">
+      <div>
+        <div class="info-box">
+          <div class="info-box-title">Service Health</div>
+          <div class="health-row"><div class="health-dot warn" id="hr-bot-dot"></div><div class="health-name">Bot Core</div><div class="health-val" id="hr-bot">Loading…</div></div>
+          <div class="health-row"><div class="health-dot ok"></div><div class="health-name">Web Dashboard</div><div class="health-val">Operational</div></div>
+          <div class="health-row"><div class="health-dot warn" id="hr-ping-dot"></div><div class="health-name">Discord Gateway</div><div class="health-val" id="hr-ping">Loading…</div></div>
+          <div class="health-row"><div class="health-dot warn" id="hr-mod-dot"></div><div class="health-name">Modules</div><div class="health-val" id="hr-mods">Loading…</div></div>
+          <div class="health-row"><div class="health-dot warn" id="hr-cmd-dot"></div><div class="health-name">Commands</div><div class="health-val" id="hr-cmds">Loading…</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="info-box">
+          <div class="info-box-title">Recent Incidents</div>
+          <div id="mini-inc-list"><div class="mini-none">Loading&hellip;</div></div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- MODULES TAB -->
+  <div class="page-panel" id="panel-modules">
+    <div class="section-hdr" style="margin-bottom:16px;">
+      <span class="section-hdr-title">Bot Modules</span>
+      <div class="summary-bar" id="modules-summary"></div>
+    </div>
+    <div class="card">
+      <div class="card-head" onclick="toggleCard('bb')">
+        <div class="card-left">
+          <div class="cicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" style="width:1em;height:1em;fill:currentColor"><path d="M320 0c17.7 0 32 14.3 32 32V96H472c39.8 0 72 32.2 72 72V440c0 39.8-32.2 72-72 72H168c-39.8 0-72-32.2-72-72V168c0-39.8 32.2-72 72-72H288V32c0-17.7 14.3-32 32-32z"/></svg></div>
+          <div><div class="cname">Roco Bot</div><div class="cdesc" id="bot-cdesc">Modular architecture &middot; auto-recovery</div></div>
+        </div>
+        <div class="card-right">
+          <button class="expbtn" id="eb-bot"><span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></span> Expand</button>
+          <div class="badge b-op" id="bg-bot">Operational</div>
+        </div>
+      </div>
+      <div class="card-body open" id="bb" style="max-height:unset;padding:0 18px 18px;">
+        <div class="desc-block">Roco uses a <strong>modular architecture</strong> &mdash; each subsystem runs as an isolated module that can crash and restart independently. <span id="ping-pill-wrap"></span></div>
+        <div class="sec-lbl">Module Status</div>
+        <div id="mod-container"><div style="color:var(--muted);font-size:12px;">Loading modules&hellip;</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head" onclick="toggleCard('db')">
+        <div class="card-left">
+          <div class="cicon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" style="width:1em;height:1em;fill:currentColor"><path d="M64 0C28.7 0 0 28.7 0 64V352c0 35.3 28.7 64 64 64H240l-10.7 32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H346.7L336 416H512c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zM512 64V352H64V64H512z"/></svg></div>
+          <div><div class="cname">Web Dashboard</div><div class="cdesc">Isolated PM2 process &middot; Discord OAuth2 &middot; session management</div></div>
+        </div>
+        <div class="card-right">
+          <button class="expbtn" id="eb-dash"><span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></span> Expand</button>
+          <div class="badge b-op" id="bg-dash">Operational</div>
+        </div>
+      </div>
+      <div class="card-body" id="db">
+        <div class="desc-block">The dashboard runs as a <strong>completely separate PM2 process</strong> and communicates through a secure internal channel.</div>
+        <div class="mlist" id="dash-mlist">
+          <div class="mitem"><span class="mdot operational"></span><span class="mname">Express Server</span><span class="mstate">ok</span></div>
+          <div class="mitem"><span class="mdot operational"></span><span class="mname">Discord OAuth2</span><span class="mstate">ok</span></div>
+          <div class="mitem"><span class="mdot operational"></span><span class="mname">Session Store</span><span class="mstate">ok</span></div>
+          <div class="mitem"><span class="mdot operational"></span><span class="mname">Internal Bridge</span><span class="mstate">ok</span></div>
+          <div class="mitem"><span class="mdot operational"></span><span class="mname">Route Middleware</span><span class="mstate">ok</span></div>
+          <div class="mitem"><span class="mdot operational"></span><span class="mname">Maintenance Mode</span><span class="mstate">ok</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMANDS TAB -->
+  <div class="page-panel" id="panel-commands">
+    <div class="section-hdr" style="margin-bottom:16px;">
+      <span class="section-hdr-title">Slash Commands</span>
+      <div class="summary-bar" id="commands-summary"></div>
+    </div>
+    <div class="filter-bar">
+      <input class="filter-search" id="search-commands" placeholder="Search commands&hellip;" oninput="granularFilter('commands')">
+      <div class="filter-pills">
+        <button class="fpill active" onclick="granularSetFilter('commands','all',this)">All</button>
+        <button class="fpill fp-green" onclick="granularSetFilter('commands','enabled',this)">Enabled</button>
+        <button class="fpill fp-orange" onclick="granularSetFilter('commands','disabled',this)">Disabled</button>
+      </div>
+    </div>
+    <div id="gran-commands"><div class="gran-empty"><div class="gran-empty-icon">&#8984;</div>Loading commands&hellip;</div></div>
+  </div>
+
+  <!-- EVENTS TAB -->
+  <div class="page-panel" id="panel-events">
+    <div class="section-hdr" style="margin-bottom:16px;">
+      <span class="section-hdr-title">Event Handlers</span>
+      <div class="summary-bar" id="events-summary"></div>
+    </div>
+    <div class="filter-bar">
+      <input class="filter-search" id="search-events" placeholder="Search events&hellip;" oninput="granularFilter('events')">
+      <div class="filter-pills">
+        <button class="fpill active" onclick="granularSetFilter('events','all',this)">All</button>
+        <button class="fpill fp-green" onclick="granularSetFilter('events','enabled',this)">Enabled</button>
+        <button class="fpill fp-orange" onclick="granularSetFilter('events','disabled',this)">Disabled</button>
+      </div>
+    </div>
+    <div id="gran-events"><div class="gran-empty"><div class="gran-empty-icon">&#9889;</div>Loading events&hellip;</div></div>
+  </div>
+
+  <!-- SYSTEMS TAB -->
+  <div class="page-panel" id="panel-systems">
+    <div class="section-hdr" style="margin-bottom:16px;">
+      <span class="section-hdr-title">Bot Systems</span>
+      <div class="summary-bar" id="systems-summary"></div>
+    </div>
+    <div class="filter-bar">
+      <input class="filter-search" id="search-systems" placeholder="Search systems&hellip;" oninput="granularFilter('systems')">
+      <div class="filter-pills">
+        <button class="fpill active" onclick="granularSetFilter('systems','all',this)">All</button>
+        <button class="fpill fp-green" onclick="granularSetFilter('systems','enabled',this)">Enabled</button>
+        <button class="fpill fp-orange" onclick="granularSetFilter('systems','disabled',this)">Disabled</button>
+      </div>
+    </div>
+    <div id="gran-systems"><div class="gran-empty"><div class="gran-empty-icon">&#9881;</div>Loading systems&hellip;</div></div>
+  </div>
+
+  <!-- INCIDENTS TAB -->
+  <!-- CUSTOM BOTS TAB -->
+  <div class="page-panel" id="panel-custombots">
+    <div class="section-hdr" style="margin-bottom:14px;">
+      <span class="section-hdr-title">Custom Bots</span>
+      <span id="cb-bots-count" style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted2);"></span>
+    </div>
+    <div id="cb-bots-list"></div>
+  </div>
+
+  <div class="page-panel" id="panel-incidents">
+    <div class="section-hdr" style="margin-bottom:14px;">
+      <span class="section-hdr-title">Incident History <span style="font-size:10px;color:var(--muted2)" id="inc-count"></span></span>
+      <div class="filter-pills">
+        <button class="fpill active" data-filter="all"      onclick="filterIncidents('all',this)">All</button>
+        <button class="fpill"        data-filter="ongoing"  onclick="filterIncidents('ongoing',this)">Ongoing</button>
+        <button class="fpill"        data-filter="resolved" onclick="filterIncidents('resolved',this)">Resolved</button>
+        <button class="fpill"        data-filter="down"     onclick="filterIncidents('down',this)">Outages</button>
+        <button class="fpill"        data-filter="degraded" onclick="filterIncidents('degraded',this)">Degraded</button>
+      </div>
+    </div>
+    <div id="inc-feed"></div>
+  </div>
+
+  <!-- INFRASTRUCTURE TAB -->
+  <div class="page-panel" id="panel-infrastructure">
+    <div class="vps-refresh-bar">
+      <span class="section-hdr-title">VPS Infrastructure</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="vps-refresh-note" id="vps-last-updated">—</span>
+        <button class="vps-refresh-btn" id="vps-refresh-btn" onclick="loadVpsStats()">↻ Refresh</button>
+      </div>
+    </div>
+    <div class="vps-grid" id="vps-grid">
+      <!-- JS-rendered -->
+      <div class="vps-card loading" id="vps-skeleton-1">
+        <div class="vps-card-head">
+          <div>
+            <div class="skeleton" style="width:130px;height:17px;border-radius:6px;margin-bottom:10px;"></div>
+            <div class="skeleton" style="width:90px;height:10px;border-radius:4px;margin-bottom:10px;"></div>
+            <div class="skeleton" style="width:70px;height:22px;border-radius:20px;"></div>
+          </div>
+          <div class="skeleton" style="width:64px;height:22px;border-radius:6px;"></div>
+        </div>
+        <div class="vps-section">
+          <div class="skeleton" style="width:60px;height:8px;border-radius:4px;margin-bottom:16px;"></div>
+          <div class="skeleton" style="height:7px;border-radius:7px;margin-bottom:18px;"></div>
+          <div class="skeleton" style="height:7px;border-radius:7px;margin-bottom:18px;width:85%;"></div>
+          <div class="skeleton" style="height:7px;border-radius:7px;width:70%;"></div>
+        </div>
+        <div class="vps-section">
+          <div class="skeleton" style="width:50px;height:8px;border-radius:4px;margin-bottom:12px;"></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+            <div class="skeleton" style="height:52px;border-radius:10px;"></div>
+            <div class="skeleton" style="height:52px;border-radius:10px;"></div>
+            <div class="skeleton" style="height:52px;border-radius:10px;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="vps-card loading" id="vps-skeleton-2">
+        <div class="vps-card-head">
+          <div>
+            <div class="skeleton" style="width:120px;height:17px;border-radius:6px;margin-bottom:10px;"></div>
+            <div class="skeleton" style="width:80px;height:10px;border-radius:4px;margin-bottom:10px;"></div>
+            <div class="skeleton" style="width:70px;height:22px;border-radius:20px;"></div>
+          </div>
+          <div class="skeleton" style="width:64px;height:22px;border-radius:6px;"></div>
+        </div>
+        <div class="vps-section">
+          <div class="skeleton" style="width:60px;height:8px;border-radius:4px;margin-bottom:16px;"></div>
+          <div class="skeleton" style="height:7px;border-radius:7px;margin-bottom:18px;"></div>
+          <div class="skeleton" style="height:7px;border-radius:7px;margin-bottom:18px;width:80%;"></div>
+          <div class="skeleton" style="height:7px;border-radius:7px;width:65%;"></div>
+        </div>
+        <div class="vps-section">
+          <div class="skeleton" style="width:50px;height:8px;border-radius:4px;margin-bottom:12px;"></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+            <div class="skeleton" style="height:52px;border-radius:10px;"></div>
+            <div class="skeleton" style="height:52px;border-radius:10px;"></div>
+            <div class="skeleton" style="height:52px;border-radius:10px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>Roco Status &nbsp;&middot;&nbsp; <span id="footer-version">v2.0.5</span> &nbsp;&middot;&nbsp; <span id="last-updated">—</span></footer>
+
+<script type="module" src="/js/statusmain.js"></script>
+<script>
+// ── Page tab system ────────────────────────────────────────────────────────────
+let _activePageTab = 'overview';
+window.switchPageTab = function(tab, btn) {
+  _activePageTab = tab;
+  document.querySelectorAll('.page-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.page-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('panel-' + tab);
+  if (panel) panel.classList.add('active');
+  history.replaceState(null, '', '#' + tab);
+};
+// Restore from URL hash
+(function() {
+  const hash = location.hash.replace('#','');
+  if (['overview','modules','commands','events','systems','incidents'].includes(hash)) {
+    const btn = document.querySelector('.page-tab[data-tab="' + hash + '"]');
+    if (btn) window.switchPageTab(hash, btn);
+  }
+})();
+
+// ── Uptime tab switcher ────────────────────────────────────────────────────────
+window.switchTab = function(tabId, btn) {
+  btn.closest('.uptime-section').querySelectorAll('.utab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  btn.closest('.uptime-section').querySelectorAll('.uptime-panel').forEach(p => p.classList.remove('active'));
+  const p = document.getElementById('panel-' + tabId);
+  if (p) p.classList.add('active');
+};
+
+// ── Granular data & rendering ─────────────────────────────────────────────────
+const _gran = { commands: [], events: [], systems: [] };
+const _granFilter = { commands: 'all', events: 'all', systems: 'all' };
+
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderGranularTab(type) {
+  const container = document.getElementById('gran-' + type);
+  if (!container) return;
+  const q      = (document.getElementById('search-' + type)?.value || '').toLowerCase();
+  const filter = _granFilter[type];
+  const items  = _gran[type];
+  let filtered = items.filter(item => {
+    const raw   = type === 'commands' ? item.name : (item.label || item.key || item.event || '');
+    const label = (raw.includes('/') ? raw.split('/').pop() : raw).toLowerCase();
+    if (q && !label.includes(q)) return false;
+    if (filter === 'enabled'  && !item.enabled) return false;
+    if (filter === 'disabled' &&  item.enabled) return false;
+    return true;
+  });
+  if (!filtered.length) {
+    const icon = type === 'commands' ? '&#8984;' : type === 'events' ? '&#9889;' : '&#9881;';
+    container.innerHTML = '<div class="gran-empty"><div class="gran-empty-icon">' + icon + '</div>No ' + type + ' match your filter.</div>';
+    return;
+  }
+  // Group
+  const groups = {};
+  for (const item of filtered) {
+    let g;
+    if (type === 'commands') g = item.category || 'Other';
+    else if (type === 'events') g = item.group || item.event || 'Other';
+    else g = item.group || 'Other';
+    (groups[g] = groups[g] || []).push(item);
+  }
+  let html = '';
+  for (const [gname, gitems] of Object.entries(groups)) {
+    html += '<div class="gran-group-hdr">' + esc(gname) + ' <span class="gran-group-count">' + gitems.length + '</span></div>';
+    html += '<div class="gran-grid">';
+    for (const item of gitems) {
+      const cls   = item.enabled ? 'item-enabled' : 'item-disabled';
+      const state = item.enabled ? 'on' : 'off';
+      let label, sub;
+      if (type === 'commands') { label = item.name; sub = null; }
+      else if (type === 'events') { label = item.key ? item.key.split('/').pop() : item.key; sub = item.event || null; }
+      else { label = item.label || item.key; sub = item.key ? item.key.split('/').pop() : null; if (sub === label) sub = null; }
+      // Apply Simplify mode
+      if (window.__noxxSimplify && typeof SIMPLIFY_GRAN_ITEM !== 'undefined') {
+        const simplified = SIMPLIFY_GRAN_ITEM[label];
+        if (simplified) { sub = label; label = simplified; }
+      }
+      html += '<div class="gran-item ' + cls + '"><div class="gran-dot"></div>';
+      html += '<div class="gran-name" title="' + esc(label) + '">' + esc(label) + '</div>';
+      if (sub) html += '<div class="gran-cat">' + esc(sub) + '</div>';
+      html += '<div class="gran-state">' + state + '</div></div>';
+    }
+    html += '</div>';
+  }
+  container.innerHTML = html;
+  // Update summary
+  const total    = items.length;
+  const disabled = items.filter(i => !i.enabled).length;
+  const enabled  = total - disabled;
+  const summEl   = document.getElementById(type + '-summary');
+  if (summEl) {
+    let sh = '<span class="sum-chip sc-green">\u2713 ' + enabled + ' enabled</span>';
+    if (disabled > 0) sh += '<span class="sum-chip sc-orange">\u26a0 ' + disabled + ' disabled</span>';
+    sh += '<span class="sum-chip sc-muted">' + total + ' total</span>';
+    summEl.innerHTML = sh;
+  }
+}
+
+window.granularFilter    = function(type) { renderGranularTab(type); };
+window.granularSetFilter = function(type, value, btn) {
+  _granFilter[type] = value;
+  btn.closest('.filter-pills').querySelectorAll('.fpill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGranularTab(type);
+};
+
+function updateTabCounts() {
+  for (const t of ['commands','events','systems']) {
+    const el = document.getElementById('tab-count-' + t);
+    if (el) el.textContent = _gran[t].length || '—';
+  }
+}
+
+function ingestGranularData(data) {
+  const g  = data?.granular;
+  const gd = data?.granularDisabled;
+  if (g && (g.commands?.length || g.events?.length || g.systems?.length)) {
+    _gran.commands = g.commands || [];
+    _gran.events   = g.events   || [];
+    _gran.systems  = g.systems  || [];
+  } else if (gd) {
+    _gran.commands = (gd.commands || []).map(c => ({ ...c, enabled: false }));
+    _gran.events   = (gd.events   || []).map(e => ({ ...e, enabled: false }));
+    _gran.systems  = (gd.systems  || []).map(s => ({ ...s, enabled: false }));
+  } else { return; }
+  renderGranularTab('commands');
+  renderGranularTab('events');
+  renderGranularTab('systems');
+  updateTabCounts();
+}
+
+// ── Overview health rows ───────────────────────────────────────────────────────
+function updateOverviewHealth(data) {
+  const bot    = data?.bot || {};
+  const ready  = bot.ready ?? false;
+  const status = data?.status ?? (ready ? 'operational' : 'down');
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  const dot = (id, cls) => { const el = document.getElementById(id); if (el) el.className = 'health-dot ' + cls; };
+
+  // Bot Core: green=online, red=offline, yellow=starting
+  if (status === 'down') {
+    set('hr-bot', 'Offline');
+    dot('hr-bot-dot', 'err');
+  } else if (ready) {
+    set('hr-bot', 'Online');
+    dot('hr-bot-dot', 'ok');
+  } else {
+    set('hr-bot', 'Starting…');
+    dot('hr-bot-dot', 'warn');
+  }
+
+  // Web Dashboard row is always Operational (you're viewing it right now)
+  // — its dot is hardcoded ok in HTML and never touched here
+
+  const ping = bot.ping ?? -1;
+  if (status === 'down') {
+    set('hr-ping', 'Offline');
+    dot('hr-ping-dot', 'err');
+  } else {
+    set('hr-ping', ping > 0 ? ping + 'ms' : '—');
+    dot('hr-ping-dot', ping < 0 ? 'warn' : ping < 150 ? 'ok' : ping < 300 ? 'warn' : 'err');
+  }
+  const run = bot.modulesRunning ?? 0, total = bot.modulesTotal ?? 0;
+  if (status === 'down') {
+    set('hr-mods', '0/' + (total || 12));
+    dot('hr-mod-dot', 'err');
+  } else {
+    set('hr-mods', total ? run + '/' + total : '—');
+    dot('hr-mod-dot', run === total ? 'ok' : run > 0 ? 'warn' : 'err');
+  }
+  const cmds = _gran.commands.length, cdis = _gran.commands.filter(c => !c.enabled).length;
+  if (status === 'down') {
+    set('hr-cmds', 'Offline');
+    dot('hr-cmd-dot', 'err');
+  } else {
+    set('hr-cmds', cmds ? (cmds - cdis) + '/' + cmds : '—');
+    dot('hr-cmd-dot', cmds === 0 ? 'warn' : cdis === 0 ? 'ok' : cdis < cmds ? 'warn' : 'err');
+  }
+  if (bot.guilds != null) set('s-guilds', bot.guilds);
+  // Modules tab summary
+  const modSumEl = document.getElementById('modules-summary');
+  if (modSumEl && total) {
+    const deg = total - run;
+    let h = '<span class="sum-chip sc-green">\u2713 ' + run + ' running</span>';
+    if (deg > 0) h += '<span class="sum-chip sc-orange">\u26a0 ' + deg + ' degraded</span>';
+    h += '<span class="sum-chip sc-muted">' + total + ' total</span>';
+    modSumEl.innerHTML = h;
+  }
+  // Module tab count
+  const mtc = document.getElementById('tab-count-modules');
+  if (mtc && total) mtc.textContent = total;
+}
+
+// ── Mini incident list (overview) ─────────────────────────────────────────────
+function updateMiniIncidents(incidents) {
+  const el = document.getElementById('mini-inc-list');
+  if (!el) return;
+  const recent = incidents.slice(0, 5);
+  if (!recent.length) { el.innerHTML = '<div class="mini-none">\u2713 No incidents in history</div>'; return; }
+  el.innerHTML = recent.map(inc => {
+    const d   = new Date(inc.openedAt);
+    const fmt = d.toLocaleDateString([],{month:'short',day:'numeric'}) + ' ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    const col = inc.status === 'ongoing' ? '#ff7088' : 'var(--green)';
+    return '<div class="mini-inc"><div class="mini-inc-dot ' + esc(inc.status) + '"></div><div><div class="mini-inc-title">' + esc(inc.title) + '</div><div class="mini-inc-time">' + fmt + ' &middot; <span style="color:' + col + ';">' + esc(inc.status) + '</span></div></div></div>';
+  }).join('');
+}
+
+function updateIncidentBadge(incidents) {
+  const ongoing = incidents.filter(i => i.status === 'ongoing').length;
+  ['overview','incidents'].forEach(tab => {
+    const el = document.getElementById('tab-badge-' + tab);
+    if (el) { el.textContent = ongoing || ''; el.classList.toggle('show', ongoing > 0); }
+  });
+}
+
+// ── Simplify mode ─────────────────────────────────────────────────────────────
+window.__noxxSimplify = false;
+
+const SIMPLIFY_TAB_LABELS = {
+  modules:   { simple: 'Features',          tech: 'Modules'         },
+  commands:  { simple: 'Commands',          tech: 'Commands'        },
+  events:    { simple: 'Listeners',         tech: 'Events'          },
+  systems:   { simple: 'Features',          tech: 'Systems'         },
+  incidents: { simple: 'Incidents',         tech: 'Incidents'       },
+  overview:  { simple: 'Overview',          tech: 'Overview'        },
+};
+
+const SIMPLIFY_SECTION_TITLES = {
+  'Bot Modules':    'Bot Features',
+  'Slash Commands': 'Commands',
+  'Event Handlers': 'Action Listeners',
+  'Bot Systems':    'Bot Features',
+};
+
+const SIMPLIFY_GRAN_GROUP = {
+  // Commands categories
+  'Moderation':   'Moderation',
+  'Utility':      'Utility',
+  'Fun':          'Fun',
+  'Music':        'Music',
+  'Admin':        'Admin',
+  'Other':        'Other',
+  // Events groups
+  'messageCreate': 'On New Message',
+  'guildMemberAdd': 'When Someone Joins',
+  'guildMemberRemove': 'When Someone Leaves',
+  'interactionCreate': 'On Slash Command',
+  'ready': 'Bot Ready',
+  'Other': 'Other',
+};
+
+// Friendly display labels for granular items
+const SIMPLIFY_GRAN_ITEM = {
+  // Event file names → plain English
+  'ready':               'Bot started up',
+  'messageCreate':       'New message received',
+  'messageDelete':       'Message was deleted',
+  'messageUpdate':       'Message was edited',
+  'guildMemberAdd':      'User joined the server',
+  'guildMemberRemove':   'User left the server',
+  'guildMemberUpdate':   'User profile updated',
+  'interactionCreate':   'Slash command or button used',
+  'guildCreate':         'Bot added to a server',
+  'guildDelete':         'Bot removed from a server',
+  'voiceStateUpdate':    'Voice channel activity',
+  'threadCreate':        'New thread created',
+  'threadDelete':        'Thread deleted',
+  'reactionAdd':         'Reaction added to message',
+  'reactionRemove':      'Reaction removed from message',
+  'channelCreate':       'New channel created',
+  'channelDelete':       'Channel deleted',
+  'roleCreate':          'New role created',
+  'roleDelete':          'Role deleted',
+  'presenceUpdate':      'User status changed',
+  'typingStart':         'User started typing',
+  'error':               'Error occurred',
+  'warn':                'Warning occurred',
+  'debug':               'Debug event',
+  'rateLimit':           'Hit Discord rate limit',
+};
+
+window.toggleSimplify = function() {
+  window.__noxxSimplify = !window.__noxxSimplify;
+  const btn = document.getElementById('simplify-btn');
+  if (btn) btn.classList.toggle('active', window.__noxxSimplify);
+
+  // Persist preference
+  try { localStorage.setItem('noxx-simplify', window.__noxxSimplify ? '1' : '0'); } catch(_) {}
+
+  // Re-render everything with the new mode
+  reRenderWithSimplify();
+  showToast(window.__noxxSimplify ? 'Simplified mode on' : 'Technical mode on');
+};
+
+// Load saved preference
+(function() {
+  try {
+    if (localStorage.getItem('noxx-simplify') === '1') {
+      window.__noxxSimplify = true;
+      const btn = document.getElementById('simplify-btn');
+      if (btn) btn.classList.add('active');
+    }
+  } catch(_) {}
+})();
+
+function reRenderWithSimplify() {
+  const data = window.__noxxLastStatus;
+
+  // Re-render modules tab (uses window.__noxxRenderModules exposed by statusmain.js)
+  if (data && typeof window.__noxxRenderModules === 'function') {
+    window.__noxxRenderModules(data.bot?.modules);
+  }
+
+  // Re-render granular tabs
+  renderGranularTab('commands');
+  renderGranularTab('events');
+  renderGranularTab('systems');
+
+  // Re-render dashboard card (uses window.__noxxRenderDash exposed by statusmain.js)
+  if (typeof window.__noxxRenderDash === 'function') {
+    window.__noxxRenderDash(data?.dashboard, data);
+  }
+
+  // Update tab text labels
+  const simplified = window.__noxxSimplify;
+  document.querySelectorAll('.page-tab[data-tab]').forEach(btn => {
+    const tab = btn.getAttribute('data-tab');
+    const map = SIMPLIFY_TAB_LABELS[tab];
+    if (!map) return;
+    const label = simplified ? map.simple : map.tech;
+    for (const node of btn.childNodes) {
+      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+        node.textContent = ' ' + label + ' ';
+        break;
+      }
+    }
+  });
+
+  // Update modules section title
+  const st = document.querySelector('#panel-modules .section-hdr-title');
+  if (st) {
+    for (const node of st.childNodes) {
+      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+        node.textContent = simplified ? 'Bot Features' : 'Bot Modules';
+        break;
+      }
+    }
+  }
+}
+
+// ── Intercept fetch to hook into data ─────────────────────────────────────────
+const _origFetch = window.fetch;
+window.fetch = function(...args) {
+  const p   = _origFetch.apply(this, args);
+  const url = typeof args[0] === 'string' ? args[0] : (args[0]?.url ?? '');
+  if (url.includes('/api/status') && !url.includes('/history') && !url.includes('/incidents')) {
+    p.then(r => {
+      if (!r.ok) {
+        // Non-2xx response (e.g. 503) — treat bot as offline
+        const offlineData = { status: 'down', bot: { ready: false, ping: -1, modulesRunning: 0, modulesTotal: 12 } };
+        window.__noxxLastStatus = offlineData;
+        updateOverviewHealth(offlineData);
+        return;
+      }
+      r.clone().json().then(d => {
+        window.__noxxLastStatus = d;
+        ingestGranularData(d);
+        updateOverviewHealth(d);
+        // If simplify was already active when data arrived, re-apply it
+        if (window.__noxxSimplify) setTimeout(reRenderWithSimplify, 50);
+      }).catch(() => {});
+    }).catch(() => {
+      // Network error / fetch threw — bot is unreachable
+      const offlineData = { status: 'down', bot: { ready: false, ping: -1, modulesRunning: 0, modulesTotal: 12 } };
+      window.__noxxLastStatus = offlineData;
+      updateOverviewHealth(offlineData);
+    });
+  }
+  if (url.includes('/api/status/incidents')) {
+    p.then(r => r.clone().json().then(d => { updateMiniIncidents(d.incidents || []); updateIncidentBadge(d.incidents || []); }).catch(() => {})).catch(() => {});
+  }
+  return p;
+};
+
+// ── Card toggle ────────────────────────────────────────────────────────────────
+window.toggleCard = function(id) {
+  const body = document.getElementById(id);
+  if (!body) return;
+  const isOpen = body.classList.contains('open');
+  if (isOpen) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    body.offsetHeight;
+    body.style.maxHeight = '0';
+    body.addEventListener('transitionend', () => { body.classList.remove('open'); body.style.maxHeight = ''; }, { once:true });
+  } else {
+    body.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+    body.addEventListener('transitionend', () => { body.style.maxHeight = ''; }, { once:true });
+  }
+  const btn = body.closest('.card')?.querySelector('.expbtn');
+  const expSVG  = '<span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></span> Expand';
+  const colSVG  = '<span class="ri"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 14l5-5 5 5z"/></svg></span> Collapse';
+  if (btn) btn.innerHTML = isOpen ? expSVG : colSVG;
+};
+
+// ── Toast ──────────────────────────────────────────────────────────────────────
+let _toastTimer;
+window.showToast = function(msg, dur) {
+  const el = document.getElementById('toast');
+  if (!el) return;
+  el.innerHTML = msg;
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), dur || 2400);
+};
+const _origCopyLink = window.copyLink;
+window.copyLink = function() {
+  if (_origCopyLink) _origCopyLink(); else navigator.clipboard?.writeText(location.href).catch(()=>{});
+  showToast('Link copied to clipboard');
+};
+
+// ── Online/offline ─────────────────────────────────────────────────────────────
+(function() {
+  const bar = document.getElementById('offline-bar');
+  function upd() { if (bar) bar.classList.toggle('show', !navigator.onLine); }
+  window.addEventListener('online',  () => { upd(); showToast('Back online'); });
+  window.addEventListener('offline', () => { upd(); showToast('You are offline', 4000); });
+  upd();
+})();
+
+// ── Pull-to-refresh ────────────────────────────────────────────────────────────
+(function() {
+  let sY = 0, pull = false;
+  document.addEventListener('touchstart', e => { if (window.scrollY <= 0) { sY = e.touches[0].clientY; pull = true; } }, {passive:true});
+  document.addEventListener('touchmove',  e => { if (!pull) return; const dy = e.touches[0].clientY - sY; if (dy > 10 && window.scrollY <= 0) document.body.style.transform = 'translateY(' + Math.min(dy*0.35,30) + 'px)'; }, {passive:true});
+  document.addEventListener('touchend',   e => {
+    if (!pull) return; pull = false;
+    const dy = e.changedTouches[0].clientY - sY;
+    document.body.style.transform = '';
+    document.body.style.transition = 'transform 0.25s ease';
+    setTimeout(() => { document.body.style.transition = ''; }, 260);
+    if (dy > 70 && window.scrollY <= 0) { showToast('Refreshing\u2026'); if (window.forceRefresh) window.forceRefresh(); }
+  }, {passive:true});
+})();
+
+
+// ── Custom Bots (CB) uptime section ───────────────────────────────────────────
+(function() {
+  function fmtUptime(ms) {
+    if (!ms || ms < 0) return '—';
+    const s = Math.floor(ms / 1000);
+    const m = Math.floor(s / 60);
+    const h = Math.floor(m / 60);
+    const d = Math.floor(h / 24);
+    if (d > 0)  return d + 'd ' + (h % 24) + 'h';
+    if (h > 0)  return h + 'h ' + (m % 60) + 'm';
+    if (m > 0)  return m + 'm ' + (s % 60) + 's';
+    return s + 's';
+  }
+
+  function stateClass(state) {
+    if (state === 'running')      return 'good';
+    if (state === 'reconnecting' || state === 'starting') return 'warn';
+    if (state === 'error')        return 'err';
+    return '';
+  }
+
+  function stateLabel(state) {
+    if (!state || state === 'stopped') return 'Offline';
+    return state.charAt(0).toUpperCase() + state.slice(1);
+  }
+
+  async function loadCbBots() {
+    const list  = document.getElementById('cb-bots-list');
+    const count = document.getElementById('cb-bots-count');
+    const tabCount = document.getElementById('tab-count-custombots');
+    if (!list) return;
+
+    try {
+      const r = await fetch('/api/status/cb-bots', { credentials: 'include' });
+      if (!r.ok) throw new Error('no data');
+      const bots = await r.json();
+
+      if (!bots.length) {
+        list.innerHTML = '<div class="cb-none">No custom bots configured.</div>';
+        if (tabCount) tabCount.textContent = '0';
+        if (count)    count.textContent    = '';
+        return;
+      }
+
+      const running = bots.filter(b => b.state === 'running').length;
+      if (tabCount) tabCount.textContent = running + '/' + bots.length;
+      if (count)    count.textContent    = running + '/' + bots.length + ' online';
+
+      list.innerHTML = bots.map(b => {
+        const uptimeVal = b.uptime ? fmtUptime(b.uptime) : '—';
+        const pingVal   = b.ping   ? b.ping + 'ms' : '—';
+        const pingCls   = b.ping   ? (b.ping < 150 ? 'good' : b.ping < 400 ? 'warn' : 'err') : '';
+        const nameStr   = b.botTag || b.guildId;
+        const tagStr    = b.botTag ? b.guildId : '';
+        const errLine   = b.error  ? `<div class="cb-bot-error">${b.error}</div>` : '';
+        return `<div class="cb-bot-row">
+          <div class="cb-bot-dot ${b.state || 'stopped'}"></div>
+          <div class="cb-bot-info">
+            <div class="cb-bot-name">${nameStr}</div>
+            ${tagStr ? `<div class="cb-bot-tag">${tagStr}</div>` : ''}
+            ${errLine}
+          </div>
+          <div class="cb-bot-meta">
+            <div class="cb-bot-stat">
+              <span class="cb-bot-stat-lbl">Status</span>
+              <span class="cb-bot-stat-val ${stateClass(b.state)}">${stateLabel(b.state)}</span>
+            </div>
+            <div class="cb-bot-stat">
+              <span class="cb-bot-stat-lbl">Uptime</span>
+              <span class="cb-bot-stat-val ${b.uptime ? 'good' : ''}">${uptimeVal}</span>
+            </div>
+            <div class="cb-bot-stat">
+              <span class="cb-bot-stat-lbl">Ping</span>
+              <span class="cb-bot-stat-val ${pingCls}">${pingVal}</span>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    } catch {
+      if (list) list.innerHTML = '<div class="cb-none">Could not load custom bot status.</div>';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadCbBots);
+  setInterval(loadCbBots, 30_000);
+  const _origForceRefresh = window.forceRefresh;
+  window.forceRefresh = function() { loadCbBots(); if (_origForceRefresh) _origForceRefresh(); };
+})();
+
+// ── Infrastructure / VPS Tab ───────────────────────────────────────────────────
+(function() {
+  let _vpsRefreshTimer = null;
+
+  // ── Helpers ─────────────────────────────────────────────────────────────────
+  function fmtBytes(b, decimals = 1) {
+    if (!b || b === 0) return '0 B';
+    const k = 1024, sizes = ['B','KB','MB','GB','TB'];
+    const i = Math.floor(Math.log(b) / Math.log(k));
+    return parseFloat((b / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
+  }
+
+  function fmtUptime(ms) {
+    if (!ms || ms < 0) return '—';
+    const s = Math.floor(ms / 1000), m = Math.floor(s / 60),
+          h = Math.floor(m / 60),   d = Math.floor(h / 24);
+    if (d > 0)  return d + 'd ' + (h % 24) + 'h ' + (m % 60) + 'm';
+    if (h > 0)  return h + 'h ' + (m % 60) + 'm';
+    if (m > 0)  return m + 'm ' + (s % 60) + 's';
+    return s + 's';
+  }
+
+  function fmtDate(ts) {
+    if (!ts) return '—';
+    const d = new Date(ts);
+    return d.toLocaleDateString(undefined, { month:'short', day:'numeric' })
+      + ' ' + d.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit' });
+  }
+
+  function barClass(pct) {
+    if (pct == null) return 'shimmer';
+    if (pct >= 90)   return 'crit';
+    if (pct >= 70)   return 'warn';
+    return 'good';
+  }
+
+  function pillClass(pct) {
+    if (pct == null) return '';
+    if (pct >= 90) return 'crit';
+    if (pct >= 70) return 'warn';
+    return 'good';
+  }
+
+  function metricBar(label, pct, usedLabel, totalLabel, sublabel) {
+    const cls = barClass(pct);
+    const w   = pct != null ? Math.min(pct, 100) + '%' : '0%';
+    return `
+      <div class="vps-metric">
+        <div class="vps-metric-row">
+          <span class="vps-metric-label">${label}</span>
+          <span class="vps-metric-value">${usedLabel} <em>/ ${totalLabel}</em>&nbsp;&nbsp;<strong>${pct != null ? pct + '%' : '—'}</strong></span>
+        </div>
+        ${sublabel ? `<div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted2);margin-bottom:6px;">${sublabel}</div>` : ''}
+        <div class="vps-bar-track"><div class="vps-bar-fill ${cls}" style="width:${w};"></div></div>
+      </div>`;
+  }
+
+  function sectionTitle(label) {
+    return `<div class="vps-section-title">${label}</div>`;
+  }
+
+  function pm2StatusClass(s) {
+    if (s === 'online')  return 'online';
+    if (s === 'stopped') return 'stopped';
+    return 'errored';
+  }
+
+  // ── Card renderer ────────────────────────────────────────────────────────────
+  function renderCard(srv) {
+    const isOnline    = srv.status === 'online';
+    const cardCls     = isOnline ? 'online' : 'offline';
+    const roleCls     = srv.role === 'main' ? 'main' : 'cb';
+    const roleLabel   = srv.role === 'main' ? 'Main Bot' : 'CB Host';
+    const statusLabel = isOnline ? 'Online' : (srv.status === 'loading' ? 'Loading…' : 'Offline');
+    const badgeCls    = isOnline ? 'online' : (srv.status === 'loading' ? 'loading' : 'offline');
+
+    const regionTag = srv.region
+      ? `<span class="vps-region-tag">${esc(srv.region)}</span>` : '';
+
+    // ── Offline body ────────────────────────────────────────────────────────
+    if (!isOnline) {
+      const body = `
+        <div class="vps-offline-msg">
+          <div class="vps-offline-icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M18.364 5.636a9 9 0 010 12.728M5.636 5.636a9 9 0 000 12.728M12 12h.01M8 12a4 4 0 118 0 4 4 0 01-8 0z"/>
+            </svg>
+          </div>
+          <div style="font-weight:700;font-size:15px;color:var(--text);">Server Unreachable</div>
+          <div style="font-size:12px;color:var(--muted2);max-width:260px;line-height:1.7;">${esc(srv.error || 'Could not connect to the stats agent on this server.')}</div>
+        </div>`;
+      return cardHtml(srv.name, regionTag, roleLabel, roleCls, statusLabel, badgeCls, cardCls, body);
+    }
+
+    // ── Online — gather data ─────────────────────────────────────────────────
+    const m   = srv.memory  || {};
+    const d   = srv.disk    || {};
+    const la  = srv.loadAvg || {};
+    const net = srv.netIO   || {};
+    const sw  = srv.swap    || {};
+
+    // ── Section 1: Resource utilisation bars ────────────────────────────────
+    const cpuPct   = srv.cpuPercent != null ? srv.cpuPercent : null;
+    const cpuCls   = barClass(cpuPct);
+    const cpuFreq  = srv.cpuFreqMHz ? ` · ${(srv.cpuFreqMHz/1000).toFixed(1)} GHz` : '';
+    const cpuModel = (srv.cpuModel||'').split(' ').slice(0,5).join(' ');
+
+    const cpuBar = `
+      <div class="vps-metric">
+        <div class="vps-metric-row">
+          <span class="vps-metric-label">CPU Usage</span>
+          <span class="vps-metric-value"><strong>${cpuPct != null ? cpuPct + '%' : '—'}</strong> <em>${srv.cpuCores || '?'} cores${cpuFreq}</em></span>
+        </div>
+        <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted2);margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(srv.cpuModel||'')}">
+          ${esc(cpuModel)}
+        </div>
+        <div class="vps-bar-track"><div class="vps-bar-fill ${cpuCls}" style="width:${cpuPct != null ? Math.min(cpuPct,100) : 0}%;"></div></div>
+      </div>`;
+
+    const ramBar  = metricBar('Memory', m.usedPct, fmtBytes(m.used), fmtBytes(m.total),
+      m.free ? `${fmtBytes(m.free)} free` : null);
+    const diskBar = metricBar('Disk (root)', d.usedPct, fmtBytes(d.used), fmtBytes(d.total),
+      d.free ? `${fmtBytes(d.free)} free` : null);
+
+    let swapBar = '';
+    if (sw.total > 0) {
+      const swapPct = Math.round(sw.used / sw.total * 100);
+      swapBar = metricBar('Swap', swapPct, fmtBytes(sw.used), fmtBytes(sw.total), null);
+    }
+
+    const section1 = `<div class="vps-section">
+      ${sectionTitle('Resource Utilisation')}
+      ${cpuBar}${ramBar}${diskBar}${swapBar}
+    </div>`;
+
+    // ── Section 2: Quick-stat pills (load avg + process/connection counts) ──
+    const la1  = la['1m']  ?? '—';
+    const la5  = la['5m']  ?? '—';
+    const la15 = la['15m'] ?? '—';
+    const la1cls  = (typeof la['1m']  === 'number' && la['1m']  > srv.cpuCores * 1.5) ? 'crit'
+                  : (typeof la['1m']  === 'number' && la['1m']  > srv.cpuCores * 0.9) ? 'warn' : '';
+
+    const section2 = `<div class="vps-section">
+      ${sectionTitle('Load Average &amp; Activity')}
+      <div class="vps-pills">
+        <div class="vps-pill">
+          <div class="vps-pill-lbl">Load 1m</div>
+          <div class="vps-pill-val ${la1cls}">${la1}</div>
+        </div>
+        <div class="vps-pill">
+          <div class="vps-pill-lbl">Load 5m</div>
+          <div class="vps-pill-val">${la5}</div>
+        </div>
+        <div class="vps-pill">
+          <div class="vps-pill-lbl">Load 15m</div>
+          <div class="vps-pill-val">${la15}</div>
+        </div>
+        <div class="vps-pill">
+          <div class="vps-pill-lbl">Processes</div>
+          <div class="vps-pill-val">${srv.processCount ?? '—'}</div>
+        </div>
+        <div class="vps-pill">
+          <div class="vps-pill-lbl">Threads</div>
+          <div class="vps-pill-val">${srv.threadCount ?? '—'}</div>
+        </div>
+        <div class="vps-pill">
+          <div class="vps-pill-lbl">TCP Conns</div>
+          <div class="vps-pill-val">${srv.tcpConns ?? '—'}</div>
+        </div>
+      </div>
+    </div>`;
+
+    // ── Section 3: Network I/O ──────────────────────────────────────────────
+    const section3 = `<div class="vps-section">
+      ${sectionTitle('Network I/O (cumulative)')}
+      <div class="vps-net-row">
+        <div class="vps-net-pill">
+          <div class="vps-net-icon rx">
+            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+          </div>
+          <div>
+            <div class="vps-net-pill-lbl">Received</div>
+            <div class="vps-net-pill-val">${fmtBytes(net.rxBytes)}</div>
+          </div>
+        </div>
+        <div class="vps-net-pill">
+          <div class="vps-net-icon tx">
+            <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+            </svg>
+          </div>
+          <div>
+            <div class="vps-net-pill-lbl">Sent</div>
+            <div class="vps-net-pill-val">${fmtBytes(net.txBytes)}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+    // ── Section 4: System info grid ─────────────────────────────────────────
+    const tempVal = srv.cpuTemp != null
+      ? `<span class="vps-temp ${srv.cpuTemp > 80 ? 'crit' : srv.cpuTemp > 65 ? 'hot' : ''}">${srv.cpuTemp}°C</span>`
+      : '—';
+
+    const section4 = `<div class="vps-section">
+      ${sectionTitle('System Info')}
+      <div class="vps-specs">
+        <div class="vps-spec"><div class="vps-spec-lbl">OS</div><div class="vps-spec-val" title="${esc(srv.os||'')}">${esc((srv.os||'—').substring(0,30))}</div></div>
+        <div class="vps-spec"><div class="vps-spec-lbl">Kernel</div><div class="vps-spec-val mono">${esc(srv.kernel||'—')}</div></div>
+        <div class="vps-spec"><div class="vps-spec-lbl">Architecture</div><div class="vps-spec-val mono">${esc(srv.arch||'—')}</div></div>
+        <div class="vps-spec"><div class="vps-spec-lbl">Platform</div><div class="vps-spec-val mono">${esc(srv.platform||'—')}</div></div>
+        <div class="vps-spec"><div class="vps-spec-lbl">Uptime</div><div class="vps-spec-val mono">${fmtUptime(srv.uptime)}</div></div>
+        <div class="vps-spec"><div class="vps-spec-lbl">Last Boot</div><div class="vps-spec-val mono" style="font-size:9px;">${fmtDate(srv.bootTime)}</div></div>
+        <div class="vps-spec"><div class="vps-spec-lbl">CPU Temp</div><div class="vps-spec-val">${tempVal}</div></div>
+        <div class="vps-spec"><div class="vps-spec-lbl">Node.js</div><div class="vps-spec-val mono">${esc(srv.nodeVersion||'—')}</div></div>
+        <div class="vps-spec"><div class="vps-spec-lbl">Open FDs</div><div class="vps-spec-val mono">${srv.openFds != null ? srv.openFds.toLocaleString() : '—'}</div></div>
+        <div class="vps-spec"><div class="vps-spec-lbl">Logged In</div><div class="vps-spec-val mono">${srv.loggedUsers != null ? srv.loggedUsers + ' user' + (srv.loggedUsers !== 1 ? 's' : '') : '—'}</div></div>
+      </div>
+    </div>`;
+
+    // ── Section 5: PM2 processes ────────────────────────────────────────────
+    let section5 = '';
+    if (srv.pm2Procs && srv.pm2Procs.length > 0) {
+      const rows = srv.pm2Procs.map(p => {
+        const dotCls   = pm2StatusClass(p.status);
+        const memStr   = p.memory  ? fmtBytes(p.memory) : '—';
+        const cpuStr   = p.cpu    != null ? p.cpu + '%'  : '—';
+        const uptimeStr = p.uptime ? fmtUptime(p.uptime) : '—';
+        const restarts  = p.restarts ? `${p.restarts}↺` : '';
+        return `<div class="vps-pm2-row">
+          <span class="vps-pm2-dot ${dotCls}"></span>
+          <span class="vps-pm2-name">${esc(p.name)}</span>
+          <span class="vps-pm2-uptime">${uptimeStr}</span>
+          <span class="vps-pm2-meta">${cpuStr} · ${memStr}${restarts ? '  ' + restarts : ''}</span>
+        </div>`;
+      }).join('');
+      section5 = `<div class="vps-section">
+        ${sectionTitle('PM2 Processes')}
+        ${rows}
+      </div>`;
+    }
+
+    // ── Section 6: Top processes ────────────────────────────────────────────
+    let section6 = '';
+    if (srv.topProcs && srv.topProcs.length > 0) {
+      const rows = srv.topProcs.map(p => {
+        const cpuHot = p.cpu >= 50 ? 'crit' : p.cpu >= 20 ? 'hot' : '';
+        return `<div class="vps-topproc-row">
+          <div>
+            <div class="vps-topproc-cmd">${esc(p.cmd)}</div>
+            <div class="vps-topproc-user">${esc(p.user||'')}</div>
+          </div>
+          <div class="vps-topproc-pct ${cpuHot}">CPU ${p.cpu}%</div>
+          <div class="vps-topproc-pct">${p.mem != null ? 'MEM ' + p.mem + '%' : ''}</div>
+        </div>`;
+      }).join('');
+      section6 = `<div class="vps-section">
+        ${sectionTitle('Top Processes (by CPU)')}
+        ${rows}
+      </div>`;
+    }
+
+    const body = section1 + section2 + section3 + section4 + section5 + section6;
+    return cardHtml(srv.name, regionTag, roleLabel, roleCls, statusLabel, badgeCls, cardCls, body);
+  }
+
+  function cardHtml(name, regionTag, roleLabel, roleCls, statusLabel, badgeCls, cardCls, body) {
+    return `
+      <div class="vps-card ${cardCls} fade-in">
+        <div class="vps-card-glow"></div>
+        <div class="vps-card-head">
+          <div>
+            <div class="vps-card-title">${esc(name)}</div>
+            <div class="vps-card-subtitle">${regionTag}</div>
+            <div class="vps-status-badge ${badgeCls}">
+              <span class="vps-status-dot"></span>${statusLabel}
+            </div>
+          </div>
+          <span class="vps-role-tag ${roleCls}">${roleLabel}</span>
+        </div>
+        <div class="vps-card-body">${body}</div>
+      </div>`;
+  }
+
+  // ── Fetch & render ──────────────────────────────────────────────────────────
+  window.loadVpsStats = async function() {
+    const grid = document.getElementById('vps-grid');
+    const btn  = document.getElementById('vps-refresh-btn');
+    const note = document.getElementById('vps-last-updated');
+    if (!grid) return;
+
+    if (btn) { btn.classList.add('spinning'); btn.textContent = '↻ Refreshing…'; btn.disabled = true; }
+
+    try {
+      const res  = await fetch('/api/status/vps', {
+        credentials: 'include',
+        headers: { 'x-dashboard-request': 'true' },
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+
+      grid.innerHTML = (data.servers || []).map(renderCard).join('');
+      if (note) note.textContent = 'Updated ' + new Date(data.fetchedAt || Date.now()).toLocaleTimeString();
+    } catch (err) {
+      grid.innerHTML = `
+        <div style="grid-column:1/-1;padding:52px 24px;text-align:center;color:var(--muted2);">
+          <div style="width:48px;height:48px;border-radius:14px;background:var(--red-bg);border:1px solid var(--red-bd);display:flex;align-items:center;justify-content:center;color:var(--red);margin:0 auto 16px;">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M5.07 19h13.86a2 2 0 001.73-3L13.73 4a2 2 0 00-3.46 0L3.34 16a2 2 0 001.73 3z"/></svg>
+          </div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;color:var(--text);">Failed to load infrastructure stats</div>
+          <div style="font-size:11px;font-family:'Space Mono',monospace;">${esc(err.message)}</div>
+        </div>`;
+      if (note) note.textContent = 'Failed to load';
+    } finally {
+      if (btn) { btn.classList.remove('spinning'); btn.textContent = '↻ Refresh'; btn.disabled = false; }
+    }
+  };
+
+  // ── Tab integration ─────────────────────────────────────────────────────────
+  const _origSwitch = window.switchPageTab;
+  window.switchPageTab = function(tab, btn) {
+    _origSwitch(tab, btn);
+    if (tab === 'infrastructure') {
+      window.loadVpsStats();
+      clearInterval(_vpsRefreshTimer);
+      _vpsRefreshTimer = setInterval(() => {
+        if (document.getElementById('panel-infrastructure')?.classList.contains('active')) {
+          window.loadVpsStats();
+        } else {
+          clearInterval(_vpsRefreshTimer);
+        }
+      }, 15000);
+    } else {
+      clearInterval(_vpsRefreshTimer);
+    }
+  };
+
+  // Hash restore
+  (function() {
+    const hash = location.hash.replace('#','');
+    if (hash === 'infrastructure') {
+      const tabBtn = document.querySelector('.page-tab[data-tab="infrastructure"]');
+      if (tabBtn) window.switchPageTab('infrastructure', tabBtn);
+    }
+  })();
+
+})();
+</script>
+
+</body>
+</html>

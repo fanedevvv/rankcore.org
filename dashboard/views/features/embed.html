@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Message Builder — Roco Dashboard</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :root {
+      --razor: #FF3333; --razor-dim: rgba(255,51,51,.15); --razor-glow: rgba(255,51,51,.22);
+      --purple: #6C53FF; --purple-dim: rgba(108,83,255,.14); --purple-glow: rgba(108,83,255,.28);
+      --bg0: #08080f; --bg1: #0d0d1a; --bg2: #111120; --bg3: #0e0e1c; --bg4: #090913;
+      --border: rgba(255,255,255,.065); --border-hi: rgba(255,255,255,.13);
+      --text: #e2e2f0; --muted: #6b6b8a; --muted2: #2e2e4a;
+    }
+    body { background: var(--bg0); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #1a1a30; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--purple); }
+
+    input:not([type=checkbox]):not([type=radio]):not([type=color]),
+    textarea, select {
+      background: var(--bg4); border: 1px solid var(--border);
+      border-radius: .625rem; color: var(--text); outline: none;
+      transition: border-color .15s, box-shadow .15s; width: 100%;
+    }
+    input:not([type=checkbox]):not([type=radio]):not([type=color]):focus,
+    textarea:focus, select:focus {
+      border-color: rgba(255,51,51,.45);
+      box-shadow: 0 0 0 3px rgba(255,51,51,.06);
+    }
+    input::placeholder, textarea::placeholder { color: var(--muted2); }
+    select option { background: var(--bg3); }
+
+    .sec-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 1rem; overflow: hidden; margin-bottom: 1rem; }
+    .sec-head { display: flex; align-items: center; justify-content: space-between; padding: .875rem 1.125rem; cursor: pointer; transition: background .15s; user-select: none; }
+    .sec-head:hover { background: rgba(255,255,255,.022); }
+    .sec-body { overflow: hidden; transition: max-height .3s ease, opacity .25s; max-height: 0; opacity: 0; }
+    .sec-body.open { max-height: 3000px; opacity: 1; overflow: visible; }
+    .chevron { transition: transform .25s; color: var(--muted); }
+    .sec-head.open .chevron { transform: rotate(180deg); }
+
+    .mode-tabs { display: flex; gap: 2px; background: var(--bg2); border: 1px solid var(--border); border-radius: .875rem; padding: 3px; width: fit-content; flex-wrap: wrap; }
+    .mode-tab { padding: .45rem .8rem; border-radius: .6rem; font-size: .78rem; font-weight: 600; color: var(--muted); border: 1px solid transparent; cursor: pointer; transition: all .15s; white-space: nowrap; background: none; }
+    .mode-tab:hover { color: var(--text); background: rgba(255,255,255,.035); }
+    .mode-tab.active { background: var(--purple-dim); border-color: rgba(108,83,255,.38); color: #a78bfa; }
+
+    .has-tip { position: relative; display: inline-flex; align-items: center; }
+    .tip-box { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #10102a; border: 1px solid rgba(108,83,255,.3); color: #9090b8; font-size: .69rem; line-height: 1.55; padding: .5rem .75rem; border-radius: .5rem; width: max-content; max-width: 260px; box-shadow: 0 8px 24px rgba(0,0,0,.65); opacity: 0; pointer-events: none; transition: opacity .15s; z-index: 200; white-space: pre-wrap; }
+    .tip-box::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: rgba(108,83,255,.3); }
+    .has-tip:hover .tip-box { opacity: 1; }
+    .help-btn { display: inline-flex; align-items: center; justify-content: center; width: 1.1rem; height: 1.1rem; border-radius: 50%; background: rgba(108,83,255,.16); color: #8070d8; font-size: .58rem; font-weight: 700; cursor: default; border: 1px solid rgba(108,83,255,.22); flex-shrink: 0; line-height: 1; }
+
+    /* ── Toast — always has a visible background ── */
+    #toast {
+      position: fixed; top: 1.25rem; right: 1.25rem;
+      display: flex; align-items: center; gap: .6rem;
+      padding: .7rem 1.1rem;
+      border-radius: .875rem;
+      box-shadow: 0 10px 32px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.05);
+      transform: translateX(calc(100% + 2rem));
+      opacity: 0;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .25s;
+      z-index: 9999; font-size: .82rem; font-weight: 600;
+      min-width: 180px; max-width: 360px; pointer-events: none;
+    }
+    #toast.t-success { background: #091a0e; border: 1px solid rgba(255,51,51,.22); color: #5ef089; }
+    #toast.t-error   { background: #1a0909; border: 1px solid rgba(239,68,68,.22);  color: #fca5a5; }
+    #toast.t-info    { background: #0a0a1e; border: 1px solid rgba(108,83,255,.22); color: #a78bfa; }
+    #toast.show { transform: translateX(0); opacity: 1; }
+    .t-icon { width: 1.125rem; height: 1.125rem; flex-shrink: 0; }
+
+    #errorPanel { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(6rem); background: #120808; border: 1px solid rgba(239,68,68,.28); border-radius: .875rem; padding: .875rem 1rem; min-width: 280px; max-width: 460px; width: max-content; box-shadow: 0 16px 40px rgba(0,0,0,.75); transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .25s; opacity: 0; z-index: 8000; pointer-events: none; }
+    #errorPanel.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
+
+    #discordFrame { background: #313338; border-radius: .875rem; padding: 1rem; min-height: 130px; }
+    #prevEmbedInner { border-radius: 0 .375rem .375rem 0; border-left: 4px solid #6C53FF; background: #2b2d31; }
+
+    .swatch { width: 1.35rem; height: 1.35rem; border-radius: .3rem; cursor: pointer; border: 2px solid transparent; transition: border-color .12s, transform .1s; flex-shrink: 0; }
+    .swatch:hover { border-color: rgba(255,255,255,.4); transform: scale(1.12); }
+
+    .field-item { background: var(--bg3); border: 1px solid var(--border); border-radius: .75rem; padding: .75rem; margin-bottom: .5rem; }
+    .v1-btn-item, .v2-btn-entry { background: var(--bg3); border: 1px solid var(--border); border-radius: .75rem; padding: .75rem; }
+    .v1-row { background: var(--bg3); border: 1px solid var(--border); border-radius: .875rem; padding: 1rem; }
+    .v2-block { border: 1px solid var(--border); border-radius: .875rem; background: var(--bg3); transition: border-color .15s; }
+    .v2-block:hover { border-color: var(--border-hi); }
+    .saved-card { transition: border-color .15s; }
+    .saved-card:hover { border-color: rgba(108,83,255,.38); }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.72); backdrop-filter: blur(5px); z-index: 40; }
+    /* legacy compat */
+    .accordion-content { transition: max-height .3s ease, opacity .25s; max-height: 0; opacity: 0; overflow: hidden; }
+    .accordion-content.open { max-height: 3000px; opacity: 1; overflow: visible; }
+    .accordion-icon { transition: transform .25s; }
+    .accordion-btn.open .accordion-icon { transform: rotate(180deg); }
+
+    .seg-icon { width: 1.85rem; height: 1.85rem; border-radius: .5rem; display: flex; align-items: center; justify-content: center; font-size: .875rem; flex-shrink: 0; }
+    #sendBtn { background: var(--razor); color: #000; font-weight: 700; border-radius: .75rem; padding: .75rem 1.5rem; display: flex; align-items: center; justify-content: center; gap: .5rem; transition: opacity .15s, box-shadow .2s, transform .1s; border: none; cursor: pointer; width: 100%; font-size: .875rem; }
+    #sendBtn:hover:not(:disabled) { opacity: .9; box-shadow: 0 0 20px var(--razor-glow); }
+    #sendBtn:active:not(:disabled) { transform: scale(.98); }
+    #sendBtn:disabled { opacity: .45; cursor: not-allowed; }
+    .lbl { font-size: .68rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
+    .ctr { font-size: .68rem; color: var(--muted2); pointer-events: none; user-select: none; }
+    .divider-inner { height: 1px; background: var(--border); margin: 0 -1.125rem; }
+    @media (max-width: 640px) { .hide-sm { display: none !important; } }
+  </style>
+
+  <!-- Razor Custom Select CSS -->
+  <style>
+  .rzr-wrap{position:relative;width:100%;display:block}.rzr-wrap-parent.select-wrap::after,.rzr-wrap-parent::after{display:none!important;content:none!important}.rzr-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.08);background:#07070f;color:#e2e2f0;cursor:pointer;font-size:14px;font-family:inherit;min-height:42px;width:100%;transition:border-color .15s,box-shadow .15s;user-select:none;box-sizing:border-box}.rzr-trigger:hover{border-color:rgba(255,255,255,.16)}.rzr-trigger.is-open{border-color:rgba(255,51,51,.5);box-shadow:0 0 0 3px rgba(255,51,51,.07)}.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}.rzr-label.is-ph{color:#2e2e4a}.rzr-chev{flex-shrink:0;color:#2e2e4a;display:flex;align-items:center;transition:transform .2s,color .2s}.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}.rzr-panel{position:fixed;z-index:999999;background:rgba(7,7,18,.98);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1.5px solid rgba(255,255,255,.09);border-radius:12px;box-shadow:0 24px 60px rgba(0,0,0,.85);overflow:hidden;animation:rzrIn .14s ease}@keyframes rzrIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.06)}.rzr-search-inp{display:block;width:100%;background:#04040d;border:1px solid rgba(255,255,255,.07);border-radius:7px;padding:6px 11px;color:#e2e2f0;font-size:13px;font-family:inherit;outline:none;box-sizing:border-box;transition:border-color .15s}.rzr-search-inp:focus{border-color:rgba(255,51,51,.38)}.rzr-search-inp::placeholder{color:#1e1e38}.rzr-list{max-height:210px;overflow-y:auto;padding:5px}.rzr-list::-webkit-scrollbar{width:4px}.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:6px}.rzr-list::-webkit-scrollbar-thumb:hover{background:#FF3333}.rzr-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 11px;border-radius:8px;cursor:pointer;font-size:13px;color:#5a5a78;transition:background .1s,color .1s}.rzr-item:hover{background:rgba(255,255,255,.045);color:#e2e2f0}.rzr-item.is-sel{background:rgba(255,51,51,.09);color:#FF3333;font-weight:600}.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}.rzr-item.is-sel .rzr-item-chk{opacity:1}.rzr-empty{padding:16px;text-align:center;color:#1e1e38;font-size:13px}
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<!-- Toast -->
+<div id="toast" role="alert" aria-live="polite">
+  <svg id="tIcoS" class="t-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/></svg>
+  <svg id="tIcoE" class="t-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  <svg id="tIcoI" class="t-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<!-- Error panel -->
+<div id="errorPanel">
+  <div class="flex items-start gap-3">
+    <div class="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(239,68,68,.12)">
+      <svg class="w-3.5 h-3.5" style="color:#f87171" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+    </div>
+    <div class="flex-1 min-w-0">
+      <p class="text-sm font-semibold mb-1" style="color:#f87171">Fix before sending</p>
+      <ul id="errorList" class="text-xs space-y-0.5" style="color:rgba(252,165,165,.75)"></ul>
+    </div>
+    <button onclick="dismissErrors()" class="w-6 h-6 rounded-lg flex items-center justify-center text-xs flex-shrink-0 transition-all" style="background:rgba(255,255,255,.05);color:var(--muted)">✕</button>
+  </div>
+</div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+  <main class="flex-1 p-5 xl:p-7 overflow-x-hidden">
+
+    <!-- Header -->
+    <div class="mb-6 flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2.5 mb-1">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:var(--purple-dim);border:1px solid rgba(108,83,255,.28)">
+            <svg class="w-4 h-4" style="color:#9d8df0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <h1 class="text-xl font-bold">Message Builder</h1>
+          <div class="has-tip"><span class="help-btn">?</span>
+            <div class="tip-box">Build and send rich Discord messages. Choose a mode below. Use "Embed + Buttons" to combine both.</div>
+          </div>
+        </div>
+        <p class="text-sm" style="color:var(--muted)">Create embeds, button rows (V1), and rich V2 component messages.</p>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button onclick="openSavedPanel()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all" style="background:var(--bg2);border:1px solid var(--border)">
+          <svg class="w-4 h-4" style="color:#a78bfa" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+          <span class="hide-sm">Saved</span>
+        </button>
+        <button onclick="openTemplatesPanel()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all" style="background:rgba(255,51,51,.08);border:1px solid rgba(255,51,51,.2);color:#ff3333">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:#ff3333"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span class="hide-sm">Templates</span>
+        </button>
+        <button onclick="saveCurrentMessage()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all" style="background:rgba(108,83,255,.1);border:1px solid rgba(108,83,255,.22);color:#c4b5fd">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+          Save
+        </button>
+        <button onclick="copyJSON()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all" style="background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span class="hide-sm">JSON</span>
+        </button>
+        <button onclick="resetAll()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all" style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.16);color:#f87171">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span class="hide-sm">Reset</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mode tabs -->
+    <div class="mode-tabs mb-6">
+      <button onclick="switchMode('embed')" id="tab-embed" class="mode-tab active">📋 Embed</button>
+      <button onclick="switchMode('embed_v1')" id="tab-embed_v1" class="mode-tab">📋+🔘 Embed &amp; Buttons</button>
+      <button onclick="switchMode('v1')" id="tab-v1" class="mode-tab">🔘 Buttons Only</button>
+      <button onclick="switchMode('v2')" id="tab-v2" class="mode-tab">✨ V2 Components</button>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+
+      <!-- LEFT PANEL -->
+      <div class="xl:col-span-7">
+
+        <!-- Destination -->
+        <div class="sec-card">
+          <div class="px-5 pt-4 pb-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="lbl">Destination</span>
+              <div class="has-tip"><span class="help-btn">?</span><div class="tip-box">Bot needs Send Messages (+ Embed Links for embeds) permission in this channel.</div></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+              <div class="relative">
+                <select id="channel" class="appearance-none px-4 py-2.5 text-sm pr-10"><option>Loading channels...</option></select>
+                <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none" style="color:var(--muted2)">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+              <button id="sendBtn" onclick="sendMessage()">
+                <span id="sendBtnIcon"><svg style="width:1.1rem;height:1.1rem" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg></span>
+                <span id="sendBtnText">Send Message</span>
+              </button>
+            </div>
+            <div class="relative">
+              <input id="plainMessage" class="px-4 py-2.5 text-sm pr-20" placeholder="Optional: message content shown above embed/components..." oninput="updatePlainCounter()">
+              <span id="plainCounter" class="ctr absolute right-3 top-1/2 -translate-y-1/2">0/2000</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- EMBED FIELDS -->
+        <div id="fields-embed">
+
+          <!-- Author -->
+          <div class="sec-card">
+            <div class="sec-head" onclick="toggleSec('sec-author',this)">
+              <div class="flex items-center gap-3">
+                <div class="seg-icon" style="background:rgba(251,146,60,.1)">✍️</div>
+                <span class="font-semibold text-sm">Author</span>
+                <div class="has-tip"><span class="help-btn">?</span><div class="tip-box">Shows above title. Max 256 chars. Optionally include a small icon and clickable URL.</div></div>
+              </div>
+              <svg class="chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+            <div id="sec-author" class="sec-body">
+              <div class="px-5 pb-4 pt-1 grid grid-cols-2 gap-3">
+                <input id="authorName" class="col-span-2 sm:col-span-1 px-3 py-2 text-sm" placeholder="Author name" oninput="updatePreview()">
+                <input id="authorIcon" class="col-span-2 sm:col-span-1 px-3 py-2 text-sm" placeholder="Icon URL (https://...)" oninput="updatePreview()">
+                <input id="authorUrl"  class="col-span-2 px-3 py-2 text-sm" placeholder="Author URL (clickable link)" oninput="updatePreview()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Body & Color -->
+          <div class="sec-card">
+            <div class="sec-head open" onclick="toggleSec('sec-body',this)">
+              <div class="flex items-center gap-3">
+                <div class="seg-icon" style="background:rgba(59,130,246,.1)">📝</div>
+                <span class="font-semibold text-sm">Body &amp; Color</span>
+                <div class="has-tip"><span class="help-btn">?</span><div class="tip-box">Title max 256 · Description max 4096. Supports **bold**, *italic*, `code`, [link](url). Color = left border stripe.</div></div>
+              </div>
+              <svg class="chevron w-4 h-4" style="transform:rotate(180deg)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+            <div id="sec-body" class="sec-body open">
+              <div class="px-5 pb-4 pt-1 space-y-3">
+                <div class="relative">
+                  <input id="title" class="px-3 py-2.5 text-sm font-semibold pr-20" placeholder="Embed Title (max 256)"
+                         oninput="updatePreview(); updateCharCount(this, 256, 'titleCtr')">
+                  <span id="titleCtr" class="ctr absolute right-3 top-1/2 -translate-y-1/2">0/256</span>
+                </div>
+                <div class="relative">
+                  <textarea id="description" rows="4" class="px-3 py-2.5 text-sm resize-y" placeholder="Description... (supports Discord markdown)"
+                            oninput="updatePreview(); updateCharCount(this, 4096, 'descCtr')"></textarea>
+                  <span id="descCtr" class="ctr absolute right-3 bottom-3">0/4096</span>
+                </div>
+                <div>
+                  <p class="lbl mb-2">Embed Color</p>
+                  <div class="flex gap-3 flex-wrap items-center">
+                    <div class="flex gap-2 items-center">
+                      <input type="color" id="colorPicker" value="#6C53FF" class="w-8 h-8 rounded-lg cursor-pointer border p-0.5" style="background:var(--bg3);border-color:var(--border)">
+                      <input id="color" class="w-24 px-2.5 py-2 text-sm font-mono" value="#6C53FF" placeholder="#6C53FF" oninput="updatePreview()">
+                    </div>
+                    <div class="flex gap-1.5 flex-wrap items-center">
+                      <span class="text-xs" style="color:var(--muted)">Presets:</span>
+                      <button onclick="setColor('#6C53FF')" class="swatch" style="background:#6C53FF" title="Purple"></button>
+                      <button onclick="setColor('#EF4444')" class="swatch" style="background:#EF4444" title="Green"></button>
+                      <button onclick="setColor('#ef4444')" class="swatch" style="background:#ef4444" title="Red"></button>
+                      <button onclick="setColor('#f59e0b')" class="swatch" style="background:#f59e0b" title="Amber"></button>
+                      <button onclick="setColor('#3b82f6')" class="swatch" style="background:#3b82f6" title="Blue"></button>
+                      <button onclick="setColor('#ec4899')" class="swatch" style="background:#ec4899" title="Pink"></button>
+                      <button onclick="setColor('#14b8a6')" class="swatch" style="background:#14b8a6" title="Teal"></button>
+                      <button onclick="setColor('#f97316')" class="swatch" style="background:#f97316" title="Orange"></button>
+                      <button onclick="setColor('#0f0f0f')" class="swatch" style="background:#0f0f0f;border-color:rgba(255,255,255,.18)" title="Black"></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fields -->
+          <div class="sec-card">
+            <div class="sec-head" onclick="toggleSec('sec-fields',this)">
+              <div class="flex items-center gap-3">
+                <div class="seg-icon" style="background:rgba(239,68,68,.1)">📊</div>
+                <span class="font-semibold text-sm">Fields</span>
+                <div class="has-tip"><span class="help-btn">?</span><div class="tip-box">Max 25 fields. Name max 256, value max 1024. Tick "Inline" to display fields side-by-side.</div></div>
+              </div>
+              <svg class="chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+            <div id="sec-fields" class="sec-body">
+              <div class="px-5 pb-4 pt-1">
+                <div id="fieldsContainer"></div>
+                <button onclick="addField()" class="mt-1 w-full py-2.5 rounded-xl text-sm transition-all flex items-center justify-center gap-2" style="background:rgba(255,255,255,.025);border:1px dashed var(--border);color:var(--muted)">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                  Add Field
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Images + Footer -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="sec-card">
+              <div class="sec-head" onclick="toggleSec('sec-images',this)">
+                <div class="flex items-center gap-3">
+                  <div class="seg-icon" style="background:rgba(236,72,153,.1)">🖼️</div>
+                  <span class="font-semibold text-sm">Images</span>
+                  <div class="has-tip"><span class="help-btn">?</span><div class="tip-box">Thumbnail — small square top-right. Large Image — full-width below description.</div></div>
+                </div>
+                <svg class="chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+              <div id="sec-images" class="sec-body">
+                <div class="px-4 pb-4 pt-1 space-y-2">
+                  <div><p class="lbl mb-1">Thumbnail (top-right)</p>
+                    <input id="thumbnail" class="px-3 py-2 text-sm" placeholder="https://..." oninput="updatePreview()"></div>
+                  <div><p class="lbl mb-1">Large Image</p>
+                    <input id="image" class="px-3 py-2 text-sm" placeholder="https://..." oninput="updatePreview()"></div>
+                </div>
+              </div>
+            </div>
+            <div class="sec-card">
+              <div class="sec-head" onclick="toggleSec('sec-footer',this)">
+                <div class="flex items-center gap-3">
+                  <div class="seg-icon" style="background:rgba(107,114,128,.12)">🔖</div>
+                  <span class="font-semibold text-sm">Footer</span>
+                  <div class="has-tip"><span class="help-btn">?</span><div class="tip-box">Footer text max 2048. Add a small icon and optionally a timestamp.</div></div>
+                </div>
+                <svg class="chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+              <div id="sec-footer" class="sec-body">
+                <div class="px-4 pb-4 pt-1 space-y-2">
+                  <div class="relative">
+                    <input id="footerText" class="px-3 py-2 text-sm pr-20" placeholder="Footer text" oninput="updatePreview(); updateCharCount(this,2048,'footerCtr')">
+                    <span id="footerCtr" class="ctr absolute right-3 top-1/2 -translate-y-1/2">0/2048</span>
+                  </div>
+                  <input id="footerIcon" class="px-3 py-2 text-sm" placeholder="Footer icon URL (https://...)" oninput="updatePreview()">
+                  <label class="flex items-center gap-2 mt-1 cursor-pointer select-none">
+                    <input type="checkbox" id="timestamp" class="w-4 h-4" style="accent-color:var(--razor)" onchange="updatePreview()">
+                    <span class="text-sm" style="color:var(--muted)">Add timestamp</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- /fields-embed -->
+
+        <!-- EMBED + BUTTONS -->
+        <div id="fields-embed-buttons" class="hidden mt-4">
+          <div class="sec-card">
+            <div class="px-5 py-3.5 flex items-center justify-between flex-wrap gap-2" style="border-bottom:1px solid var(--border)">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-sm">Button Rows</span>
+                <span class="text-xs" style="color:var(--muted)">attached to embed · max 5</span>
+                <div class="has-tip"><span class="help-btn">?</span><div class="tip-box">Sent below the embed. Max 5 rows · 5 buttons each. Buttons with a Custom ID trigger the configured bot action.</div></div>
+              </div>
+              <button onclick="addEmbedBtnRow()" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style="background:rgba(108,83,255,.1);border:1px solid rgba(108,83,255,.22);color:#c4b5fd">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Add Row
+              </button>
+            </div>
+            <div class="px-5 py-4">
+              <div id="embedBtnRowsContainer" class="space-y-4"></div>
+              <p id="embedBtnEmptyHint" class="text-center text-xs py-4 italic" style="color:var(--muted2)">No button rows yet. Click "Add Row" to attach buttons below this embed.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- V1 BUTTONS ONLY -->
+        <div id="fields-v1" class="hidden">
+          <div class="sec-card">
+            <div class="px-5 py-3.5 flex items-center justify-between flex-wrap gap-2" style="border-bottom:1px solid var(--border)">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-sm">Button Rows</span>
+                <span class="text-xs" style="color:var(--muted)">max 5 rows · 5 buttons each</span>
+              </div>
+              <button onclick="addV1Row()" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all" style="background:rgba(108,83,255,.1);border:1px solid rgba(108,83,255,.22);color:#c4b5fd">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Add Row
+              </button>
+            </div>
+            <div class="px-5 py-4">
+              <div id="v1RowsContainer" class="space-y-4"></div>
+              <p id="v1EmptyHint" class="text-center text-xs py-4 italic" style="color:var(--muted2)">No rows yet. Click "Add Row" to start.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- V2 COMPONENTS -->
+        <div id="fields-v2" class="hidden">
+          <div class="sec-card">
+            <div class="px-5 py-3.5 flex items-center justify-between flex-wrap gap-3" style="border-bottom:1px solid var(--border)">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-sm">V2 Blocks</span>
+                <div class="has-tip"><span class="help-btn">?</span>
+                  <div class="tip-box" style="max-width:280px">Discord Components V2 layout system.
+
+• Text — markdown text display
+• Sep — divider / spacing
+• Section — text + accessory (button or thumbnail)
+• Gallery — up to 10 images
+• Buttons — row of up to 5 buttons</div>
+                </div>
+              </div>
+              <div class="flex gap-1.5 flex-wrap">
+                <button onclick="addV2Block('text')"    class="px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all" style="background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.22);color:#93c5fd">+ Text</button>
+                <button onclick="addV2Block('sep')"     class="px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all" style="background:rgba(107,114,128,.1);border:1px solid rgba(107,114,128,.22);color:#d1d5db">+ Sep</button>
+                <button onclick="addV2Block('section')" class="px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:#fca5a5">+ Section</button>
+                <button onclick="addV2Block('gallery')" class="px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all" style="background:rgba(236,72,153,.1);border:1px solid rgba(236,72,153,.22);color:#f9a8d4">+ Gallery</button>
+                <button onclick="addV2Block('buttons')" class="px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all" style="background:rgba(108,83,255,.1);border:1px solid rgba(108,83,255,.22);color:#c4b5fd">+ Buttons</button>
+              </div>
+            </div>
+            <div class="px-5 py-4">
+              <div id="v2BlocksContainer" class="space-y-3"></div>
+              <p id="v2EmptyHint" class="text-center text-sm py-8" style="color:var(--muted)">Add blocks above to start building your V2 message.</p>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /left panel -->
+
+      <!-- RIGHT PANEL — Preview -->
+      <div class="xl:col-span-5">
+        <div class="sticky top-6">
+          <div class="sec-card">
+            <div class="px-5 py-3.5 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
+              <div class="flex items-center gap-2">
+                <span class="lbl">Live Preview</span>
+                <div class="has-tip"><span class="help-btn">?</span><div class="tip-box">Approximate Discord rendering. Buttons are decorative here — they fire the bot action when clicked in Discord.</div></div>
+              </div>
+              <span id="previewModeBadge" class="text-xs px-2 py-0.5 rounded font-mono font-bold" style="background:rgba(108,83,255,.18);color:#a78bfa">EMBED</span>
+            </div>
+            <div class="p-4">
+              <div id="discordFrame">
+                <div class="flex gap-3">
+                  <div class="w-9 h-9 rounded-full flex-shrink-0 bg-gradient-to-br from-purple-500 to-blue-600"></div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1.5">
+                      <span class="font-bold text-white text-sm">Roco</span>
+                      <span class="text-[10px] text-white px-1.5 py-0.5 rounded font-bold" style="background:#5865f2">BOT</span>
+                      <span class="text-xs" style="color:#5c5f63">Today</span>
+                    </div>
+                    <div id="prevContent" class="text-gray-200 text-sm mb-2 hidden whitespace-pre-wrap break-words"></div>
+                    <div id="prevEmbed">
+                      <div id="prevEmbedInner" class="max-w-md">
+                        <div class="relative p-3">
+                          <div id="prevAuthor"  class="flex items-center gap-1.5 mb-1.5 text-xs text-gray-300 hidden"></div>
+                          <div id="prevTitle"   class="font-bold text-white text-sm hidden"></div>
+                          <div id="prevDesc"    class="text-gray-300 text-xs mt-1 hidden whitespace-pre-wrap break-words leading-relaxed"></div>
+                          <div id="prevFields"  class="mt-2 hidden"></div>
+                          <img  id="prevImage"  class="mt-2 rounded-lg max-w-full hidden" src="" alt="">
+                          <div  id="prevFooter" class="flex items-center gap-1.5 mt-2 hidden">
+                            <img id="prevFooterIcon" class="w-4 h-4 rounded-full hidden" src="" alt="">
+                            <span id="prevFooterText" class="text-[10px] text-gray-500"></span>
+                            <span id="prevFooterSep"  class="text-gray-600 text-[10px] hidden">•</span>
+                            <span id="prevTimestamp"  class="text-[10px] text-gray-500 hidden"></span>
+                          </div>
+                          <img id="prevThumb" class="absolute top-2 right-2 w-16 h-16 rounded-lg object-cover hidden" src="" alt="">
+                        </div>
+                      </div>
+                    </div>
+                    <div id="prevComponents" class="mt-1.5 hidden"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /grid -->
+  </main>
+</div>
+
+<!-- SAVED PANEL -->
+<div id="savedPanel" class="fixed inset-0 z-40 hidden">
+  <div class="modal-backdrop" onclick="closeSavedPanel()"></div>
+  <div class="absolute right-0 top-0 bottom-0 w-full max-w-md flex flex-col" style="z-index:41;background:var(--bg1);border-left:1px solid var(--border)">
+    <div class="p-5 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
+      <h2 class="font-bold text-lg">Saved Messages</h2>
+      <button onclick="closeSavedPanel()" class="w-8 h-8 rounded-lg flex items-center justify-center transition-colors" style="background:rgba(255,255,255,.05)">✕</button>
+    </div>
+    <div class="p-4">
+      <input id="savedSearch" oninput="renderSaved()" class="px-4 py-2.5 text-sm" placeholder="Search saved messages...">
+    </div>
+    <div id="savedList" class="flex-1 overflow-y-auto p-4 space-y-3">
+      <p class="text-sm text-center py-8" style="color:var(--muted)">Loading...</p>
+    </div>
+  </div>
+</div>
+
+<!-- TEMPLATES PANEL -->
+<div id="templatesPanel" class="fixed inset-0 z-40 hidden">
+  <div class="modal-backdrop" onclick="closeTemplatesPanel()"></div>
+  <div class="absolute right-0 top-0 bottom-0 w-full max-w-lg flex flex-col" style="z-index:41;background:var(--bg1);border-left:1px solid var(--border)">
+    <!-- Header -->
+    <div class="p-5 flex items-center justify-between" style="border-bottom:1px solid var(--border)">
+      <div>
+        <h2 class="font-bold text-lg">Message Templates</h2>
+        <p class="text-xs mt-0.5" style="color:var(--muted)">Load a saved template into the editor</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <a id="templatesPageLink" href="#" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all" style="background:rgba(255,51,51,.08);border:1px solid rgba(255,51,51,.2);color:#ff3333">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          Manage
+        </a>
+        <button onclick="closeTemplatesPanel()" class="w-8 h-8 rounded-lg flex items-center justify-center transition-colors" style="background:rgba(255,255,255,.05)">✕</button>
+      </div>
+    </div>
+    <!-- Filters -->
+    <div class="px-4 pt-3 pb-2 flex gap-2 flex-wrap" style="border-bottom:1px solid var(--border)">
+      <input id="tplPanelSearch" oninput="renderTemplatesPanel()" class="flex-1 px-3 py-2 text-sm rounded-xl" style="min-width:160px" placeholder="Search templates...">
+      <select id="tplPanelTypeFilter" onchange="renderTemplatesPanel()" class="px-3 py-2 text-sm rounded-xl" style="width:auto">
+        <option value="">All types</option>
+        <option value="text">Text</option>
+        <option value="embed">Embed</option>
+        <option value="v2">V2</option>
+      </select>
+    </div>
+    <!-- List -->
+    <div id="templatesPanelList" class="flex-1 overflow-y-auto p-4 space-y-3">
+      <p class="text-sm text-center py-8" style="color:var(--muted)">Loading templates...</p>
+    </div>
+  </div>
+</div>
+
+<!-- SAVE DIALOG -->
+<div id="saveDialog" class="fixed inset-0 z-50 hidden flex items-center justify-center">
+  <div class="modal-backdrop" onclick="closeSaveDialog()"></div>
+  <div class="relative rounded-2xl p-6 w-full max-w-sm shadow-2xl mx-4" style="z-index:51;background:var(--bg2);border:1px solid var(--border)">
+    <h3 class="font-bold text-lg mb-4">Save Message</h3>
+    <input id="saveNameInput" class="px-4 py-3 text-sm mb-4" placeholder="Message name (e.g. Welcome Panel)">
+    <div class="flex gap-3 justify-end">
+      <button onclick="closeSaveDialog()" class="px-4 py-2 text-sm rounded-xl transition-all" style="background:rgba(255,255,255,.05);border:1px solid var(--border)">Cancel</button>
+      <button onclick="confirmSave()" class="px-5 py-2 text-sm font-semibold text-white rounded-xl transition-all" style="background:#6C53FF">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="/sidebar.js"></script>
+<script type="module" src="/js/embeddmain.js"></script>
+<script>
+function updateCharCount(el, max, counterId) {
+  const len = el?.value?.length || 0;
+  const c   = document.getElementById(counterId);
+  if (!c) return;
+  c.textContent = len + '/' + max;
+  c.style.color = len > max ? '#f87171' : '';
+}
+
+function showErrors(errs) {
+  const panel = document.getElementById('errorPanel');
+  const list  = document.getElementById('errorList');
+  if (!panel || !list) return;
+  list.innerHTML = errs.map(e => `<li style="display:flex;gap:.375rem;align-items:baseline"><span style="color:#f87171;flex-shrink:0">›</span>${e}</li>`).join('');
+  panel.classList.add('show');
+  clearTimeout(window._errTimer);
+  window._errTimer = setTimeout(() => panel.classList.remove('show'), 9000);
+}
+
+function dismissErrors() { document.getElementById('errorPanel')?.classList.remove('show'); }
+
+// showToast — typed with guaranteed background
+function showToast(msg, type) {
+  type = type || 'success';
+  const t  = document.getElementById('toast');
+  const m  = document.getElementById('toastMsg');
+  if (!t || !m) return;
+  // Clear all type classes
+  t.classList.remove('t-success','t-error','t-info');
+  t.classList.add(type === 'error' ? 't-error' : type === 'info' ? 't-info' : 't-success');
+  // Icons
+  const icons = { success: 'tIcoS', error: 'tIcoE', info: 'tIcoI' };
+  ['tIcoS','tIcoE','tIcoI'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('hidden', icons[type] !== id);
+  });
+  m.textContent = msg;
+  clearTimeout(window._toastTimer);
+  t.classList.add('show');
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Accordion handler for sec-card style
+function toggleSec(id, headEl) {
+  const body = document.getElementById(id);
+  if (!body) return;
+  const open = body.classList.toggle('open');
+  if (headEl) {
+    headEl.classList.toggle('open', open);
+    const chev = headEl.querySelector('.chevron');
+    if (chev) chev.style.transform = open ? 'rotate(180deg)' : '';
+  }
+}
+
+// Legacy compat
+function toggleAccordion(id, btn) {
+  document.getElementById(id)?.classList.toggle('open');
+  btn?.classList.toggle('open');
+}
+
+window.updateCharCount = updateCharCount;
+window.showErrors      = showErrors;
+window.dismissErrors   = dismissErrors;
+window.showToast       = showToast;
+window.toggleSec       = toggleSec;
+window.toggleAccordion = toggleAccordion;
+</script>
+
+<!-- Razor Custom Select JS -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet(),openWrap=null;
+function cleanText(t){t=String(t||'');var d=document.createElement('div');d.innerHTML=t;return(d.textContent||d.innerText||'').trim();}
+function optText(opt){return cleanText(opt.text||opt.textContent||opt.label||'');}
+function positionPanel(wrap){var r=wrap._t.getBoundingClientRect(),p=wrap._p,pH=p.offsetHeight||240,spB=window.innerHeight-r.bottom,spA=r.top,w=Math.max(r.width,160);p.style.width=w+'px';p.style.left=r.left+'px';p.style.right='auto';if(spB>=pH||spB>=spA){p.style.top=(r.bottom+4)+'px';p.style.bottom='auto';}else{p.style.bottom=(window.innerHeight-r.top+4)+'px';p.style.top='auto';}}
+document.addEventListener('mousedown',function(e){if(!openWrap)return;if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);},true);
+window.addEventListener('scroll',function(){if(openWrap)positionPanel(openWrap);},true);
+window.addEventListener('resize',function(){if(openWrap)positionPanel(openWrap);});
+function open_(wrap){if(openWrap&&openWrap!==wrap)close_(openWrap);openWrap=wrap;buildList(wrap,'');wrap._si.value='';document.body.appendChild(wrap._p);wrap._p.style.display='block';wrap._t.classList.add('is-open');wrap._t.setAttribute('aria-expanded','true');requestAnimationFrame(function(){positionPanel(wrap);});setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);}
+function close_(wrap){if(!wrap)return;if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);wrap._p.style.display='none';wrap._t.classList.remove('is-open');wrap._t.setAttribute('aria-expanded','false');if(openWrap===wrap)openWrap=null;}
+function buildList(wrap,q){var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();var opts=Array.from(sel.options).filter(function(o){var t=optText(o);return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);});if(!opts.length){list.innerHTML='<div class="rzr-empty">No options</div>';return;}list.innerHTML='';opts.forEach(function(opt){var it=document.createElement('div');it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';it.appendChild(tx);it.appendChild(ck);it.addEventListener('mousedown',function(e){e.preventDefault();e.stopPropagation();sel.value=opt.value;updateLabel(wrap);close_(wrap);sel.dispatchEvent(new Event('change',{bubbles:true}));});list.appendChild(it);});}
+function updateLabel(wrap){var sel=wrap._s,lbl=wrap._lb;var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null,text=opt?optText(opt):'';if(text){lbl.textContent=text;lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));}else{lbl.textContent='Select\u2026';lbl.classList.add('is-ph');}wrap._last=sel.value;}
+function wrapSelect(sel){if(wrapped.has(sel)||sel.hasAttribute('data-rzr-skip')||(sel.size&&sel.size>1))return;wrapped.add(sel);if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';var sib=sel.nextElementSibling;if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';var t=document.createElement('div');t.className='rzr-trigger';t.setAttribute('tabindex','0');t.setAttribute('role','combobox');t.setAttribute('aria-haspopup','listbox');t.setAttribute('aria-expanded','false');var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;t.appendChild(lb);t.appendChild(cv);var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';var sw=document.createElement('div');sw.className='rzr-panel-search';var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;sw.appendChild(si);var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');p.appendChild(sw);p.appendChild(l);var w=document.createElement('div');w.className='rzr-wrap';w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;w.appendChild(t);w.appendChild(p);sel.parentNode.insertBefore(w,sel);w.appendChild(sel);si.addEventListener('input',function(){buildList(w,si.value);});si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});t.addEventListener('click',function(e){e.stopPropagation();openWrap===w?close_(w):open_(w);});t.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}if(e.key==='Escape')close_(w);});var mo=new MutationObserver(function(){updateLabel(w);if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}});mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});var pid=setInterval(function(){if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}if(sel.value!==w._last)updateLabel(w);},150);updateLabel(w);}
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType!==1)return;if(n.tagName==='SELECT')wrapSelect(n);else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);});});}).observe(document.body,{childList:true,subtree:true});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);
+else initAll();
+})();
+</script>
+
+</body>
+</html>

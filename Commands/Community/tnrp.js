@@ -1,0 +1,69 @@
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+
+const { parseEmoji } = require('../../Utils/emojis');
+module.exports = {
+  data: new SlashCommandBuilder()
+    .setName('tnrp')
+    .setDescription('Learn about Tennessee State Roleplay (TNRP)'),
+
+  async execute(interaction) {
+    const embed = new EmbedBuilder()
+      .setTitle('<:n_home:1555544468193546270>️ Tennessee State Roleplay')
+      .setDescription(
+        '> **Welcome to Tennessee State Roleplay (TNRP)** — one of the most immersive and community-driven ER:LC roleplay experiences in the South.\n\n' +'Whether you\'re a seasoned roleplayer or just getting started, TNRP offers a realistic, whitelisted environment built around quality storytelling, authentic civilian life, law enforcement, emergency services, and much more.'
+      )
+      .setColor(0x003F7F) // Deep Tennessee blue
+      .setThumbnail('https://rocobot.xyz/tnrp/logo.png') // Replace with actual logo if available
+      .addFields(
+        {
+          name: '<:1430986225493479485:1555544207652032633> What is TNRP?',
+          value: 'Tennessee State Roleplay is a dedicated ER:LC Roblox community set in the heart of Tennessee. We pride ourselves on realistic roleplay, active staff, and a welcoming community for all players.',
+          inline: false,
+        },
+        {
+          name: '<:restrict:1555544549105999962> Available Departments',
+          value: '`Tennessee Highway Patrol` • `Sheriff\'s Office` • `Emergency Medical Services` • `Fire Department` • `Civilian Operations`',
+          inline: false,
+        },
+        {
+          name: '<a:tickyy:1555544712687915008> Features',
+          value:
+            '• Whitelisted & serious roleplay environment\n' +
+            '• Custom vehicles, scripts & map additions\n' +
+            '• Active & professional staff team\n' +
+            '• Regular community events & updates\n' +
+            '• Friendly & welcoming community',
+          inline: false,
+        },
+        {name: '<:1430986227909263442:1555544212756242532> Quick Links',
+          value:
+            '**Discord:** [Join Our Server](https://discord.gg/AA5Abgxw3Z)\n' +
+            '**Website:** [rocobot.xyz/tnrp](https://rocobot.xyz/tnrp)',
+          inline: false,
+        }
+      )
+      .setFooter({
+        text: 'Tennessee State Roleplay • Serious RP | Quality Community',
+        iconURL: 'https://rocobot.xyz/tnrp/logo.png', // Replace with actual icon if available
+      })
+      .setTimestamp();
+
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setLabel('Join Our Discord')
+        .setURL('https://discord.gg/AA5Abgxw3Z')
+        .setStyle(ButtonStyle.Link)
+        .setEmoji(parseEmoji('<:announcement:1555544345740967956>')),
+      new ButtonBuilder()
+        .setLabel('Visit Website')
+        .setURL('https://rocobot.xyz/tnrp')
+        .setStyle(ButtonStyle.Link)
+        .setEmoji(parseEmoji('<:1430986225493479485:1555544207652032633>'))
+    );
+
+    await interaction.reply({
+      embeds: [embed],
+      components: [row],
+    });
+  },
+};

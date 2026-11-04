@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booster System</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <script>
+    function escapeHtml(s) {
+      if (s == null) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+    const tailwind = window.tailwind || {}; tailwind.config = {
+      theme: { extend: {
+        fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+        colors: { razor: "#FF3333", boost: "#FF73FA" }
+      }}
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0b0b14; }
+    ::-webkit-scrollbar-thumb { background: #2d2d3d; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #FF73FA; }
+    .toggle-checkbox:checked { transform: translateX(100%); }
+    .toggle-checkbox:checked + .toggle-label { background-color: #FF73FA; }
+    .toggle-checkbox { right: auto; left: 2px; top: 2px; z-index: 10; border: none; transition: transform 0.3s ease-in-out; }
+    .toggle-label { width: 44px; height: 24px; border-radius: 9999px; background-color: #2b2b40; transition: background-color 0.3s ease-in-out; border: 1px solid rgba(255,255,255,0.1); }
+    .accordion-content { transition: max-height 0.5s ease-in-out, opacity 0.4s ease-in-out; max-height: 0; opacity: 0; overflow: hidden; }
+    .accordion-content.open { max-height: 2000px; opacity: 1; }
+    .tag-pill { cursor: pointer; font-size: 10px; background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px; color: #9ca3af; font-family: monospace; border: 1px solid rgba(255,255,255,0.08); transition: all 0.15s; display: inline-block; }
+    .tag-pill:hover { background: rgba(255,115,250,0.15); color: #FF73FA; border-color: rgba(255,115,250,0.3); }
+    .char-count { font-size: 10px; color: #6b7280; }
+    .char-count.warn { color: #f59e0b; }
+    .char-count.over { color: #ef4444; }
+    .input-base { width: 100%; background: #14142b; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 12px; font-size: 14px; color: white; outline: none; transition: border-color 0.2s; }
+    .input-base:focus { border-color: #FF73FA; }
+    .input-base::placeholder { color: #4b5563; }
+    .label-base { display: block; font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .section-card { background: #1a1a2e; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+    .unsaved-dot { width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; display: none; }
+    .unsaved-dot.visible { display: inline-block; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .boost-glow { box-shadow: 0 0 20px rgba(255,115,250,0.15); }
+  </style>
+
+<style>
+/* ═══════════════ Razor Custom Select ═══════════════ */
+.rzr-wrap{position:relative;width:100%;display:block}
+/* hide ::after chevrons on select-wrap parents */
+.rzr-wrap-parent.select-wrap::after,
+.rzr-wrap-parent::after{display:none!important;content:none!important}
+.rzr-trigger{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:10px 14px;
+  border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);
+  background:#0d0d1c;color:#fff;
+  cursor:pointer;font-size:14px;font-family:inherit;
+  min-height:44px;width:100%;
+  transition:border-color .15s,box-shadow .15s;
+  user-select:none;box-sizing:border-box;
+}
+.rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
+.rzr-trigger.is-open{
+  border-color:rgba(255,51,51,.6);
+  box-shadow:0 0 0 3px rgba(255,51,51,.1);
+}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
+.rzr-label.is-ph{color:#6b7280}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+/* panel is appended to body — these rules still apply via the class */
+.rzr-panel{
+  position:fixed;z-index:999999;
+  background:rgba(11,11,20,.98);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  overflow:hidden;
+  animation:rzrIn .16s ease;
+}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
+.rzr-search-inp{
+  display:block;width:100%;
+  background:#06060f;border:1px solid rgba(255,255,255,.09);
+  border-radius:7px;padding:6px 11px;
+  color:#fff;font-size:13px;font-family:inherit;
+  outline:none;box-sizing:border-box;transition:border-color .15s;
+}
+.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-search-inp::placeholder{color:#374151}
+.rzr-list{max-height:220px;overflow-y:auto;padding:5px}
+.rzr-list::-webkit-scrollbar{width:4px}
+.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:6px}
+.rzr-list::-webkit-scrollbar-thumb:hover{background:#FF3333}
+.rzr-item{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:6px;padding:8px 11px;border-radius:8px;
+  cursor:pointer;font-size:13px;color:#9ca3af;
+  transition:background .1s,color .1s;
+}
+.rzr-item:hover{background:rgba(255,255,255,.055);color:#fff}
+.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600}
+.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item.is-sel .rzr-item-chk{opacity:1}
+.rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
+/* ═══════════════ End Razor Custom Select ═══════════════ */
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body class="bg-[#0b0b14] text-white">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<div id="toast" class="fixed top-4 right-4 z-50 flex items-center gap-3 px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 max-w-sm" style="transform: translateX(500px)">
+  <div id="toastIcon" class="w-5 h-5 flex-shrink-0"></div>
+  <span id="toastMessage" class="text-sm font-medium"></span>
+</div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+
+  <main class="flex-1 p-6 lg:p-8 overflow-x-hidden">
+
+    <!-- Header -->
+    <div class="mb-8 flex items-start justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3 mb-1">
+          <h1 class="text-3xl font-bold tracking-tight">Booster System</h1>
+          <span id="unsavedDot" class="unsaved-dot" title="Unsaved changes"></span>
+        </div>
+        <p class="text-gray-400 text-sm">Celebrate and reward members who boost your server. <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M156.6 384.9L125.7 354c-8.5-8.5-11.5-20.8-7.7-32.2l10-28.6c5.5-15.8 3.5-33.4-5.6-47.4l-2.2-3.4c-9.6-14.9-25.4-24-42.7-24.6L48 217.6c-12.4-.4-22.8-8.6-26.3-20.1L3.9 146.7c-4-13.1 2.3-27 15-33l82.5-39.2C133 57.7 171.4 48 211.3 48c43.5 0 86.5 13.8 120.1 40.5L463 178.5c16.3 12.2 26.5 30.8 28.4 51.1l8.6 95.1c3 32.8-20.9 59.3-53.8 59.3c-10.5 0-20.8-3-29.3-8.5l-101.5-65.4c-11.6-7.5-26.2-8.4-38.7-2.4l-16.3 7.8c-12.9 6.2-22.5 17.8-26 31.7l-17.1 67.3C213.4 433.5 188.1 448 160 448c-2.7 0-5.5-.1-8.2-.4c-18.6-1.9-33.7-16.1-36.8-34.7l.6-28zM512 379.3c0-51.3-37.5-94-87.8-101.2l-87.5 56.3c22.8 26.4 35.3 60.3 35.3 95.7v22.5c28.6-5.9 50.5-29.6 50.5-60v-4.5c0-17.7 14.3-32 32-32s32 14.3 32 32v4.5c0 55.4-42.1 101-96.1 106.3C384.1 500.5 384 502.3 384 504c0 4.4 .4 8.7 1 13h28.8C466.4 517 512 453.1 512 379.3z"/></svg></p>
+      </div>
+      <div class="flex gap-3 flex-shrink-0">
+        <button onclick="testBooster()" id="testBtn" class="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm font-medium transition-all">
+          <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Send Test
+        </button>
+        <button onclick="save()" class="flex items-center gap-2 px-6 py-2 bg-boost text-white hover:opacity-90 shadow-lg shadow-boost/20 boost-glow rounded-xl text-sm font-bold transition-all">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+          Save Changes
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+
+      <!-- Left Column -->
+      <div class="xl:col-span-7 space-y-5">
+
+        <!-- Basic Setup -->
+        <div class="section-card p-6">
+          <h2 class="text-base font-bold mb-5 flex items-center gap-2">
+            <span class="w-1 h-5 bg-boost rounded-full"></span>
+            Basic Setup
+          </h2>
+          <div class="space-y-4">
+            <div>
+              <label class="label-base">Boost Notification Channel</label>
+              <div class="relative">
+                <select id="channel" class="input-base appearance-none pr-10">
+                  <option>Loading channels...</option>
+                </select>
+                <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-1.5">
+                <label class="label-base mb-0">Message Content</label>
+                <span id="msgCount" class="char-count">0 / 2000</span>
+              </div>
+              <textarea id="message" rows="3" maxlength="2000" oninput="updateCharCount('message','msgCount',2000)" class="input-base resize-none" style="border-radius:10px" placeholder="Thank you {user} for boosting {server}!"></textarea>
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                <span class="tag-pill" onclick="insertTag('message','{user}')">{user}</span>
+                <span class="tag-pill" onclick="insertTag('message','{username}')">{username}</span>
+                <span class="tag-pill" onclick="insertTag('message','{server}')">{server}</span>
+                <span class="tag-pill" onclick="insertTag('message','{boosts}')">{boosts}</span>
+                <span class="tag-pill" onclick="insertTag('message','{boostTier}')">{boostTier}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toggles -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="section-card p-4 flex items-center justify-between gap-3">
+            <div><p class="font-semibold text-sm">Embed Message</p><p class="text-xs text-gray-400 mt-0.5">Rich Discord embed</p></div>
+            <label class="relative inline-block w-11 h-6 flex-shrink-0">
+              <input type="checkbox" id="isEmbed" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white appearance-none cursor-pointer">
+              <span class="toggle-label block overflow-hidden cursor-pointer rounded-full"></span>
+            </label>
+          </div>
+          <div class="section-card p-4 flex items-center justify-between gap-3">
+            <div><p class="font-semibold text-sm">Boost Image Card</p><p class="text-xs text-gray-400 mt-0.5">Visual card generator</p></div>
+            <label class="relative inline-block w-11 h-6 flex-shrink-0">
+              <input type="checkbox" id="isImage" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white appearance-none cursor-pointer">
+              <span class="toggle-label block overflow-hidden cursor-pointer rounded-full"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Embed Settings -->
+        <div id="embedSettings" class="accordion-content section-card">
+          <div class="p-6">
+            <h2 class="text-base font-bold mb-5 flex items-center gap-2 text-boost">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+              Embed Configuration
+            </h2>
+
+            <div class="bg-pink-500/5 border border-pink-500/20 rounded-lg px-3 py-2 mb-4 flex flex-wrap gap-1.5 items-center">
+              <span class="text-xs text-gray-400 mr-1">Variables:</span>
+              <span class="tag-pill" onclick="insertTag('author','{user}')">{user}</span>
+              <span class="tag-pill" onclick="insertTag('author','{username}')">{username}</span>
+              <span class="tag-pill" onclick="insertTag('author','{server}')">{server}</span>
+              <span class="tag-pill" onclick="insertTag('author','{boosts}')">{boosts}</span>
+              <span class="tag-pill" onclick="insertTag('author','{boostTier}')">{boostTier}</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-3">
+              <div>
+                <label class="label-base">Author Text</label>
+                <input id="author" class="input-base" placeholder="Boost Bot">
+              </div>
+              <div>
+                <label class="label-base">Author Icon URL</label>
+                <input id="authorIcon" class="input-base" placeholder="https://...">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-3">
+              <div>
+                <label class="label-base">Title</label>
+                <input id="title" class="input-base" placeholder="New Booster!">
+              </div>
+              <div>
+                <label class="label-base">Title URL (clickable)</label>
+                <input id="titleUrl" class="input-base" placeholder="https://...">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <div class="flex justify-between mb-1.5">
+                <label class="label-base mb-0">Description</label>
+                <span id="descCount" class="char-count">0 / 4096</span>
+              </div>
+              <textarea id="description" rows="3" maxlength="4096" oninput="updateCharCount('description','descCount',4096)" class="input-base resize-none" placeholder="{user} just boosted the server! We now have {boosts} boosts and are at Tier {boostTier}!"></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-3">
+              <div>
+                <label class="label-base">Embed Color</label>
+                <div class="flex gap-2">
+                  <input type="color" id="colorPicker" value="#FF73FA" oninput="syncColor(this.value)" class="h-9 w-12 cursor-pointer rounded-lg overflow-hidden bg-transparent border border-white/10 p-0.5">
+                  <input id="color" class="input-base flex-1 font-mono" placeholder="#FF73FA" oninput="syncColorFromHex(this.value)">
+                </div>
+              </div>
+              <div>
+                <label class="label-base">Thumbnail URL</label>
+                <input id="thumbnail" class="input-base" placeholder="https://...">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="label-base">Large Image URL</label>
+              <input id="embedImage" class="input-base" placeholder="https://...">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-3">
+              <div>
+                <div class="flex justify-between mb-1.5">
+                  <label class="label-base mb-0">Footer Text</label>
+                  <span id="footerCount" class="char-count">0 / 2048</span>
+                </div>
+                <input id="footer" maxlength="2048" oninput="updateCharCount('footer','footerCount',2048)" class="input-base" placeholder="Thanks for supporting {server}!">
+              </div>
+              <div>
+                <label class="label-base">Footer Icon URL</label>
+                <input id="footerIcon" class="input-base" placeholder="https://...">
+              </div>
+            </div>
+
+            <label class="flex items-center gap-2 cursor-pointer w-fit">
+              <input type="checkbox" id="timestamp" class="w-4 h-4 rounded accent-pink-400">
+              <span class="text-sm text-gray-300">Add Timestamp</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Image Card Settings -->
+        <div id="imageSettings" class="accordion-content section-card">
+          <div class="p-6">
+            <h2 class="text-base font-bold mb-4 flex items-center gap-2 text-pink-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              Boost Card Image
+            </h2>
+            <label class="label-base">Background Image URL</label>
+            <input id="image" class="input-base" placeholder="https://i.imgur.com/...">
+            <p class="text-xs text-gray-500 mt-2">Avatar and username are overlaid automatically. Recommended size: 1024×512px.</p>
+          </div>
+        </div>
+
+        <!-- DM Settings -->
+        <div class="section-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-base font-bold flex items-center gap-2">
+                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                DM Booster
+              </h2>
+              <p class="text-xs text-gray-400 mt-0.5">Send a personal thank-you DM to boosters</p>
+            </div>
+            <label class="relative inline-block w-11 h-6 flex-shrink-0">
+              <input type="checkbox" id="dmEnabled" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white appearance-none cursor-pointer">
+              <span class="toggle-label block overflow-hidden cursor-pointer rounded-full"></span>
+            </label>
+          </div>
+          <div id="dmSettings" class="hidden">
+            <div class="flex justify-between mb-1.5">
+              <label class="label-base mb-0">DM Message</label>
+              <span id="dmCount" class="char-count">0 / 2000</span>
+            </div>
+            <textarea id="dmMessage" rows="3" maxlength="2000" oninput="updateCharCount('dmMessage','dmCount',2000)" class="input-base resize-none" placeholder="Thank you for boosting {server}, {username}! Your support means the world to us"></textarea>
+            <div class="flex flex-wrap gap-1.5 mt-2">
+              <span class="tag-pill" onclick="insertTag('dmMessage','{user}')">{user}</span>
+              <span class="tag-pill" onclick="insertTag('dmMessage','{username}')">{username}</span>
+              <span class="tag-pill" onclick="insertTag('dmMessage','{server}')">{server}</span>
+              <span class="tag-pill" onclick="insertTag('dmMessage','{boosts}')">{boosts}</span>
+            </div>
+            <p class="text-xs text-gray-500 mt-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7.2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8.2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24v112c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0-64 0 32 32 0 0 0 64 0z"/></svg> Sent as a personal embed using the color configured above. Members with DMs disabled won't receive it.</p>
+          </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="pt-2 border-t border-white/5">
+          <button onclick="disable()" class="text-red-400 hover:text-red-300 text-sm font-medium transition-colors flex items-center gap-2 opacity-50 hover:opacity-100">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            Disable Booster System
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Right: Live Preview -->
+      <div class="xl:col-span-5">
+        <div class="sticky top-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold">Live Preview</h3>
+            <span class="text-[10px] uppercase font-bold bg-white/5 px-2 py-1 rounded-md text-gray-400 border border-white/5">Discord</span>
+          </div>
+
+          <div class="bg-[#313338] rounded-2xl overflow-hidden shadow-2xl border border-[#1e1f22]">
+            <div class="h-12 bg-[#2b2d31] border-b border-[#1f2023] flex items-center px-4 gap-2">
+              <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="currentColor"><path d="M5.068 19.07a1 1 0 01-.622-1.782l5.998-4.876-5.998-4.876a1 1 0 111.244-1.57l7.002 5.694a1 1 0 010 1.572L6.69 18.926a1 1 0 01-.622.144z"/></svg>
+              <span id="previewChannelName" class="font-bold text-white text-sm">boosts</span>
+            </div>
+
+            <div class="p-4">
+              <div class="flex gap-3">
+                <img src="/logo.png" class="w-10 h-10 rounded-full flex-shrink-0">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="font-semibold text-white text-sm">Roco</span>
+                    <span class="bg-[#5865F2] text-[10px] text-white px-1.5 py-px rounded-sm font-bold uppercase">BOT</span>
+                    <span class="text-xs text-gray-500">Today at 4:20 PM</span>
+                  </div>
+
+                  <div id="previewMessage" class="text-gray-200 text-sm leading-relaxed mb-2 whitespace-pre-wrap"></div>
+
+                  <div id="previewEmbed" class="hidden border-l-4 bg-[#2b2d31] rounded-r-lg overflow-hidden max-w-[480px]" style="border-left-color:#FF73FA">
+                    <div class="p-3 space-y-1.5">
+                      <div class="flex gap-3">
+                        <div class="flex-1 min-w-0 space-y-1">
+                          <p id="pAuthor" class="hidden text-xs text-gray-300 font-semibold"></p>
+                          <p id="pTitle" class="hidden text-sm font-bold text-white hover:underline cursor-pointer"></p>
+                          <p id="pDesc" class="hidden text-sm text-gray-300 whitespace-pre-wrap leading-relaxed"></p>
+                        </div>
+                        <img id="pThumbnail" class="hidden w-16 h-16 rounded-lg object-cover flex-shrink-0">
+                      </div>
+                      <img id="pEmbedImage" class="hidden w-full rounded-lg object-cover max-h-64 mt-1">
+                      <p id="pFooter" class="hidden text-xs text-gray-400 pt-1 border-t border-white/5"></p>
+                    </div>
+                  </div>
+
+                  <div id="previewCardImage" class="hidden mt-2 relative rounded-xl overflow-hidden border border-[#1e1f22]" style="height:180px; background-size:cover; background-position:center; background-image:url('https://i.imgur.com/GMuBRQo.jpeg')">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20 flex flex-col items-center justify-center">
+                      <div class="w-16 h-16 rounded-full border-4 border-pink-400 overflow-hidden mb-2 shadow-lg shadow-pink-500/30">
+                        <img src="/logo.png" class="w-full h-full">
+                      </div>
+                      <p class="text-lg font-bold text-white drop-shadow">Username</p>
+                      <p class="text-xs text-pink-200">The server now has 10 boosts</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Boost tier indicator -->
+          <div class="mt-4 section-card p-4">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Preview Variables</p>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div class="bg-white/5 rounded-lg px-3 py-2">
+                <span class="text-gray-500">{boosts}</span>
+                <span class="float-right text-pink-300 font-mono">10</span>
+              </div>
+              <div class="bg-white/5 rounded-lg px-3 py-2">
+                <span class="text-gray-500">{boostTier}</span>
+                <span class="float-right text-pink-300 font-mono">1</span>
+              </div>
+              <div class="bg-white/5 rounded-lg px-3 py-2">
+                <span class="text-gray-500">{user}</span>
+                <span class="float-right text-pink-300 font-mono">@User</span>
+              </div>
+              <div class="bg-white/5 rounded-lg px-3 py-2">
+                <span class="text-gray-500">{server}</span>
+                <span class="float-right text-pink-300 font-mono">Server</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-center text-xs text-gray-600 mt-3">Preview updates in real time as you type.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="/sidebar.js" nonce="<%= nonce %>"></script>
+<script nonce="<%= nonce %>">
+const guildId = location.pathname.split("/")[2];
+let isDirty = false;
+
+const els = {
+  channel: document.getElementById('channel'),
+  message: document.getElementById('message'),
+  isEmbed: document.getElementById('isEmbed'),
+  isImage: document.getElementById('isImage'),
+  embedSettings: document.getElementById('embedSettings'),
+  imageSettings: document.getElementById('imageSettings'),
+  author: document.getElementById('author'),
+  authorIcon: document.getElementById('authorIcon'),
+  title: document.getElementById('title'),
+  titleUrl: document.getElementById('titleUrl'),
+  description: document.getElementById('description'),
+  color: document.getElementById('color'),
+  colorPicker: document.getElementById('colorPicker'),
+  thumbnail: document.getElementById('thumbnail'),
+  embedImage: document.getElementById('embedImage'),
+  footer: document.getElementById('footer'),
+  footerIcon: document.getElementById('footerIcon'),
+  timestamp: document.getElementById('timestamp'),
+  image: document.getElementById('image'),
+  dmEnabled: document.getElementById('dmEnabled'),
+  dmMessage: document.getElementById('dmMessage'),
+  previewChannelName: document.getElementById('previewChannelName'),
+  previewMessage: document.getElementById('previewMessage'),
+  previewEmbed: document.getElementById('previewEmbed'),
+  previewCardImage: document.getElementById('previewCardImage'),
+  pAuthor: document.getElementById('pAuthor'),
+  pTitle: document.getElementById('pTitle'),
+  pDesc: document.getElementById('pDesc'),
+  pThumbnail: document.getElementById('pThumbnail'),
+  pEmbedImage: document.getElementById('pEmbedImage'),
+  pFooter: document.getElementById('pFooter'),
+};
+
+function updateCharCount(id, cid, max) {
+  const len = document.getElementById(id).value.length;
+  const el = document.getElementById(cid);
+  el.textContent = `${len} / ${max}`;
+  el.className = 'char-count' + (len > max*0.9 ? (len>=max?' over':' warn') : '');
+}
+function syncColor(val) { els.color.value = val; updatePreview(); }
+function syncColorFromHex(val) { if(/^#[0-9a-fA-F]{6}$/.test(val)) els.colorPicker.value = val; updatePreview(); }
+function insertTag(fieldId, tag) {
+  const el = document.getElementById(fieldId);
+  if (!el) return;
+  const s = el.selectionStart, e = el.selectionEnd;
+  el.value = el.value.slice(0,s) + tag + el.value.slice(e);
+  el.focus(); el.selectionStart = el.selectionEnd = s+tag.length;
+  markDirty(); updatePreview();
+}
+function markDirty() { isDirty = true; document.getElementById('unsavedDot').classList.add('visible'); }
+function markClean() { isDirty = false; document.getElementById('unsavedDot').classList.remove('visible'); }
+function parseMarkdown(t) {
+  if (!t) return "";
+  // Extract SVG elements before escaping so they render properly in preview
+  const svgs = [];
+  const withPlaceholders = t.replace(/<svg[\s\S]*?<\/svg>/gi, (match) => {
+    svgs.push(match);
+    return `\x00SVG${svgs.length - 1}\x00`;
+  });
+  let escaped = withPlaceholders
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>").replace(/\*(.*?)\*/g,"<em>$1</em>")
+    .replace(/__(.*?)__/g,"<u>$1</u>")
+    .replace(/`([^`]+)`/g,'<code class="bg-black/40 px-1 rounded text-xs font-mono">$1</code>')
+    .replace(/\n/g,"<br>");
+  // Restore SVG elements
+  return escaped.replace(/\x00SVG(\d+)\x00/g, (_, i) => svgs[+i]);
+}
+function rv(s) {
+  return (s||'').replace(/{user}/g,'@User').replace(/{username}/g,'User').replace(/{server}/g,'Your Server').replace(/{boosts}/g,'10').replace(/{boostTier}/g,'1');
+}
+
+function updatePreview() {
+  const opt = els.channel.options[els.channel.selectedIndex];
+  els.previewChannelName.textContent = opt ? opt.text.replace(/^#/,'') : 'boosts';
+  els.previewMessage.innerHTML = parseMarkdown(rv(els.message.value));
+
+  if (els.isEmbed.checked) {
+    els.previewEmbed.classList.remove('hidden');
+    const col = /^#[0-9a-fA-F]{6}$/.test(els.color.value) ? els.color.value : '#FF73FA';
+    els.previewEmbed.style.borderLeftColor = col;
+    const sh = (el,v,fn) => { if(v){fn(el,v);el.classList.remove('hidden');}else el.classList.add('hidden'); };
+    sh(els.pAuthor, els.author.value, (e,v)=>e.textContent=rv(v));
+    sh(els.pTitle, els.title.value, (e,v)=>e.innerHTML=parseMarkdown(rv(v)));
+    sh(els.pDesc, els.description.value, (e,v)=>e.innerHTML=parseMarkdown(rv(v)));
+    sh(els.pThumbnail, els.thumbnail.value, (e,v)=>e.src=v);
+    sh(els.pEmbedImage, els.embedImage.value, (e,v)=>e.src=v);
+    if (els.footer.value || els.timestamp.checked) {
+      let ft = rv(els.footer.value);
+      if (els.timestamp.checked) ft += (ft?' • ':'') + 'Today at 4:20 PM';
+      els.pFooter.textContent = ft; els.pFooter.classList.remove('hidden');
+    } else els.pFooter.classList.add('hidden');
+  } else els.previewEmbed.classList.add('hidden');
+
+  if (els.isImage.checked) {
+    els.previewCardImage.classList.remove('hidden');
+    if (els.image.value) els.previewCardImage.style.backgroundImage = `url('${els.image.value}')`;
+  } else els.previewCardImage.classList.add('hidden');
+}
+
+els.isEmbed.addEventListener('change', () => { els.embedSettings.classList.toggle('open', els.isEmbed.checked); updatePreview(); markDirty(); });
+els.isImage.addEventListener('change', () => { els.imageSettings.classList.toggle('open', els.isImage.checked); updatePreview(); markDirty(); });
+els.dmEnabled.addEventListener('change', () => { document.getElementById('dmSettings').classList.toggle('hidden', !els.dmEnabled.checked); markDirty(); });
+
+Object.values(els).forEach(el => {
+  if (!el||!el.tagName) return;
+  if (['INPUT','TEXTAREA','SELECT'].includes(el.tagName)) {
+    el.addEventListener('input', () => { markDirty(); updatePreview(); });
+    el.addEventListener('change', () => { markDirty(); updatePreview(); });
+  }
+});
+
+window.addEventListener('beforeunload', e => { if (isDirty) { e.preventDefault(); e.returnValue=''; } });
+
+function showToast(msg, type='success') {
+  const toast = document.getElementById('toast');
+  const colors = {success:'bg-red-600',error:'bg-red-600',info:'bg-blue-600'};
+  const icons = {
+    success:'<svg viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>',
+    error:'<svg viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>',
+    info:'<svg viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>',
+  };
+  toast.className = `fixed top-4 right-4 z-50 flex items-center gap-3 px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 text-white ${colors[type]||colors.success}`;
+  document.getElementById('toastIcon').innerHTML = icons[type]||icons.success;
+  document.getElementById('toastMessage').innerHTML = msg;
+  toast.style.transform = 'translateX(0)';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toast.style.transform='translateX(500px)', 3500);
+}
+
+fetch(`/api/guild/${guildId}/channels`).then(r=>r.json()).then(data => {
+  rzrPopulateChannels(els.channel, data, null, '');
+  updatePreview();
+});
+
+fetch(`/api/guild/${guildId}/booster`).then(r=>r.json()).then(d => {
+  if (!d) return;
+  els.channel.value     = d.channelId   || "";
+  els.message.value     = d.message     || "";
+  els.isEmbed.checked   = !!d.isEmbed;
+  els.isImage.checked   = !!d.isImage;
+  els.author.value      = d.author      || "";
+  els.authorIcon.value  = d.authorIcon  || "";
+  els.title.value       = d.title       || "";
+  els.titleUrl.value    = d.titleUrl    || "";
+  els.description.value = d.description || "";
+  els.color.value       = d.color       || "";
+  if (/^#[0-9a-fA-F]{6}$/.test(d.color)) els.colorPicker.value = d.color;
+  els.thumbnail.value   = d.thumbnail   || "";
+  els.embedImage.value  = d.embedImage  || "";
+  els.footer.value      = d.footer      || "";
+  els.footerIcon.value  = d.footerIcon  || "";
+  els.timestamp.checked = !!d.timestamp;
+  els.image.value       = d.image       || "";
+  els.dmEnabled.checked = !!d.dmEnabled;
+  els.dmMessage.value   = d.dmMessage   || "";
+  if (d.isEmbed) els.embedSettings.classList.add('open');
+  if (d.isImage) els.imageSettings.classList.add('open');
+  if (d.dmEnabled) document.getElementById('dmSettings').classList.remove('hidden');
+  ['message','description','footer','dmMessage'].forEach(id => {
+    const lim={message:2000,description:4096,footer:2048,dmMessage:2000};
+    const cid={message:'msgCount',description:'descCount',footer:'footerCount',dmMessage:'dmCount'};
+    updateCharCount(id,cid[id],lim[id]);
+  });
+  updatePreview(); markClean();
+});
+
+function save() {
+  const body = {
+    channelId: els.channel.value, message: els.message.value,
+    isEmbed: els.isEmbed.checked, isImage: els.isImage.checked,
+    author: els.author.value, authorIcon: els.authorIcon.value,
+    title: els.title.value, titleUrl: els.titleUrl.value,
+    description: els.description.value, color: els.color.value,
+    thumbnail: els.thumbnail.value, embedImage: els.embedImage.value,
+    footer: els.footer.value, footerIcon: els.footerIcon.value,
+    timestamp: els.timestamp.checked, image: els.image.value,
+    dmEnabled: els.dmEnabled.checked, dmMessage: els.dmMessage.value,
+  };
+  fetch(`/api/guild/${guildId}/booster`, {
+    method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body),
+  }).then(async r => {
+    if (r.ok) { showToast('Configuration saved!'); markClean(); }
+    else { const d = await r.json().catch(()=>{}); showToast(d?.error||'Failed to save','error'); }
+  }).catch(()=>showToast('Network error','error'));
+}
+
+function testBooster() {
+  const btn = document.getElementById('testBtn');
+  btn.disabled = true;
+  showToast('Sending test message…', 'info');
+  const body = {
+    channelId:   els.channel.value,
+    message:     els.message.value,
+    isEmbed:     els.isEmbed.checked,
+    isImage:     els.isImage.checked,
+    author:      els.author.value,
+    authorIcon:  els.authorIcon.value,
+    title:       els.title.value,
+    titleUrl:    els.titleUrl.value,
+    description: els.description.value,
+    color:       els.color.value,
+    thumbnail:   els.thumbnail.value,
+    embedImage:  els.embedImage.value,
+    footer:      els.footer.value,
+    footerIcon:  els.footerIcon.value,
+    timestamp:   els.timestamp.checked,
+    image:       els.image.value,
+    dmEnabled:   els.dmEnabled.checked,
+    dmMessage:   els.dmMessage.value,
+  };
+  fetch(`/api/guild/${guildId}/booster/test`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+    .then(async r => {
+      const d = await r.json().catch(() => ({}));
+      if (r.ok) showToast('Test message sent! ✓', 'success');
+      else showToast(d.error || 'Failed to send test', 'error');
+    })
+    .catch(() => showToast('Network error', 'error'))
+    .finally(() => setTimeout(() => { btn.disabled = false; }, 10000));
+}
+
+function disable() {
+  if (!confirm('Disable booster system? This will delete the current configuration.')) return;
+  fetch(`/api/guild/${guildId}/booster`,{method:'DELETE'}).then(r=>{
+    if (r.ok) { showToast('Booster system disabled'); markClean(); setTimeout(()=>location.reload(),1200); }
+    else showToast('Failed to disable','error');
+  });
+}
+</script>
+<!-- Razor Custom Select JS -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet();
+var openWrap=null;
+
+/* strip any html tags from option text just in case */
+function cleanText(t){
+  t=String(t||'');
+  var d=document.createElement('div');
+  d.innerHTML=t;
+  return (d.textContent||d.innerText||'').trim();
+}
+
+/* get clean option text */
+function optText(opt){
+  return cleanText(opt.text||opt.textContent||opt.label||'');
+}
+
+/* position panel relative to trigger using fixed coords */
+function positionPanel(wrap){
+  var r=wrap._t.getBoundingClientRect();
+  var p=wrap._p;
+  var panelH=p.offsetHeight||240;
+  var spaceBelow=window.innerHeight-r.bottom;
+  var spaceAbove=r.top;
+  var width=Math.max(r.width,160);
+  p.style.width=width+'px';
+  p.style.left=r.left+'px';
+  p.style.right='auto';
+  if(spaceBelow>=panelH||spaceBelow>=spaceAbove){
+    p.style.top=(r.bottom+4)+'px';
+    p.style.bottom='auto';
+  } else {
+    p.style.bottom=(window.innerHeight-r.top+4)+'px';
+    p.style.top='auto';
+  }
+}
+
+/* close on outside click */
+document.addEventListener('mousedown',function(e){
+  if(!openWrap)return;
+  if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);
+},true);
+
+/* close on scroll anywhere (reposition) */
+window.addEventListener('scroll',function(){
+  if(openWrap)positionPanel(openWrap);
+},true);
+window.addEventListener('resize',function(){
+  if(openWrap)positionPanel(openWrap);
+});
+
+function open_(wrap){
+  if(openWrap&&openWrap!==wrap)close_(openWrap);
+  openWrap=wrap;
+  buildList(wrap,'');
+  wrap._si.value='';
+  /* always show search */
+  wrap._sw.style.display='';
+  document.body.appendChild(wrap._p);
+  wrap._p.style.display='block';
+  wrap._t.classList.add('is-open');
+  wrap._t.setAttribute('aria-expanded','true');
+  /* position after display:block so offsetHeight is known */
+  requestAnimationFrame(function(){positionPanel(wrap);});
+  setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);
+}
+
+function close_(wrap){
+  if(!wrap)return;
+  if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);
+  wrap._p.style.display='none';
+  wrap._t.classList.remove('is-open');
+  wrap._t.setAttribute('aria-expanded','false');
+  if(openWrap===wrap)openWrap=null;
+}
+
+function buildList(wrap,q){
+  var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();
+  var opts=Array.from(sel.options).filter(function(o){
+    var t=optText(o);
+    return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);
+  });
+  if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}
+  list.innerHTML='';
+  opts.forEach(function(opt){
+    var it=document.createElement('div');
+    it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');
+    it.dataset.v=opt.value;
+    var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);
+    var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';
+    it.appendChild(tx);it.appendChild(ck);
+    it.addEventListener('mousedown',function(e){
+      e.preventDefault();e.stopPropagation();
+      sel.value=opt.value;
+      updateLabel(wrap);
+      close_(wrap);
+      sel.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    list.appendChild(it);
+  });
+}
+
+function updateLabel(wrap){
+  var sel=wrap._s,lbl=wrap._lb;
+  var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;
+  var text=opt?optText(opt):'';
+  if(text){
+    lbl.textContent=text;
+    /* treat index-0 empty-value options as placeholders */
+    lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));
+  } else {
+    lbl.textContent='Select\u2026';
+    lbl.classList.add('is-ph');
+  }
+  wrap._last=sel.value;
+}
+
+function wrapSelect(sel){
+  if(wrapped.has(sel))return;
+  if(sel.hasAttribute('data-rzr-skip'))return;
+  if(sel.size&&sel.size>1)return;
+  wrapped.add(sel);
+
+  /* mark parent to suppress ::after chevrons */
+  if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');
+
+  /* hide native */
+  sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';
+
+  /* hide sibling fake-chevron divs */
+  var sib=sel.nextElementSibling;
+  if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';
+
+  /* trigger */
+  var t=document.createElement('div');
+  t.className='rzr-trigger';
+  t.setAttribute('tabindex','0');
+  t.setAttribute('role','combobox');
+  t.setAttribute('aria-haspopup','listbox');
+  t.setAttribute('aria-expanded','false');
+  var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';
+  var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;
+  t.appendChild(lb);t.appendChild(cv);
+
+  /* panel — will be moved to body on open */
+  var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';
+  var sw=document.createElement('div');sw.className='rzr-panel-search';
+  var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;
+  sw.appendChild(si);
+  var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');
+  p.appendChild(sw);p.appendChild(l);
+
+  /* outer wrap */
+  var w=document.createElement('div');w.className='rzr-wrap';
+  w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;
+
+  w.appendChild(t);
+  /* panel stays in wrap until open — moved to body on open() */
+  w.appendChild(p);
+  sel.parentNode.insertBefore(w,sel);
+  w.appendChild(sel);
+
+  /* search */
+  si.addEventListener('input',function(){buildList(w,si.value);});
+  si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});
+
+  /* trigger events */
+  t.addEventListener('click',function(e){
+    e.stopPropagation();
+    openWrap===w?close_(w):open_(w);
+  });
+  t.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}
+    if(e.key==='Escape')close_(w);
+  });
+
+  /* watch option changes (async population: channels, roles) */
+  var mo=new MutationObserver(function(){
+    updateLabel(w);
+    if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}
+  });
+  mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});
+
+  /* poll for programmatic .value changes */
+  var pid=setInterval(function(){
+    if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}
+    if(sel.value!==w._last)updateLabel(w);
+  },150);
+
+  updateLabel(w);
+}
+
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+
+new MutationObserver(function(ms){
+  ms.forEach(function(m){
+    m.addedNodes.forEach(function(n){
+      if(n.nodeType!==1)return;
+      if(n.tagName==='SELECT')wrapSelect(n);
+      else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);
+    });
+  });
+}).observe(document.body,{childList:true,subtree:true});
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);
+else initAll();
+})();
+</script>
+<!-- End Razor Custom Select JS -->
+
+
+</body>
+</html>

@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Roco — The Discord Bot Built Different</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:hidden}
+:root{
+  --bg:#060810;--bg1:#0b0e1a;--bg2:#10142a;
+  --blue:#5468ff;--indigo:#7c3aed;--cyan:#00e5c8;--pink:#ff3d7f;--amber:#ffaa00;
+  --text:#e2e8ff;--muted:#4e567e;--border:rgba(84,104,255,.13);
+  --font:'Outfit',sans-serif;--mono:'Space Mono',monospace;
+  --nav-h: 68px;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);overflow-x:hidden;line-height:1.6}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+section{position:relative;z-index:2}
+.container{max-width:1180px;margin:0 auto;padding:0 20px}
+
+/* ─── NAV ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--nav-h);
+  padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(6,8,16,.9);backdrop-filter:blur(28px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;font-size:1.35rem;font-weight:900;letter-spacing:-.03em;text-decoration:none;color:var(--text)}
+.nav-logo-icon{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--indigo));display:grid;place-items:center;flex-shrink:0;animation:glowPulse 3s ease-in-out infinite}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 18px rgba(84,104,255,.45)}50%{box-shadow:0 0 36px rgba(84,104,255,.8)}}
+.nav-links{display:flex;gap:34px;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.88rem;font-weight:600;letter-spacing:.02em;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-actions{display:flex;gap:10px;align-items:center}
+
+/* Hamburger */
+.nav-hamburger{
+  display:none;
+  flex-direction:column;justify-content:center;align-items:center;
+  gap:5px;width:40px;height:40px;border-radius:9px;border:1px solid var(--border);
+  background:transparent;cursor:pointer;padding:8px;
+}
+.nav-hamburger span{display:block;width:20px;height:2px;background:var(--muted);border-radius:2px;transition:all .3s}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Mobile drawer */
+.mobile-menu{
+  display:none;
+  position:fixed;top:var(--nav-h);left:0;right:0;z-index:99;
+  background:rgba(6,8,16,.97);backdrop-filter:blur(28px);
+  border-bottom:1px solid var(--border);
+  padding:20px 24px 28px;
+  flex-direction:column;gap:6px;
+  animation:menuDrop .25s ease both;
+}
+.mobile-menu.open{display:flex}
+@keyframes menuDrop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.mobile-menu a{
+  display:flex;align-items:center;gap:10px;
+  padding:13px 16px;border-radius:11px;
+  color:var(--muted);text-decoration:none;font-weight:600;font-size:.95rem;
+  transition:all .2s;border:1px solid transparent;
+}
+.mobile-menu a:hover{color:var(--text);background:rgba(84,104,255,.07);border-color:var(--border)}
+.mobile-menu .mobile-divider{height:1px;background:var(--border);margin:8px 0}
+.mobile-menu .btn-primary{background:linear-gradient(135deg,var(--blue),var(--indigo));color:#fff;justify-content:center;border-color:transparent}
+
+/* ─── BUTTONS ─── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 24px;border-radius:10px;font-family:var(--font);font-weight:700;font-size:.88rem;cursor:pointer;text-decoration:none;border:none;letter-spacing:.02em;transition:all .25s}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.btn-ghost:hover{background:rgba(84,104,255,.08);color:var(--text);border-color:rgba(84,104,255,.3)}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--indigo));color:#fff;box-shadow:0 4px 22px rgba(84,104,255,.38)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(84,104,255,.55)}
+.btn-lg{padding:15px 34px;font-size:.98rem;border-radius:13px}
+.btn-outline-cyan{background:transparent;color:var(--cyan);border:1px solid rgba(0,229,200,.25)}
+.btn-outline-cyan:hover{background:rgba(0,229,200,.08);border-color:rgba(0,229,200,.5)}
+
+/* ─── HERO ─── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:calc(var(--nav-h) + 60px) 20px 80px;
+  position:relative;overflow:hidden;
+}
+.hero-glow{position:absolute;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(84,104,255,.14) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.hero-glow2{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.12) 0%,transparent 65%);top:20%;right:-10%;pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,229,200,.07);border:1px solid rgba(0,229,200,.22);border-radius:100px;padding:6px 18px;font-family:var(--mono);font-size:.72rem;color:var(--cyan);margin-bottom:32px;animation:fadeUp .7s ease both}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:livepulse 2s ease-in-out infinite;flex-shrink:0}
+@keyframes livepulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+.hero h1{font-size:clamp(2.8rem,10vw,7.5rem);font-weight:900;line-height:.96;letter-spacing:-.05em;margin-bottom:24px;animation:fadeUp .7s .1s ease both}
+.word-noxx{display:inline-block;background:linear-gradient(135deg,var(--blue) 0%,var(--cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative}
+.word-noxx::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:4px;animation:lineGrow 1s .5s ease both;transform-origin:left}
+@keyframes lineGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.hero-sub{font-size:clamp(.95rem,2.2vw,1.25rem);color:var(--muted);max-width:640px;line-height:1.8;margin-bottom:40px;font-weight:400;animation:fadeUp .7s .2s ease both}
+.hero-sub strong{color:var(--text);font-weight:600}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:fadeUp .7s .3s ease both;margin-bottom:60px;width:100%}
+.hero-stats{display:flex;align-items:stretch;background:var(--bg1);border:1px solid var(--border);border-radius:18px;overflow:hidden;animation:fadeUp .7s .4s ease both;width:100%;max-width:640px}
+.hero-stat{padding:20px 28px;text-align:center;border-right:1px solid var(--border);flex:1}
+.hero-stat:last-child{border-right:none}
+.stat-val{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:900;letter-spacing:-.04em;background:linear-gradient(135deg,var(--text),var(--muted));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-label{font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:5px;text-transform:uppercase;letter-spacing:.12em}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+
+/* ─── MARQUEE ─── */
+.marquee-section{padding:28px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg1);overflow:hidden;position:relative;z-index:2}
+.marquee-track{display:flex;gap:60px;animation:marquee 28s linear infinite;width:max-content}
+.marquee-item{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:.78rem;color:var(--muted);white-space:nowrap}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ─── SECTION SHARED ─── */
+.sec-label{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.18em;color:var(--blue);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.sec-label::before{content:'';display:block;width:20px;height:1px;background:var(--blue)}
+.sec-title{font-size:clamp(1.8rem,5vw,3.4rem);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:18px}
+.sec-sub{font-size:1.05rem;color:var(--muted);max-width:560px;line-height:1.8;font-weight:400;margin-bottom:56px}
+
+/* ─── QUICK LINKS ─── */
+.links-section{padding:80px 0}
+.links-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.link-card{background:var(--bg1);border:1px solid var(--border);border-radius:16px;padding:22px;text-decoration:none;display:flex;align-items:center;gap:14px;transition:all .3s;position:relative;overflow:hidden}
+.link-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(84,104,255,.07),transparent);opacity:0;transition:opacity .3s}
+.link-card:hover{border-color:rgba(84,104,255,.35);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.link-card:hover::before{opacity:1}
+.link-icon-wrap{width:42px;height:42px;border-radius:11px;flex-shrink:0;display:grid;place-items:center}
+.link-text h4{font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:2px}
+.link-text p{font-size:.75rem;color:var(--muted);font-weight:400}
+.link-arrow{margin-left:auto;color:var(--muted);flex-shrink:0;transition:all .3s}
+.link-card:hover .link-arrow{color:var(--blue);transform:translateX(4px)}
+
+/* ─── FEATURES TABS ─── */
+.features-section{padding:80px 0;background:var(--bg1)}
+.tab-nav-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;margin-bottom:44px}
+.tab-nav-wrap::-webkit-scrollbar{height:0}
+.tab-nav{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:5px;width:fit-content;min-width:100%}
+.tab-btn{display:flex;align-items:center;gap:7px;padding:10px 18px;border-radius:10px;border:none;background:transparent;color:var(--muted);font-family:var(--font);font-weight:700;font-size:.85rem;cursor:pointer;transition:all .22s;white-space:nowrap;flex-shrink:0}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{background:var(--bg);color:var(--text);box-shadow:0 2px 12px rgba(0,0,0,.4)}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fadeUp .4s ease both}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.feat-card{background:var(--bg);border:1px solid var(--border);border-radius:18px;padding:28px;transition:all .3s;position:relative;overflow:hidden}
+.feat-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.5);border-color:rgba(84,104,255,.28)}
+.feat-icon{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;margin-bottom:16px}
+.feat-card h3{font-size:1rem;font-weight:700;margin-bottom:10px;letter-spacing:-.01em}
+.feat-card p{font-size:.88rem;color:var(--muted);line-height:1.8;font-weight:400}
+.feat-tag{display:inline-flex;align-items:center;gap:5px;margin-top:16px;padding:4px 11px;border-radius:100px;font-family:var(--mono);font-size:.63rem;font-weight:700}
+.tag-free{background:rgba(0,229,200,.08);color:var(--cyan);border:1px solid rgba(0,229,200,.18)}
+.tag-premium{background:rgba(255,170,0,.08);color:var(--amber);border:1px solid rgba(255,170,0,.2)}
+
+/* ─── LOGS ─── */
+.logs-section{padding:80px 0}
+.logs-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+.log-terminal{background:var(--bg1);border:1px solid var(--border);border-radius:18px;overflow:hidden}
+.terminal-bar{display:flex;align-items:center;gap:8px;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.tbar-dot{width:10px;height:10px;border-radius:50%}
+.terminal-body{padding:16px;font-family:var(--mono);font-size:.75rem}
+.log-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);animation:logIn .5s ease both;flex-wrap:wrap}
+.log-row:last-child{border-bottom:none}
+.log-time{color:var(--blue);flex-shrink:0}
+.log-type{flex-shrink:0;padding:1px 7px;border-radius:4px;font-size:.65rem;font-weight:700;align-self:center}
+.lt-msg{background:rgba(84,104,255,.12);color:var(--blue)}
+.lt-role{background:rgba(124,58,237,.12);color:#a78bfa}
+.lt-voice{background:rgba(0,229,200,.1);color:var(--cyan)}
+.lt-invite{background:rgba(255,170,0,.1);color:var(--amber)}
+.lt-del{background:rgba(255,61,127,.1);color:var(--pink)}
+.lt-join{background:rgba(239,68,68,.1);color:#EF4444}
+.log-msg{color:var(--muted);font-weight:300;line-height:1.5;font-size:.72rem;word-break:break-word}
+@keyframes logIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+.log-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-family:var(--mono);font-size:.72rem;color:var(--muted);transition:all .2s}
+.chip:hover{border-color:rgba(84,104,255,.35);color:var(--text)}
+
+/* ─── HIGHLIGHT ─── */
+.highlight-section{padding:80px 0;background:var(--bg1)}
+.highlight-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.hl-card{border-radius:22px;padding:44px;position:relative;overflow:hidden}
+.hl-card.blue-card{background:linear-gradient(135deg,rgba(84,104,255,.13) 0%,rgba(124,58,237,.1) 100%);border:1px solid rgba(84,104,255,.22)}
+.hl-card.dark-card{background:var(--bg);border:1px solid var(--border)}
+.hl-card h3{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:900;letter-spacing:-.03em;margin-bottom:14px}
+.hl-card p{color:var(--muted);line-height:1.8;font-size:.93rem;font-weight:400}
+.hl-list{list-style:none;margin-top:24px;display:flex;flex-direction:column;gap:14px}
+.hl-list li{display:flex;align-items:flex-start;gap:10px;font-size:.9rem;color:var(--muted);font-weight:400}
+.hl-list li svg{color:var(--cyan);flex-shrink:0;margin-top:3px}
+.hl-list li strong{color:var(--text);display:block;font-weight:700;margin-bottom:2px}
+
+/* ─── STATUS ─── */
+.status-section{padding:0 0 80px}
+.status-card{background:var(--bg1);border:1px solid var(--border);border-radius:18px;padding:22px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.status-online{display:flex;align-items:center;gap:10px;font-weight:700;font-size:.95rem;color:var(--cyan)}
+.status-pulse{width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:livepulse 2s ease-in-out infinite;flex-shrink:0}
+.status-services{display:flex;gap:16px;flex-wrap:wrap}
+.svc{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.svc-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);flex-shrink:0}
+
+/* ─── PRICING ─── */
+.pricing-section{padding:80px 0}
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.price-card{border-radius:22px;padding:40px;position:relative;overflow:hidden}
+.price-card.free{background:var(--bg1);border:1px solid var(--border)}
+.price-card.premium{background:linear-gradient(160deg,rgba(84,104,255,.16),rgba(124,58,237,.12));border:1px solid rgba(84,104,255,.3)}
+.price-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:100px;margin-bottom:20px;font-family:var(--mono);font-size:.67rem;font-weight:700}
+.price-badge.free-badge{background:rgba(0,229,200,.08);color:var(--cyan);border:1px solid rgba(0,229,200,.2)}
+.price-badge.premium-badge{background:rgba(255,170,0,.1);color:var(--amber);border:1px solid rgba(255,170,0,.22)}
+.price-name{font-size:1.5rem;font-weight:900;margin-bottom:6px;letter-spacing:-.03em}
+.price-amount{font-size:2.8rem;font-weight:900;letter-spacing:-.05em;margin-bottom:6px}
+.price-amount span{font-size:1rem;font-weight:400;color:var(--muted)}
+.price-desc{color:var(--muted);font-size:.9rem;margin-bottom:28px;line-height:1.8}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
+.price-features li{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--muted)}
+.price-features li svg{color:var(--cyan);flex-shrink:0}
+
+/* ─── CTA ─── */
+.cta-section{padding:80px 0}
+.cta-card{border-radius:26px;padding:70px 48px;text-align:center;background:linear-gradient(135deg,rgba(84,104,255,.15),rgba(124,58,237,.1));border:1px solid rgba(84,104,255,.25);position:relative;overflow:hidden}
+.cta-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(84,104,255,.18) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.cta-card h2{font-size:clamp(2rem,6vw,4rem);font-weight:900;letter-spacing:-.04em;margin-bottom:20px;position:relative}
+.cta-card p{font-size:1.05rem;color:var(--muted);max-width:500px;margin:0 auto 40px;line-height:1.8;position:relative}
+.cta-buttons{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative}
+
+/* ─── FOOTER ─── */
+footer{border-top:1px solid var(--border);padding:50px 0 36px;position:relative;z-index:2}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px}
+.footer-logo{display:flex;align-items:center;gap:10px;font-size:1.2rem;font-weight:900}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap;list-style:none}
+.footer-links a{color:var(--muted);text-decoration:none;font-size:.85rem;transition:color .2s}
+.footer-links a:hover{color:var(--text)}
+.footer-mono{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+
+/* ─── SCROLL REVEAL ─── */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .75s ease,transform .75s ease}
+.reveal.in{opacity:1;transform:none}
+.reveal-l{opacity:0;transform:translateX(-36px);transition:opacity .75s ease,transform .75s ease}
+.reveal-l.in{opacity:1;transform:none}
+.reveal-r{opacity:0;transform:translateX(36px);transition:opacity .75s ease,transform .75s ease}
+.reveal-r.in{opacity:1;transform:none}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — Tablet (≤900px)
+═══════════════════════════════════════ */
+@media(max-width:900px){
+  nav{padding:0 20px}
+  .nav-links,.nav-actions .btn-ghost{display:none}
+  .nav-hamburger{display:flex}
+
+  .features-grid{grid-template-columns:1fr 1fr}
+  .logs-grid{grid-template-columns:1fr}
+  .highlight-cards{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:1fr;max-width:480px;margin:0 auto}
+  .links-grid{grid-template-columns:1fr 1fr}
+
+  .hero-stats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border-radius:16px;
+  }
+  .hero-stat{border-right:none;border-bottom:1px solid var(--border)}
+  .hero-stat:nth-child(1){border-right:1px solid var(--border)}
+  .hero-stat:nth-child(3){border-right:1px solid var(--border);border-bottom:none}
+  .hero-stat:nth-child(4){border-bottom:none}
+
+  .hl-card{padding:32px}
+  .sec-sub{margin-bottom:40px}
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — Mobile (≤600px)
+═══════════════════════════════════════ */
+@media(max-width:600px){
+  :root{--nav-h:62px}
+  .container{padding:0 16px}
+  .nav-logo{font-size:1.15rem}
+  .btn-primary.nav-btn-dash{padding:9px 14px;font-size:.82rem}
+
+  /* Hero */
+  .hero{padding:calc(var(--nav-h) + 48px) 16px 60px}
+  .hero-badge{font-size:.66rem;padding:5px 14px}
+  .hero h1{margin-bottom:20px}
+  .hero-sub{font-size:.95rem;margin-bottom:32px}
+  .hero-btns{flex-direction:column;align-items:stretch;gap:10px;margin-bottom:48px}
+  .hero-btns .btn-lg{justify-content:center;padding:14px 24px;font-size:.93rem}
+  .hero-stats{
+    grid-template-columns:1fr 1fr;
+    max-width:100%;
+    border-radius:14px;
+  }
+  .hero-stat{padding:16px 12px}
+
+  /* Links */
+  .links-section{padding:60px 0}
+  .links-grid{grid-template-columns:1fr}
+  .link-card{padding:18px}
+
+  /* Features */
+  .features-section{padding:60px 0}
+  .tab-nav{min-width:max-content}
+  .tab-btn{padding:9px 14px;font-size:.8rem}
+  .features-grid{grid-template-columns:1fr}
+  .feat-card{padding:22px}
+
+  /* Logs */
+  .logs-section{padding:60px 0}
+  .terminal-body{padding:12px}
+  .log-time{display:none}
+  .log-msg{font-size:.68rem}
+  .chip{font-size:.67rem;padding:6px 11px}
+
+  /* Highlight */
+  .highlight-section{padding:60px 0}
+  .hl-card{padding:26px 22px;border-radius:18px}
+  .hl-card h3{font-size:1.3rem}
+
+  /* Status */
+  .status-section{padding:0 0 60px}
+  .status-card{padding:18px 20px;flex-direction:column;align-items:flex-start}
+  .status-services{gap:12px}
+  .status-card .btn{width:100%;justify-content:center}
+
+  /* Pricing */
+  .pricing-section{padding:60px 0}
+  .pricing-grid{max-width:100%}
+  .price-card{padding:28px 22px}
+  .price-amount{font-size:2.4rem}
+
+  /* CTA */
+  .cta-section{padding:60px 0}
+  .cta-card{padding:44px 22px;border-radius:20px}
+  .cta-buttons{flex-direction:column;align-items:stretch}
+  .cta-buttons .btn-lg{justify-content:center;padding:14px 20px;font-size:.93rem}
+
+  /* Footer */
+  footer{padding:40px 0 28px}
+  .footer-inner{flex-direction:column;align-items:flex-start;gap:20px}
+  .footer-links{gap:14px}
+  .footer-mono{font-size:.68rem}
+
+  /* Section */
+  .sec-sub{font-size:.95rem;margin-bottom:36px}
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — Very small (≤380px)
+═══════════════════════════════════════ */
+@media(max-width:380px){
+  .hero-stats{grid-template-columns:1fr 1fr}
+  .hero-stat{padding:14px 8px}
+  .stat-label{font-size:.55rem}
+  .tab-btn{padding:8px 12px;font-size:.75rem;gap:5px}
+  .tab-btn svg{display:none}
+}
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<canvas id="stars"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    </div>
+    Roco
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#logs">Logging</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#status">Status</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="/docs" class="btn btn-ghost">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Docs
+    </a>
+    <a href="/servers" class="btn btn-primary nav-btn-dash">
+      Dashboard
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </a>
+    <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#features">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Features
+  </a>
+  <a href="#logs">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Logging
+  </a>
+  <a href="#pricing">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    Pricing
+  </a>
+  <a href="#status">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+    Status
+  </a>
+  <div class="mobile-divider"></div>
+  <a href="/docs">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    Documentation
+  </a>
+  <a href="/servers" class="btn-primary">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    Open Dashboard
+  </a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-badge">
+    <div class="live-dot"></div>
+    v2.0 Live &mdash; Premium Tier Now Available
+  </div>
+  <h1>Your Discord.<br><span class="word-noxx">Supercharged.</span></h1>
+  <p class="hero-sub">
+    Roco is the <strong>all-in-one Discord bot</strong> that brings enterprise-level moderation,
+    rich community tools, live platform notifications, intelligent automation, and a complete
+    ticket system — all in a blazing-fast, <strong>99.9% uptime</strong> package that runs around the clock.
+  </p>
+  <div class="hero-btns">
+    <a href="/invite" class="btn btn-primary btn-lg">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      Add Roco &mdash; It's Free
+    </a>
+    <a href="/servers" class="btn btn-outline-cyan btn-lg">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      View Dashboard
+    </a>
+    <a href="/docs" class="btn btn-ghost btn-lg">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Read the Docs
+    </a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="stat-val"><span class="counter" data-target="50">0</span>+</div><div class="stat-label">Commands</div></div>
+    <div class="hero-stat"><div class="stat-val"><span class="counter" data-target="15">0</span>+</div><div class="stat-label">Log Types</div></div>
+    <div class="hero-stat"><div class="stat-val">99.9%</div><div class="stat-label">Uptime</div></div>
+    <div class="hero-stat"><div class="stat-val">24/7</div><div class="stat-label">Always On</div></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marqueeTrack"></div>
+</div>
+
+<!-- QUICK LINKS -->
+<section class="links-section" id="quicklinks">
+  <div class="container">
+    <div class="reveal">
+      <div class="sec-label">Quick Access</div>
+      <h2 class="sec-title">Everything at<br>your fingertips</h2>
+      <p class="sec-sub">Jump straight to what you need — server dashboard, full documentation, live system status, community support, premium upgrades, and voting to help Roco grow on the top bot lists.</p>
+    </div>
+    <div class="links-grid">
+      <a href="#" class="link-card reveal" style="transition-delay:.05s">
+        <div class="link-icon-wrap" style="background:rgba(84,104,255,.12)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5468ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+        <div class="link-text"><h4>Server Dashboard</h4><p>Manage settings, commands &amp; configs</p></div>
+        <svg class="link-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <a href="#" class="link-card reveal" style="transition-delay:.1s">
+        <div class="link-icon-wrap" style="background:rgba(0,229,200,.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e5c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+        <div class="link-text"><h4>Documentation</h4><p>Full command reference &amp; guides</p></div>
+        <svg class="link-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <a href="#" class="link-card reveal" style="transition-delay:.15s">
+        <div class="link-icon-wrap" style="background:rgba(255,170,0,.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffaa00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <div class="link-text"><h4>Status Page</h4><p>Live system health &amp; uptime</p></div>
+        <svg class="link-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <a href="#" class="link-card reveal" style="transition-delay:.2s">
+        <div class="link-icon-wrap" style="background:rgba(124,58,237,.12)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="link-text"><h4>Support Server</h4><p>Get help from the team</p></div>
+        <svg class="link-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <a href="#" class="link-card reveal" style="transition-delay:.25s">
+        <div class="link-icon-wrap" style="background:rgba(255,61,127,.1)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff3d7f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div class="link-text"><h4>Premium</h4><p>Unlock powerful pro features</p></div>
+        <svg class="link-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <a href="https://top.gg/bot/960624234688811188" target="_blank" rel="noopener" class="link-card reveal" style="transition-delay:.3s">
+        <div class="link-icon-wrap" style="background:rgba(84,104,255,.12)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5468ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <div class="link-text"><h4>Vote on Top.gg</h4><p>Help us grow on top.gg</p></div>
+        <svg class="link-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES TABS -->
+<section class="features-section" id="features">
+  <div class="container">
+    <div class="reveal">
+      <div class="sec-label">Feature Set</div>
+      <h2 class="sec-title">Built for servers<br>that mean business</h2>
+      <p class="sec-sub">Roco packs years of community feedback into a single focused bot. No bloat, no unnecessary complexity — just the tools your server actually needs, executed with precision and reliability you can count on every single day.</p>
+    </div>
+    <div class="reveal" style="transition-delay:.1s">
+      <div class="tab-nav-wrap">
+        <div class="tab-nav">
+          <button class="tab-btn active" onclick="switchTab('moderation',this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Moderation
+          </button>
+          <button class="tab-btn" onclick="switchTab('community',this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Community
+          </button>
+          <button class="tab-btn" onclick="switchTab('notify',this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notifications
+          </button>
+          <button class="tab-btn" onclick="switchTab('automation',this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Automation
+          </button>
+          <button class="tab-btn" onclick="switchTab('tickets',this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/></svg>Tickets
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODERATION -->
+    <div class="tab-panel active" id="tab-moderation">
+      <div class="features-grid">
+        <div class="feat-card reveal" style="transition-delay:.05s">
+          <div class="feat-icon" style="background:rgba(255,61,127,.1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff3d7f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+          <h3>Anti-Link System</h3>
+          <p>Automatically detect and remove unauthorized links and Discord invite URLs the moment they are posted. Configure channel whitelists, role exceptions, and automatic punishment escalation — all without lifting a finger once it's set up.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.1s">
+          <div class="feat-icon" style="background:rgba(84,104,255,.12)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5468ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+          <h3>Complete Audit Logs</h3>
+          <p>15+ distinct log categories capture every meaningful Discord event in granular detail. Message edits and deletions, role grants and removals, channel creations, voice movements, invite usage — all logged, timestamped, and beautifully formatted.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.15s">
+          <div class="feat-icon" style="background:rgba(0,229,200,.1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00e5c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+          <h3>Message Sniping</h3>
+          <p>Recover deleted and edited messages instantly with a single command. Full original message content, author details, timestamp, and attachment references are all preserved and retrievable — perfect for catching rule-breakers who delete their tracks.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.2s">
+          <div class="feat-icon" style="background:rgba(255,170,0,.1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffaa00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+          <h3>Log Backup</h3>
+          <p>Your audit history is far too important to lose. Roco automatically backs up all log data off-channel so even if your entire log category gets wiped, every single record remains safely intact and fully recoverable by your admin team.</p>
+          <span class="feat-tag tag-premium"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Premium</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.25s">
+          <div class="feat-icon" style="background:rgba(124,58,237,.12)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3>Smart Automod</h3>
+          <p>Rule-based automod that escalates punishments intelligently based on repeat offences. Warn, mute, kick, or ban — with fully configurable thresholds, cooldowns, and bypass permissions per role. Every action is logged for staff review.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.3s">
+          <div class="feat-icon" style="background:rgba(84,104,255,.12)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5468ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <h3>Channel Lockdown</h3>
+          <p>Instantly lock individual channels, entire categories, or your whole server in emergency situations with a single command. Full write-access restoration is just as fast — complete situational control without touching a single permission manually.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMUNITY -->
+    <div class="tab-panel" id="tab-community">
+      <div class="features-grid">
+        <div class="feat-card reveal" style="transition-delay:.05s">
+          <div class="feat-icon" style="background:rgba(0,229,200,.1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00e5c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
+          <h3>Welcome &amp; Goodbye</h3>
+          <p>Roll out the red carpet for every new arrival with richly formatted welcome embeds, custom background banners, DM greetings, and auto-assigned join roles. When members leave, send a heartfelt farewell to any channel you choose.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.1s">
+          <div class="feat-icon" style="background:rgba(255,170,0,.1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffaa00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
+          <h3>Giveaways</h3>
+          <p>Host feature-packed giveaways with role requirements, entry blacklists, bonus entry multipliers, and fully automatic winner selection. Re-roll winners instantly, end early, or pause mid-giveaway — total host control throughout.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.15s">
+          <div class="feat-icon" style="background:rgba(124,58,237,.12)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <h3>Confessions</h3>
+          <p>Give your community a private, anonymous space to speak freely. Confessions are posted publicly without identifying information while an admin-only hidden log quietly records the author — balancing freedom and safety.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.2s">
+          <div class="feat-icon" style="background:rgba(255,61,127,.1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff3d7f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+          <h3>Booster Rewards</h3>
+          <p>Automatically celebrate and reward members the instant they boost your server. Assign exclusive booster roles, fire a custom thank-you message to any channel, and even DM the booster personally — all completely hands-free.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.25s">
+          <div class="feat-icon" style="background:rgba(84,104,255,.12)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5468ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+          <h3>Suggestions Board</h3>
+          <p>Give your community a structured space to share feedback and ideas. Members submit suggestions that Roco formats into clean embeds with upvote and downvote reactions. Staff can approve, deny, or mark as in-progress.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.3s">
+          <div class="feat-icon" style="background:rgba(0,229,200,.1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00e5c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+          <h3>Sticky Messages</h3>
+          <p>Pin messages that always stay pinned at the very bottom of a channel regardless of conversation speed. Essential for displaying rules, important announcements, or key links in high-traffic channels where standard pins get buried.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="tab-panel" id="tab-notify">
+      <div class="features-grid">
+        <div class="feat-card reveal" style="transition-delay:.05s">
+          <div class="feat-icon" style="background:rgba(255,61,127,.1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff3d7f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+          <h3>YouTube Alerts</h3>
+          <p>Get notified in Discord the instant your favourite YouTube channels publish a new upload or go live. Supports tracking multiple channels simultaneously, each with fully custom embed messages, role pings, and thumbnails.</p>
+          <span class="feat-tag tag-premium"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Premium</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.1s">
+          <div class="feat-icon" style="background:rgba(145,70,255,.12)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9146ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <h3>Twitch Live Alerts</h3>
+          <p>Real-time stream-start notifications appear the moment a tracked streamer goes live — complete with live viewer counts, current game, stream title, and a direct link. Track unlimited streamers with individual settings per entry.</p>
+          <span class="feat-tag tag-premium"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Premium</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.2s">
+          <div class="feat-icon" style="background:rgba(255,170,0,.1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffaa00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+          <h3>Change Log Posting</h3>
+          <p>Keep your community informed and genuinely excited about updates with a built-in changelog management system. Format and dispatch version updates to a dedicated channel in seconds with custom embeds and version tags.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTOMATION -->
+    <div class="tab-panel" id="tab-automation">
+      <div class="features-grid">
+        <div class="feat-card reveal" style="transition-delay:.05s">
+          <div class="feat-icon" style="background:rgba(0,229,200,.1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00e5c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <h3>Autoresponder</h3>
+          <p>Set unlimited keyword or phrase triggers that Roco responds to automatically with customisable embed messages, plain text replies, or emoji reactions. Supports exact match, partial match, and starts-with modes.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.1s">
+          <div class="feat-icon" style="background:rgba(84,104,255,.12)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5468ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></div>
+          <h3>Reaction Roles</h3>
+          <p>Let members self-assign roles by reacting to messages. Supports toggle mode, exclusive mode for single-role-per-group, and open multi-role mode. Completely button-based with zero commands required from members after setup.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.15s">
+          <div class="feat-icon" style="background:rgba(255,61,127,.1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff3d7f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <h3>Uptime Monitor</h3>
+          <p>Continuous uptime pinging with automatic latency spike alerts pushed to a dedicated log channel. Know the instant anything goes wrong — before your members even notice. Detailed reports and graphs available in the dashboard.</p>
+          <span class="feat-tag tag-premium"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Premium</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.2s">
+          <div class="feat-icon" style="background:rgba(255,170,0,.1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffaa00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+          <h3>Fun &amp; Games</h3>
+          <p>Keep your community entertained with a full arsenal of fun commands. UwU mode, 8-ball predictions, coinflips, trivia quizzes, roast generators, and much more absurdity to lighten the mood and bring your community closer together.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TICKETS -->
+    <div class="tab-panel" id="tab-tickets">
+      <div class="features-grid">
+        <div class="feat-card reveal" style="transition-delay:.05s">
+          <div class="feat-icon" style="background:rgba(84,104,255,.12)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5468ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/></svg></div>
+          <h3>Full Ticket System</h3>
+          <p>A complete support ticket ecosystem built natively into Discord. Create categorised ticket panels, define staff roles, configure auto-responses, and let members open tickets with a single button press. Scales from small communities to busy professional support operations.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.1s">
+          <div class="feat-icon" style="background:rgba(0,229,200,.1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00e5c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></div>
+          <h3>Ticket Management</h3>
+          <p>Claim tickets, assign them to specific staff, add or remove users mid-conversation, rename channels, and close with a detailed HTML transcript automatically saved and delivered. Re-open, archive, or escalate through intuitive Discord buttons.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+        <div class="feat-card reveal" style="transition-delay:.2s">
+          <div class="feat-icon" style="background:rgba(124,58,237,.12)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+          <h3>Button-Based Actions</h3>
+          <p>Every single interaction inside Roco's ticket system is driven by intuitive Discord buttons — no slash commands, no syntax to memorise. Your staff and members operate through clean, native Discord controls anyone can use from their very first ticket.</p>
+          <span class="feat-tag tag-free"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGS SECTION -->
+<section class="logs-section" id="logs">
+  <div class="container">
+    <div class="reveal">
+      <div class="sec-label">Audit Coverage</div>
+      <h2 class="sec-title">Nothing slips<br>through the cracks</h2>
+      <p class="sec-sub">Roco's logging system is the most comprehensive available in a free Discord bot. Every action, every change, every interaction — captured, formatted beautifully, and delivered in real time.</p>
+    </div>
+    <div class="logs-grid">
+      <div class="reveal-l">
+        <div class="log-terminal">
+          <div class="terminal-bar">
+            <div class="tbar-dot" style="background:#ff5f57"></div>
+            <div class="tbar-dot" style="background:#febc2e"></div>
+            <div class="tbar-dot" style="background:#28c840"></div>
+            <span style="font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-left:8px">#audit-log — LIVE</span>
+          </div>
+          <div class="terminal-body" id="logFeed"></div>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <div class="sec-label" style="margin-bottom:20px">15+ Log Categories</div>
+        <p style="color:var(--muted);line-height:1.85;margin-bottom:28px;font-size:.93rem;font-weight:400">
+          From a member's first join to webhook configuration changes — Roco captures the full lifecycle of your server in granular, timestamped logs that give your moderation team the evidence they need, exactly when they need it, with zero extra effort on your part.
+        </p>
+        <div class="log-chips">
+          <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Messages</span>
+          <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Channels</span>
+          <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Members</span>
+          <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Roles</span>
+          <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Guild</span>
+          <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>Voice</span>
+          <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Emoji</span>
+          <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Invites</span>
+          <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>Webhooks</span>
+          <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Automod</span>
+          <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Cleanup</span>
+          <span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/></svg>Tickets</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HIGHLIGHT SECTION -->
+<section class="highlight-section" id="highlights">
+  <div class="container">
+    <div class="highlight-cards">
+      <div class="hl-card blue-card reveal-l">
+        <div class="sec-label" style="margin-bottom:18px">Platform Notifications</div>
+        <h3>Your community, always in the loop</h3>
+        <p>Connect your Discord server to the platforms your community cares about most. Roco bridges YouTube, Twitch, and Twitter directly into your channels — so your members are always the first to know when something goes live, drops, or gets posted.</p>
+        <ul class="hl-list">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><div><strong>YouTube upload &amp; live alerts</strong>Fires the instant a new video is published or a stream begins</div></li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><div><strong>Twitch live stream detection</strong>With real-time viewer count, game title, and stream thumbnail</div></li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><div><strong>Twitter / X feed mirroring</strong>Retweets, quote tweets, replies and media all forwarded automatically</div></li>
+        </ul>
+      </div>
+      <div class="hl-card dark-card reveal-r">
+        <div class="sec-label" style="margin-bottom:18px">Automation Engine</div>
+        <h3>Set it once.<br>Let Roco handle everything.</h3>
+        <p>Roco is built around the philosophy that server management should not require constant manual intervention. Once configured, the autoresponder, reaction roles, uptime monitor, and welcome system run autonomously on autopilot.</p>
+        <ul class="hl-list">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><div><strong>Unlimited autoresponder triggers</strong>Keyword, partial, and starts-with matching fully supported</div></li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><div><strong>Reaction roles with three modes</strong>Toggle, exclusive, and open multi-select configurations</div></li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><div><strong>Smart welcome &amp; farewell system</strong>DMs, channel messages, auto-roles, and custom embed banners</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATUS BANNER -->
+<section class="status-section" id="status">
+  <div class="container">
+    <div class="status-card reveal">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div class="status-online"><div class="status-pulse"></div>All Systems Operational</div>
+        <span style="color:var(--muted);font-size:.82rem">— Updated just now</span>
+      </div>
+      <div class="status-services">
+        <div class="svc"><div class="svc-dot"></div>Bot API</div>
+        <div class="svc"><div class="svc-dot"></div>Dashboard</div>
+        <div class="svc"><div class="svc-dot"></div>Database</div>
+        <div class="svc"><div class="svc-dot"></div>Webhooks</div>
+        <div class="svc"><div class="svc-dot"></div>Notifications</div>
+      </div>
+      <a href="/status" class="btn btn-ghost">Full Status Page <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <div class="sec-label" style="justify-content:center">Pricing</div>
+      <h2 class="sec-title">Simple, transparent pricing</h2>
+      <p class="sec-sub" style="margin:0 auto 56px">Roco's core feature set is completely free, forever. Premium unlocks advanced features for communities that need extra power — no hidden fees, no usage limits, no surprises ever.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card free reveal-l">
+        <span class="price-badge free-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Always Free</span>
+        <div class="price-name">Starter</div>
+        <div class="price-amount">$0<span> / month</span></div>
+        <p class="price-desc">Everything you need to build and run a genuinely great Discord community — completely free, with no time limits and no server caps.</p>
+        <ul class="price-features">
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Anti-link &amp; smart automod system</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>15+ audit log categories</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Full ticket system with transcripts</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>YouTube &amp; Twitch notifications</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Giveaways, suggestions, confessions</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Reaction roles &amp; autoresponder</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Welcome, goodbye &amp; booster perks</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" style="width:100%;justify-content:center">Add Roco Free <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+      <div class="price-card premium reveal-r">
+        <span class="price-badge premium-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Pro Tier</span>
+        <div class="price-name">Premium</div>
+        <div class="price-amount" style="background:linear-gradient(135deg,var(--blue),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">$4.99<span style="-webkit-text-fill-color:var(--muted);color:var(--muted)"> / month</span></div>
+        <p class="price-desc">Unlock powerful advanced features for the most demanding communities. Everything in Starter, plus the premium-exclusive toolkit serious servers need.</p>
+        <ul class="price-features">
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Everything in Starter</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Encrypted log backup &amp; restore</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Twitter / X feed notifications</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Sticky messages system</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Full ticket analytics dashboard</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Uptime monitor with spike alerts</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Priority support response</li>
+        </ul>
+        <a href="/premium" class="btn btn-primary" style="width:100%;justify-content:center">Get Premium <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-card reveal">
+      <div class="cta-glow"></div>
+      <h2>Ready to transform<br>your <span style="background:linear-gradient(135deg,var(--blue),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Discord server?</span></h2>
+      <p>Join thousands of servers already powered by Roco. Add the bot in under 60 seconds — no credit card, no complex setup, just results from minute one.</p>
+      <div class="cta-buttons">
+        <a href="#" class="btn btn-primary btn-lg"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Add Roco to Discord</a>
+        <a href="#" class="btn btn-outline-cyan btn-lg"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Join Support Server</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <div class="nav-logo-icon" style="width:28px;height:28px;border-radius:7px;animation:none">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        Roco
+      </div>
+      <ul class="footer-links">
+        <li><a href="/servers">Dashboard</a></li>
+        <li><a href="/docs">Docs</a></li>
+        <li><a href="/status">Status</a></li>
+        <li><a href="/support">Support</a></li>
+        <li><a href="/premium">Premium</a></li>
+        <li><a href="https://top.gg/bot/960624234688811188" target="_blank" rel="noopener">Vote on Top.gg</a></li>
+        <li><a href="/tos">Terms</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+      </ul>
+      <div class="footer-mono">© 2026 Roco Development</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── STARS ──
+(function(){
+  const c=document.getElementById('stars'),ctx=c.getContext('2d');
+  let stars=[];
+  function resize(){c.width=innerWidth;c.height=innerHeight}
+  function mk(){stars=[];for(let i=0;i<180;i++)stars.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.1+.15,a:Math.random(),s:Math.random()*.0006+.0002})}
+  function draw(){ctx.clearRect(0,0,c.width,c.height);stars.forEach(s=>{s.a+=s.s;if(s.a>1||s.a<0)s.s*=-1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(180,190,255,${s.a*.5})`;ctx.fill()});requestAnimationFrame(draw)}
+  resize();mk();draw();
+  window.addEventListener('resize',()=>{resize();mk()});
+})();
+
+// ── HAMBURGER ──
+const hamburger=document.getElementById('hamburger');
+const mobileMenu=document.getElementById('mobileMenu');
+hamburger.addEventListener('click',()=>{
+  const open=mobileMenu.classList.toggle('open');
+  hamburger.classList.toggle('open',open);
+  document.body.style.overflow=open?'hidden':'';
+});
+// Close on link click
+mobileMenu.querySelectorAll('a').forEach(a=>{
+  a.addEventListener('click',()=>{
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow='';
+  });
+});
+// Close on outside click
+document.addEventListener('click',e=>{
+  if(!nav.contains(e.target)&&!mobileMenu.contains(e.target)){
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow='';
+  }
+});
+const nav=document.querySelector('nav');
+
+// ── SCROLL REVEAL ──
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.1});
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>obs.observe(el));
+
+// ── COUNTERS ──
+function animCounter(el){
+  const t=+el.dataset.target;let c=0;const step=t/60;
+  const iv=setInterval(()=>{c=Math.min(c+step,t);el.textContent=Math.floor(c);if(c>=t)clearInterval(iv)},18);
+}
+const cObs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('.counter').forEach(animCounter);cObs.unobserve(e.target)}}),{threshold:.3});
+document.querySelectorAll('.hero-stats').forEach(el=>cObs.observe(el));
+
+// ── TABS ──
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  // Scroll active tab into view on mobile
+  btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  const panel=document.getElementById('tab-'+name);
+  panel.classList.add('active');
+  panel.querySelectorAll('.feat-card').forEach((c,i)=>{
+    c.style.opacity='0';c.style.transform='translateY(20px)';
+    setTimeout(()=>{c.style.transition='opacity .45s ease,transform .45s ease,border-color .3s,box-shadow .3s';c.style.opacity='1';c.style.transform='none'},i*80);
+  });
+}
+
+// ── MARQUEE ──
+const items=['Moderation','Logging','Giveaways','Tickets','Autoresponder','Reaction Roles','YouTube Alerts','Twitch Alerts','Twitter Feed','Confessions','Sticky Messages','Welcome System','Uptime Monitor','Log Backup'];
+const svgDot=`<svg width="5" height="5" viewBox="0 0 10 10" style="flex-shrink:0"><circle cx="5" cy="5" r="5" fill="rgba(84,104,255,.6)"/></svg>`;
+const track=document.getElementById('marqueeTrack');
+const html=items.map(i=>`<span class="marquee-item">${svgDot} ${i}</span>`).join('');
+track.innerHTML=html+html;
+
+// ── LIVE LOG FEED ──
+const logEvents=[
+  {time:'09:31',type:'MSG_DEL',cls:'lt-del',msg:'user#1234 deleted a message in #general'},
+  {time:'09:33',type:'ROLE_ADD',cls:'lt-role',msg:'Moderator granted to member#5678'},
+  {time:'09:35',type:'VOICE',cls:'lt-voice',msg:'user#9012 joined #gaming voice'},
+  {time:'09:37',type:'INVITE',cls:'lt-invite',msg:'New invite created by admin#1111'},
+  {time:'09:39',type:'MSG_EDIT',cls:'lt-msg',msg:'user#3456 edited a message in #off-topic'},
+  {time:'09:42',type:'MBR_JOIN',cls:'lt-join',msg:'newmember#7890 joined the server'},
+  {time:'09:45',type:'ROLE_DEL',cls:'lt-role',msg:'"Trial Mod" removed from user#2222'},
+  {time:'09:48',type:'MSG_DEL',cls:'lt-del',msg:'user#5555 deleted 3 messages in #spam'},
+];
+const feed=document.getElementById('logFeed');
+let idx=0;
+function addLog(){
+  const l=logEvents[idx%logEvents.length];
+  const row=document.createElement('div');
+  row.className='log-row';
+  row.innerHTML=`<span class="log-time">${l.time}</span><span class="log-type ${l.cls}">${l.type}</span><span class="log-msg">${l.msg}</span>`;
+  feed.appendChild(row);
+  if(feed.children.length>7)feed.removeChild(feed.firstChild);
+  idx++;
+}
+for(let i=0;i<5;i++)addLog();
+setInterval(addLog,2400);
+</script>
+
+</body>
+</html>

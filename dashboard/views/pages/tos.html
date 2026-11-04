@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Terms of Service — Roco</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060e;--bg1:#0d0d1a;--bg2:#111120;--bg3:#16162a;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
+  --text:#e4e4f0;--muted:#5a5a7a;--dim:#8080a0;
+  --brand:#6C53FF;--brand2:#8b6fff;--razor:#FF3333;
+  --red:#f87171;--red-bg:rgba(248,113,113,.07);--red-border:rgba(248,113,113,.2);
+  --blue:#60a5fa;--blue-bg:rgba(96,165,250,.07);--blue-border:rgba(96,165,250,.2);
+  --gold:#f59e0b;--gold-bg:rgba(245,158,11,.07);--gold-border:rgba(245,158,11,.2);
+  --green:#4ade80;--green-bg:rgba(74,222,128,.07);--green-border:rgba(74,222,128,.2);
+  --purple-bg:rgba(108,83,255,.07);--purple-border:rgba(108,83,255,.2);
+  --font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;
+  --sidebar-w:240px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
+
+/* Ambient blobs */
+.blobs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(120px)}
+.blob-1{width:600px;height:600px;background:rgba(108,83,255,.06);top:-200px;left:10%}
+.blob-2{width:500px;height:500px;background:rgba(248,113,113,.04);bottom:-100px;right:5%}
+.blob-3{width:400px;height:400px;background:rgba(239,68,68,.03);top:40%;left:60%}
+
+/* Topnav */
+.topnav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(6,6,14,.85);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.topnav-inner{
+  max-width:1100px;margin:0 auto;padding:0 1.5rem;
+  height:54px;display:flex;align-items:center;justify-content:space-between;gap:1rem;
+}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:800;font-size:.95rem;color:var(--text);text-decoration:none}
+.brand-icon{
+  width:30px;height:30px;border-radius:.5rem;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  display:grid;place-items:center;
+}
+.nav-links{display:flex;align-items:center;gap:.5rem}
+.nav-link{
+  display:flex;align-items:center;gap:.4rem;font-size:.78rem;font-weight:600;
+  color:var(--muted);text-decoration:none;padding:.32rem .7rem;
+  border-radius:.45rem;border:1px solid transparent;transition:all .15s;
+}
+.nav-link:hover{color:var(--text);border-color:var(--border);background:var(--bg2)}
+.nav-link.active{color:var(--text);border-color:var(--border2);background:var(--bg2)}
+
+/* Page wrapper */
+.page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:3rem 1.5rem 6rem;display:grid;grid-template-columns:var(--sidebar-w) 1fr;gap:3rem;align-items:start}
+
+/* Sidebar TOC */
+.toc{position:sticky;top:74px}
+.toc-label{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;padding-left:.5rem}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:2px}
+.toc-item a{
+  display:flex;align-items:center;gap:.5rem;
+  font-size:.72rem;font-weight:600;color:var(--muted);text-decoration:none;
+  padding:.4rem .6rem;border-radius:.4rem;border:1px solid transparent;
+  transition:all .15s;line-height:1.35;
+}
+.toc-item a:hover{color:var(--dim);background:var(--bg2)}
+.toc-item a.active{color:var(--text);background:var(--purple-bg);border-color:var(--purple-border)}
+.toc-item a .toc-num{
+  font-size:.6rem;font-family:var(--mono);font-weight:700;
+  width:18px;height:18px;border-radius:4px;
+  background:var(--bg3);display:grid;place-items:center;flex-shrink:0;color:var(--dim);
+}
+.toc-item a.active .toc-num{background:var(--brand);color:#fff}
+
+/* Hero */
+.hero{margin-bottom:2.5rem}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--purple-bg);border:1px solid var(--purple-border);
+  border-radius:99px;padding:.3rem .85rem;
+  font-size:.7rem;font-weight:700;color:var(--brand2);margin-bottom:1rem;
+}
+.hero h1{font-size:2.4rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.5rem;line-height:1.2}
+.hero-meta{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:.75rem}
+.meta-pill{
+  display:flex;align-items:center;gap:.35rem;
+  font-size:.72rem;color:var(--muted);font-family:var(--mono);
+}
+
+/* Sections */
+.sections{display:flex;flex-direction:column;gap:1.5rem}
+.section{
+  background:var(--bg1);border:1px solid var(--border);
+  border-radius:1rem;padding:1.75rem;scroll-margin-top:80px;
+}
+.section-head{display:flex;align-items:flex-start;gap:.85rem;margin-bottom:1.25rem}
+.section-num{
+  width:34px;height:34px;border-radius:.55rem;
+  background:var(--bg2);border:1px solid var(--border);
+  display:grid;place-items:center;flex-shrink:0;
+  font-family:var(--mono);font-size:.7rem;font-weight:700;color:var(--muted);
+}
+.section-title{font-size:1.05rem;font-weight:800;line-height:1.3}
+.section-subtitle{font-size:.78rem;color:var(--muted);margin-top:.2rem}
+
+/* Section variants */
+.section.red   {border-color:var(--red-border);  background:linear-gradient(135deg,rgba(248,113,113,.04) 0%,var(--bg1) 60%)}
+.section.blue  {border-color:var(--blue-border); background:linear-gradient(135deg,rgba(96,165,250,.04) 0%,var(--bg1) 60%)}
+.section.gold  {border-color:var(--gold-border); background:linear-gradient(135deg,rgba(245,158,11,.04) 0%,var(--bg1) 60%)}
+.section.green {border-color:var(--green-border);background:linear-gradient(135deg,rgba(74,222,128,.04) 0%,var(--bg1) 60%)}
+.section.purple{border-color:var(--purple-border);background:linear-gradient(135deg,rgba(108,83,255,.05) 0%,var(--bg1) 60%)}
+
+.section.red   .section-num{background:var(--red-bg);  border-color:var(--red-border);  color:var(--red)}
+.section.blue  .section-num{background:var(--blue-bg); border-color:var(--blue-border); color:var(--blue)}
+.section.gold  .section-num{background:var(--gold-bg); border-color:var(--gold-border); color:var(--gold)}
+.section.green .section-num{background:var(--green-bg);border-color:var(--green-border);color:var(--green)}
+.section.purple .section-num{background:var(--purple-bg);border-color:var(--purple-border);color:var(--brand2)}
+
+/* Callout box */
+.callout{
+  border-radius:.65rem;padding:1rem 1.1rem;margin:1rem 0;
+  font-size:.82rem;line-height:1.7;
+}
+.callout.red   {background:var(--red-bg);  border:1px solid var(--red-border);  color:#fca5a5}
+.callout.gold  {background:var(--gold-bg); border:1px solid var(--gold-border); color:#fcd34d}
+.callout.blue  {background:var(--blue-bg); border:1px solid var(--blue-border); color:#93c5fd}
+.callout.green {background:var(--green-bg);border:1px solid var(--green-border);color:#86efac}
+.callout.purple{background:var(--purple-bg);border:1px solid var(--purple-border);color:#c4b5fd}
+.callout strong{font-weight:700;display:block;margin-bottom:.2rem}
+
+/* Sub-items */
+.item-grid{display:flex;flex-direction:column;gap:.85rem;margin-top:.5rem}
+.item{display:flex;gap:.75rem}
+.item-icon{
+  width:28px;height:28px;border-radius:.45rem;background:var(--bg2);
+  border:1px solid var(--border);display:grid;place-items:center;flex-shrink:0;margin-top:2px;
+}
+.item-body h4{font-size:.82rem;font-weight:700;margin-bottom:.15rem}
+.item-body p{font-size:.78rem;color:var(--muted);line-height:1.65}
+
+/* Code/mono blocks */
+.code-block{
+  background:#0a0a18;border:1px solid var(--border);
+  border-radius:.6rem;padding:.85rem 1rem;margin:.75rem 0;
+  font-family:var(--mono);font-size:.72rem;color:#a5f3fc;
+  line-height:1.8;overflow-x:auto;
+}
+.code-block .comment{color:var(--muted)}
+.code-block .flag{color:var(--red)}
+
+/* Tag row */
+.tag-row{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0}
+.tag{
+  font-size:.65rem;font-weight:700;font-family:var(--mono);
+  padding:2px 8px;border-radius:4px;
+}
+.tag.red   {background:var(--red-bg);  border:1px solid var(--red-border);  color:var(--red)}
+.tag.blue  {background:var(--blue-bg); border:1px solid var(--blue-border); color:var(--blue)}
+.tag.gold  {background:var(--gold-bg); border:1px solid var(--gold-border); color:var(--gold)}
+.tag.green {background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)}
+.tag.purple{background:var(--purple-bg);border:1px solid var(--purple-border);color:var(--brand2)}
+
+/* Data table */
+.data-table{width:100%;border-collapse:collapse;font-size:.78rem;margin:.75rem 0}
+.data-table th{
+  text-align:left;padding:.5rem .75rem;
+  font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);border-bottom:1px solid var(--border);
+}
+.data-table td{
+  padding:.55rem .75rem;border-bottom:1px solid rgba(255,255,255,.04);
+  vertical-align:top;line-height:1.6;color:var(--dim);
+}
+.data-table tr:last-child td{border-bottom:none}
+.data-table td:first-child{color:var(--text);font-weight:600}
+
+/* Body text helpers */
+.prose p{font-size:.83rem;color:var(--muted);margin-bottom:.75rem;line-height:1.75}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text)}
+.prose ul{margin:.35rem 0 .75rem 1.2rem;display:flex;flex-direction:column;gap:.25rem}
+.prose ul li{font-size:.8rem;color:var(--muted);line-height:1.65}
+
+/* Footer */
+.doc-footer{
+  margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+}
+.doc-footer p{font-size:.72rem;color:var(--muted)}
+.doc-footer a{color:var(--brand2);text-decoration:none}
+.doc-footer a:hover{text-decoration:underline}
+
+/* Responsive */
+@media(max-width:860px){
+  .page{grid-template-columns:1fr;gap:2rem}
+  .toc{display:none}
+  .hero h1{font-size:1.8rem}
+}
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<div class="blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<!-- Top nav -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="/servers" class="brand">
+      <div class="brand-icon">
+        <svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      Roco
+    </a>
+    <div class="nav-links">
+      <a href="/tos" class="nav-link active">Terms of Service</a>
+      <a href="/privacy" class="nav-link">Privacy Policy</a>
+      <a href="/servers" class="nav-link">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Dashboard
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- Sidebar TOC -->
+  <aside class="toc">
+    <div class="toc-label">On this page</div>
+    <ul class="toc-list">
+      <li class="toc-item"><a href="#s0"><span class="toc-num">!</span>Binding Agreement</a></li>
+      <li class="toc-item"><a href="#s1"><span class="toc-num">01</span>Scope & Terminology</a></li>
+      <li class="toc-item"><a href="#s2"><span class="toc-num">02</span>Server Moderation</a></li>
+      <li class="toc-item"><a href="#s3"><span class="toc-num">03</span>Forbidden Conduct</a></li>
+      <li class="toc-item"><a href="#s4"><span class="toc-num">04</span>Termination</a></li>
+      <li class="toc-item"><a href="#s5"><span class="toc-num">05</span>Subscriptions & Refunds</a></li>
+      <li class="toc-item"><a href="#s6"><span class="toc-num">06</span>User-Generated Content</a></li>
+      <li class="toc-item"><a href="#s7"><span class="toc-num">07</span>Liability Disclaimer</a></li>
+      <li class="toc-item"><a href="#s8"><span class="toc-num">08</span>Indemnification</a></li>
+      <li class="toc-item"><a href="#s9"><span class="toc-num">09</span>Modification of Terms</a></li>
+      <li class="toc-item"><a href="#s10"><span class="toc-num">10</span>Governing Law</a></li>
+      <li class="toc-item"><a href="#s11"><span class="toc-num">11</span>Dispute Resolution</a></li>
+      <li class="toc-item"><a href="#s12"><span class="toc-num">12</span>Severability</a></li>
+      <li class="toc-item"><a href="#s13"><span class="toc-num">13</span>IP Verification</a></li>
+      <li class="toc-item"><a href="#s14"><span class="toc-num">14</span>Ticket System</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main content -->
+  <main>
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-badge">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Legal Document
+      </div>
+      <h1>Terms of Service</h1>
+      <div class="hero-meta">
+        <span class="meta-pill"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Last revised: May 2, 2026</span>
+        <span class="meta-pill"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>14 sections</span>
+        <span class="meta-pill" style="color:var(--brand2)"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Includes IP Verification</span>
+      </div>
+    </div>
+
+    <div class="sections">
+
+      <!-- 00 — Binding -->
+      <div class="section red" id="s0">
+        <div class="section-head">
+          <div class="section-num">!</div>
+          <div>
+            <div class="section-title" style="color:var(--red)">Mandatory Binding Agreement</div>
+            <div class="section-subtitle">Read before using the service</div>
+          </div>
+        </div>
+        <div class="callout red">
+          <strong>BY ADDING ROCO TO A DISCORD SERVER, BEING A MEMBER OF ANY SERVER WHERE IT IS INSTALLED, OR ACCESSING THE DASHBOARD OR API IN ANY CAPACITY, YOU ENTER INTO A LEGALLY BINDING CONTRACT.</strong>
+          Your presence in any Discord server where Roco is installed automatically constitutes acceptance of all terms herein. You cannot claim ignorance of these terms. If you do not agree in full, you must leave all servers with the bot installed and revoke its authorization immediately.
+        </div>
+        <div class="prose">
+          <p>These Terms of Service apply to all users, server administrators, and entities interacting with Roco in any capacity. Violations may result in immediate action including account suspension, server blacklisting, or permanent access revocation.</p>
+        </div>
+      </div>
+
+      <!-- 01 — Scope -->
+      <div class="section" id="s1">
+        <div class="section-head">
+          <div class="section-num">01</div>
+          <div>
+            <div class="section-title">Scope &amp; Terminology</div>
+            <div class="section-subtitle">Definitions used throughout this document</div>
+          </div>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+          <tbody>
+            <tr><td>"The Service"</td><td>The Roco Discord application, web dashboard, associated APIs, web services, and all official support channels operated by the developers.</td></tr>
+            <tr><td>"The User"</td><td>Any individual, server administrator, server owner, or entity that interacts with the bot, hosts it in their guild, or accesses any dashboard features.</td></tr>
+            <tr><td>"Server"</td><td>A Discord guild or community where the bot is installed and operates. The server owner is responsible for all moderation and compliance within that server.</td></tr>
+            <tr><td>"Blacklist"</td><td>A global prohibition preventing a user, server, or account from accessing Roco services in any capacity.</td></tr>
+            <tr><td>"IP Verification"</td><td>An optional security feature, enabled per-server, that collects and analyses a user's IP address to detect VPNs, proxies, alt accounts, and geographic restrictions.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 02 — Moderation -->
+      <div class="section" id="s2">
+        <div class="section-head">
+          <div class="section-num">02</div>
+          <div>
+            <div class="section-title">Server Moderation &amp; Community Standards</div>
+            <div class="section-subtitle">Requirements for servers using Roco</div>
+          </div>
+        </div>
+        <div class="item-grid">
+          <div class="item">
+            <div class="item-icon"><svg width="14" height="14" fill="none" stroke="var(--dim)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+            <div class="item-body"><h4>Active Moderation Team</h4><p>Servers must maintain at least one active moderator regularly online. Inactive or negligent moderation teams may result in server blacklisting.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon"><svg width="14" height="14" fill="none" stroke="var(--dim)" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div class="item-body"><h4>Content Moderation Standards</h4><p>Servers must actively prevent illegal content, NSFW content in general channels, harassment, spam, and hate speech. CSAM is immediately reported to NCMEC and law enforcement.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon"><svg width="14" height="14" fill="none" stroke="var(--dim)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+            <div class="item-body"><h4>Discord Guidelines Enforcement</h4><p>Servers must comply with Discord's Community Guidelines. Communities that knowingly harbour members engaged in harassment, hate speech, or illegal activity face immediate blacklisting.</p></div>
+          </div>
+        </div>
+        <div class="callout gold" style="margin-top:1.25rem">
+          <strong>Enforcement Notice</strong>
+          We reserve the right to immediately blacklist servers that become known hubs for prohibited activity. Server administrators cannot claim ignorance as a defence. Repeated complaints result in global blacklisting extending to any server the same team subsequently creates.
+        </div>
+      </div>
+
+      <!-- 03 — Forbidden Conduct -->
+      <div class="section red" id="s3">
+        <div class="section-head">
+          <div class="section-num">03</div>
+          <div>
+            <div class="section-title">Forbidden Conduct</div>
+            <div class="section-subtitle">Actions that will result in immediate blacklisting</div>
+          </div>
+        </div>
+        <div class="tag-row">
+          <span class="tag red">ZERO TOLERANCE</span>
+          <span class="tag gold">PERMANENT BAN</span>
+        </div>
+        <div class="item-grid" style="margin-top:.75rem">
+          <div class="item">
+            <div class="item-icon" style="background:var(--red-bg);border-color:var(--red-border)"><svg width="13" height="13" fill="none" stroke="var(--red)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+            <div class="item-body"><h4>Automated Interaction / Self-Bots</h4><p>Using user scripts, self-bots, or automation to trigger commands, spam endpoints, or farm bot resources. Any method circumventing normal user interaction is prohibited.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--red-bg);border-color:var(--red-border)"><svg width="13" height="13" fill="none" stroke="var(--red)" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div class="item-body"><h4>Circumvention &amp; Alt Abuse</h4><p>Bypassing server blacklists, channel restrictions, or global bans through alternative accounts, proxies, or any other evasion method. Alt-slighting results in permanent blacklisting of all related accounts.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--red-bg);border-color:var(--red-border)"><svg width="13" height="13" fill="none" stroke="var(--red)" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            <div class="item-body"><h4>Stress Testing &amp; DoS</h4><p>Intentionally causing API latency, overwhelming endpoints, flooding commands, or attempting to crash bot shard clusters. Rapid command spam designed to degrade performance for others.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--red-bg);border-color:var(--red-border)"><svg width="13" height="13" fill="none" stroke="var(--red)" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
+            <div class="item-body"><h4>Bug Exploitation</h4><p>Discovering and utilizing bugs, exploits, or unintended behaviour for personal gain or server damage. All bugs must be reported to our security team immediately.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--red-bg);border-color:var(--red-border)"><svg width="13" height="13" fill="none" stroke="var(--red)" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+            <div class="item-body"><h4>IP Verification Evasion</h4><p>Using VPNs, proxies, Tor, or any other method to circumvent the IP Verification system after being blocked by a server's configured policies is a direct violation of these terms and the consent you gave during verification.</p></div>
+          </div>
+        </div>
+        <div class="callout red" style="margin-top:1rem">
+          <strong>Critical Violation</strong>
+          Harassment of developers, staff members, or other users through the bot or related platforms will result in immediate blacklisting. This includes targeted campaigns, doxxing threats, or coordinated harassment.
+        </div>
+      </div>
+
+      <!-- 04 — Termination -->
+      <div class="section" id="s4">
+        <div class="section-head">
+          <div class="section-num">04</div>
+          <div>
+            <div class="section-title">Unilateral Termination</div>
+            <div class="section-subtitle">The Killswitch Clause</div>
+          </div>
+        </div>
+        <div class="prose">
+          <p>We reserve the absolute right to terminate access for any reason, without reason, with or without evidence, and without warning.</p>
+        </div>
+        <div class="code-block">
+<span class="comment">// Grounds for immediate termination (non-exhaustive)</span>
+<span class="flag">[SYS] BREACH_OF_TERMS_DETECTED</span>
+<span class="flag">[SYS] INADEQUATE_SERVER_MODERATION</span>
+<span class="flag">[SYS] HARASSMENT_OF_STAFF_OR_DEVS</span>
+<span class="flag">[SYS] HOSTING_ILLEGAL_CONTENT</span>
+<span class="flag">[SYS] DISRUPTING_SERVICE_STABILITY</span>
+<span class="flag">[SYS] IP_VERIFICATION_EVASION</span>
+<span class="flag">[SYS] REPEATED_VIOLATIONS_AFTER_WARNING</span>
+<span class="flag">[SYS] ANY_REASON_DEEMED_APPROPRIATE</span>
+<span class="flag">[SYS] NO_REASON_PROVIDED</span></div>
+        <div class="callout gold">
+          <strong>Arbitrary Enforcement Notice</strong>
+          Developers retain the unilateral right to blacklist any user, server, or account at any time, for any reason or no reason at all. No explanation, evidence, or due process is required. Once blacklisted, users may not appeal within 12 months.
+        </div>
+      </div>
+
+      <!-- 05 — Subscriptions -->
+      <div class="section blue" id="s5">
+        <div class="section-head">
+          <div class="section-num">05</div>
+          <div>
+            <div class="section-title">Subscriptions &amp; Refunds</div>
+            <div class="section-subtitle">Premium features and payment terms</div>
+          </div>
+        </div>
+        <div class="item-grid">
+          <div class="item">
+            <div class="item-icon" style="background:var(--blue-bg);border-color:var(--blue-border)"><svg width="13" height="13" fill="none" stroke="var(--blue)" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+            <div class="item-body"><h4>No Refund Policy</h4><p>All sales are final and non-refundable. Digital goods are considered consumed upon purchase. Refunds are only available for technical double-billing errors reported within 7 days.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--red-bg);border-color:var(--red-border)"><svg width="13" height="13" fill="none" stroke="var(--red)" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
+            <div class="item-body"><h4>Chargeback Consequences</h4><p>Initiating a chargeback or payment reversal without first contacting support results in an <strong>immediate and permanent Global Blacklist</strong> of your Discord account and all associated accounts.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--blue-bg);border-color:var(--blue-border)"><svg width="13" height="13" fill="none" stroke="var(--blue)" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+            <div class="item-body"><h4>Perk Non-Transferability</h4><p>Premium perks are tied exclusively to the purchasing account. Transferring, sharing, or gifting premium features without explicit developer approval may result in immediate revocation.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 06 — UGC -->
+      <div class="section" id="s6">
+        <div class="section-head">
+          <div class="section-num">06</div>
+          <div>
+            <div class="section-title">User-Generated Content</div>
+            <div class="section-subtitle">Your responsibility for content you create or upload</div>
+          </div>
+        </div>
+        <div class="prose">
+          <p>You are solely responsible for any content (text, images, configurations, custom commands) you input, create, or store using Roco. By using the service, you grant us a worldwide, royalty-free, non-exclusive licence to display, store, process, and archive this content solely for the purpose of operating the service.</p>
+          <ul>
+            <li>You are responsible for obtaining all necessary permissions for uploaded content.</li>
+            <li>You warrant your content does not infringe third-party intellectual property rights.</li>
+            <li>Content may be stored indefinitely for security, legal, and operational purposes.</li>
+          </ul>
+        </div>
+        <div class="callout red" style="margin-top:.5rem">
+          <strong>Prohibited Content</strong>
+          Illegal content, CSAM, hate speech, defamatory material, or IP-infringing content is strictly forbidden. Violations are immediately reported to Discord Trust &amp; Safety, NCMEC, and law enforcement. Users will be permanently blacklisted.
+        </div>
+      </div>
+
+      <!-- 07 — Liability -->
+      <div class="section" id="s7">
+        <div class="section-head">
+          <div class="section-num">07</div>
+          <div>
+            <div class="section-title">Total Limitation of Liability</div>
+            <div class="section-subtitle">The "As-Is" provision</div>
+          </div>
+        </div>
+        <div class="callout gold">
+          <strong>To the maximum extent permitted by law</strong>, the developers and operators of Roco shall not be liable for any indirect, incidental, special, consequential, or punitive damages. The Service is provided "AS-IS" without warranty of any kind. We do not warrant that the Service will be uninterrupted, secure, error-free, or available at all times.
+        </div>
+        <div class="prose">
+          <p>We are not responsible for: lost data, deleted messages, corrupted configurations, damaged reputation, loss of server members, financial losses, or any other indirect damages. The Service may be taken offline for maintenance or security patches at any moment without notice.</p>
+        </div>
+      </div>
+
+      <!-- 08 — Indemnification -->
+      <div class="section" id="s8">
+        <div class="section-head">
+          <div class="section-num">08</div>
+          <div>
+            <div class="section-title">Indemnification</div>
+            <div class="section-subtitle">Your responsibility to defend us</div>
+          </div>
+        </div>
+        <div class="prose">
+          <p>You agree to indemnify, defend, and hold harmless the developers, operators, and all agents of Roco from all claims, damages, obligations, losses, liabilities, costs, and expenses (including attorney's fees) arising from:</p>
+          <ul>
+            <li>Your use or misuse of the bot or service</li>
+            <li>Your violation of these Terms or any applicable law</li>
+            <li>Your violation of any third-party rights</li>
+            <li>Content you create, upload, or share through the bot</li>
+            <li>Your inadequate server moderation or failure to enforce community standards</li>
+            <li>Disputes between you and other users of the service</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 09 — Modifications -->
+      <div class="section" id="s9">
+        <div class="section-head">
+          <div class="section-num">09</div>
+          <div>
+            <div class="section-title">Modification of Terms</div>
+            <div class="section-subtitle">How and when these terms change</div>
+          </div>
+        </div>
+        <div class="prose">
+          <p>We reserve the right to modify, amend, or entirely replace these Terms of Service at any time. Modifications become effective immediately upon being posted to this page.</p>
+        </div>
+        <div class="callout blue">
+          <strong>Important</strong>
+          Your continued use of the bot after updates are posted signifies acceptance of the modified terms. If you do not agree with changes, you must immediately stop using the service and remove the bot from your server.
+        </div>
+      </div>
+
+      <!-- 10 — Governing Law -->
+      <div class="section" id="s10">
+        <div class="section-head">
+          <div class="section-num">10</div>
+          <div>
+            <div class="section-title">Governing Law</div>
+            <div class="section-subtitle">Jurisdiction and legal proceedings</div>
+          </div>
+        </div>
+        <div class="prose">
+          <p>These Terms are governed by and construed in accordance with the laws of the jurisdiction in which the lead developer resides, without regard to conflict of law principles. Any legal action arising from these terms must be brought exclusively in the courts of that jurisdiction. Both parties consent to resolution through binding arbitration in the aforementioned jurisdiction.</p>
+        </div>
+      </div>
+
+      <!-- 11 — Disputes -->
+      <div class="section green" id="s11">
+        <div class="section-head">
+          <div class="section-num">11</div>
+          <div>
+            <div class="section-title">Support &amp; Dispute Resolution</div>
+            <div class="section-subtitle">How to appeal or seek help</div>
+          </div>
+        </div>
+        <div class="item-grid">
+          <div class="item">
+            <div class="item-icon" style="background:var(--green-bg);border-color:var(--green-border)"><svg width="13" height="13" fill="none" stroke="var(--green)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+            <div class="item-body"><h4>Support Server</h4><p>Primary channel for support requests, blacklist appeals, and general enquiries about these terms.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--green-bg);border-color:var(--green-border)"><svg width="13" height="13" fill="none" stroke="var(--green)" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div class="item-body"><h4>Email Appeals</h4><p>Blacklist appeals may be submitted via email no sooner than 12 months after the initial penalty, with a detailed explanation. Abusive appeals extend the blacklist period indefinitely.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 12 — Severability -->
+      <div class="section" id="s12">
+        <div class="section-head">
+          <div class="section-num">12</div>
+          <div>
+            <div class="section-title">Severability</div>
+            <div class="section-subtitle">If part of these terms is found invalid</div>
+          </div>
+        </div>
+        <div class="prose">
+          <p>If any provision of these Terms of Service is found to be invalid, illegal, or unenforceable by a court of competent jurisdiction, that provision shall be severed and the remaining provisions shall continue in full force and effect.</p>
+        </div>
+      </div>
+
+      <!-- 13 — IP Verification (NEW) -->
+      <div class="section purple" id="s13">
+        <div class="section-head">
+          <div class="section-num">13</div>
+          <div>
+            <div class="section-title">IP Verification System</div>
+            <div class="section-subtitle">Terms governing the optional IP-based security feature — <strong style="color:var(--brand2)">Added March 2026</strong></div>
+          </div>
+        </div>
+
+        <div class="callout purple">
+          <strong>What is IP Verification?</strong>
+          IP Verification is an optional security feature that server administrators may enable. When enabled, members who click the verification button are directed to a one-time secure link where they consent to having their IP address collected, analysed, and stored. Consent is mandatory and enforced both client-side and server-side — verification cannot be completed without it.
+        </div>
+
+        <div class="item-grid" style="margin-top:1rem">
+          <div class="item">
+            <div class="item-icon" style="background:var(--purple-bg);border-color:var(--purple-border)"><svg width="13" height="13" fill="none" stroke="var(--brand2)" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+            <div class="item-body"><h4>Informed Consent is Required</h4><p>Before any IP data is collected, users must explicitly agree to the data collection notice presented on the verification gate page. This consent is validated server-side — no data is collected without it. By clicking "Complete Verification" you agree to the IP data practices described in our <a href="/privacy#ipverify" style="color:var(--brand2)">Privacy Policy</a>.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--purple-bg);border-color:var(--purple-border)"><svg width="13" height="13" fill="none" stroke="var(--brand2)" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+            <div class="item-body"><h4>Token Security</h4><p>Each verification link is a one-time-use token generated from 48 cryptographically random bytes. Tokens are stored only as SHA-256 hashes — plaintext is never persisted. Tokens expire at a TTL configured by the server administrator (5–30 minutes) and are bound to a specific user/guild pair.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--purple-bg);border-color:var(--purple-border)"><svg width="13" height="13" fill="none" stroke="var(--brand2)" stroke-width="2" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+            <div class="item-body"><h4>Data Collected During Verification</h4>
+              <p>When you complete IP Verification, the following data is collected and stored in encrypted form:</p>
+              <div class="tag-row" style="margin-top:.4rem">
+                <span class="tag purple">IP Address</span>
+                <span class="tag purple">Threat Intelligence</span>
+                <span class="tag purple">Discord User ID</span>
+                <span class="tag purple">Guild ID</span>
+                <span class="tag purple">Verification Result</span>
+                <span class="tag purple">Timestamp</span>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--purple-bg);border-color:var(--purple-border)"><svg width="13" height="13" fill="none" stroke="var(--brand2)" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div class="item-body"><h4>Automated Actions by Server Administrators</h4><p>Server administrators configure the system's response to failed checks. Depending on settings, a failed or flagged verification may result in an automated kick, ban, or alert within the Discord server. These actions are taken by the server administrator's configuration — not unilaterally by Roco.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--purple-bg);border-color:var(--purple-border)"><svg width="13" height="13" fill="none" stroke="var(--brand2)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div class="item-body"><h4>Re-Verification</h4><p>Server administrators may configure a re-verification interval (default 30 days). You may be required to complete IP Verification again after this interval. Each re-verification generates a new one-time token and requires fresh consent.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--green-bg);border-color:var(--green-border)"><svg width="13" height="13" fill="none" stroke="var(--green)" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></div>
+            <div class="item-body"><h4>Your Right to Deletion</h4><p>Server administrators may delete individual verification records via the dashboard. Users may request deletion of their verification record by contacting the server administrator or our support team. See the Privacy Policy for full details on data retention and GDPR rights.</p></div>
+          </div>
+        </div>
+        <div class="callout red" style="margin-top:1rem">
+          <strong>Evasion Prohibited</strong>
+          Attempting to circumvent the IP Verification system — including using VPNs, proxies, Tor, or alt accounts — after being blocked by a server's policy constitutes a violation of Section 03 (Forbidden Conduct) and may result in global blacklisting. You consented to these checks when you initiated verification.
+        </div>
+      </div>
+
+    </div><!-- /sections -->
+
+    <!-- Section 14 — Ticket System (NEW) -->
+    <div class="sections" style="margin-top:1.5rem">
+
+      <div class="section blue" id="s14">
+        <div class="section-head">
+          <div class="section-num">14</div>
+          <div>
+            <div class="section-title">Ticket System — Data &amp; Conduct</div>
+            <div class="section-subtitle">Terms governing the support ticket feature — <strong style="color:var(--blue)">Added May 2026</strong></div>
+          </div>
+        </div>
+
+        <div class="callout blue">
+          <strong>Message Recording Notice</strong>
+          By sending messages in any ticket channel created by Roco, you acknowledge and consent that the full conversation — including text content, file attachments, and images — may be saved as a transcript accessible to that server's administrators and to Roco staff for operational and security purposes. Do not share passwords, financial information, or other sensitive credentials in ticket channels.
+        </div>
+
+        <div class="item-grid" style="margin-top:1rem">
+          <div class="item">
+            <div class="item-icon" style="background:var(--blue-bg);border-color:var(--blue-border)"><svg width="13" height="13" fill="none" stroke="var(--blue)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div>
+            <div class="item-body"><h4>Transcript Storage &amp; Consent</h4><p>When a ticket is closed, a full HTML and/or web transcript of the conversation is generated and stored. By participating in a ticket, you consent to this storage. Transcripts are retained in accordance with Section 05 of the Privacy Policy (Data Retention). Ticket owners may request deletion of their transcript data via <strong>support@rocobot.xyz</strong>.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--blue-bg);border-color:var(--blue-border)"><svg width="13" height="13" fill="none" stroke="var(--blue)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <div class="item-body"><h4>Administrator Access &amp; Actions</h4><p>Server administrators and configured ticket handler roles may view all ticket transcripts, add staff notes, set priorities, assign tickets, apply tags, and perform moderation actions (close, lock, delete). These actions are logged. Administrators are prohibited from using ticket data for purposes unrelated to server moderation or support operations.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--red-bg);border-color:var(--red-border)"><svg width="13" height="13" fill="none" stroke="var(--red)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+            <div class="item-body"><h4>Prohibited Use of Tickets</h4>
+              <p>The following conduct within ticket channels is strictly prohibited and may result in immediate blacklisting:</p>
+              <div class="tag-row" style="margin-top:.4rem">
+                <span class="tag red">Opening false/spam tickets</span>
+                <span class="tag red">Abuse of ticket staff</span>
+                <span class="tag red">Sharing NSFW/illegal content</span>
+                <span class="tag red">Attempting to extract sensitive server info</span>
+                <span class="tag red">Coordinated mass ticket flooding</span>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--gold-bg);border-color:var(--gold-border)"><svg width="13" height="13" fill="none" stroke="var(--gold)" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+            <div class="item-body"><h4>Ratings &amp; Intake Responses</h4><p>Satisfaction ratings (1–5 stars) submitted after ticket closure are stored in association with your Discord User ID and the relevant ticket record. Intake question responses provided when opening a ticket are stored in the ticket record and visible to server administrators. This data is included in the scope of any GDPR or CCPA erasure request.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--gold-bg);border-color:var(--gold-border)"><svg width="13" height="13" fill="none" stroke="var(--gold)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div class="item-body"><h4>Auto-Close &amp; Inactivity</h4><p>Server administrators may configure automatic ticket closure after a defined period of inactivity. Users will receive a warning before auto-closure. Tickets closed automatically generate a full transcript in the same manner as staff-closed tickets. This is disclosed here as a processing activity under GDPR Article 13.</p></div>
+          </div>
+        </div>
+
+        <div class="callout gold" style="margin-top:1rem">
+          <strong>Staff Notes Confidentiality</strong>
+          Staff notes added within ticket channels are internal records visible only to users with the ticket handler role and server administrators. They are not shown to ticket owners by default. However, they are included in any data access request made under GDPR or CCPA.
+        </div>
+      </div>
+
+    </div><!-- /ticket section -->
+
+    <!-- Footer -->
+    <div class="doc-footer">
+      <p>
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="vertical-align:middle;opacity:.5;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        &copy; <span class="xyron-yr"></span> Roco Development &mdash; All Rights Reserved
+      </p>
+      <p>
+        <a href="/tos">Terms of Service</a> &middot;
+        <a href="/privacy">Privacy Policy</a> &middot;
+        <a href="/servers">Dashboard</a> &middot;
+        <a href="mailto:support@rocobot.xyz">support@rocobot.xyz</a>
+      </p>
+    </div>
+    <script>document.querySelectorAll('.xyron-yr').forEach(el => el.textContent = new Date().getFullYear());</script>
+  </main>
+</div>
+
+<script>
+// Active TOC link on scroll
+// FIX: offsetTop is relative to the offset parent (nested container), not
+// the document root, so it never matched window.scrollY for sections deep
+// in the page. getBoundingClientRect() is viewport-relative and correct.
+(function(){
+  const links = document.querySelectorAll('.toc-item a');
+  const sections = Array.from(document.querySelectorAll('.section[id]'));
+  function update(){
+    let cur = sections[0]?.id || 's0';
+    for (const s of sections) {
+      if (s.getBoundingClientRect().top <= 100) cur = s.id;
+      else break;
+    }
+    links.forEach(l=>{ l.classList.toggle('active', l.getAttribute('href')==='#'+cur); });
+  }
+  window.addEventListener('scroll',update,{passive:true});
+  update();
+})();
+</script>
+
+</body>
+</html>

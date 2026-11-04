@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Branding</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <style>
+    :root {
+      --bg:      #080910;
+      --surf:    #0e1018;
+      --surf2:   #131520;
+      --border:  rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.04);
+      --text:    #e8eaf0;
+      --muted:   #5a6070;
+      --muted2:  #303545;
+      --accent:  #6c63ff;
+      --green:   #3ddc84;
+      --yellow:  #f5c518;
+      --red:     #ff4d6a;
+      --r:       12px;
+      --r-sm:    8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #1e2030; border-radius: 99px; }
+
+    /* cards */
+    .card { background: var(--surf); border: 1px solid var(--border); border-radius: var(--r); }
+
+    /* labels */
+    .lbl {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: .07em;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .section-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* inputs */
+    .inp {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 10px 14px;
+      font-size: 13.5px;
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .inp:focus { border-color: rgba(108,99,255,.5); box-shadow: 0 0 0 3px rgba(108,99,255,.1); }
+    .inp::placeholder { color: var(--muted2); }
+
+    /* buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 9px 18px;
+      border-radius: var(--r-sm);
+      border: none;
+      cursor: pointer;
+      transition: all .15s;
+      font-family: 'DM Sans', sans-serif;
+      white-space: nowrap;
+    }
+    .btn:disabled { opacity: .45; cursor: not-allowed; transform: none !important; }
+    .btn-primary  { background: var(--accent); color: #fff; box-shadow: 0 0 20px rgba(108,99,255,.25); }
+    .btn-primary:hover:not(:disabled) { background: #7b74ff; transform: translateY(-1px); box-shadow: 0 0 28px rgba(108,99,255,.35); }
+    .btn-ghost    { background: rgba(255,255,255,.04); color: var(--muted); border: 1px solid var(--border); }
+    .btn-ghost:hover:not(:disabled) { background: rgba(255,255,255,.07); color: var(--text); }
+    .btn-save     { background: rgba(108,99,255,.1); color: #9d97ff; border: 1px solid rgba(108,99,255,.2); }
+    .btn-save:hover:not(:disabled) { background: rgba(108,99,255,.18); color: #c0bcff; }
+    .btn-danger   { background: rgba(255,77,106,.08); color: #ff7a8e; border: 1px solid rgba(255,77,106,.18); }
+    .btn-danger:hover:not(:disabled) { background: rgba(255,77,106,.15); }
+    .btn-sm { padding: 6px 13px; font-size: 12px; }
+    .btn-guide {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(245,197,24,.07); color: var(--yellow);
+      border: 1px solid rgba(245,197,24,.18);
+      padding: 5px 13px; font-size: 11.5px; font-weight: 700;
+      border-radius: var(--r-sm); cursor: pointer;
+      transition: all .15s; font-family: 'DM Sans', sans-serif;
+    }
+    .btn-guide:hover { background: rgba(245,197,24,.14); }
+
+    /* status pills */
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11.5px; font-weight: 700;
+      padding: 3px 11px; border-radius: 99px;
+    }
+    .pill::before { content:''; width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+    .pill-active   { background: rgba(61,220,132,.1);  color: var(--green); border: 1px solid rgba(61,220,132,.22); }
+    .pill-active::before   { background: var(--green); box-shadow: 0 0 6px var(--green); animation: blink 2s infinite; }
+    .pill-offline  { background: rgba(90,96,112,.08);  color: var(--muted); border: 1px solid rgba(90,96,112,.18); }
+    .pill-offline::before  { background: var(--muted); }
+    .pill-error    { background: rgba(255,77,106,.1);  color: #ff7a8e; border: 1px solid rgba(255,77,106,.2); }
+    .pill-error::before    { background: var(--red); }
+    .pill-starting { background: rgba(245,197,24,.09); color: var(--yellow); border: 1px solid rgba(245,197,24,.2); }
+    .pill-starting::before { background: var(--yellow); animation: blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* info rows */
+    .info-row {
+      display: flex; align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border2);
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-key { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; width: 120px; flex-shrink: 0; }
+    .info-val { font-size: 13.5px; color: var(--text); }
+
+    /* setup steps */
+    .step {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border2);
+    }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      width: 30px; height: 30px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; flex-shrink: 0;
+    }
+    .sn-active  { background: rgba(108,99,255,.15); color: #9d97ff; border: 1px solid rgba(108,99,255,.3); }
+    .sn-done    { background: rgba(61,220,132,.12); color: var(--green); border: 1px solid rgba(61,220,132,.28); }
+    .sn-pending { background: rgba(255,255,255,.04); color: var(--muted2); border: 1px solid var(--border); }
+
+    /* avatar */
+    .avatar-ring {
+      width: 80px; height: 80px; border-radius: 50%;
+      border: 2px solid var(--border); overflow: hidden;
+      flex-shrink: 0; position: relative;
+      background: var(--surf2);
+    }
+    .avatar-ring img { width:100%; height:100%; object-fit:cover; display:block; }
+    .avatar-remove {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.65);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .15s; cursor: pointer;
+      font-size: 11px; font-weight: 700; color: #ff7a8e;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .avatar-ring:hover .avatar-remove { opacity: 1; }
+
+    /* action rows */
+    .action-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border2);
+      cursor: pointer; transition: background .15s;
+    }
+    .action-row:last-child { border-bottom: none; }
+    .action-row:hover { background: rgba(255,255,255,.02); }
+
+    /* ── Custom Select ──────────────────────────────────────────────────────── */
+    .cs-wrap { position: relative; user-select: none; }
+    .cs-trigger {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: border-color .15s, box-shadow .15s;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px; color: var(--text);
+    }
+    .cs-trigger:hover { border-color: rgba(255,255,255,.14); }
+    .cs-trigger.open  {
+      border-color: rgba(108,99,255,.5);
+      box-shadow: 0 0 0 3px rgba(108,99,255,.1);
+      border-radius: var(--r-sm) var(--r-sm) 0 0;
+    }
+    .cs-left { display: flex; align-items: center; gap: 9px; min-width: 0; }
+    .cs-icon { font-size: 15px; flex-shrink: 0; line-height: 1; }
+    .cs-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cs-text.placeholder { color: var(--muted2); }
+    .cs-chevron { flex-shrink: 0; color: var(--muted); transition: transform .2s cubic-bezier(.4,0,.2,1); }
+    .cs-trigger.open .cs-chevron { transform: rotate(180deg); }
+
+    .cs-drop {
+      position: absolute; top: 100%; left: 0; right: 0;
+      background: #0e1018;
+      border: 1px solid rgba(108,99,255,.35); border-top: none;
+      border-radius: 0 0 var(--r-sm) var(--r-sm);
+      z-index: 500; overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0,0,0,.5);
+      display: none;
+    }
+    .cs-drop.open { display: block; }
+
+    .cs-search-box {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border2);
+    }
+    .cs-search-inp {
+      width: 100%; background: var(--surf2);
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 6px 10px; font-size: 12.5px; color: var(--text);
+      outline: none; font-family: 'DM Sans', sans-serif;
+    }
+    .cs-search-inp::placeholder { color: var(--muted2); }
+    .cs-opts { max-height: 210px; overflow-y: auto; }
+    .cs-opt {
+      display: flex; align-items: center; gap: 9px;
+      padding: 9px 14px; font-size: 13px; color: var(--text);
+      cursor: pointer; transition: background .1s;
+    }
+    .cs-opt:hover    { background: rgba(108,99,255,.08); }
+    .cs-opt.selected { color: #9d97ff; background: rgba(108,99,255,.07); }
+    .cs-opt-none     { color: var(--muted); font-style: italic; }
+    .cs-empty { padding: 14px; text-align: center; font-size: 12px; color: var(--muted); }
+
+    /* toggle */
+    .tog-wrap { position: relative; width: 38px; height: 22px; flex-shrink: 0; cursor: pointer; }
+    .tog-wrap input { opacity:0; width:0; height:0; position:absolute; }
+    .tog-track {
+      position:absolute; inset:0; border-radius:99px;
+      background:#1a1d2a; border:1px solid rgba(255,255,255,.09);
+      transition: background .2s, border-color .2s;
+    }
+    .tog-wrap input:checked ~ .tog-track { background: rgba(108,99,255,.45); border-color: rgba(108,99,255,.55); }
+    .tog-thumb {
+      position:absolute; top:4px; left:4px;
+      width:12px; height:12px; border-radius:50%;
+      background:#4b5563; transition: transform .2s, background .2s;
+      pointer-events:none;
+    }
+    .tog-wrap input:checked ~ .tog-track ~ .tog-thumb { transform:translateX(16px); background:#c0bcff; }
+
+    /* help drawer */
+    #help-overlay { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:8999; display:none; backdrop-filter:blur(2px); }
+    #help-overlay.open { display:block; }
+    #help-drawer {
+      position:fixed; top:0; right:0; height:100vh; width:min(440px,100vw);
+      background:#0c0d16; border-left:1px solid var(--border);
+      z-index:9000; transform:translateX(100%);
+      transition:transform .28s cubic-bezier(.4,0,.2,1);
+      overflow-y:auto;
+    }
+    #help-drawer.open { transform:translateX(0); }
+    .h-sec { padding:22px 26px; border-bottom:1px solid var(--border2); }
+    .h-sec:last-child { border-bottom:none; }
+    .h-tag { display:inline-block; font-size:9.5px; font-weight:800; color:var(--yellow); background:rgba(245,197,24,.09); border:1px solid rgba(245,197,24,.2); border-radius:4px; padding:2px 7px; margin-bottom:9px; text-transform:uppercase; letter-spacing:.08em; }
+    .h-title { font-size:14.5px; font-weight:700; color:#fff; margin-bottom:7px; }
+    .h-body  { font-size:13px; color:#7a8090; line-height:1.65; }
+    .h-step  { display:flex; gap:10px; align-items:flex-start; margin-top:10px; }
+    .h-num   { width:20px; height:20px; background:rgba(108,99,255,.18); border:1px solid rgba(108,99,255,.3); border-radius:50%; color:#9d97ff; font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+    .h-link  { color:#818cf8; text-decoration:none; }
+    .h-link:hover { text-decoration:underline; }
+    .h-code  { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:4px; padding:1px 6px; font-family:'DM Mono',monospace; font-size:12px; color:var(--text); }
+    .h-warn  { background:rgba(245,197,24,.06); border:1px solid rgba(245,197,24,.18); border-radius:8px; padding:10px 14px; margin-top:10px; font-size:12.5px; color:#fde68a; line-height:1.5; }
+    .h-ok    { background:rgba(61,220,132,.06); border:1px solid rgba(61,220,132,.18); border-radius:8px; padding:10px 14px; margin-top:10px; font-size:12.5px; color:#fca5a5; line-height:1.5; }
+
+    /* channel pill */
+    .ch-pill { display:inline-flex; align-items:center; gap:4px; background:rgba(108,99,255,.12); color:#9d97ff; font-size:13px; font-weight:600; padding:2px 10px; border-radius:5px; border:1px solid rgba(108,99,255,.2); }
+
+    /* toast */
+    #toast { position:fixed; bottom:28px; right:28px; z-index:99999; transition:opacity .25s, transform .3s cubic-bezier(.34,1.56,.64,1); opacity:0; transform:translateY(16px) scale(.96); pointer-events:none; }
+    #toast.show { opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+    .toast-in { display:flex; align-items:center; gap:10px; background:var(--surf2); border:1px solid var(--border); border-radius:var(--r-sm); padding:11px 16px; box-shadow:0 8px 32px rgba(0,0,0,.5); font-size:13.5px; color:var(--text); }
+
+    @keyframes spin    { to { transform: rotate(360deg); } }
+    @keyframes fadeUp  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+    .fade-up { animation: fadeUp .3s ease forwards; }
+
+    code.inline { background:rgba(255,255,255,.06); border:1px solid var(--border); border-radius:4px; padding:1px 6px; font-family:'DM Mono',monospace; font-size:11.5px; }
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<!-- help -->
+<div id="help-overlay" onclick="closeHelp()"></div>
+<div id="help-drawer">
+  <div style="position:sticky;top:0;background:#0c0d16;border-bottom:1px solid var(--border);padding:20px 26px;display:flex;align-items:center;justify-content:space-between;z-index:10;">
+    <div>
+      <p style="font-size:15.5px;font-weight:800;color:#fff;letter-spacing:-.01em;">Custom Branding Guide</p>
+      <p style="font-size:12px;color:var(--muted);margin-top:3px;">Everything you need to get started</p>
+    </div>
+    <button onclick="closeHelp()" style="background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;padding:6px 11px;font-size:17px;line-height:1;transition:color .15s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color=''">✕</button>
+  </div>
+  <div class="h-sec"><span class="h-tag">Overview</span><div class="h-title">What is Custom Branding?</div><div class="h-body">Custom Branding lets you run your own Discord bot — powered by Roco — under your own name, avatar, and presence. Your server members see <em>your</em> bot, not Roco.</div><div class="h-ok" style="margin-top:12px;">Your bot runs as a fully isolated process. Crashes do <strong>not</strong> affect Roco or other branded bots.</div></div>
+  <div class="h-sec"><span class="h-tag">Step 1</span><div class="h-title">Create a Discord Application</div><div class="h-body"><div class="h-step"><div class="h-num">1</div><div>Go to <a class="h-link" href="https://discord.com/developers/applications" target="_blank">discord.com/developers/applications</a> → <strong>New Application</strong>.</div></div><div class="h-step"><div class="h-num">2</div><div>Click <strong>Bot</strong> in the sidebar → <strong>Reset Token</strong>. Copy the token.</div></div></div><div class="h-warn">⚠️ Never share your bot token. Treat it like a password.</div></div>
+  <div class="h-sec"><span class="h-tag">Step 1 cont.</span><div class="h-title">Enable Privileged Intents</div><div class="h-body">On the <strong>Bot</strong> page, enable all three under <em>Privileged Gateway Intents</em>:<div class="h-step"><div class="h-num">✓</div><div><strong>Presence Intent</strong></div></div><div class="h-step"><div class="h-num">✓</div><div><strong>Server Members Intent</strong></div></div><div class="h-step"><div class="h-num">✓</div><div><strong>Message Content Intent</strong></div></div></div><div class="h-warn">⚠️ Missing intents will cause an "intents" error on startup.</div></div>
+  <div class="h-sec"><span class="h-tag">Step 2</span><div class="h-title">Invite the Bot to Your Server</div><div class="h-body"><div class="h-step"><div class="h-num">1</div><div>Developer Portal → <strong>OAuth2 → URL Generator</strong>.</div></div><div class="h-step"><div class="h-num">2</div><div>Scopes: <span class="h-code">bot</span> + <span class="h-code">applications.commands</span>.</div></div><div class="h-step"><div class="h-num">3</div><div>Bot Permissions: <strong>Administrator</strong>.</div></div><div class="h-step"><div class="h-num">4</div><div>Invite to <strong>this server only</strong>.</div></div></div></div>
+  <div class="h-sec"><span class="h-tag">Step 3</span><div class="h-title">Submit Your Token</div><div class="h-body">Paste the token and click <strong>Start Bot</strong>. Your token is encrypted at rest and never exposed via any API.</div></div>
+  <div class="h-sec"><span class="h-tag">Branding</span><div class="h-title">Customising Your Bot</div><div class="h-body"><div class="h-step"><div class="h-num">•</div><div><strong>Username</strong> — 2–32 characters.</div></div><div class="h-step"><div class="h-num">•</div><div><strong>Avatar URL</strong> — direct .png/.jpg/.gif link (e.g. imgur).</div></div><div class="h-step"><div class="h-num">•</div><div><strong>Activity</strong> — the "Playing / Watching" status text.</div></div><div class="h-step"><div class="h-num">•</div><div><strong>Footer Text</strong> — appended to embed messages.</div></div></div></div>
+  <div class="h-sec"><span class="h-tag">Troubleshooting</span><div class="h-title">Common Errors</div><div class="h-body"><div class="h-step"><div class="h-num">!</div><div><strong>Invalid token</strong> — regenerate in the Developer Portal.</div></div><div class="h-step"><div class="h-num">!</div><div><strong>Missing Intents</strong> — re-check all three are enabled.</div></div><div class="h-step"><div class="h-num">!</div><div><strong>Bot not responding</strong> — ensure you invited with <span class="h-code">applications.commands</span> + Administrator.</div></div></div></div>
+</div>
+
+<!-- layout -->
+<div style="display:flex;min-height:100vh;position:relative;z-index:1;">
+  <aside id="razor-sidebar"></aside>
+  <main style="flex:1;padding:2rem 2rem 5rem;overflow-x:hidden;min-width:0;">
+  <div style="max-width:680px;margin:0 auto;">
+
+    <!-- header -->
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:28px;">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <h1 style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em;">Custom Branding</h1>
+          <span id="live-pill" class="pill pill-offline">Offline</span>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin-top:5px;">Your own bot, powered by Roco — running in an isolated process.</p>
+      </div>
+      <button onclick="openHelp()" class="btn-guide" style="flex-shrink:0;margin-top:3px;">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+        Setup Guide
+      </button>
+    </div>
+
+    <!-- setup card -->
+    <div id="setup-card" class="card fade-up">
+      <div style="padding:18px 22px 16px;border-bottom:1px solid var(--border2);">
+        <span class="section-lbl">Setup Steps</span>
+      </div>
+      <div style="padding:6px 22px 22px;">
+
+        <div class="step">
+          <div id="s1" class="step-num sn-active">1</div>
+          <div style="flex:1;">
+            <p style="font-size:14px;font-weight:700;color:#fff;">Create a Discord Application &amp; Bot</p>
+            <p style="font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.6;">Go to the <a href="https://discord.com/developers/applications" target="_blank" style="color:#818cf8;">Developer Portal</a> → New Application → Bot → Reset Token. Enable all <span style="color:var(--yellow);font-weight:600;">Privileged Gateway Intents</span> (Presence, Server Members, Message Content).</p>
+            <a href="https://discord.com/developers/applications" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:12px;color:#818cf8;font-weight:600;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+              Open Developer Portal
+            </a>
+          </div>
+        </div>
+
+        <div class="step">
+          <div id="s2" class="step-num sn-pending">2</div>
+          <div style="flex:1;">
+            <p style="font-size:14px;font-weight:700;color:#fff;">Invite the Bot to This Server</p>
+            <p style="font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.6;">OAuth2 → URL Generator → Scopes: <code class="inline">bot</code> + <code class="inline">applications.commands</code> → Permission: <strong style="color:#fff;">Administrator</strong>. Invite to <em>this server only</em>.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div id="s3" class="step-num sn-pending">3</div>
+          <div style="flex:1;">
+            <p style="font-size:14px;font-weight:700;color:#fff;margin-bottom:14px;">Submit Your Bot Token</p>
+            <div style="display:flex;gap:10px;">
+              <input id="token-input" type="password" class="inp" style="flex:1;" placeholder="Paste bot token here…" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')submitToken()">
+              <button onclick="submitToken()" id="token-btn" class="btn btn-primary" style="flex-shrink:0;">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                Start Bot
+              </button>
+            </div>
+            <p id="token-status" style="font-size:12px;color:var(--muted);margin-top:8px;display:flex;align-items:center;gap:5px;">
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Encrypted at rest — never exposed via any API.
+            </p>
+
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /setup-card -->
+
+    <!-- token confirmed -->
+    <div id="configured-card" style="display:none;" class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:38px;height:38px;border-radius:50%;background:rgba(61,220,132,.1);border:1px solid rgba(61,220,132,.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--green);">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <div>
+            <p style="font-size:14px;font-weight:700;color:#fff;">Bot token configured</p>
+            <p style="font-size:12px;color:var(--muted);margin-top:3px;">Encrypted at rest — never exposed via any API.</p>
+          </div>
+        </div>
+        <button onclick="resetConfig()" class="btn btn-danger btn-sm" style="flex-shrink:0;">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+          Reset Bot
+        </button>
+      </div>
+    </div>
+
+    <!-- controls -->
+    <div id="controls" style="display:none;">
+
+      <!-- bot identity -->
+      <div class="card" style="margin-top:12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px 16px;border-bottom:1px solid var(--border2);">
+          <span class="section-lbl">Bot Identity</span>
+          <button onclick="saveConfig()" id="save-btn" class="btn btn-save btn-sm">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Changes
+          </button>
+        </div>
+        <div style="padding:22px;display:flex;flex-direction:column;gap:20px;">
+
+          <!-- avatar + name -->
+          <div style="display:flex;align-items:flex-start;gap:20px;">
+            <div class="avatar-ring">
+              <img id="preview-avatar" src="/logo.png" alt="Bot Avatar">
+              <div class="avatar-remove" onclick="clearAvatar()">Remove</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:14px;">
+              <div>
+                <label class="lbl">Bot Username</label>
+                <input id="bot-name" type="text" maxlength="32" class="inp" placeholder="Your bot's display name" oninput="updatePreview()">
+              </div>
+              <div>
+                <label class="lbl">Avatar Image URL</label>
+                <input id="avatar-url" type="url" class="inp" placeholder="https://i.imgur.com/example.png" oninput="updateAvatarPreview()">
+              </div>
+            </div>
+          </div>
+
+          <!-- activity -->
+          <div>
+            <label class="lbl">Bot Activity &amp; Presence</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+              <div>
+                <label class="lbl" style="font-size:9.5px;margin-bottom:5px;">Activity Type</label>
+                <div class="cs-wrap" id="cs-activity">
+                  <div class="cs-trigger" onclick="csToggle('cs-activity')">
+                    <div class="cs-left"><span class="cs-icon" id="cs-activity-ic">—</span><span class="cs-text placeholder" id="cs-activity-txt">None (default)</span></div>
+                    <svg class="cs-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                  </div>
+                  <div class="cs-drop">
+                    <div class="cs-opts" id="cs-activity-opts">
+                      <div class="cs-opt selected" data-value="" data-ic="—" data-lbl="None (default)" onclick="csPick('cs-activity','','—','None (default)')"><span style="color:var(--muted)">—</span><span class="cs-opt-none">None (default)</span></div>
+                      <div class="cs-opt" data-value="watching"  data-ic="📺" data-lbl="Watching"     onclick="csPick('cs-activity','watching','📺','Watching')">📺 Watching</div>
+                      <div class="cs-opt" data-value="playing"   data-ic="🎮" data-lbl="Playing"      onclick="csPick('cs-activity','playing','🎮','Playing')">🎮 Playing</div>
+                      <div class="cs-opt" data-value="listening" data-ic="🎵" data-lbl="Listening to" onclick="csPick('cs-activity','listening','🎵','Listening to')">🎵 Listening to</div>
+                      <div class="cs-opt" data-value="competing" data-ic="🏆" data-lbl="Competing in" onclick="csPick('cs-activity','competing','🏆','Competing in')">🏆 Competing in</div>
+                      <div class="cs-opt" data-value="custom"    data-ic="✏️" data-lbl="Custom Status" onclick="csPick('cs-activity','custom','✏️','Custom Status')">✏️ Custom Status</div>
+                    </div>
+                  </div>
+                </div>
+                <input type="hidden" id="status-type" value="">
+              </div>
+              <div>
+                <label class="lbl" style="font-size:9.5px;margin-bottom:5px;">Online Status</label>
+                <div class="cs-wrap" id="cs-online">
+                  <div class="cs-trigger" onclick="csToggle('cs-online')">
+                    <div class="cs-left"><span class="cs-icon" id="cs-online-ic">🟢</span><span class="cs-text" id="cs-online-txt">Online</span></div>
+                    <svg class="cs-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                  </div>
+                  <div class="cs-drop">
+                    <div class="cs-opts" id="cs-online-opts">
+                      <div class="cs-opt selected" data-value="online"    data-ic="🟢" data-lbl="Online"          onclick="csPick('cs-online','online','🟢','Online')">🟢 Online</div>
+                      <div class="cs-opt"           data-value="idle"      data-ic="🌙" data-lbl="Idle"            onclick="csPick('cs-online','idle','🌙','Idle')">🌙 Idle</div>
+                      <div class="cs-opt"           data-value="dnd"       data-ic="⛔" data-lbl="Do Not Disturb" onclick="csPick('cs-online','dnd','⛔','Do Not Disturb')">⛔ Do Not Disturb</div>
+                      <div class="cs-opt"           data-value="invisible" data-ic="⚫" data-lbl="Invisible"      onclick="csPick('cs-online','invisible','⚫','Invisible')">⚫ Invisible</div>
+                    </div>
+                  </div>
+                </div>
+                <input type="hidden" id="online-status" value="online">
+              </div>
+            </div>
+            <input id="status-text" type="text" maxlength="128" class="inp" placeholder='e.g. "your server" — leave blank for default'>
+          </div>
+
+
+        </div>
+      </div>
+
+      <!-- bot info -->
+      <div class="card" style="margin-top:12px;padding:0 22px;">
+        <div class="info-row">
+          <span class="info-key">Status</span>
+          <span class="info-val" id="info-status"><span class="pill pill-offline">Offline</span></span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Bot Tag</span>
+          <span class="info-val" style="color:var(--muted);font-family:'DM Mono',monospace;font-size:12.5px;" id="info-tag">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Ping</span>
+          <span class="info-val" style="color:var(--muted);" id="ping-display">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-key">Uptime</span>
+          <span class="info-val" style="color:var(--muted);" id="info-uptime">—</span>
+        </div>
+        <div class="info-row" style="align-items:flex-start;padding-top:16px;padding-bottom:16px;">
+          <span class="info-key" style="padding-top:10px;">Alert Channel</span>
+          <div style="flex:1;">
+            <div class="cs-wrap" id="cs-ctrl-alert">
+              <div class="cs-trigger" onclick="csToggle('cs-ctrl-alert')">
+                <div class="cs-left"><span class="cs-icon">#</span><span class="cs-text placeholder" id="cs-ctrl-alert-txt">No alert channel</span></div>
+                <svg class="cs-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+              <div class="cs-drop">
+                <div class="cs-search-box"><input class="cs-search-inp" placeholder="Search channels…" oninput="csFilter('cs-ctrl-alert',this.value)"></div>
+                <div class="cs-opts" id="cs-ctrl-alert-opts"><div class="cs-opt cs-opt-none selected" data-value="">No alert channel</div></div>
+              </div>
+            </div>
+            <input type="hidden" id="alert-channel-select" value="">
+          </div>
+        </div>
+      </div>
+
+      <!-- quick actions -->
+      <div class="card" style="margin-top:12px;overflow:hidden;">
+        <div class="action-row" onclick="window.open('https://discord.com/developers/applications','_blank')">
+          <div><div style="font-size:14px;font-weight:600;color:#fff;">More Customisation Options</div><div style="font-size:12px;color:var(--muted);margin-top:3px;">Set About Me, profile banner, app icon and more in the Developer Portal.</div></div>
+          <svg style="color:var(--muted2);flex-shrink:0;" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="action-row" onclick="openHelp()">
+          <div><div style="font-size:14px;font-weight:600;color:#fff;">Setup Guide &amp; Troubleshooting</div><div style="font-size:12px;color:var(--muted);margin-top:3px;">Step-by-step help for intents, invite URLs, common errors and more.</div></div>
+          <svg style="color:var(--muted2);flex-shrink:0;" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </div>
+
+    </div><!-- /controls -->
+
+  </div>
+  </main>
+</div>
+
+<!-- toast -->
+<div id="toast">
+  <div class="toast-in">
+    <span id="toast-icon">✅</span>
+    <span id="toast-msg">Saved!</span>
+  </div>
+</div>
+
+<script>
+const guildId = location.pathname.split('/')[2];
+let lastBotId=null, lastBotAvatar=null;
+
+/* utils */
+function esc(s){ if(s==null)return''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function val(id){ return document.getElementById(id)?.value?.trim()||null; }
+function set(id,v){ const e=document.getElementById(id); if(e&&v!=null) e.value=v; }
+function toast(msg,ok=true){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-icon').textContent=ok?'✅':'❌';
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+/* help */
+function openHelp()  { document.getElementById('help-drawer').classList.add('open');  document.getElementById('help-overlay').classList.add('open');  }
+function closeHelp() { document.getElementById('help-drawer').classList.remove('open'); document.getElementById('help-overlay').classList.remove('open'); }
+
+/* ── Custom Select ───────────────────────────────────────────────────────── */
+const _csVals = {};
+const _csCallbacks = {};
+
+function csInit(id, cb){
+  _csCallbacks[id] = cb;
+  _csVals[id] = '';
+  document.addEventListener('click', e => {
+    if(!document.getElementById(id)?.contains(e.target)) csClose(id);
+  });
+}
+
+function csToggle(id){
+  const w = document.getElementById(id);
+  const tr= w.querySelector('.cs-trigger');
+  if(tr.classList.contains('open')){ csClose(id); } else {
+    // close others
+    Object.keys(_csVals).forEach(k=>{ if(k!==id) csClose(k); });
+    tr.classList.add('open');
+    w.querySelector('.cs-drop').classList.add('open');
+    const si=w.querySelector('.cs-search-inp');
+    if(si){ si.value=''; csFilter(id,''); si.focus(); }
+  }
+}
+
+function csClose(id){
+  const w=document.getElementById(id); if(!w) return;
+  w.querySelector('.cs-trigger')?.classList.remove('open');
+  w.querySelector('.cs-drop')?.classList.remove('open');
+}
+
+function csPick(id, value, icon, label){
+  const w=document.getElementById(id); if(!w) return;
+  const ic =w.querySelector('[id$="-ic"]');
+  const txt=w.querySelector('[id$="-txt"]');
+  if(ic)  ic.textContent  = icon||'';
+  if(txt){ txt.textContent= label||''; txt.classList.toggle('placeholder',!value); }
+  w.querySelectorAll('.cs-opt').forEach(o=>o.classList.toggle('selected',o.dataset.value===value));
+  _csVals[id]=value;
+  // update hidden input (next sibling of the cs-wrap)
+  const hi=w.nextElementSibling;
+  if(hi&&hi.tagName==='INPUT'&&hi.type==='hidden') hi.value=value;
+  if(_csCallbacks[id]) _csCallbacks[id](value);
+  csClose(id);
+}
+
+function csFilter(id, q){
+  const w=document.getElementById(id); if(!w) return;
+  const lq=q.toLowerCase().trim();
+  let any=false;
+  w.querySelectorAll('.cs-opt').forEach(o=>{
+    const show=!lq||o.textContent.toLowerCase().includes(lq);
+    o.style.display=show?'':'none';
+    if(show) any=true;
+  });
+  let em=w.querySelector('.cs-empty');
+  if(!any){
+    if(!em){ em=document.createElement('div'); em.className='cs-empty'; em.textContent='No results'; w.querySelector('.cs-opts').appendChild(em); }
+    em.style.display='';
+  } else if(em) em.style.display='none';
+}
+
+function csSetValue(id, value){
+  const w=document.getElementById(id); if(!w) return;
+  const opt=w.querySelector(`.cs-opt[data-value="${CSS.escape(value)}"]`);
+  if(opt) csPick(id, value, opt.dataset.ic||'', opt.dataset.lbl||opt.textContent.trim());
+}
+
+function csPopulateChannels(id, channels, cur){
+  const optsEl=document.getElementById(id+'-opts'); if(!optsEl) return;
+  const none=`<div class="cs-opt cs-opt-none${!cur?' selected':''}" data-value="" data-ic="#" data-lbl="No alert channel" onclick="csPick('${id}','','#','No alert channel')">No alert channel</div>`;
+  const chs=channels.map(c=>{
+    const s=c.id===cur?' selected':'';
+    return `<div class="cs-opt${s}" data-value="${esc(c.id)}" data-ic="#" data-lbl="${esc(c.name)}" onclick="csPick('${id}','${esc(c.id)}','#','# ${esc(c.name)}')"># ${esc(c.name)}</div>`;
+  }).join('');
+  optsEl.innerHTML=none+chs;
+  if(cur){ const ch=channels.find(c=>c.id===cur); if(ch) csPick(id,cur,'#','# '+ch.name); }
+}
+
+/* avatar */
+function updateAvatarPreview(){
+  const custom=val('avatar-url');
+  if(custom) document.getElementById('preview-avatar').src=custom;
+  else if(lastBotId&&lastBotAvatar) document.getElementById('preview-avatar').src=`https://cdn.discordapp.com/avatars/${lastBotId}/${lastBotAvatar}.png?size=256`;
+  else document.getElementById('preview-avatar').src='/logo.png';
+}
+function clearAvatar(){ set('avatar-url',''); updateAvatarPreview(); }
+function updatePreview(){ updateAvatarPreview(); }
+
+/* status pills */
+function pillHtml(state){
+  const cls={running:'pill-active',starting:'pill-starting',reconnecting:'pill-starting',error:'pill-error'}[state]||'pill-offline';
+  const lbl={running:'Active',starting:'Starting…',reconnecting:'Reconnecting…',error:'Error',stopped:'Offline',stopping:'Stopping…',pending:'Pending'}[state]||'Offline';
+  return `<span class="pill ${cls}">${lbl}</span>`;
+}
+
+function renderState(d){
+  const st=d.liveState||d.setupState||'stopped';
+  const p=document.getElementById('live-pill');
+  const cls={running:'pill-active',starting:'pill-starting',reconnecting:'pill-starting',error:'pill-error'}[st]||'pill-offline';
+  const lbl={running:'Active',starting:'Starting…',reconnecting:'Reconnecting…',error:'Error',stopped:'Offline',stopping:'Stopping…',pending:'Pending'}[st]||'Offline';
+  p.className='pill '+cls; p.textContent=lbl;
+  document.getElementById('info-status').innerHTML=pillHtml(st);
+  document.getElementById('info-tag').textContent=d.botTag||'—';
+  const up=d.liveUptime;
+  if(up){ const h=Math.floor(up/3600000),m=Math.floor((up%3600000)/60000); document.getElementById('info-uptime').textContent=h+'h '+m+'m'; }
+  else   document.getElementById('info-uptime').textContent='—';
+  if(d.livePing!=null) document.getElementById('ping-display').textContent=d.livePing+'ms';
+  if(d.setupError) toast('⚠️ '+d.setupError,false);
+  // Store bot identity for preview fallback
+  if(d.botId) lastBotId=d.botId;
+  if(d.botAvatar) lastBotAvatar=d.botAvatar;
+  if(d.botId && d.botAvatar && !val('avatar-url')) updateAvatarPreview();
+}
+
+/* load */
+async function load(){
+  try{
+    const r=await fetch(`/api/${guildId}/custombrand`,{headers:{'x-dashboard-request':'true'}});
+    if(!r.ok) throw new Error(await r.text());
+    applyConfig(await r.json());
+  }catch(e){ toast('Failed to load config',false); }
+}
+
+function applyConfig(d){
+  set('bot-name',   d.botName);
+  set('avatar-url', d.avatarUrl);
+  set('status-text',d.statusText||'');
+  csSetValue('cs-activity', (d.statusType||'').toLowerCase()||'');
+  csSetValue('cs-online',   d.onlineStatus||'online');
+  updateAvatarPreview();
+  renderState(d);
+  if(d.hasToken){
+    document.getElementById('setup-card').style.display='none';
+    document.getElementById('configured-card').style.display='block';
+    document.getElementById('controls').style.display='block';
+  } else {
+    document.getElementById('setup-card').style.display='block';
+    document.getElementById('configured-card').style.display='none';
+    document.getElementById('controls').style.display='none';
+  }
+  const aid=d.alertChannelId||'';
+  set('alert-channel-select',aid);
+  if(aid) csSetValue('cs-ctrl-alert',aid);
+}
+
+async function refreshStatus(){
+  try{
+    const r=await fetch(`/api/${guildId}/custombrand/status`,{headers:{'x-dashboard-request':'true'}});
+    const d=await r.json();
+    renderState({liveState:d.state,botTag:d.botTag,botId:d.botId,botAvatar:d.botAvatar,livePing:d.ping,liveUptime:d.uptime});
+    if(d.notification) toast(d.notification.message,d.notification.ok);
+  }catch{}
+}
+
+/* token submit */
+async function submitToken(){
+  const token=document.getElementById('token-input').value.trim();
+  const alertChannelId=document.getElementById('alert-channel-select')?.value||null;
+  const btn=document.getElementById('token-btn');
+  const status=document.getElementById('token-status');
+  if(!token){ return toast('Paste your bot token first.',false); }
+  btn.innerHTML='<svg style="width:14px;height:14px;animation:spin 1s linear infinite" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Starting…';
+  btn.disabled=true;
+  status.textContent='Connecting to Discord…'; status.style.color='var(--yellow)';
+  try{
+    const r=await fetch(`/api/${guildId}/custombrand/setup`,{method:'POST',headers:{'Content-Type':'application/json','x-dashboard-request':'true'},body:JSON.stringify({token,alertChannelId})});
+    const d=await r.json();
+    if(!r.ok){ status.textContent='❌ '+(d.error||'Failed')+(d.hint?' — '+d.hint:''); status.style.color='#ff7a8e'; btn.innerHTML='Try Again'; btn.disabled=false; return; }
+    document.getElementById('token-input').value='';
+    status.textContent='⏳ Starting bot…'; status.style.color='var(--yellow)';
+    btn.innerHTML='Start Bot'; btn.disabled=false;
+    toast('Token accepted — bot is starting up! 🎉');
+    let att=0;
+    const poll=setInterval(async()=>{
+      att++;
+      try{
+        const pr=await fetch('/api/'+guildId+'/custombrand/status',{headers:{'x-dashboard-request':'true'}});
+        const pd=await pr.json();
+        renderState({liveState:pd.state,botTag:pd.botTag,livePing:pd.ping,liveUptime:pd.uptime});
+        if(pd.state==='running'||pd.state==='error'||att>=12){
+          clearInterval(poll);
+          if(pd.state==='running'){ status.textContent='✅ Bot is online as '+pd.botTag; status.style.color='var(--green)'; }
+          else if(pd.state==='error'){ status.textContent='❌ Bot failed to start — check your token'; status.style.color='#ff7a8e'; }
+          load();
+        }
+      }catch{ clearInterval(poll); load(); }
+    },2500);
+  }catch(e){ status.textContent='❌ '+e.message; status.style.color='#ff7a8e'; btn.innerHTML='Start Bot'; btn.disabled=false; }
+}
+
+/* save */
+async function saveConfig(){
+  const btn=document.getElementById('save-btn');
+  btn.textContent='Saving…'; btn.disabled=true;
+  try{
+    const r=await fetch(`/api/${guildId}/custombrand`,{method:'POST',headers:{'Content-Type':'application/json','x-dashboard-request':'true'},body:JSON.stringify({
+      botName:      val('bot-name'),
+      avatarUrl:    val('avatar-url'),
+      statusText:   val('status-text'),
+      statusType:   document.getElementById('status-type')?.value||null,
+      onlineStatus: document.getElementById('online-status')?.value||'online',
+    })});
+    const d=await r.json();
+    if(!r.ok){ toast(d.error||'Save failed',false); return; }
+    toast('Saved — applying to Discord…');
+    let polls=0;
+    const t=setInterval(async()=>{ polls++; await refreshStatus(); if(polls>=4) clearInterval(t); },1500);
+  }catch(e){ toast('Error: '+e.message,false); }
+  finally{ btn.textContent='Save Changes'; btn.disabled=false; }
+}
+
+/* reset */
+async function resetConfig(){
+  if(!confirm('This will stop the custom bot and remove all configuration. This cannot be undone. Continue?')) return;
+  try{
+    const r=await fetch(`/api/${guildId}/custombrand`,{method:'DELETE',headers:{'x-dashboard-request':'true'}});
+    if(!r.ok) return toast('Reset failed',false);
+    toast('Custom Branding reset.');
+    document.getElementById('controls').style.display='none';
+    document.getElementById('setup-card').style.display='block';
+    document.getElementById('configured-card').style.display='none';
+    ['s1','s2','s3'].forEach((id,i)=>{ const e=document.getElementById(id); e.className='step-num '+(i===0?'sn-active':'sn-pending'); e.textContent=i+1; });
+    ['bot-name','avatar-url','token-input'].forEach(id=>set(id,''));
+    document.getElementById('preview-avatar').src='/logo.png'; lastBotId=null; lastBotAvatar=null;
+    const p=document.getElementById('live-pill'); p.className='pill pill-offline'; p.textContent='Offline';
+    const st=document.getElementById('token-status'); st.innerHTML='<svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Encrypted at rest — never exposed via any API.'; st.style.color='';
+  }catch(e){ toast('Error: '+e.message,false); }
+}
+
+/* channels */
+async function loadChannels(){
+  try{
+    const r=await fetch(`/api/guild/${guildId}/channels`,{headers:{'x-dashboard-request':'true'}});
+    if(!r.ok) return;
+    const data=await r.json();
+    const channels=(data.channels||[]).sort((a,b)=>a.name.localeCompare(b.name));
+    const cur=document.getElementById('alert-channel-select')?.value||'';
+    csPopulateChannels('cs-ctrl-alert',  channels, cur);
+  }catch{}
+}
+
+async function saveAlertChannel(channelId){
+  try{
+    const r=await fetch(`/api/${guildId}/custombrand`,{method:'POST',headers:{'Content-Type':'application/json','x-dashboard-request':'true'},body:JSON.stringify({alertChannelId:channelId||null})});
+    const d=await r.json();
+    if(!r.ok) toast(d.error||'Failed to save',false);
+    else toast('Alert channel updated!');
+  }catch(e){ toast('Failed to save channel',false); }
+}
+
+/* init */
+window.addEventListener('DOMContentLoaded',()=>{
+  csInit('cs-activity',    v=>{ set('status-type',v); });
+  csInit('cs-online',      v=>{ set('online-status',v); });
+  csInit('cs-ctrl-alert',  v=>{ set('alert-channel-select',v); saveAlertChannel(v); });
+  load();
+  loadChannels();
+  setInterval(refreshStatus,30_000);
+});
+</script>
+
+<script src="/sidebar.js" nonce="<%= nonce %>"></script>
+
+</body>
+</html>

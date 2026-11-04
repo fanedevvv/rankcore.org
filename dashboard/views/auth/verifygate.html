@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Verify your identity</title>
+<link rel="icon" type="image/png" href="/logo.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;min-height:100vh;font-family:'Plus Jakarta Sans',sans-serif;background:#080811;color:#fff}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(255,51,51,.07) 0%,transparent 70%);pointer-events:none;z-index:0}
+.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;z-index:1}
+.card{background:#0e0e1c;border:1px solid rgba(255,255,255,.07);border-radius:24px;padding:36px 32px;width:100%;max-width:460px;box-shadow:0 40px 100px rgba(0,0,0,.7);position:relative;overflow:hidden}
+.card-accent{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#FF3333 30%,#CC2222 50%,#FF3333 70%,transparent);background-size:200% 100%;animation:shimmer 3s linear infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.shield-wrap{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,rgba(255,51,51,.12),rgba(255,51,51,.04));border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 22px}
+.shield-wrap svg{width:34px;height:34px;color:#FF3333}
+h1{font-size:22px;font-weight:800;text-align:center;margin:0 0 6px;letter-spacing:-.02em}
+.sub{font-size:13px;color:#6b7280;text-align:center;margin:0 0 28px;line-height:1.55}
+.server-tag{color:#FF3333;font-weight:700}
+.info-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.info-pill{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);border-radius:12px}
+.info-pill-icon{width:32px;height:32px;flex-shrink:0;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.info-pill-icon.blue{background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.2)}
+.info-pill-icon.amber{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2)}
+.info-pill-icon svg{width:15px;height:15px}
+.info-pill-icon.blue svg{color:#818cf8}
+.info-pill-icon.amber svg{color:#fbbf24}
+.info-pill-text{font-size:12px;color:#9ca3af;line-height:1.55;padding-top:2px}
+.info-pill-text strong{color:#d1d5db;font-weight:600}
+.consent-section{background:rgba(255,51,51,.03);border:1px solid rgba(255,51,51,.12);border-radius:14px;padding:18px;margin-bottom:18px}
+.consent-header{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.consent-header svg{width:14px;height:14px;color:#FF3333;flex-shrink:0}
+.consent-header span{font-size:11px;font-weight:700;color:#FF3333;text-transform:uppercase;letter-spacing:.07em}
+.consent-items{display:flex;flex-direction:column;gap:9px}
+.consent-item{display:flex;align-items:flex-start;gap:9px}
+.consent-dot{width:5px;height:5px;border-radius:50%;background:#FF3333;flex-shrink:0;margin-top:5px;opacity:.7}
+.consent-item p{font-size:12px;color:#9ca3af;margin:0;line-height:1.55}
+.consent-item p strong{color:#d1d5db;font-weight:600}
+.check-label{display:flex;align-items:flex-start;gap:11px;margin-bottom:20px;cursor:pointer;user-select:none;padding:14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:12px;transition:border-color .15s,background .15s}
+.check-label:has(input:checked){border-color:rgba(255,51,51,.25);background:rgba(255,51,51,.03)}
+.check-label input[type=checkbox]{appearance:none;-webkit-appearance:none;width:18px;height:18px;flex-shrink:0;border-radius:5px;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.04);cursor:pointer;transition:all .15s;margin-top:1px;position:relative}
+.check-label input[type=checkbox]:checked{background:#FF3333;border-color:#FF3333}
+.check-label input[type=checkbox]:checked::after{content:'';position:absolute;width:5px;height:9px;border:2px solid #060d09;border-top:none;border-left:none;transform:rotate(45deg) translate(3px,0px)}
+.check-label span{font-size:12px;color:#9ca3af;line-height:1.6}
+.check-label span strong{color:#e5e7eb;font-weight:600}
+.btn{width:100%;padding:15px;border-radius:13px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn-primary{background:linear-gradient(135deg,#FF3333,#CC2222);color:#060d09;box-shadow:0 4px 20px rgba(255,51,51,.2)}
+.btn-primary:hover:not(:disabled){box-shadow:0 6px 30px rgba(255,51,51,.35);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.btn svg{width:16px;height:16px}
+.countdown{text-align:center;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:#374151}
+.countdown-dot{width:6px;height:6px;border-radius:50%;background:#374151;animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+.countdown.urgent{color:#ef4444}
+.countdown.urgent .countdown-dot{background:#ef4444}
+.state{display:none}
+.state.active{display:block}
+.spinner-wrap{text-align:center;padding:12px 0}
+.spinner{width:40px;height:40px;border:3px solid rgba(255,51,51,.1);border-top-color:#FF3333;border-radius:50%;animation:spin .75s linear infinite;margin:0 auto 18px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.result-icon{width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.result-icon svg{width:30px;height:30px}
+.result-icon.ok{background:rgba(255,51,51,.08);border:2px solid rgba(255,51,51,.25)}
+.result-icon.ok svg{color:#FF3333}
+.result-icon.bad{background:rgba(239,68,68,.08);border:2px solid rgba(239,68,68,.25)}
+.result-icon.bad svg{color:#f87171}
+.result-icon.warn{background:rgba(251,191,36,.08);border:2px solid rgba(251,191,36,.25)}
+.result-icon.warn svg{color:#fbbf24}
+.result-title{font-size:20px;font-weight:800;text-align:center;margin:0 0 8px}
+.result-sub{font-size:13px;color:#6b7280;text-align:center;line-height:1.65;margin:0 0 16px}
+.reason-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;font-size:11px;font-weight:600;margin:3px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.15);color:#fca5a5}
+.action-note{font-size:12px;color:#6b7280;padding:11px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;text-align:center;margin-top:4px}
+.action-note strong{color:#e5e7eb}
+.expired-card{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);border-radius:16px;padding:24px;text-align:center}
+.expired-card svg{width:36px;height:36px;color:#f87171;margin:0 auto 12px;display:block}
+.expired-card h2{font-size:17px;font-weight:700;color:#f87171;margin:0 0 8px}
+.expired-card p{font-size:12px;color:#6b7280;margin:0;line-height:1.6}
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<div class="wrap">
+  <div class="card">
+    <div class="card-accent"></div>
+
+    <!-- EXPIRED -->
+    <div id="state-expired" class="state active">
+      <div class="expired-card">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <h2>Link expired or invalid</h2>
+        <p>This verification link has expired or has already been used.<br>Please click the <strong>Verify</strong> button in Discord to get a new link.</p>
+      </div>
+    </div>
+
+    <!-- VERIFY -->
+    <div id="state-verify" class="state">
+      <div class="shield-wrap">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      </div>
+      <h1>Identity Verification</h1>
+      <p class="sub">Required to access <span class="server-tag" id="serverName">the server</span></p>
+
+      <div class="info-grid">
+        <div class="info-pill">
+          <div class="info-pill-icon blue">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+          <p class="info-pill-text">This link is <strong>single-use</strong> and tied only to your Discord account. It expires in <strong id="timerInline">—</strong>. Do not share it.</p>
+        </div>
+        <div class="info-pill">
+          <div class="info-pill-icon amber">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <p class="info-pill-text">Your <strong>IP address</strong> is processed server-side to detect VPNs, proxies and alt accounts. It is <strong>never shown to server staff</strong>.</p>
+        </div>
+      </div>
+
+      <div class="consent-section">
+        <div class="consent-header">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          <span>Data Processing Notice</span>
+        </div>
+        <div class="consent-items">
+          <div class="consent-item"><div class="consent-dot"></div>
+            <p>Your <strong>IP address</strong> will be collected server-side and passed through automated security checks (VPN/proxy/Tor/datacenter detection) at the point of verification.</p>
+          </div>
+          <div class="consent-item"><div class="consent-dot"></div>
+            <p>A <strong>hashed, non-reversible fingerprint</strong> of your IP is stored and may be cross-referenced against other Discord accounts to detect alt accounts on this server.</p>
+          </div>
+          <div class="consent-item"><div class="consent-dot"></div>
+            <p>Your raw IP is <strong>never stored in plaintext</strong> and is never visible to server staff or administrators.</p>
+          </div>
+          <div class="consent-item"><div class="consent-dot"></div>
+            <p>If checks fail, the server's configured automated action (such as removal) may be applied to your account.</p>
+          </div>
+          <div class="consent-item"><div class="consent-dot"></div>
+            <p>This is performed under <strong>legitimate interest</strong> for server security. You may request deletion of your record by contacting a server administrator.</p>
+          </div>
+        </div>
+      </div>
+
+      <label class="check-label">
+        <input type="checkbox" id="consentCheck" onchange="toggleBtn()">
+        <span>I have read and understood the data processing notice. I consent to my connection data being processed for verification and confirm I am <strong>not using a VPN, proxy, or anonymising service</strong>.</span>
+      </label>
+
+      <button class="btn btn-primary" id="verifyBtn" disabled onclick="submitVerify()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        Complete Verification
+      </button>
+
+      <div class="countdown" id="countdown">
+        <div class="countdown-dot"></div>
+        <span>Link expires in <strong id="timerCount">—</strong></span>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <div id="state-loading" class="state">
+      <div class="spinner-wrap">
+        <div class="spinner"></div>
+        <p style="font-size:14px;font-weight:700;margin:0 0 6px;text-align:center">Running security checks…</p>
+        <p style="font-size:12px;color:#6b7280;margin:0;text-align:center">Processing your connection. This only takes a moment.</p>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="state-success" class="state">
+      <div class="result-icon ok">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <p class="result-title">Verified ✓</p>
+      <p class="result-sub" id="successSub">You've passed all security checks and your role has been assigned. You can close this tab and return to Discord.</p>
+    </div>
+
+    <!-- BLOCKED -->
+    <div id="state-blocked" class="state">
+      <div class="result-icon bad">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+      </div>
+      <p class="result-title" id="blockTitle">Verification failed</p>
+      <p class="result-sub" id="blockSub">Your connection did not pass our automated security checks.</p>
+      <div id="blockReasons" style="text-align:center;margin-bottom:12px"></div>
+      <div class="action-note" id="blockAction"></div>
+    </div>
+
+    <!-- FLAGGED -->
+    <div id="state-flagged" class="state">
+      <div class="result-icon warn">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      </div>
+      <p class="result-title">Flagged for review</p>
+      <p class="result-sub">Your verification has been flagged and will be reviewed by a staff member. You may still have access — please check Discord.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const TOKEN   = '<%= token %>';
+const EXPIRES = new Date('<%= expiresAt %>').getTime();
+const CUSTOM_SUCCESS_MSG = '<%= successMessage %>';
+const CUSTOM_FAIL_MSG    = '<%= failMessage %>';
+
+let timerInterval;
+function startTimer() {
+  function tick() {
+    const left = Math.max(0, EXPIRES - Date.now());
+    const m = Math.floor(left / 60000);
+    const s = Math.floor((left % 60000) / 1000);
+    const fmt = `${m}:${s.toString().padStart(2,'0')}`;
+    const el1 = document.getElementById('timerCount');
+    const el2 = document.getElementById('timerInline');
+    const bar = document.getElementById('countdown');
+    if (el1) el1.textContent = fmt;
+    if (el2) el2.textContent = fmt;
+    if (left <= 60000) bar?.classList.add('urgent');
+    if (left === 0) { clearInterval(timerInterval); showState('expired'); }
+  }
+  tick();
+  timerInterval = setInterval(tick, 1000);
+}
+
+function toggleBtn() {
+  const btn = document.getElementById('verifyBtn');
+  if (btn) btn.disabled = !document.getElementById('consentCheck')?.checked;
+}
+
+const STATES = ['expired','verify','loading','success','blocked','flagged'];
+function showState(s) {
+  STATES.forEach(n => {
+    const el = document.getElementById('state-'+n);
+    if (el) el.classList.toggle('active', n === s);
+  });
+}
+
+async function submitVerify() {
+  if (!document.getElementById('consentCheck')?.checked) return;
+  showState('loading');
+  try {
+    const res  = await fetch('/ipverify/'+TOKEN, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({consent:true}),
+      credentials: 'same-origin',
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      if (res.status === 410) return showState('expired');
+      showState('blocked');
+      document.getElementById('blockTitle').textContent = 'Something went wrong';
+      document.getElementById('blockSub').textContent   = data.error || 'An unexpected error occurred.';
+      return;
+    }
+    const { action, flagReasons, failActionTaken } = data;
+    if (action === 'PASSED' || action === 'MANUAL_APPROVE') {
+      showState('success');
+      if (CUSTOM_SUCCESS_MSG) document.getElementById('successSub').textContent = CUSTOM_SUCCESS_MSG;
+    } else if (action === 'FLAGGED') {
+      showState('flagged');
+    } else {
+      showState('blocked');
+      const titles = {BLOCKED_VPN:'VPN / Proxy detected',BLOCKED_ALT:'Alt account detected',BLOCKED_COUNTRY:'Region not permitted',BLOCKED_IP_BAN:'IP address blocked'};
+      document.getElementById('blockTitle').textContent = titles[action] || 'Verification failed';
+      const subs = {
+        BLOCKED_VPN:'A VPN, proxy, or anonymising service was detected. Disable it and try again on your real network.',
+        BLOCKED_ALT:'Your network has been associated with another account on this server. Alt accounts are not permitted.',
+        BLOCKED_COUNTRY:'Your region is not permitted to verify for this server.',
+        BLOCKED_IP_BAN:'This network address has been blocked due to repeated verification failures.',
+      };
+      document.getElementById('blockSub').textContent = CUSTOM_FAIL_MSG || subs[action] || 'Your connection did not pass our security checks.';
+      const labels = {vpn_detected:'🔒 VPN',proxy_detected:'🔀 Proxy',tor_detected:'🧅 Tor',hosting_ip:'🖥️ Datacenter IP',alt_account:'👥 Alt Account',account_too_new:'🕒 Account Too New',ip_ban_threshold:'🚫 IP Blocked'};
+      const reasonsEl = document.getElementById('blockReasons');
+      if (reasonsEl && flagReasons?.length) {
+        reasonsEl.innerHTML = flagReasons.map(r =>
+          '<span class="reason-tag">'+(labels[r]||(r.startsWith('country_not_allowed:')?'🌍 Country Not Allowed: '+r.split(':')[1]:null)||(r.startsWith('country_blocked:')?'🌍 Country Blocked: '+r.split(':')[1]:null)||(r.startsWith('high_risk_')?'⚠️ High Risk Score':null)||r)+'</span>'
+        ).join('');
+      }
+      const actionEl = document.getElementById('blockAction');
+      if (actionEl) {
+        const msgs = {kick:'You have been <strong>removed</strong> from the server.',ban:'You have been <strong>banned</strong> from the server.',alert:'A moderator has been <strong>alerted</strong>.',log:'This incident has been <strong>logged</strong> for staff review.',none:'No automated action was taken.'};
+        actionEl.innerHTML = msgs[failActionTaken] || '';
+      }
+    }
+  } catch {
+    showState('blocked');
+    document.getElementById('blockTitle').textContent = 'Connection error';
+    document.getElementById('blockSub').textContent   = 'Could not reach the verification server. Please try again.';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const isExpired  = '<%= isExpired %>' === 'true';
+  const serverName = '<%= serverName %>';
+  if (isExpired) { showState('expired'); return; }
+  const snEl = document.getElementById('serverName');
+  if (snEl && serverName) snEl.textContent = serverName;
+  showState('verify');
+  startTimer();
+});
+</script>
+
+</body>
+</html>

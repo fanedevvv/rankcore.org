@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Changelogs | Roco Dashboard</title>
+
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tailwind.css">
+
+  <style>
+    body { background-color:#050508; overflow-x:hidden; font-family:'Plus Jakarta Sans',sans-serif; }
+
+    .bg-grid {
+      background-size: 60px 60px;
+      background-image: linear-gradient(to right,rgba(255,255,255,.02) 1px,transparent 1px),
+                        linear-gradient(to bottom,rgba(255,255,255,.02) 1px,transparent 1px);
+      mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
+    }
+
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track  { background:#050508; }
+    ::-webkit-scrollbar-thumb  { background:#2d2d3d; border-radius:10px; }
+    ::-webkit-scrollbar-thumb:hover { background:#6C53FF; }
+
+    @keyframes fadeInUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes blob      { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-20px) scale(1.05)} 66%{transform:translate(-20px,20px) scale(.95)} }
+    @keyframes shimmer   { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+    @keyframes glowPulse { 0%,100%{box-shadow:0 0 12px rgba(108,83,255,.5)} 50%{box-shadow:0 0 22px rgba(108,83,255,.9)} }
+
+    .animate-blob         { animation:blob 8s ease-in-out infinite; }
+    .animation-delay-2000 { animation-delay:2s; }
+    .animate-fade-in-up   { animation:fadeInUp .45s ease forwards; opacity:0; }
+
+    .skeleton {
+      background: linear-gradient(90deg,#151520 25%,#1e1e2d 50%,#151520 75%);
+      background-size:200% 100%;
+      animation:shimmer 1.5s infinite;
+      border-radius:8px;
+    }
+
+    .cl-card {
+      background:#0f0f13;
+      border:1px solid rgba(255,255,255,.05);
+      border-radius:16px;
+      transition:border-color .25s;
+    }
+    .cl-card:hover { border-color:rgba(108,83,255,.25); }
+
+    .v-dot {
+      width:14px; height:14px; border-radius:50%;
+      border:3px solid #050508; flex-shrink:0;
+    }
+
+    .badge {
+      display:inline-flex; align-items:center; gap:5px;
+      padding:4px 10px; border-radius:8px;
+      font-size:11px; font-weight:700;
+      text-transform:uppercase; letter-spacing:.04em;
+    }
+    .badge-new      { background:rgba(108,83,255,.15);  color:#a78bfa; border:1px solid rgba(108,83,255,.3); }
+    .badge-improved { background:rgba(59,130,246,.15);  color:#60a5fa; border:1px solid rgba(59,130,246,.3); }
+    .badge-fixed    { background:rgba(239,68,68,.15);   color:#EF4444; border:1px solid rgba(239,68,68,.3); }
+    .badge-removed  { background:rgba(239,68,68,.15);   color:#f87171; border:1px solid rgba(239,68,68,.3); }
+    .badge-security { background:rgba(249,115,22,.15);  color:#fb923c; border:1px solid rgba(249,115,22,.3); }
+    .badge-premium  { background:rgba(234,179,8,.15);   color:#facc15; border:1px solid rgba(234,179,8,.3); }
+    .badge-update   { background:rgba(20,184,166,.15);  color:#2dd4bf; border:1px solid rgba(20,184,166,.3); }
+
+    .filter-tab {
+      padding:6px 14px; border-radius:8px; font-size:12px; font-weight:600;
+      cursor:pointer; transition:all .18s; color:#6b7280;
+      border:1px solid transparent; background:transparent; white-space:nowrap;
+    }
+    .filter-tab:hover  { color:#d1d5db; background:rgba(255,255,255,.05); }
+    .filter-tab.active { color:white; background:rgba(108,83,255,.15); border-color:rgba(108,83,255,.3); }
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body class="text-white antialiased min-h-screen relative">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+  <div class="fixed inset-0 bg-grid -z-10"></div>
+  <div class="fixed top-0 -left-20 w-96 h-96 bg-[#6C53FF]/10 rounded-full blur-[120px] animate-blob -z-10"></div>
+  <div class="fixed bottom-0 -right-20 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] animate-blob animation-delay-2000 -z-10"></div>
+
+  <!-- Alert banner (for other pages — hidden here since we mark as read on load) -->
+  <div id="changelogBanner" class="hidden fixed top-0 left-0 right-0 z-[100] bg-gradient-to-r from-[#6C53FF]/90 to-blue-600/90 backdrop-blur-md py-2 px-4 flex items-center justify-between text-sm font-medium">
+    <div class="flex items-center gap-2">
+      <svg class="w-4 h-4 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+      <span class="text-white" id="bannerText"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M211.8 0c7.8 0 14.3 5.7 16.7 13.2C240.8 51.9 277.4 80 320 80h32c8.8 0 16 7.2 16 16v32c0 112.3-99.1 196.9-216.5 222.4C116.2 354.4 96 342.1 96 326.9V256c0-35.3-28.7-64-64-64H32V160H64C146.7 160 213.7 91.3 211.8 0zm69.4 512H384c35.3 0 64-28.7 64-64v-96H336L281.2 512zM128 512H256L134.4 256H32v160.1c0 52.8 43 95.9 96 95.9z"/></svg> New update available — view the latest changelogs!</span>
+    </div>
+    <div class="flex items-center gap-2 ml-4 flex-shrink-0">
+      <button onclick="dismissBanner()" class="text-white/70 hover:text-white transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-[#050508]/80 backdrop-blur-xl transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 md:gap-3 group">
+        <div class="relative">
+          <div class="absolute -inset-1 bg-gradient-to-r from-[#6C53FF] to-blue-600 rounded-xl blur opacity-25 group-hover:opacity-75 transition duration-500"></div>
+          <div class="relative w-8 h-8 md:w-10 md:h-10 bg-[#101015] rounded-lg md:rounded-xl flex items-center justify-center border border-white/10">
+            <svg class="w-5 h-5 md:w-6 md:h-6 text-[#6C53FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+        </div>
+        <span class="text-lg md:text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Roco</span>
+      </a>
+      <div class="flex items-center gap-3 md:gap-6">
+        <div id="userContainer" class="hidden items-center gap-2 bg-white/5 px-2 md:px-4 py-1 rounded-full border border-white/5">
+          <img id="userAvatar" class="w-6 h-6 md:w-8 md:h-8 rounded-full ring-2 ring-[#6C53FF]/20" src="" alt="">
+          <span id="username" class="hidden sm:block text-xs md:text-sm font-semibold text-gray-200"></span>
+        </div>
+        <a href="/donate" class="group flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">
+          <div class="p-2 rounded-lg bg-white/5 group-hover:bg-yellow-500/20 group-hover:text-yellow-400 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          </div>
+          <span class="hidden md:inline">Donate</span>
+        </a>
+        <a id="devPanelLink" href="/dev" class="group flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white transition-colors" style="display:none">
+          <div class="p-2 rounded-lg bg-white/5 group-hover:bg-blue-500/20 group-hover:text-blue-400 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+          </div>
+          <span class="hidden md:inline">Dev Panel</span>
+        </a>
+        <a href="/changelogs" class="group flex items-center gap-2 text-sm font-medium text-white transition-colors">
+          <div class="p-2 rounded-lg bg-[#6C53FF]/20 text-[#6C53FF] border border-[#6C53FF]/30 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+          </div>
+          <span class="hidden md:inline">Changelogs</span>
+        </a>
+        <a href="/docs" class="group flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">
+          <div class="p-2 rounded-lg bg-white/5 group-hover:bg-red-500/20 group-hover:text-red-400 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a1 1 0 01-1 1H6a2 2 0 01-2-2V6z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 8h8M8 12h8M8 16h5"/></svg>
+          </div>
+          <span class="hidden md:inline">Docs</span>
+        </a>
+        <a href="/logout" class="group flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">
+          <div class="p-2 rounded-lg bg-white/5 group-hover:bg-red-500/20 group-hover:text-red-400 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          </div>
+          <span class="hidden md:inline">Logout</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="pt-24 md:pt-32 pb-24 px-4 md:px-6 max-w-4xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-10 animate-fade-in-up">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="p-2.5 bg-[#6C53FF]/15 border border-[#6C53FF]/30 rounded-xl">
+          <svg class="w-6 h-6 text-[#6C53FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+        </div>
+        <div>
+          <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">Changelogs</h1>
+          <p class="text-sm text-gray-500 mt-0.5">Every update, fix, and new feature — all in one place</p>
+        </div>
+      </div>
+      <div id="latestPill" class="hidden items-center gap-3 flex-wrap mt-5">
+        <span class="flex items-center gap-2 px-3 py-1.5 bg-[#6C53FF]/10 border border-[#6C53FF]/20 rounded-full text-xs font-semibold text-[#a78bfa]">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#6C53FF] animate-pulse"></span>
+          Latest: <span id="latestVersionLabel">—</span>
+        </span>
+        <span id="latestDateLabel" class="text-xs text-gray-600"></span>
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="flex items-center gap-2 mb-8 overflow-x-auto pb-1 animate-fade-in-up" style="animation-delay:50ms">
+      <button class="filter-tab active" data-type="all">All</button>
+      <button class="filter-tab" data-type="new"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M327.5 85.2c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L384 128l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L448 128l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L448 64 426.8 7.5C425.1 3 420.8 0 416 0s-9.1 3-10.8 7.5L384 64l-56.5 21.2zM9.3 240C3.6 242.3 0 247.9 0 254s3.6 11.7 9.3 14L160 320l77.3 165.7c2.3 5.7 7.9 9.3 14 9.3s11.7-3.6 14-9.3L343 320l150.7-66c5.7-2.3 9.3-7.9 9.3-14s-3.6-11.7-9.3-14L343 160 265.3 9.3C263 3.6 257.4 0 251.3 0s-11.7 3.6-14 9.3L160 160 9.3 240z"/></svg> New</button>
+      <button class="filter-tab" data-type="improved"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M78.6 5C69.1-2.4 55.6-1.5 47 7L7 47c-8.5 8.5-9.4 22-2.1 31.6l80 104c4.5 5.9 11.6 9.4 19 9.4h54.1l109 109c-14.7 29.8-10.2 66.7 13.4 90.3s60.5 28.1 90.3 13.4L402.4 345l83 83c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0l-16 16c-12.5 12.5-12.5 32.8 0 45.3l-74.7-74.7 79.8-79.8 28 28c7.5 7.5 17.7 11.7 28.3 11.7H544.1c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32H441.4c-10.6 0-20.8 4.2-28.3 11.7l-79.8 79.8L224.2 142c-4.5-4.5-9.4-8.4-14.6-11.6L78.6 5z"/></svg> Improved</button>
+      <button class="filter-tab" data-type="fixed"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M256 0c53 0 96 43 96 96v3.6c0 15.7-12.7 28.4-28.4 28.4H188.4c-15.7 0-28.4-12.7-28.4-28.4V96c0-53 43-96 96-96zM41.4 105.4c12.5-12.5 32.8-12.5 45.3 0l64 64c.7 .7 1.4 1.4 2 2.1c14.2-7.3 30.4-11.5 47.5-11.5c36.9 0 69.5 18.6 89.3 47.1L388.5 64.8c4.1-11.8 14.6-20.3 27.1-22c3.2-.4 6.5-.6 9.9-.6h10.5C480.8 42.2 512 73.4 512 112v8c0 26.5-21.5 48-48 48H383.2c-4.1 0-8.2-.3-12.1-.9C360.8 192.9 352 208.4 352 226v2c0 17.6 7.1 33.5 18.7 45.1l58.3 58.3c25 25 25 65.5 0 90.5l-90.5 90.5c-25 25-65.5 25-90.5 0L193.9 457.5C169.8 433.4 160 400.7 160 368c0-35.3 16.5-66.8 42.1-87l-78.7-78.7C110.8 202.3 128 179 128 152V128c0-17.7 14.3-32 32-32h16c0-17.7 14.3-32 32-32s32 14.3 32 32H41.4c-12.5-12.5-12.5-32.8 0-45.3l.1-.3z"/></svg> Fixed</button>
+      <button class="filter-tab" data-type="removed"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg> Removed</button>
+      <button class="filter-tab" data-type="security"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg> Security</button>
+      <button class="filter-tab" data-type="premium"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg> Premium</button>
+      <button class="filter-tab" data-type="update"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M50.7 58.5L0 160H208V32H93.7C75.5 32 58.6 43.3 50.7 58.5zM240 160H448L397.3 58.5C389.4 43.3 372.5 32 354.3 32H240V160zM448 192H0V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192z"/></svg> Update</button>
+    </div>
+
+    <!-- Loading skeletons -->
+    <div id="loadingState" class="space-y-4">
+      <div class="cl-card p-6">
+        <div class="flex items-center gap-3 mb-5"><div class="skeleton w-3.5 h-3.5 rounded-full"></div><div class="skeleton h-5 w-36 rounded"></div><div class="skeleton h-5 w-16 rounded-full ml-2"></div></div>
+        <div class="space-y-3"><div class="skeleton h-3 w-full rounded"></div><div class="skeleton h-3 w-5/6 rounded"></div><div class="skeleton h-3 w-4/6 rounded"></div></div>
+      </div>
+      <div class="cl-card p-6">
+        <div class="flex items-center gap-3 mb-5"><div class="skeleton w-3.5 h-3.5 rounded-full"></div><div class="skeleton h-5 w-44 rounded"></div></div>
+        <div class="space-y-3"><div class="skeleton h-3 w-full rounded"></div><div class="skeleton h-3 w-3/4 rounded"></div></div>
+      </div>
+      <div class="cl-card p-6">
+        <div class="flex items-center gap-3 mb-5"><div class="skeleton w-3.5 h-3.5 rounded-full"></div><div class="skeleton h-5 w-28 rounded"></div></div>
+        <div class="space-y-3"><div class="skeleton h-3 w-full rounded"></div><div class="skeleton h-3 w-2/3 rounded"></div></div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="emptyState" class="hidden flex-col items-center justify-center py-24 text-center">
+      <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-5 ring-1 ring-white/10">
+        <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      </div>
+      <h3 class="text-lg font-bold text-white mb-1">No changelogs found</h3>
+      <p class="text-sm text-gray-500">No entries match the selected filter.</p>
+      <button onclick="setFilter('all')" class="mt-5 px-5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm font-medium transition-all">Clear filter</button>
+    </div>
+
+    <!-- Error state -->
+    <div id="errorState" class="hidden flex-col items-center justify-center py-24 text-center">
+      <div class="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mb-5 ring-1 ring-red-500/20">
+        <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+      </div>
+      <h3 class="text-lg font-bold text-white mb-1">Failed to load changelogs</h3>
+      <p class="text-sm text-gray-500 mb-5">Could not reach the server. Please try again.</p>
+      <button onclick="loadChangelogs()" class="px-5 py-2 bg-[#6C53FF] hover:bg-[#5a43e0] rounded-lg text-sm font-semibold transition-all">Retry</button>
+    </div>
+
+    <!-- Changelog list (rendered by JS) -->
+    <div id="changelogList" class="hidden space-y-4"></div>
+
+    <!-- Load more -->
+    <div id="loadMoreWrap" class="hidden mt-6 text-center">
+      <button id="loadMoreBtn" onclick="loadMore()" class="px-6 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm font-medium transition-all">Load more</button>
+    </div>
+
+  </main>
+
+  <script>
+    const CHANGELOG_KEY = 'noxx_last_read_changelog';
+    const PAGE_SIZE     = 20;
+
+    let allEntries   = [];
+    let filtered     = [];
+    let displayCount = PAGE_SIZE;
+    let currentType  = 'all';
+
+    // ── Type metadata ──────────────────────────────────────────────────────────
+    const TYPE_META = {
+      new:      { label:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M327.5 85.2c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L384 128l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L448 128l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L448 64 426.8 7.5C425.1 3 420.8 0 416 0s-9.1 3-10.8 7.5L384 64l-56.5 21.2zM9.3 240C3.6 242.3 0 247.9 0 254s3.6 11.7 9.3 14L160 320l77.3 165.7c2.3 5.7 7.9 9.3 14 9.3s11.7-3.6 14-9.3L343 320l150.7-66c5.7-2.3 9.3-7.9 9.3-14s-3.6-11.7-9.3-14L343 160 265.3 9.3C263 3.6 257.4 0 251.3 0s-11.7 3.6-14 9.3L160 160 9.3 240z"/></svg> New',      dotColor:'#a78bfa', cls:'badge-new'      },
+      improved: { label:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M78.6 5C69.1-2.4 55.6-1.5 47 7L7 47c-8.5 8.5-9.4 22-2.1 31.6l80 104c4.5 5.9 11.6 9.4 19 9.4h54.1l109 109c-14.7 29.8-10.2 66.7 13.4 90.3s60.5 28.1 90.3 13.4L402.4 345l83 83c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0l-16 16c-12.5 12.5-12.5 32.8 0 45.3l-74.7-74.7 79.8-79.8 28 28c7.5 7.5 17.7 11.7 28.3 11.7H544.1c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32H441.4c-10.6 0-20.8 4.2-28.3 11.7l-79.8 79.8L224.2 142c-4.5-4.5-9.4-8.4-14.6-11.6L78.6 5z"/></svg> Improved', dotColor:'#60a5fa', cls:'badge-improved' },
+      fixed:    { label:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M256 0c53 0 96 43 96 96v3.6c0 15.7-12.7 28.4-28.4 28.4H188.4c-15.7 0-28.4-12.7-28.4-28.4V96c0-53 43-96 96-96zM41.4 105.4c12.5-12.5 32.8-12.5 45.3 0l64 64c.7 .7 1.4 1.4 2 2.1c14.2-7.3 30.4-11.5 47.5-11.5c36.9 0 69.5 18.6 89.3 47.1L388.5 64.8c4.1-11.8 14.6-20.3 27.1-22c3.2-.4 6.5-.6 9.9-.6h10.5C480.8 42.2 512 73.4 512 112v8c0 26.5-21.5 48-48 48H383.2c-4.1 0-8.2-.3-12.1-.9C360.8 192.9 352 208.4 352 226v2c0 17.6 7.1 33.5 18.7 45.1l58.3 58.3c25 25 25 65.5 0 90.5l-90.5 90.5c-25 25-65.5 25-90.5 0L193.9 457.5C169.8 433.4 160 400.7 160 368c0-35.3 16.5-66.8 42.1-87l-78.7-78.7C110.8 202.3 128 179 128 152V128c0-17.7 14.3-32 32-32h16c0-17.7 14.3-32 32-32s32 14.3 32 32H41.4c-12.5-12.5-12.5-32.8 0-45.3l.1-.3z"/></svg> Fixed',    dotColor:'#EF4444', cls:'badge-fixed'    },
+      removed:  { label:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg> Removed',  dotColor:'#f87171', cls:'badge-removed'  },
+      security: { label:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg> Security', dotColor:'#fb923c', cls:'badge-security' },
+      premium:  { label:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg> Premium',   dotColor:'#facc15', cls:'badge-premium'  },
+      update:   { label:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M50.7 58.5L0 160H208V32H93.7C75.5 32 58.6 43.3 50.7 58.5zM240 160H448L397.3 58.5C389.4 43.3 372.5 32 354.3 32H240V160zM448 192H0V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192z"/></svg> Update',   dotColor:'#2dd4bf', cls:'badge-update'   },
+    };
+
+    // ── Helpers ────────────────────────────────────────────────────────────────
+    function esc(s) {
+      if (!s) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    function fmtDate(iso) {
+      if (!iso) return '';
+      return new Date(iso).toLocaleDateString('en-GB',{ day:'numeric', month:'long', year:'numeric' });
+    }
+
+    // ── Render a single card ───────────────────────────────────────────────────
+    function renderCard(entry, isLatest) {
+      const type = (entry.type || 'update').toLowerCase();
+      const meta = TYPE_META[type] || { label: esc(type || 'Update'), dotColor:'#6C53FF', cls:'badge-update' }; // TYPE_META labels are trusted SVG markup
+
+      const dotStyle = isLatest
+        ? 'background:linear-gradient(135deg,#6C53FF,#3b82f6);animation:glowPulse 2s infinite;'
+        : `background:${meta.dotColor};box-shadow:0 0 8px ${meta.dotColor}55;`;
+
+      // Multi-line description — split on newlines
+      const lines = (entry.description || '').split('\n').filter(l => l.trim());
+      const bodyHtml = lines.length === 0
+        ? `<p class="text-sm text-gray-500 italic">No description provided.</p>`
+        : lines.map(l => `<p class="text-sm text-gray-300 leading-relaxed">${esc(l)}</p>`).join('');
+
+      return `
+      <div class="cl-card p-6 animate-fade-in-up">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+          <div class="flex items-center gap-3">
+            <div class="v-dot" style="${dotStyle}"></div>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h2 class="text-lg font-extrabold">${esc(entry.title || 'Untitled Update')}</h2>
+                ${isLatest ? `<span class="px-2 py-0.5 bg-[#6C53FF]/15 text-[#a78bfa] border border-[#6C53FF]/30 rounded-full text-[10px] font-bold uppercase tracking-wider">Latest</span>` : ''}
+              </div>
+              ${entry.date ? `<p class="text-xs text-gray-500 mt-0.5">${fmtDate(entry.date)}</p>` : ''}
+            </div>
+          </div>
+          <span class="badge ${meta.cls}">${meta.label}</span>
+        </div>
+
+        <div class="space-y-1.5 mb-4">${bodyHtml}</div>
+
+        ${entry.footer ? `
+        <div class="pt-4 border-t border-white/5">
+          <p class="text-xs text-gray-500 flex items-center gap-2">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            ${esc(entry.footer)}
+          </p>
+        </div>` : ''}
+      </div>`;
+    }
+
+    // ── Render visible slice ───────────────────────────────────────────────────
+    function renderList() {
+      const list     = document.getElementById('changelogList');
+      const empty    = document.getElementById('emptyState');
+      const moreWrap = document.getElementById('loadMoreWrap');
+
+      if (filtered.length === 0) {
+        list.classList.add('hidden');
+        empty.classList.remove('hidden'); empty.classList.add('flex');
+        moreWrap.classList.add('hidden');
+        return;
+      }
+
+      empty.classList.add('hidden'); empty.classList.remove('flex');
+      list.classList.remove('hidden');
+
+      const slice = filtered.slice(0, displayCount);
+      list.innerHTML = slice.map((e, i) => renderCard(e, i === 0 && currentType === 'all')).join('');
+
+      if (filtered.length > displayCount) {
+        moreWrap.classList.remove('hidden');
+        document.getElementById('loadMoreBtn').textContent =
+          `Load more (${filtered.length - displayCount} remaining)`;
+      } else {
+        moreWrap.classList.add('hidden');
+      }
+    }
+
+    // ── Filter ─────────────────────────────────────────────────────────────────
+    function setFilter(type) {
+      currentType  = type;
+      displayCount = PAGE_SIZE;
+      document.querySelectorAll('.filter-tab').forEach(b =>
+        b.classList.toggle('active', b.dataset.type === type));
+      filtered = type === 'all'
+        ? allEntries
+        : allEntries.filter(e => (e.type || 'update').toLowerCase() === type);
+      renderList();
+    }
+
+    function loadMore() {
+      displayCount += PAGE_SIZE;
+      renderList();
+    }
+
+    // ── Fetch from API ─────────────────────────────────────────────────────────
+    async function loadChangelogs() {
+      // Reset UI
+      document.getElementById('loadingState').classList.remove('hidden');
+      ['changelogList','emptyState','errorState','loadMoreWrap'].forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.add('hidden');
+        el.classList.remove('flex');
+      });
+
+      try {
+        const res = await fetch('/api/changelogs?limit=200');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+
+        allEntries = json.data || [];
+
+        if (allEntries.length > 0) {
+          const latest = allEntries[0];
+          document.getElementById('latestVersionLabel').textContent = latest.title || 'Latest';
+          document.getElementById('latestDateLabel').textContent    = fmtDate(latest.date);
+          document.getElementById('latestPill').classList.remove('hidden');
+          document.getElementById('latestPill').classList.add('flex');
+
+          // Mark as read
+          try { localStorage.setItem(CHANGELOG_KEY, latest.title); } catch(_) {}
+        }
+
+        document.getElementById('loadingState').classList.add('hidden');
+        filtered = allEntries;
+        renderList();
+
+      } catch(err) {
+        console.error('[changelogs] fetch error:', err);
+        document.getElementById('loadingState').classList.add('hidden');
+        const errEl = document.getElementById('errorState');
+        errEl.classList.remove('hidden');
+        errEl.classList.add('flex');
+      }
+    }
+
+    function dismissBanner() {
+      const b = document.getElementById('changelogBanner');
+      b.classList.add('hidden'); b.classList.remove('flex');
+      document.querySelector('nav').style.top = '';
+    }
+
+    // ── User ───────────────────────────────────────────────────────────────────
+    fetch('/api/user/me').then(r => r.json()).then(user => {
+      if (!user?.username) return;
+      const c = document.getElementById('userContainer');
+      c.classList.remove('hidden'); c.classList.add('flex');
+      document.getElementById('username').textContent = user.username;
+      if (user.avatar)
+        document.getElementById('userAvatar').src = String(user.avatar).startsWith('http')
+          ? user.avatar
+          : `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+      if (user.isDev)
+        document.getElementById('devPanelLink').style.display = 'flex';
+    }).catch(() => {});
+
+    // ── Filter tabs ────────────────────────────────────────────────────────────
+    document.querySelectorAll('.filter-tab').forEach(btn =>
+      btn.addEventListener('click', () => setFilter(btn.dataset.type)));
+
+    // ── Boot ───────────────────────────────────────────────────────────────────
+    loadChangelogs();
+  </script>
+
+</body>
+</html>

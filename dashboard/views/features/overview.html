@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roco | Overview</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <link rel="stylesheet" href="/css/unified.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --nx-primary: #e63946;
+      --nx-primary-dim: rgba(230, 57, 70, 0.12);
+      --nx-surface: #161a28;
+      --nx-surface-2: #1c2133;
+      --nx-bg: #08090c;
+      --nx-border: rgba(255, 255, 255, 0.06);
+      --nx-border-hover: rgba(255, 255, 255, 0.12);
+      --nx-text: #e8eaed;
+      --nx-text-muted: #5c6370;
+      --nx-text-secondary: #9aa0b0;
+    }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+  <div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#08090c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(230,57,70,.1);border:1px solid rgba(230,57,70,.2);display:flex;align-items:center;justify-content:center">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif">Loading</div>
+  </div>
+
+  <div class="flex min-h-screen" id="razor-content">
+    <aside id="razor-sidebar"></aside>
+    <main class="flex-1 p-6 lg:p-8 overflow-x-hidden" style="position:relative;z-index:1;">
+      
+      <!-- Hero Banner -->
+      <div class="nx-hero mb-8">
+        <div style="position:relative;z-index:1;">
+          <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+            <div style="position:relative;">
+              <div style="position:absolute:inset:-3px;border-radius:18px;background:linear-gradient(135deg,var(--nx-primary),#7b5ea7);opacity:0.4;"></div>
+              <img id="guildIcon" src="/logo.png" style="width:72px;height:72px;border-radius:15px;object-fit:cover;border:2px solid var(--nx-bg);position:relative;" onerror="this.src='/logo.png'">
+            </div>
+            <div style="flex:1;min-width:200px;">
+              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px;">
+                <h1 id="guildName" class="font-display" style="font-size:24px;font-weight:800;color:var(--nx-text);margin:0;">Loading...</h1>
+                <span id="planBadge" class="nx-badge nx-badge-primary" style="font-size:9px;">Free</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--nx-text-secondary);">
+                <span style="display:flex;align-items:center;gap:6px;">
+                  <i data-lucide="crown" style="width:14px;height:14px;"></i>
+                  <span id="owner">...</span>
+                </span>
+                <span style="display:flex;align-items:center;gap:6px;">
+                  <i data-lucide="calendar" style="width:14px;height:14px;"></i>
+                  <span id="created">...</span>
+                </span>
+                <span class="id-tag" onclick="copyId()" style="cursor:pointer;">
+                  <i data-lucide="copy" style="width:10px;height:10px;"></i>
+                  <span id="guildId">...</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="nx-grid nx-grid-4 mb-8">
+        <div class="nx-stat-card" style="--nx-primary: #e63946;">
+          <div class="nx-stat-label">Total Members</div>
+          <div id="members" class="nx-stat-value">-</div>
+        </div>
+        <div class="nx-stat-card" style="--nx-primary: #4895ef;">
+          <div class="nx-stat-label">Humans</div>
+          <div id="humans" class="nx-stat-value">-</div>
+        </div>
+        <div class="nx-stat-card" style="--nx-primary: #7b5ea7;">
+          <div class="nx-stat-label">Bots</div>
+          <div id="bots" class="nx-stat-value">-</div>
+        </div>
+        <div class="nx-stat-card" style="--nx-primary: #2ec4b6;">
+          <div class="nx-stat-label">Server Boosts</div>
+          <div id="boosts" class="nx-stat-value">-</div>
+        </div>
+      </div>
+
+      <!-- Main Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Growth Chart -->
+        <div class="lg:col-span-2 nx-card">
+          <div class="nx-card-header">
+            <h3 class="nx-card-title font-display">Member Growth</h3>
+            <div style="display:flex;gap:6px;">
+              <button class="range-btn active" data-range="7">7D</button>
+              <button class="range-btn" data-range="30">30D</button>
+              <button class="range-btn" data-range="90">90D</button>
+            </div>
+          </div>
+          <div style="height:280px;position:relative;">
+            <canvas id="growthChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="nx-card">
+          <div class="nx-card-header">
+            <h3 class="nx-card-title font-display">Server Info</h3>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--nx-bg);border-radius:10px;">
+              <span style="font-size:13px;color:var(--nx-text-secondary);">Roles</span>
+              <span id="roles" style="font-weight:700;font-size:15px;">-</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--nx-bg);border-radius:10px;">
+              <span style="font-size:13px;color:var(--nx-text-secondary);">Channels</span>
+              <span id="channels" style="font-weight:700;font-size:15px;">-</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--nx-bg);border-radius:10px;">
+              <span style="font-size:13px;color:var(--nx-text-secondary);">Emojis</span>
+              <span id="emojis" style="font-weight:700;font-size:15px;">-</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--nx-bg);border-radius:10px;">
+              <span style="font-size:13px;color:var(--nx-text-secondary);">Boost Level</span>
+              <span id="boostLevel" style="font-weight:700;font-size:15px;">-</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--nx-bg);border-radius:10px;">
+              <span style="font-size:13px;color:var(--nx-text-secondary);">Verification</span>
+              <span id="securityLevel" style="font-weight:700;font-size:15px;">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Access -->
+      <div class="mb-8">
+        <h3 class="font-display" style="font-size:18px;font-weight:700;margin-bottom:16px;">Quick Access</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <a href="/guild/${guildId}/hub/moderation" class="nx-quick-card">
+            <div class="nx-quick-card-icon" style="background:rgba(230,57,70,0.12);">
+              <i data-lucide="shield" style="width:20px;height:20px;stroke:#e63946;"></i>
+            </div>
+            <div class="nx-quick-card-content">
+              <div class="nx-quick-card-title">Moderation</div>
+              <div class="nx-quick-card-desc">Automod, logs, antinuke</div>
+            </div>
+            <i data-lucide="arrow-right" class="nx-quick-card-arrow" style="width:16px;height:16px;"></i>
+          </a>
+          <a href="/guild/${guildId}/hub/community" class="nx-quick-card">
+            <div class="nx-quick-card-icon" style="background:rgba(46,196,182,0.12);">
+              <i data-lucide="users" style="width:20px;height:20px;stroke:#2ec4b6;"></i>
+            </div>
+            <div class="nx-quick-card-content">
+              <div class="nx-quick-card-title">Community</div>
+              <div class="nx-quick-card-desc">Welcome, level, reactions</div>
+            </div>
+            <i data-lucide="arrow-right" class="nx-quick-card-arrow" style="width:16px;height:16px;"></i>
+          </a>
+          <a href="/guild/${guildId}/hub/tools" class="nx-quick-card">
+            <div class="nx-quick-card-icon" style="background:rgba(72,149,239,0.12);">
+              <i data-lucide="wrench" style="width:20px;height:20px;stroke:#4895ef;"></i>
+            </div>
+            <div class="nx-quick-card-content">
+              <div class="nx-quick-card-title">Tools</div>
+              <div class="nx-quick-card-desc">Tickets, embed builder</div>
+            </div>
+            <i data-lucide="arrow-right" class="nx-quick-card-arrow" style="width:16px;height:16px;"></i>
+          </a>
+          <a href="/guild/${guildId}/hub/settings" class="nx-quick-card">
+            <div class="nx-quick-card-icon" style="background:rgba(123,94,167,0.12);">
+              <i data-lucide="settings" style="width:20px;height:20px;stroke:#7b5ea7;"></i>
+            </div>
+            <div class="nx-quick-card-content">
+              <div class="nx-quick-card-title">Settings</div>
+              <div class="nx-quick-card-desc">Prefix, commands, perms</div>
+            </div>
+            <i data-lucide="arrow-right" class="nx-quick-card-arrow" style="width:16px;height:16px;"></i>
+          </a>
+          <a href="/guild/${guildId}/logs" class="nx-quick-card">
+            <div class="nx-quick-card-icon" style="background:rgba(255,190,11,0.12);">
+              <i data-lucide="file-text" style="width:20px;height:20px;stroke:#ffbe0b;"></i>
+            </div>
+            <div class="nx-quick-card-content">
+              <div class="nx-quick-card-title">Logging</div>
+              <div class="nx-quick-card-desc">Event logs & history</div>
+            </div>
+            <i data-lucide="arrow-right" class="nx-quick-card-arrow" style="width:16px;height:16px;"></i>
+          </a>
+          <a href="/guild/${guildId}/ticket" class="nx-quick-card">
+            <div class="nx-quick-card-icon" style="background:rgba(244,162,97,0.12);">
+              <i data-lucide="ticket" style="width:20px;height:20px;stroke:#f4a261;"></i>
+            </div>
+            <div class="nx-quick-card-content">
+              <div class="nx-quick-card-title">Tickets</div>
+              <div class="nx-quick-card-desc">Support ticket system</div>
+            </div>
+            <i data-lucide="arrow-right" class="nx-quick-card-arrow" style="width:16px;height:16px;"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Limits Section -->
+      <div class="nx-card">
+        <div class="nx-card-header">
+          <h3 class="nx-card-title font-display">Feature Limits</h3>
+        </div>
+        <div id="limitsGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div class="limit-card">
+            <div class="limit-icon">📝</div>
+            <div class="limit-label">Commands</div>
+            <div class="limit-value" id="limit-commands">-</div>
+          </div>
+          <div class="limit-card">
+            <div class="limit-icon">🎫</div>
+            <div class="limit-label">Tickets</div>
+            <div class="limit-value" id="limit-tickets">-</div>
+          </div>
+          <div class="limit-card">
+            <div class="limit-icon">📝</div>
+            <div class="limit-label">AutoResp</div>
+            <div class="limit-value" id="limit-responders">-</div>
+          </div>
+          <div class="limit-card">
+            <div class="limit-icon">🎁</div>
+            <div class="limit-label">Giveaways</div>
+            <div class="limit-value" id="limit-giveaways">-</div>
+          </div>
+          <div class="limit-card">
+            <div class="limit-icon">📊</div>
+            <div class="limit-label">Polls</div>
+            <div class="limit-value" id="limit-polls">-</div>
+          </div>
+          <div class="limit-card">
+            <div class="limit-icon">⏰</div>
+            <div class="limit-label">Uptime</div>
+            <div class="limit-value" id="limit-uptime">-</div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/sidebar.js"></script>
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Hide loader
+    setTimeout(() => {
+      const loader = document.getElementById('nx-loader');
+      if (loader) {
+        loader.style.opacity = '0';
+        loader.style.visibility = 'hidden';
+      }
+    }, 800);
+
+    // Guild data
+    const guildId = location.pathname.split('/')[2] || 'demo';
+    
+    // Range buttons
+    document.querySelectorAll('.range-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        loadStats(btn.dataset.range);
+      });
+    });
+
+    // Load guild data
+    fetch(`/api/guild/${guildId}`)
+      .then(r => r.json())
+      .then(g => {
+        document.getElementById('guildName').textContent = g.name;
+        document.getElementById('guildId').textContent = g.id;
+        document.getElementById('owner').textContent = g.owner;
+        document.getElementById('created').textContent = g.created;
+        document.getElementById('members').textContent = g.members?.toLocaleString() || '0';
+        document.getElementById('humans').textContent = g.humans?.toLocaleString() || '0';
+        document.getElementById('bots').textContent = g.bots?.toLocaleString() || '0';
+        document.getElementById('boosts').textContent = g.boosts || '0';
+        document.getElementById('roles').textContent = g.roles || '0';
+        document.getElementById('channels').textContent = g.channels || '0';
+        document.getElementById('emojis').textContent = g.emojis || '0';
+        document.getElementById('boostLevel').textContent = `Level ${g.boostLevel || 0}`;
+        document.getElementById('guildIcon').src = g.icon || '/logo.png';
+      })
+      .catch(console.error);
+
+    // Load premium status
+    fetch(`/api/guild/${guildId}/premium-status`)
+      .then(r => r.json())
+      .then(data => {
+        const badge = document.getElementById('planBadge');
+        if (data.hasPremium) {
+          badge.className = 'nx-badge nx-badge-premium';
+          badge.textContent = data.plan?.toUpperCase() || 'PREMIUM';
+        } else {
+          badge.className = 'nx-badge nx-badge-primary';
+          badge.textContent = 'FREE';
+        }
+      })
+      .catch(() => {});
+
+    // Load verification level
+    fetch(`/api/guild/${guildId}/verification-level`)
+      .then(r => r.json())
+      .then(d => { document.getElementById('securityLevel').textContent = d.level || 'None'; })
+      .catch(() => { document.getElementById('securityLevel').textContent = 'Unknown'; });
+
+    // Stats chart
+    let growthChart = null;
+
+    function loadStats(range = '7') {
+      fetch(`/api/guild/${guildId}/stats?range=${range}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.empty) return;
+          renderChart(data.labels, data.data);
+        })
+        .catch(console.error);
+    }
+
+    function renderChart(labels, data) {
+      const ctx = document.getElementById('growthChart').getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 0, 280);
+      grad.addColorStop(0, 'rgba(230, 57, 70, 0.25)');
+      grad.addColorStop(1, 'rgba(230, 57, 70, 0)');
+
+      if (growthChart) {
+        growthChart.data.labels = labels;
+        growthChart.data.datasets[0].data = data;
+        growthChart.update();
+        return;
+      }
+
+      growthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Members',
+            data,
+            borderColor: '#e63946',
+            backgroundColor: grad,
+            borderWidth: 2,
+            pointRadius: 0,
+            pointHoverRadius: 4,
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1c2133',
+              titleColor: '#9aa0b0',
+              bodyColor: '#e63946',
+              bodyFont: { family: 'Syne', size: 14, weight: '700' },
+              padding: 12,
+              cornerRadius: 8,
+              displayColors: false
+            }
+          },
+          scales: {
+            y: {
+              grid: { color: 'rgba(255,255,255,0.03)' },
+              ticks: { color: '#5c6370', font: { family: 'DM Mono', size: 10 } }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: '#5c6370', font: { family: 'DM Mono', size: 10 } }
+            }
+          }
+        }
+      });
+    }
+
+    // Load initial stats
+    loadStats('7');
+
+    // Copy ID function
+    function copyId() {
+      const id = document.getElementById('guildId').textContent;
+      navigator.clipboard.writeText(id);
+    }
+
+    // Range button styles
+    document.querySelectorAll('.range-btn').forEach(btn => {
+      btn.style.cssText = 'padding:6px 12px;font-size:11px;font-family:DM Mono,monospace;font-weight:500;border-radius:6px;background:rgba(255,255,255,0.04);border:1px solid var(--nx-border);color:var(--nx-text-secondary);cursor:pointer;transition:all 0.2s;';
+      btn.addEventListener('mouseenter', () => btn.style.background = 'rgba(255,255,255,0.08)');
+      btn.addEventListener('mouseleave', () => {
+        if (!btn.classList.contains('active')) btn.style.background = 'rgba(255,255,255,0.04)';
+      });
+    });
+
+    // Limit card styles
+    document.querySelectorAll('.limit-card').forEach(card => {
+      card.style.cssText = 'background:rgba(255,255,255,0.02);border:1px solid var(--nx-border);border-radius:12px;padding:14px;transition:all 0.2s;';
+      card.addEventListener('mouseenter', () => {
+        card.style.borderColor = 'var(--nx-border-hover)';
+        card.style.transform = 'translateY(-2px)';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.borderColor = 'var(--nx-border)';
+        card.style.transform = 'translateY(0)';
+      });
+    });
+  </script>
+</body>
+</html>

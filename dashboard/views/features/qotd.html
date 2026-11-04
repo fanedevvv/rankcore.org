@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Question of the Day — Roco</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tailwind.css">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --brand:#6C53FF; --razor:#FF3333; --surface:#0b0b14; --card:#1a1a2e;
+    --border:rgba(255,255,255,0.07); --muted:#4a4a6a; --danger:#FF4757;
+  }
+  body { background:#0b0b14; color:#e8e8f5; font-family:'Plus Jakarta Sans',sans-serif; min-height:100vh; }
+  .inp { width:100%; background:#0d0d1c; border:1px solid rgba(255,255,255,0.1); border-radius:0.6rem; padding:0.55rem 0.8rem; font-size:0.875rem; color:#e8e8f5; font-family:inherit; outline:none; transition:border-color .2s; }
+  .inp:focus { border-color:#6C53FF; box-shadow:0 0 0 3px rgba(108,83,255,.12); }
+  .inp::placeholder { color:#4a4a6a; }
+  .card { background:#1a1a2e; border:1px solid rgba(255,255,255,0.07); border-radius:1rem; padding:1.35rem; }
+  .btn { display:inline-flex; align-items:center; gap:0.4rem; border:none; cursor:pointer; font-family:inherit; font-weight:600; border-radius:0.65rem; transition:all .18s; padding:0.6rem 1.15rem; font-size:0.85rem; }
+  .btn-primary { background:#FF3333; color:#0b1a0d; font-weight:800; box-shadow:0 4px 20px rgba(255,51,51,.2); }
+  .btn-primary:hover { background:#6dff85; transform:translateY(-1px); }
+  .btn-ghost { background:rgba(255,255,255,.05); color:#aaa; border:1px solid rgba(255,255,255,.1); }
+  .btn-ghost:hover { background:rgba(255,255,255,.09); color:#e8e8f5; }
+  .btn-danger { background:rgba(255,71,87,.1); color:#FF4757; border:1px solid rgba(255,71,87,.25); }
+  .btn-danger:hover { background:rgba(255,71,87,.2); }
+  .btn-sm { padding:0.35rem 0.75rem; font-size:0.78rem; }
+  .tog-wrap { display:inline-block; position:relative; width:44px; height:24px; flex-shrink:0; }
+  .tog-cb { opacity:0; width:0; height:0; position:absolute; }
+  .tog-track { position:absolute; cursor:pointer; background:#1e1e38; border-radius:9999px; top:0;left:0;right:0;bottom:0; transition:background .25s; border:1px solid rgba(255,255,255,0.07); }
+  .tog-track::before { content:""; position:absolute; left:2px; top:2px; width:20px; height:20px; border-radius:50%; background:#5a5a80; transition:transform .25s,background .25s; }
+  .tog-cb:checked + .tog-track { background:#6C53FF; border-color:#6C53FF; }
+  .tog-cb:checked + .tog-track::before { transform:translateX(20px); background:#fff; }
+  .row-setting { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:0.8rem 1rem; background:rgba(0,0,0,.18); border-radius:0.65rem; border:1px solid rgba(255,255,255,0.07); }
+  .field-label { font-size:0.7rem; font-weight:700; color:#7070a0; letter-spacing:.07em; text-transform:uppercase; display:block; margin-bottom:0.3rem; }
+  .q-pill { display:flex; align-items:center; gap:0.5rem; background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.06); border-radius:0.65rem; padding:0.7rem 0.9rem; }
+  .q-pill .q-num { font-family:'JetBrains Mono',monospace; font-size:0.7rem; font-weight:700; color:#a799ff; background:rgba(108,83,255,.15); border:1px solid rgba(108,83,255,.25); border-radius:99px; padding:0.1rem 0.5rem; flex-shrink:0; }
+  .q-pill .q-text { flex:1; font-size:0.82rem; color:#e8e8f5; }
+  .q-pill .q-used { font-size:0.68rem; color:#4a4a6a; white-space:nowrap; }
+  .section-title { font-size:0.7rem; font-weight:700; color:#7070a0; letter-spacing:.07em; text-transform:uppercase; display:flex; align-items:center; gap:0.4rem; margin-bottom:0.75rem; }
+  .stat-mini { background:rgba(0,0,0,.2); border:1px solid rgba(255,255,255,0.07); border-radius:0.75rem; padding:0.9rem 1rem; text-align:center; }
+  .stat-mini .val { font-size:1.5rem; font-weight:800; letter-spacing:-0.02em; }
+  .stat-mini .lbl { font-size:0.68rem; color:#4a4a6a; margin-top:0.15rem; }
+  #toast { position:fixed; top:1.25rem; right:1.25rem; padding:0.75rem 1.1rem; border-radius:0.75rem; transform:translateX(460px); transition:transform .3s cubic-bezier(.34,1.56,.64,1); z-index:9999; color:#fff; font-size:0.85rem; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 12px 40px rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.1); min-width:200px; }
+  #toast.show { transform:translateX(0); }
+
+.rzr-wrap{position:relative;width:100%;display:block}
+/* hide ::after chevrons on select-wrap parents */
+.rzr-wrap-parent.select-wrap::after,
+.rzr-wrap-parent::after{display:none!important;content:none!important}
+.rzr-trigger{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:10px 14px;
+  border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);
+  background:#0d0d1c;color:#fff;
+  cursor:pointer;font-size:14px;font-family:inherit;
+  min-height:44px;width:100%;
+  transition:border-color .15s,box-shadow .15s;
+  user-select:none;box-sizing:border-box;
+}
+.rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
+.rzr-trigger.is-open{
+  border-color:rgba(255,51,51,.6);
+  box-shadow:0 0 0 3px rgba(255,51,51,.1);
+}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
+.rzr-label.is-ph{color:#6b7280}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+/* panel is appended to body — these rules still apply via the class */
+.rzr-panel{
+  position:fixed;z-index:999999;
+  background:rgba(11,11,20,.98);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  overflow:hidden;
+  animation:rzrIn .16s ease;
+}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
+.rzr-search-inp{
+  display:block;width:100%;
+  background:#06060f;border:1px solid rgba(255,255,255,.09);
+  border-radius:7px;padding:6px 11px;
+  color:#fff;font-size:13px;font-family:inherit;
+  outline:none;box-sizing:border-box;transition:border-color .15s;
+}
+.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-search-inp::placeholder{color:#374151}
+.rzr-list{max-height:220px;overflow-y:auto;padding:5px}
+.rzr-list::-webkit-scrollbar{width:4px}
+.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:6px}
+.rzr-list::-webkit-scrollbar-thumb:hover{background:#FF3333}
+.rzr-item{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:6px;padding:8px 11px;border-radius:8px;
+  cursor:pointer;font-size:13px;color:#9ca3af;
+  transition:background .1s,color .1s;
+}
+.rzr-item:hover{background:rgba(255,255,255,.055);color:#fff}
+.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600}
+.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item.is-sel .rzr-item-chk{opacity:1}
+.rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
+/* ═══════════════ End Razor Custom Select ═══════════════ */
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body class="bg-[#0b0b14] text-white font-sans">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<div id="toast"><span id="toastMsg"></span></div>
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+  <div style="flex:1;padding:2rem;max-width:900px;margin:0 auto;width:100%">
+
+    <!-- Header -->
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">
+      <div>
+        <div style="display:flex;align-items:center;gap:0.6rem;font-size:1.4rem;font-weight:800;letter-spacing:-0.02em">
+          <i data-lucide="help-circle" style="width:26px;height:26px;stroke:#a855f7;stroke-width:2;fill:none;flex-shrink:0"></i>
+          Question of the Day
+        </div>
+        <p style="color:#7070a0;font-size:0.82rem;margin-top:0.2rem">Post a daily question automatically with discussion threads, role pings, and a custom question bank.</p>
+      </div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="postNow()" id="postNowBtn">
+          <i data-lucide="send" style="width:14px;height:14px;stroke:currentColor;fill:none"></i>
+          Post Now
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="saveConfig()" id="saveBtn">
+          <i data-lucide="save" style="width:14px;height:14px;stroke:currentColor;fill:none"></i>
+          Save Changes
+        </button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.65rem;margin-bottom:1.5rem">
+      <div class="stat-mini"><div class="val" id="statTotal" style="color:#a855f7">—</div><div class="lbl">Questions in Bank</div></div>
+      <div class="stat-mini"><div class="val" id="statUsed" style="color:var(--razor)">—</div><div class="lbl">Used Questions</div></div>
+      <div class="stat-mini"><div class="val" id="statStatus">—</div><div class="lbl">Status</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+
+      <!-- Left column: settings -->
+      <div style="display:flex;flex-direction:column;gap:1rem">
+
+        <div class="card">
+          <div class="section-title"><i data-lucide="settings" style="width:13px;height:13px;stroke:currentColor;fill:none"></i>Configuration</div>
+          <div style="display:flex;flex-direction:column;gap:0.8rem">
+
+            <div class="row-setting">
+              <div>
+                <div style="font-size:0.875rem;font-weight:600">Enable QOTD</div>
+                <div style="font-size:0.72rem;color:var(--muted);margin-top:0.1rem">Post a question automatically each day</div>
+              </div>
+              <label class="tog-wrap"><input type="checkbox" id="cfgEnabled" class="tog-cb"><span class="tog-track"></span></label>
+            </div>
+
+            <div>
+              <label class="field-label">Post Channel</label>
+              <select id="cfgChannel" class="inp"><option value="">Select channel…</option></select>
+            </div>
+
+            <div>
+              <label class="field-label">Daily Post Time (UTC)</label>
+              <input type="time" id="cfgTime" value="09:00" class="inp" style="font-family:'JetBrains Mono',monospace">
+            </div>
+
+            <div>
+              <label class="field-label">Ping Role (optional)</label>
+              <select id="cfgRole" class="inp"><option value="">No ping</option></select>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title"><i data-lucide="layout" style="width:13px;height:13px;stroke:currentColor;fill:none"></i>Appearance</div>
+          <div style="display:flex;flex-direction:column;gap:0.8rem">
+
+            <div>
+              <label class="field-label">Embed Title</label>
+              <input type="text" id="cfgTitle" class="inp" placeholder="Question of the Day" maxlength="64">
+            </div>
+
+            <div>
+              <label class="field-label">Footer Text (optional)</label>
+              <input type="text" id="cfgFooter" class="inp" placeholder="Left blank = server name + date" maxlength="100">
+            </div>
+
+            <div>
+              <label class="field-label">Embed Colour</label>
+              <div style="display:flex;gap:0.5rem;align-items:center">
+                <input type="text" id="cfgColorHex" class="inp" value="#6C53FF" maxlength="7" style="flex:1;font-family:'JetBrains Mono',monospace"
+                  oninput="syncColorPicker()">
+                <input type="color" id="cfgColorPicker" value="#6C53FF"
+                  style="width:40px;height:40px;border-radius:0.5rem;border:1px solid var(--border);background:transparent;cursor:pointer;flex-shrink:0"
+                  oninput="syncColorHex()">
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title"><i data-lucide="message-square" style="width:13px;height:13px;stroke:currentColor;fill:none"></i>Discussion Thread</div>
+          <div style="display:flex;flex-direction:column;gap:0.8rem">
+            <div class="row-setting">
+              <div>
+                <div style="font-size:0.875rem;font-weight:600">Create Thread</div>
+                <div style="font-size:0.72rem;color:var(--muted);margin-top:0.1rem">Opens a discussion thread under each QOTD</div>
+              </div>
+              <label class="tog-wrap"><input type="checkbox" id="cfgThread" class="tog-cb"><span class="tog-track"></span></label>
+            </div>
+            <div id="threadDurRow" style="display:none">
+              <label class="field-label">Thread Duration (minutes)</label>
+              <input type="number" id="cfgThreadDur" class="inp" value="1440" min="60" max="10080" style="font-family:'JetBrains Mono',monospace">
+              <p style="font-size:0.68rem;color:var(--muted);margin-top:0.25rem">1440 = 24h, 4320 = 3 days, 10080 = 7 days (Discord max)</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title"><i data-lucide="database" style="width:13px;height:13px;stroke:currentColor;fill:none"></i>Fallback Bank</div>
+          <div class="row-setting">
+            <div>
+              <div style="font-size:0.875rem;font-weight:600">Use Built-in Questions</div>
+              <div style="font-size:0.72rem;color:var(--muted);margin-top:0.1rem">When your bank is empty, use Roco's question library</div>
+            </div>
+            <label class="tog-wrap"><input type="checkbox" id="cfgFallback" class="tog-cb" checked><span class="tog-track"></span></label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right column: question bank -->
+      <div style="display:flex;flex-direction:column;gap:1rem">
+
+        <div class="card" style="flex:1">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem">
+            <div class="section-title" style="margin:0">
+              <i data-lucide="list" style="width:13px;height:13px;stroke:currentColor;fill:none"></i>
+              Question Bank
+              <span id="bankBadge" style="font-size:0.65rem;font-weight:700;background:rgba(108,83,255,.15);color:#a799ff;border:1px solid rgba(108,83,255,.25);padding:0.1rem 0.5rem;border-radius:99px">0</span>
+            </div>
+            <span style="font-size:0.68rem;color:var(--muted)">Max 200</span>
+          </div>
+
+          <!-- Add question -->
+          <div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.85rem">
+            <textarea id="newQuestion" class="inp" rows="2"
+              style="resize:none"
+              placeholder="Type a question and press Add…"
+              maxlength="500"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addQuestion()}"></textarea>
+            <button class="btn btn-primary btn-sm" onclick="addQuestion()" style="align-self:flex-end">
+              <i data-lucide="plus" style="width:13px;height:13px;stroke:currentColor;fill:none"></i>
+              Add Question
+            </button>
+          </div>
+
+          <!-- Question list -->
+          <div id="questionList" style="display:flex;flex-direction:column;gap:0.4rem;max-height:520px;overflow-y:auto;padding-right:2px">
+            <div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.82rem">
+              <i data-lucide="loader" style="width:20px;height:20px;stroke:currentColor;fill:none;display:inline-block;margin-bottom:0.5rem"></i>
+              <br>Loading…
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/sidebar.js"></script>
+<script>
+const guildId = location.pathname.split('/')[2];
+let config = null;
+let questions = [];
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function toast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.style.background = type === 'error' ? 'rgba(255,71,87,.18)' : type === 'warn' ? 'rgba(255,179,71,.18)' : 'rgba(255,51,51,.15)';
+  t.style.borderColor = type === 'error' ? 'rgba(255,71,87,.35)' : type === 'warn' ? 'rgba(255,179,71,.35)' : 'rgba(255,51,51,.3)';
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ── Colour sync ───────────────────────────────────────────────────────────────
+function syncColorPicker() {
+  const v = document.getElementById('cfgColorHex').value;
+  if (/^#[0-9a-fA-F]{6}$/.test(v)) document.getElementById('cfgColorPicker').value = v;
+}
+function syncColorHex() {
+  document.getElementById('cfgColorHex').value = document.getElementById('cfgColorPicker').value;
+}
+
+// ── Thread dur toggle ─────────────────────────────────────────────────────────
+document.getElementById('cfgThread').addEventListener('change', function() {
+  document.getElementById('threadDurRow').style.display = this.checked ? '' : 'none';
+});
+
+// ── Load ──────────────────────────────────────────────────────────────────────
+async function load() {
+  try {
+    const [chRes, roleRes, cfgRes] = await Promise.all([
+      fetch(`/api/guild/${guildId}/channels`),
+      fetch(`/api/guild/${guildId}/roles`),
+      fetch(`/api/guild/${guildId}/qotd`),
+    ]);
+
+    console.log('[QOTD] channels:', chRes.status, '| roles:', roleRes.status, '| config:', cfgRes.status);
+
+    if (!chRes.ok || !roleRes.ok) {
+      const e = !chRes.ok ? await chRes.json().catch(()=>({})) : await roleRes.json().catch(()=>({}));
+      console.error('[QOTD] load failed:', e);
+      toast('Failed to load channels/roles: ' + (e.error || 'HTTP ' + (!chRes.ok ? chRes.status : roleRes.status)), 'error');
+      return;
+    }
+
+    const chData  = await chRes.json();
+    const rolesData = await roleRes.json();
+    console.log('[QOTD] channels data:', chData?.length ?? chData, '| roles data:', rolesData?.length);
+
+    // Populate channels via rzrPopulateChannels
+    const savedChannel = config?.channelId || '';
+    rzrPopulateChannels(document.getElementById('cfgChannel'), chData, savedChannel, 'Select channel...');
+
+    // Populate roles manually (filtered)
+    const roleSel = document.getElementById('cfgRole');
+    roleSel.innerHTML = '<option value="">No ping</option>';
+    (rolesData || []).filter(r => !r.managed && r.name !== '@everyone').forEach(r => {
+      const o = document.createElement('option'); o.value = r.id; o.textContent = '@' + r.name; roleSel.appendChild(o);
+    });
+
+    // Apply saved config
+    if (cfgRes.ok) {
+      const raw = await cfgRes.json();
+      console.log('[QOTD] config:', raw);
+      config = raw;
+      applyConfig(config);
+    } else {
+      console.warn('[QOTD] config fetch failed:', cfgRes.status);
+    }
+
+    renderStats();
+  } catch (e) {
+    console.error('[QOTD] load() threw:', e);
+    toast('Failed to load configuration: ' + e.message, 'error');
+  }
+}
+
+function applyConfig(cfg) {
+  if (!cfg) return;
+  document.getElementById('cfgEnabled').checked   = !!cfg.enabled;
+  // channel is set via rzrPopulateChannels in load() — set value here for non-rzr fallback
+  document.getElementById('cfgChannel').value     = cfg.channelId || '';
+  document.getElementById('cfgTime').value        = cfg.schedule  || '09:00';
+  document.getElementById('cfgRole').value        = cfg.roleId    || '';
+  document.getElementById('cfgTitle').value       = cfg.embedTitle || '';
+  document.getElementById('cfgFooter').value      = cfg.footerText || '';
+  document.getElementById('cfgColorHex').value    = cfg.color     || '#6C53FF';
+  document.getElementById('cfgColorPicker').value = cfg.color     || '#6C53FF';
+  document.getElementById('cfgThread').checked    = !!cfg.createThread;
+  document.getElementById('cfgFallback').checked  = cfg.useFallbackBank !== false;
+  document.getElementById('cfgThreadDur').value   = cfg.threadDuration || 1440;
+  document.getElementById('threadDurRow').style.display = cfg.createThread ? '' : 'none';
+  questions = cfg.questions || [];
+  renderQuestions();
+}
+
+function renderStats() {
+  const total  = questions.length;
+  const used   = questions.filter(q => q.usedOn).length;
+  const enabled = document.getElementById('cfgEnabled').checked;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statUsed').textContent  = used;
+  const statusEl = document.getElementById('statStatus');
+  statusEl.textContent = enabled ? 'Active' : 'Disabled';
+  statusEl.style.color = enabled ? 'var(--razor)' : '#4a4a6a';
+  document.getElementById('bankBadge').textContent = total;
+}
+
+function renderQuestions() {
+  const list = document.getElementById('questionList');
+  if (!questions.length) {
+    list.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.8rem">
+      <div style="margin-bottom:0.4rem;font-size:1.5rem">💬</div>
+      No questions yet — add one above,<br>or enable the built-in fallback bank.
+    </div>`;
+    return;
+  }
+  list.innerHTML = questions.map((q, i) => `
+    <div class="q-pill">
+      <span class="q-num">${i + 1}</span>
+      <span class="q-text">${esc(q.text)}</span>
+      ${q.usedOn ? `<span class="q-used">Used ${q.usedOn}</span>` : ''}
+      <button onclick="removeQuestion(${i})" style="background:none;border:none;cursor:pointer;color:var(--muted);display:flex;align-items:center;padding:2px;flex-shrink:0;transition:color .15s" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--muted)'" title="Remove">
+        <i data-lucide="x" style="width:13px;height:13px;stroke:currentColor;fill:none"></i>
+      </button>
+    </div>`).join('');
+  lucide.createIcons();
+  renderStats();
+}
+
+// ── Add question ──────────────────────────────────────────────────────────────
+async function addQuestion() {
+  const input = document.getElementById('newQuestion');
+  const text  = input.value.trim();
+  if (!text) return toast('Enter a question first', 'warn');
+  if (text.length > 500) return toast('Question must be 500 characters or less', 'warn');
+  if (questions.length >= 200) return toast('Maximum 200 questions in bank', 'warn');
+
+  try {
+    const res = await fetch(`/api/guild/${guildId}/qotd/question`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    if (!res.ok) { const d = await res.json(); return toast(d.error || 'Failed to add', 'error'); }
+    const data = await res.json();
+    questions = data.questions || questions;
+    input.value = '';
+    renderQuestions();
+    toast('Question added');
+  } catch (e) { toast('Error adding question', 'error'); }
+}
+
+// ── Remove question ───────────────────────────────────────────────────────────
+async function removeQuestion(idx) {
+  try {
+    const res = await fetch(`/api/guild/${guildId}/qotd/question/${idx}`, { method: 'DELETE' });
+    if (!res.ok) { const d = await res.json(); return toast(d.error || 'Failed to remove', 'error'); }
+    const data = await res.json();
+    questions = data.questions || questions;
+    renderQuestions();
+    toast('Question removed');
+  } catch (e) { toast('Error removing question', 'error'); }
+}
+
+// ── Save config ───────────────────────────────────────────────────────────────
+async function saveConfig() {
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const payload = {
+    enabled:         document.getElementById('cfgEnabled').checked,
+    channelId:       document.getElementById('cfgChannel').value || null,
+    schedule:        document.getElementById('cfgTime').value || '09:00',
+    roleId:          document.getElementById('cfgRole').value || null,
+    embedTitle:      document.getElementById('cfgTitle').value.trim() || 'Question of the Day',
+    footerText:      document.getElementById('cfgFooter').value.trim(),
+    color:           document.getElementById('cfgColorHex').value || '#6C53FF',
+    createThread:    document.getElementById('cfgThread').checked,
+    threadDuration:  parseInt(document.getElementById('cfgThreadDur').value) || 1440,
+    useFallbackBank: document.getElementById('cfgFallback').checked,
+  };
+
+  if (payload.enabled && !payload.channelId) {
+    toast('Select a channel before enabling QOTD', 'warn');
+    btn.disabled = false; btn.textContent = 'Save Changes';
+    return;
+  }
+
+  try {
+    console.log('[QOTD] saving:', payload);
+    const res = await fetch(`/api/guild/${guildId}/qotd`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const d = await res.json().catch(() => ({}));
+    console.log('[QOTD] save response:', res.status, d);
+    if (!res.ok) return toast(d.error || 'Save failed: ' + res.status, 'error');
+    toast('Settings saved');
+    renderStats();
+  } catch (e) {
+    console.error('[QOTD] save threw:', e);
+    toast('Error saving: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save Changes';
+  }
+}
+
+// ── Post now ──────────────────────────────────────────────────────────────────
+async function postNow() {
+  const btn = document.getElementById('postNowBtn');
+  btn.disabled = true; btn.textContent = 'Posting…';
+  try {
+    const res = await fetch(`/api/guild/${guildId}/qotd/post`, { method: 'POST' });
+    const d = await res.json();
+    if (!res.ok) return toast(d.error || 'Failed to post', 'error');
+    toast('QOTD posted!');
+    // Refresh questions (used dates may have updated)
+    const cfgRes = await fetch(`/api/guild/${guildId}/qotd`);
+    if (cfgRes.ok) { const cfg = await cfgRes.json(); questions = cfg.questions || []; renderQuestions(); }
+  } catch (e) {
+    toast('Error posting QOTD', 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Post Now';
+  }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => { lucide.createIcons(); load(); });
+</script>
+<!-- Razor Custom Select JS -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet();
+var openWrap=null;
+
+/* strip any html tags from option text just in case */
+function cleanText(t){
+  t=String(t||'');
+  var d=document.createElement('div');
+  d.innerHTML=t;
+  return (d.textContent||d.innerText||'').trim();
+}
+
+/* get clean option text */
+function optText(opt){
+  return cleanText(opt.text||opt.textContent||opt.label||'');
+}
+
+/* position panel relative to trigger using fixed coords */
+function positionPanel(wrap){
+  var r=wrap._t.getBoundingClientRect();
+  var p=wrap._p;
+  var panelH=p.offsetHeight||240;
+  var spaceBelow=window.innerHeight-r.bottom;
+  var spaceAbove=r.top;
+  var width=Math.max(r.width,160);
+  p.style.width=width+'px';
+  p.style.left=r.left+'px';
+  p.style.right='auto';
+  if(spaceBelow>=panelH||spaceBelow>=spaceAbove){
+    p.style.top=(r.bottom+4)+'px';
+    p.style.bottom='auto';
+  } else {
+    p.style.bottom=(window.innerHeight-r.top+4)+'px';
+    p.style.top='auto';
+  }
+}
+
+/* close on outside click */
+document.addEventListener('mousedown',function(e){
+  if(!openWrap)return;
+  if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);
+},true);
+
+/* close on scroll anywhere (reposition) */
+window.addEventListener('scroll',function(){
+  if(openWrap)positionPanel(openWrap);
+},true);
+window.addEventListener('resize',function(){
+  if(openWrap)positionPanel(openWrap);
+});
+
+function open_(wrap){
+  if(openWrap&&openWrap!==wrap)close_(openWrap);
+  openWrap=wrap;
+  buildList(wrap,'');
+  wrap._si.value='';
+  /* always show search */
+  wrap._sw.style.display='';
+  document.body.appendChild(wrap._p);
+  wrap._p.style.display='block';
+  wrap._t.classList.add('is-open');
+  wrap._t.setAttribute('aria-expanded','true');
+  /* position after display:block so offsetHeight is known */
+  requestAnimationFrame(function(){positionPanel(wrap);});
+  setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);
+}
+
+function close_(wrap){
+  if(!wrap)return;
+  if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);
+  wrap._p.style.display='none';
+  wrap._t.classList.remove('is-open');
+  wrap._t.setAttribute('aria-expanded','false');
+  if(openWrap===wrap)openWrap=null;
+}
+
+function buildList(wrap,q){
+  var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();
+  var opts=Array.from(sel.options).filter(function(o){
+    var t=optText(o);
+    return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);
+  });
+  if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}
+  list.innerHTML='';
+  opts.forEach(function(opt){
+    var it=document.createElement('div');
+    it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');
+    it.dataset.v=opt.value;
+    var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);
+    var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';
+    it.appendChild(tx);it.appendChild(ck);
+    it.addEventListener('mousedown',function(e){
+      e.preventDefault();e.stopPropagation();
+      sel.value=opt.value;
+      updateLabel(wrap);
+      close_(wrap);
+      sel.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    list.appendChild(it);
+  });
+}
+
+function updateLabel(wrap){
+  var sel=wrap._s,lbl=wrap._lb;
+  var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;
+  var text=opt?optText(opt):'';
+  if(text){
+    lbl.textContent=text;
+    /* treat index-0 empty-value options as placeholders */
+    lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));
+  } else {
+    lbl.textContent='Select\u2026';
+    lbl.classList.add('is-ph');
+  }
+  wrap._last=sel.value;
+}
+
+function wrapSelect(sel){
+  if(wrapped.has(sel))return;
+  if(sel.hasAttribute('data-rzr-skip'))return;
+  if(sel.size&&sel.size>1)return;
+  wrapped.add(sel);
+
+  /* mark parent to suppress ::after chevrons */
+  if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');
+
+  /* hide native */
+  sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';
+
+  /* hide sibling fake-chevron divs */
+  var sib=sel.nextElementSibling;
+  if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';
+
+  /* trigger */
+  var t=document.createElement('div');
+  t.className='rzr-trigger';
+  t.setAttribute('tabindex','0');
+  t.setAttribute('role','combobox');
+  t.setAttribute('aria-haspopup','listbox');
+  t.setAttribute('aria-expanded','false');
+  var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';
+  var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;
+  t.appendChild(lb);t.appendChild(cv);
+
+  /* panel — will be moved to body on open */
+  var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';
+  var sw=document.createElement('div');sw.className='rzr-panel-search';
+  var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;
+  sw.appendChild(si);
+  var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');
+  p.appendChild(sw);p.appendChild(l);
+
+  /* outer wrap */
+  var w=document.createElement('div');w.className='rzr-wrap';
+  w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;
+
+  w.appendChild(t);
+  /* panel stays in wrap until open — moved to body on open() */
+  w.appendChild(p);
+  sel.parentNode.insertBefore(w,sel);
+  w.appendChild(sel);
+
+  /* search */
+  si.addEventListener('input',function(){buildList(w,si.value);});
+  si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});
+
+  /* trigger events */
+  t.addEventListener('click',function(e){
+    e.stopPropagation();
+    openWrap===w?close_(w):open_(w);
+  });
+  t.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}
+    if(e.key==='Escape')close_(w);
+  });
+
+  /* watch option changes (async population: channels, roles) */
+  var mo=new MutationObserver(function(){
+    updateLabel(w);
+    if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}
+  });
+  mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});
+
+  /* poll for programmatic .value changes */
+  var pid=setInterval(function(){
+    if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}
+    if(sel.value!==w._last)updateLabel(w);
+  },150);
+
+  updateLabel(w);
+}
+
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+
+new MutationObserver(function(ms){
+  ms.forEach(function(m){
+    m.addedNodes.forEach(function(n){
+      if(n.nodeType!==1)return;
+      if(n.tagName==='SELECT')wrapSelect(n);
+      else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);
+    });
+  });
+}).observe(document.body,{childList:true,subtree:true});
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);
+else initAll();
+})();
+</script>
+<!-- End Razor Custom Select JS -->
+
+</body>
+</html>

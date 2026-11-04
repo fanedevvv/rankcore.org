@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" class="hub-mode">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Roco · Moderation</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <link rel="stylesheet" href="/loading.css">
+  <link rel="stylesheet" href="/css/hub.css">
+  <style>
+    #nx-progress { position:fixed; top:0; left:0; height:2px; z-index:99998; pointer-events:none; background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555); box-shadow:0 0 10px rgba(255,51,51,.7); width:0%; opacity:0; }
+    #nx-loader { position:fixed; inset:0; z-index:999999; background:#05060a; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; transition:opacity .35s ease,visibility .35s ease }
+    @keyframes nx-spin { to { transform:translate(-50%,-50%) rotate(360deg) } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader"><div class="nx-bar-wrap"><div class="nx-bar"></div></div><div class="nx-ring"><div class="nx-logo"><img src="/logo.png" alt="" onerror="this.style.display='none'"></div><div class="nx-spin"></div></div><div class="nx-label">Loading<span class="nx-dots"><span></span><span></span><span></span></span></div></div>
+<script>
+  (function(){function h(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(h,80);});}else{setTimeout(h,80);}setTimeout(h,1500);})();
+</script>
+<script src="/loading.js" defer></script>
+
+<div class="flex min-h-screen" id="razor-content">
+  <aside id="razor-sidebar"></aside>
+  <main class="flex-1 overflow-x-hidden" style="position:relative;z-index:1;">
+
+    <div class="hub-header">
+      <a class="hub-header-back" href="/guild/${guildId}">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        Overview
+      </a>
+      <h1>Moderation</h1>
+      <p>Protect your server from raids, spam, scams and bad actors</p>
+      <div class="hub-header-accent" style="background:#ef4444;"></div>
+    </div>
+
+    <div class="hub-search">
+      <div class="hub-search-wrap">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input class="hub-search-input" type="text" placeholder="Search moderation..." autocomplete="off" spellcheck="false">
+        <button class="hub-search-clear" aria-label="Clear search">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="hub-search-count"></div>
+    </div>
+
+    <div class="hub-section" data-section="automod">
+      <div class="hub-section-header">Auto-Moderation</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/automod" class="hub-item" data-search="auto moderation filter bad words links spam">
+          <div class="hub-item-icon" style="background:rgba(239,68,68,0.12);color:#ef4444;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Auto Moderation</div>
+            <div class="hub-item-desc">Filter bad words, links, and spam automatically</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/advanced-automod" class="hub-item" data-search="advanced automod ai spam caps emoji flood mentions">
+          <div class="hub-item-icon" style="background:rgba(248,113,113,0.12);color:#f87171;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4m0 4h.01"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Advanced Automod</div>
+            <div class="hub-item-desc">AI-powered spam, caps, emoji flood and mention spam filters</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/antiscam" class="hub-item" data-search="anti scam phishing links scam messages delete">
+          <div class="hub-item-icon" style="background:rgba(236,72,153,0.12);color:#ec4899;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 8l-8 8M8 8l8 8"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Anti-Scam</div>
+            <div class="hub-item-desc">Auto-delete phishing links and suspicious scam messages</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hub-section" data-section="logging">
+      <div class="hub-section-header">Audit & Logging</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/logs" class="hub-item" data-search="audit logs track bans kicks edits deletes events">
+          <div class="hub-item-icon" style="background:rgba(148,163,184,0.12);color:#94a3b8;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Audit Logs</div>
+            <div class="hub-item-desc">Track bans, kicks, edits, deletes and all server events</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/ghostping" class="hub-item" data-search="ghost ping detection deleted ping accountability">
+          <div class="hub-item-icon" style="background:rgba(249,115,22,0.12);color:#f97316;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Ghost Ping Detection</div>
+            <div class="hub-item-desc">Alert when someone deletes a ping to avoid accountability</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hub-section" data-section="verification">
+      <div class="hub-section-header">Verification</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/verify" class="hub-item" data-search="verification captcha button gate new members">
+          <div class="hub-item-icon" style="background:rgba(45,212,191,0.12);color:#2dd4bf;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Verification</div>
+            <div class="hub-item-desc">Gate new members with a CAPTCHA or button verification</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/ipverify" class="hub-item" data-search="ip verification vpn proxy tor alt detection link">
+          <div class="hub-item-icon" style="background:rgba(99,102,241,0.12);color:#818cf8;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">IP Verification</div>
+            <div class="hub-item-desc">One-time link verification with VPN, proxy, Tor & alt detection</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hub-section" data-section="antiraid">
+      <div class="hub-section-header">Anti-Raid</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/antinuke" class="hub-item" data-search="antinuke anti nuke prevent mass ban channel delete permission">
+          <div class="hub-item-icon" style="background:rgba(239,68,68,0.12);color:#ef4444;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12h6m-3-3v6"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">AntiNuke</div>
+            <div class="hub-item-desc">Prevent mass bans, channel deletions, and permission escalation</div>
+          </div>
+          <span class="hub-item-badge">Premium</span>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/massjoin" class="hub-item" data-search="mass join protection raid lock accounts">
+          <div class="hub-item-icon" style="background:rgba(234,179,8,0.12);color:#eab308;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87m-3-12a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Mass Join Protection</div>
+            <div class="hub-item-desc">Auto-lock when a raid of accounts joins at once</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<nav class="hub-tabs">[tabs]</nav>
+
+<script src="/sidebar.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.hub-tab[href]').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        var href = link.getAttribute('href');
+        if (window.__razorNavigate) window.__razorNavigate(href);
+        else location.href = href;
+      });
+    });
+
+    var searchInput = document.querySelector('.hub-search-input');
+    var searchClear = document.querySelector('.hub-search-clear');
+    var searchCount = document.querySelector('.hub-search-count');
+    if (!searchInput) return;
+
+    function filterFeatures() {
+      var q = searchInput.value.toLowerCase().trim();
+      var items = document.querySelectorAll('.hub-item');
+      var sections = document.querySelectorAll('.hub-section');
+      var visibleCount = 0;
+
+      items.forEach(function(item) {
+        var terms = item.getAttribute('data-search') || item.textContent.toLowerCase();
+        var match = !q || terms.indexOf(q) !== -1;
+        item.classList.toggle('hub-item-hidden', !match);
+        if (match) visibleCount++;
+      });
+
+      sections.forEach(function(sec) {
+        var visibleItems = sec.querySelectorAll('.hub-item:not(.hub-item-hidden)').length;
+        sec.classList.toggle('hub-section-hidden', visibleItems === 0);
+      });
+      document.querySelectorAll('.hub-section-header').forEach(function(hdr) {
+        var sec = hdr.closest('.hub-section');
+        hdr.classList.toggle('hub-section-hidden', sec && sec.classList.contains('hub-section-hidden'));
+      });
+
+      if (q) {
+        searchCount.textContent = visibleCount + ' feature' + (visibleCount !== 1 ? 's' : '') + ' found';
+        searchCount.classList.add('is-visible');
+        searchClear.classList.add('is-visible');
+      } else {
+        searchCount.classList.remove('is-visible');
+        searchClear.classList.remove('is-visible');
+      }
+    }
+
+    searchInput.addEventListener('input', filterFeatures);
+    searchClear.addEventListener('click', function() {
+      searchInput.value = '';
+      filterFeatures();
+      searchInput.focus();
+    });
+  });
+</script>
+
+</body>
+</html>

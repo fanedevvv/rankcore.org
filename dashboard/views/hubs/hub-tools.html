@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" class="hub-mode">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Roco · Tools</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <link rel="stylesheet" href="/loading.css">
+  <link rel="stylesheet" href="/css/hub.css">
+  <style>
+    #nx-progress { position:fixed; top:0; left:0; height:2px; z-index:99998; pointer-events:none; background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555); box-shadow:0 0 10px rgba(255,51,51,.7); width:0%; opacity:0; }
+    #nx-loader { position:fixed; inset:0; z-index:999999; background:#05060a; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; transition:opacity .35s ease,visibility .35s ease }
+    @keyframes nx-spin { to { transform:translate(-50%,-50%) rotate(360deg) } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader"><div class="nx-bar-wrap"><div class="nx-bar"></div></div><div class="nx-ring"><div class="nx-logo"><img src="/logo.png" alt="" onerror="this.style.display='none'"></div><div class="nx-spin"></div></div><div class="nx-label">Loading<span class="nx-dots"><span></span><span></span><span></span></span></div></div>
+<script>
+  (function(){function h(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(h,80);});}else{setTimeout(h,80);}setTimeout(h,1500);})();
+</script>
+<script src="/loading.js" defer></script>
+
+<div class="flex min-h-screen" id="razor-content">
+  <aside id="razor-sidebar"></aside>
+  <main class="flex-1 overflow-x-hidden" style="position:relative;z-index:1;">
+
+    <div class="hub-header">
+      <a class="hub-header-back" href="/guild/${guildId}">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        Overview
+      </a>
+      <h1>Tools</h1>
+      <p>Powerful utilities for managing, communicating, and monitoring your server</p>
+      <div class="hub-header-accent" style="background:#38bdf8;"></div>
+    </div>
+
+    <div class="hub-search">
+      <div class="hub-search-wrap">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input class="hub-search-input" type="text" placeholder="Search tools..." autocomplete="off" spellcheck="false">
+        <button class="hub-search-clear" aria-label="Clear search">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="hub-search-count"></div>
+    </div>
+
+    <div class="hub-section" data-section="support">
+      <div class="hub-section-header">Support & Ticketing</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/ticket" class="hub-item" data-search="ticket system support transcripts panels staff routing">
+          <div class="hub-item-icon" style="background:rgba(56,189,248,0.12);color:#38bdf8;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 9a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V9z"/><path d="M9 9v6"/><path d="M15 9v6"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Ticket System</div>
+            <div class="hub-item-desc">Support tickets with transcripts, panels, and staff routing</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/modmail" class="hub-item" data-search="modmail direct message staff mod team inbox">
+          <div class="hub-item-icon" style="background:rgba(129,140,248,0.12);color:#818cf8;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Modmail</div>
+            <div class="hub-item-desc">DM-based modmail system for members to contact staff privately</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hub-section" data-section="content">
+      <div class="hub-section-header">Content Creation</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/embed" class="hub-item" data-search="live embed creator rich embeds post code">
+          <div class="hub-item-icon" style="background:rgba(56,189,248,0.12);color:#38bdf8;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Live Embed Creator</div>
+            <div class="hub-item-desc">Create and post rich embeds without touching code</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/templates" class="hub-item" data-search="message templates save reusable embeds buttons v2 components">
+          <div class="hub-item-icon" style="background:rgba(255,51,51,0.12);color:#ff3333;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Message Templates</div>
+            <div class="hub-item-desc">Save reusable messages with embeds, buttons & V2 components</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hub-section" data-section="messaging">
+      <div class="hub-section-header">Messaging</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/autoresponder" class="hub-item" data-search="autoresponder auto-reply keywords trigger words messages">
+          <div class="hub-item-icon" style="background:rgba(251,146,60,0.12);color:#fb923c;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M12 8v4m0 4h.01"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Autoresponder</div>
+            <div class="hub-item-desc">Auto-reply to keywords or trigger words with custom messages</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/sticky" class="hub-item" data-search="sticky messages pin bottom channel always stays">
+          <div class="hub-item-icon" style="background:rgba(34,211,238,0.12);color:#22d3ee;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v10l4 4v2H8v-2l4-4V2"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Sticky Messages</div>
+            <div class="hub-item-desc">Pin a message that always stays at the bottom of a channel</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hub-section" data-section="monitoring">
+      <div class="hub-section-header">Monitoring & Alerts</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/uptime" class="hub-item" data-search="uptime monitor websites alert down status">
+          <div class="hub-item-icon" style="background:rgba(163,230,53,0.12);color:#a3e635;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Uptime Monitor</div>
+            <div class="hub-item-desc">Monitor websites and get alerted when they go down</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/social" class="hub-item" data-search="social notifications youtube twitch live stream alerts">
+          <div class="hub-item-icon" style="background:rgba(255,51,51,0.12);color:#ff3333;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Social Notifications</div>
+            <div class="hub-item-desc">YouTube uploads, live streams & Twitch alerts — all in one place</div>
+          </div>
+          <span class="hub-item-badge">Premium</span>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hub-section" data-section="ai">
+      <div class="hub-section-header">AI & Automation</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/ai" class="hub-item" data-search="ai chatbot assistant trained server chat">
+          <div class="hub-item-icon" style="background:rgba(255,51,51,0.12);color:#ff3333;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="4"/><circle cx="9" cy="11" r="1.5"/><circle cx="15" cy="11" r="1.5"/><path d="M9 16a3 3 0 0 0 6 0"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">AI Chatbot</div>
+            <div class="hub-item-desc">Chat with a built-in AI assistant trained for your server</div>
+          </div>
+          <span class="hub-item-badge">Premium</span>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/polls" class="hub-item" data-search="polls create vote results audience">
+          <div class="hub-item-icon" style="background:rgba(192,132,252,0.12);color:#c084fc;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="4" y1="20" x2="4" y2="12"/><line x1="9" y1="20" x2="9" y2="5"/><line x1="14" y1="20" x2="14" y2="8"/><line x1="19" y1="20" x2="19" y2="13"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Polls</div>
+            <div class="hub-item-desc">Create and run polls with live vote counting and results</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<nav class="hub-tabs">[tabs]</nav>
+
+<script src="/sidebar.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.hub-tab[href]').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        var href = link.getAttribute('href');
+        if (window.__razorNavigate) window.__razorNavigate(href);
+        else location.href = href;
+      });
+    });
+
+    var searchInput = document.querySelector('.hub-search-input');
+    var searchClear = document.querySelector('.hub-search-clear');
+    var searchCount = document.querySelector('.hub-search-count');
+    if (!searchInput) return;
+
+    function filterFeatures() {
+      var q = searchInput.value.toLowerCase().trim();
+      var items = document.querySelectorAll('.hub-item');
+      var sections = document.querySelectorAll('.hub-section');
+      var visibleCount = 0;
+
+      items.forEach(function(item) {
+        var terms = item.getAttribute('data-search') || item.textContent.toLowerCase();
+        var match = !q || terms.indexOf(q) !== -1;
+        item.classList.toggle('hub-item-hidden', !match);
+        if (match) visibleCount++;
+      });
+
+      sections.forEach(function(sec) {
+        var visibleItems = sec.querySelectorAll('.hub-item:not(.hub-item-hidden)').length;
+        sec.classList.toggle('hub-section-hidden', visibleItems === 0);
+      });
+      document.querySelectorAll('.hub-section-header').forEach(function(hdr) {
+        var sec = hdr.closest('.hub-section');
+        hdr.classList.toggle('hub-section-hidden', sec && sec.classList.contains('hub-section-hidden'));
+      });
+
+      if (q) {
+        searchCount.textContent = visibleCount + ' feature' + (visibleCount !== 1 ? 's' : '') + ' found';
+        searchCount.classList.add('is-visible');
+        searchClear.classList.add('is-visible');
+      } else {
+        searchCount.classList.remove('is-visible');
+        searchClear.classList.remove('is-visible');
+      }
+    }
+
+    searchInput.addEventListener('input', filterFeatures);
+    searchClear.addEventListener('click', function() {
+      searchInput.value = '';
+      filterFeatures();
+      searchInput.focus();
+    });
+  });
+</script>
+
+</body>
+</html>

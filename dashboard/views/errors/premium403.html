@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>403 | Premium Required</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            razor:  "#FF3333",
+            error:  "#FF4D4D",
+            gold:   "#FFB547",
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg:        #060609;
+      --surface:   #0f0f1a;
+      --border:    rgba(255,255,255,0.07);
+      --text-muted:#6b7280;
+      --razor:     #FF3333;
+      --error:     #FF4D4D;
+      --gold:      #FFB547;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: #fff;
+      user-select: none;
+    }
+
+    /* ── Background ── */
+    .bg-noise {
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 0;
+      background-size: 48px 48px;
+      background-image:
+        linear-gradient(to right,  rgba(255,77,77,0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,77,77,0.04) 1px, transparent 1px);
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+    }
+    .glow-orb {
+      position: fixed; z-index: 0; border-radius: 50%;
+      pointer-events: none;
+      filter: blur(120px);
+      animation: pulse-orb 6s ease-in-out infinite;
+    }
+    .orb-red  { width: 600px; height: 400px; background: rgba(255,77,77,0.07);  top: -10%; left: 50%; transform: translateX(-50%); }
+    .orb-blue { width: 400px; height: 400px; background: rgba(255,51,51,0.04); bottom: -10%; right: -5%; animation-delay: 3s; }
+
+    @keyframes pulse-orb {
+      0%,100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+      50%      { opacity: 1;   transform: translateX(-50%) scale(1.1); }
+    }
+
+    /* ── Card ── */
+    .card {
+      position: relative; z-index: 10;
+      width: 100%; max-width: 460px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 36px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.03),
+        0 32px 64px rgba(0,0,0,0.6),
+        0 0 80px rgba(255,77,77,0.06);
+      animation: card-in 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(24px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0)    scale(1);    }
+    }
+
+    /* ── Icon ── */
+    .icon-wrap {
+      width: 72px; height: 72px; border-radius: 16px;
+      background: rgba(255,77,77,0.1);
+      border: 1px solid rgba(255,77,77,0.2);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) 0.5s both;
+    }
+    @keyframes shake {
+      10%,90% { transform: translate3d(-1px,0,0); }
+      20%,80% { transform: translate3d(2px,0,0);  }
+      30%,50%,70% { transform: translate3d(-3px,0,0); }
+      40%,60% { transform: translate3d(3px,0,0);  }
+    }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,77,77,0.1);
+      border: 1px solid rgba(255,77,77,0.2);
+      color: var(--error);
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 99px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Heading ── */
+    .heading {
+      font-size: clamp(28px, 5vw, 36px);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+    .heading .glitch {
+      color: var(--error);
+      display: inline-block;
+      animation: glitch 3s linear infinite;
+    }
+    @keyframes glitch {
+      0%,97%,100% { transform: translate(0); }
+      98%          { transform: translate(-2px, 1px); }
+      99%          { transform: translate(2px, -1px); }
+    }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+      margin: 20px 0;
+    }
+
+    /* ── ID hint ── */
+    .id-hint {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .id-hint span { color: rgba(255,255,255,0.7); font-weight: 600; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 13px 20px;
+      border-radius: 12px; border: none;
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      position: relative; overflow: hidden;
+    }
+    .btn:hover  { transform: translateY(-2px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-monthly {
+      background: var(--razor); color: #000;
+      box-shadow: 0 4px 20px rgba(255,51,51,0.25);
+      margin-bottom: 10px;
+    }
+    .btn-monthly:hover { box-shadow: 0 8px 32px rgba(255,51,51,0.4); filter: brightness(1.05); }
+
+    .btn-yearly {
+      background: linear-gradient(135deg, #FFB547, #FF8C42);
+      color: #000;
+      box-shadow: 0 4px 20px rgba(255,181,71,0.2);
+      margin-bottom: 10px;
+    }
+    .btn-yearly:hover { box-shadow: 0 8px 32px rgba(255,181,71,0.35); filter: brightness(1.05); }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 8px;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); }
+
+    .btn.btn-disabled {
+      opacity: 0.45; pointer-events: none; cursor: not-allowed;
+    }
+
+    /* ── Yearly badge ── */
+    .best-badge {
+      position: absolute; top: -1px; right: 12px;
+      background: linear-gradient(135deg, #FFB547, #FF8C42);
+      color: #000; font-size: 10px; font-weight: 800;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      padding: 2px 8px; border-radius: 0 0 6px 6px;
+    }
+
+    /* ── Spinner ── */
+    .spinner {
+      width: 14px; height: 14px; flex-shrink: 0;
+      border: 2px solid rgba(0,0,0,0.25);
+      border-top-color: rgba(0,0,0,0.7);
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Error state ── */
+    .error-msg {
+      display: none;
+      align-items: center; gap: 8px;
+      background: rgba(255,77,77,0.08);
+      border: 1px solid rgba(255,77,77,0.2);
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 12px; color: #ff8080;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+    .error-msg.visible { display: flex; }
+
+    /* ── Footer note ── */
+    .footer-note {
+      font-size: 11px; color: var(--text-muted);
+      margin-top: 16px; text-align: center;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .footer-note::before, .footer-note::after {
+      content: '';
+      flex: 1; height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Corner labels ── */
+    .corner-label {
+      position: fixed; font-family: monospace; font-size: 10px;
+      color: rgba(255,77,77,0.2); letter-spacing: 0.1em; z-index: 1;
+    }
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+  <div class="bg-noise"></div>
+  <div class="bg-grid"></div>
+  <div class="glow-orb orb-red"></div>
+  <div class="glow-orb orb-blue"></div>
+
+  <div class="card" style="margin: 24px;">
+
+    <!-- Icon -->
+    <div class="icon-wrap">
+      <svg width="32" height="32" fill="none" stroke="#FF4D4D" stroke-width="1.75" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+      </svg>
+    </div>
+
+    <!-- Header -->
+    <div style="text-align:center; margin-bottom: 20px;">
+      <div class="badge">
+        <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>
+        Error 403 — Access Denied
+      </div>
+      <h1 class="heading">
+        Premium <span class="glitch">Required</span>
+      </h1>
+      <p style="font-size:14px; color:#6b7280; line-height:1.6; margin-top:8px;">
+        This feature requires an active <strong style="color:rgba(255,255,255,0.75);">Roco Premium</strong> subscription.
+      </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ID hint -->
+    <div class="id-hint">
+      At checkout you'll be asked for your Discord IDs. Have these ready:<br>
+      <span>User ID</span> — right-click your name → Copy User ID<br>
+      <span>Server ID (optional)</span> — right-click your server → Copy Server ID
+    </div>
+
+    <!-- Error message -->
+    <div class="error-msg" id="link-error">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0">
+        <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+      </svg>
+      Could not generate checkout links — please refresh and try again.
+    </div>
+
+    <!-- Monthly button -->
+    <a id="btn-monthly" href="#" target="_blank" class="btn btn-monthly btn-disabled">
+      <span class="spinner" id="spinner-monthly"></span>
+      <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M116.7 33.8c4.5-6.1 11.7-9.8 19.3-9.8H376c7.6 0 14.8 3.6 19.3 9.8l112 152c6.8 9.2 6.1 21.9-1.5 30.4l-232 256c-4.6 5.1-11.1 8-17.8 8s-13.2-2.9-17.8-8L6.2 216.2c-7.7-8.5-8.3-21.2-1.5-30.4l112-152z"/></svg> Monthly — €5 / month</span>
+    </a>
+
+    <!-- Yearly button -->
+    <a id="btn-yearly" href="#" target="_blank" class="btn btn-yearly btn-disabled" style="position:relative;">
+      <span class="best-badge" id="best-badge" style="display:none;">Best Value</span>
+      <span class="spinner" id="spinner-yearly"></span>
+      <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M309 106c11.4-7.7 19-20.3 19-34.6C328 46.6 313.4 32 295.2 32c-18.2 0-32.8 14.6-32.8 32.8c0 14.3 7.6 26.9 19 34.6l-40 64.5c-6.5 10.4-17.7 16.5-29.6 16.5c-9.3 0-18.3-3.7-24.9-10.3L162 145l47-55.8c5.8-6.9 5.5-17.2-.7-23.6C202.8 59.9 196 56 188.6 56C183 56 177.6 58 173.5 61.7L128 95.7V64c0-17.7-14.3-32-32-32s-32 14.3-32 32v32l-45.5-34c-4.1-3.7-9.5-5.7-15.1-5.7C-3.1 56-9.9 59.9-15.4 65.6c-6.2 6.4-6.5 16.7-.7 23.6L32 145l-23.9 24.8C1.5 176.4-1.5 185.4-1.5 194.7c0 12.1 6.2 23.3 16.5 29.6L96 272v176c0 35.3 28.7 64 64 64h256c35.3 0 64-28.7 64-64V272l81-47.7c10.4-6.5 16.5-17.7 16.5-29.6c0-9.3-3.7-18.3-10.3-24.9L543 145l47-55.8c5.8-6.9 5.5-17.2-.7-23.6C583.8 59.9 577 56 569.6 56c-5.6 0-11 2-15.1 5.7L509 95.7V64c0-17.7-14.3-32-32-32s-32 14.3-32 32v31.7L399.5 61.7C395.4 58 390 56 384.4 56c-7.4 0-14.2 3.9-19.7 9.6c-6.2 6.4-6.5 16.7-.7 23.6L411.1 145 386 170.2c-6.6 6.6-15.6 10.3-24.9 10.3c-11.9 0-23.1-6.1-29.6-16.5L309 106z"/></svg> Yearly — Save 2 months</span>
+    </a>
+
+    <div class="divider"></div>
+
+    <!-- Secondary actions -->
+    <a href="/support" class="btn btn-secondary">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+      </svg>
+      Create a Support Ticket
+    </a>
+    <button onclick="goBack()" class="btn btn-ghost">
+      ← Go Back
+    </button>
+
+    <p class="footer-note">30-min links &nbsp;•&nbsp; Powered by Stripe</p>
+  </div>
+
+  <span class="corner-label" style="bottom:16px; left:16px;">PREMIUM_ACCESS_REQUIRED</span>
+  <span class="corner-label" style="top:16px; right:16px;">UPGRADE_TO_CONTINUE</span>
+
+  <script>
+    function goBack() {
+      if (document.referrer) window.history.back();
+      else window.location.href = '/';
+    }
+
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? match[2] : null;
+    }
+
+    function showError() {
+      document.getElementById('link-error').classList.add('visible');
+      document.getElementById('btn-monthly').classList.add('hidden');
+      document.getElementById('btn-yearly').classList.add('hidden');
+    }
+
+    function activateButton(id, spinnerId, url) {
+      const btn     = document.getElementById(id);
+      const spinner = document.getElementById(spinnerId);
+      btn.href = url;
+      btn.classList.remove('btn-disabled');
+      if (spinner) spinner.remove();
+      // Show the "Best Value" badge on yearly once loaded
+      if (id === 'btn-yearly') {
+        const badge = document.getElementById('best-badge');
+        if (badge) badge.style.display = 'block';
+      }
+    }
+
+    async function loadCheckoutLinks() {
+      try {
+        const tokenRes = await fetch('/api/premium/token');
+        if (!tokenRes.ok) throw new Error('Failed to get token');
+        const { token } = await tokenRes.json();
+        if (!token) throw new Error('No token returned');
+
+        const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
+        // Use the new multi-tier checkout API — defaults to 'basic' plan
+        const [monthlyRes, yearlyRes] = await Promise.all([
+          fetch('/api/premium/checkout', {
+            method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf },
+            body: JSON.stringify({ plan: 'basic_monthly' }),
+          }),
+          fetch('/api/premium/checkout', {
+            method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf },
+            body: JSON.stringify({ plan: 'basic_yearly' }),
+          }),
+        ]);
+
+        const [mData, yData] = await Promise.all([monthlyRes.json(), yearlyRes.json()]);
+
+        if (mData.url) activateButton('btn-monthly', 'spinner-monthly', mData.url);
+        if (yData.url) activateButton('btn-yearly',  'spinner-yearly',  yData.url);
+        if (!mData.url && !yData.url) throw new Error('No URLs returned');
+
+      } catch (err) {
+        console.error('[Premium] Failed to load checkout links:', err);
+        showError();
+      }
+    }
+
+    loadCheckoutLinks();
+  </script>
+
+</body>
+</html>

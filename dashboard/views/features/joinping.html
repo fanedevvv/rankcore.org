@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Ping</title>
+
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <script>
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+    const tailwind = window.tailwind || {}; tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+colors: { 
+    razor: "#FF3333",       // main green highlight
+    razorDark: "#CC2222",   // darker green for accents/shadows
+    success: "#10B981",     // keep the same green for success
+    warning: "#F59E0B",     // keep amber/orange for warning
+    surface: "#2e1a1a"      // dark green background instead of purple/blue
+}
+
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .toggle-checkbox:checked { transform: translateX(100%); }
+    .toggle-checkbox:checked + .toggle-label {
+      background-color: #6C53FF;
+      box-shadow: 0 0 15px rgba(108,83,255,.4);
+    }
+    .toggle-label {
+      width: 44px;
+      height: 24px;
+      border-radius: 9999px;
+      background-color: #2b2b40;
+      border: 1px solid rgba(255,255,255,.1);
+      display: block;
+      position: relative;
+    }
+    .toggle-checkbox {
+      left: 2px;
+      top: 2px;
+      transition: transform .25s ease;
+      position: absolute;
+      width: 20px;
+      height: 20px;
+    }
+    #toast { transform: translateX(400px); transition: transform 0.3s; z-index:50; position: fixed; top: 1rem; right: 1rem; padding: 1rem 1.5rem; border-radius: 0.75rem; color: white;}
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body class="bg-[#0b0b14] text-white flex min-h-screen">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+  <div id="toast"><span id="toastMessage"></span></div>
+
+  <!-- Sidebar -->
+  <aside id="razor-sidebar" class="w-64 bg-[#11111f] p-6 border-r border-white/10"></aside>
+
+  <!-- Main content wrapper -->
+  <div class="flex-1 flex items-center justify-center p-6">
+    <main class="bg-[#1a1a2e] rounded-2xl p-8 border border-white/5 w-full max-w-2xl shadow-lg">
+      
+      <!-- HEADER -->
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl font-bold flex justify-center items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416H416c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3C263.8 504.5 244.3 512 224 512s-39.8-7.5-45.3-18.7c-3.8-7.7-1.6-17 5.5-21.8l14.4-9.6c3.5-2.3 7.6-3.5 11.8-3.5h28.2c4.2 0 8.3 1.2 11.8 3.5l14.4 9.6c7.1 4.7 9.3 14.1 5.5 21.8z"/></svg> Join Ping</h1>
+        <p class="text-gray-400 text-sm mt-2">
+          Notify channels when a user joins your server.
+        </p>
+      </div>
+
+      <!-- ENABLE -->
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h3 class="font-bold text-lg">Enable Join Ping</h3>
+          <p class="text-sm text-gray-400">Automatically notify channels when members join</p>
+        </div>
+
+        <div class="relative inline-block w-[44px]">
+          <input id="enabled" type="checkbox" onchange="saveConfig()"
+            class="toggle-checkbox bg-white rounded-full appearance-none cursor-pointer" />
+          <label class="toggle-label cursor-pointer"></label>
+        </div>
+      </div>
+
+      <!-- CHANNEL INPUT -->
+      <div class="mb-4">
+        <label class="text-sm text-gray-400 mb-1 block">Channel IDs</label>
+        <div class="flex gap-2 mb-2">
+          <input id="channelId" class="flex-1 bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 font-mono placeholder:text-gray-500" placeholder="123456789012345678">
+          <button onclick="addChannel()" class="bg-razor px-4 py-3 rounded-xl font-bold hover:bg-razor/90 transition">
+            Add
+          </button>
+        </div>
+        <div id="channelList" class="space-y-2 max-h-48 overflow-y-auto"></div>
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="flex gap-3 mt-4 justify-center">
+        <button onclick="saveConfig()" class="bg-razor hover:bg-razorDark px-6 py-2 rounded-xl font-bold transition">
+          Save Settings
+        </button>
+        <button onclick="resetConfig()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 px-6 py-2 rounded-xl font-bold transition">
+          Reset
+        </button>
+      </div>
+
+    </main>
+  </div>
+
+<script src="/sidebar.js"></script>
+<script>
+const guildId = location.pathname.split("/")[2];
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  document.getElementById("toastMessage").innerText = msg;
+  t.style.backgroundColor = "#6C53FF";
+  t.style.transform = "translateX(0)";
+  setTimeout(() => t.style.transform = "translateX(400px)", 3000);
+}
+
+async function loadConfig() {
+  const res = await fetch(`/api/guild/${guildId}/joinping`);
+  const data = await res.json();
+
+  enabled.checked = data.Channel && data.Channel.length > 0;
+  renderChannels(data.Channel || []);
+}
+
+function renderChannels(channels) {
+  const el = document.getElementById('channelList');
+  el.innerHTML = channels.map(c => `
+    <div class="flex justify-between items-center bg-[#0b0b14] p-3 rounded-xl border border-white/10">
+      <span class="font-mono">${escapeHtml(c)}</span>
+      <button onclick="removeChannel('${escapeHtml(c)}')" class="text-red-400 hover:text-red-300">Remove</button>
+    </div>
+  `).join('');
+}
+
+async function addChannel() {
+  const id = document.getElementById('channelId').value;
+  if(!id) return;
+
+  const res = await fetch(`/api/guild/${guildId}/joinping`);
+  const data = await res.json();
+  const channels = data.Channel || [];
+  if(!channels.includes(id)) channels.push(id);
+
+  await fetch(`/api/guild/${guildId}/joinping`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ channels })
+  });
+
+  document.getElementById('channelId').value = '';
+  showToast("Channel added!");
+  loadConfig();
+}
+
+async function removeChannel(id) {
+  await fetch(`/api/guild/${guildId}/joinping/${id}`, { method: 'DELETE' });
+  showToast("Channel removed!");
+  loadConfig();
+}
+
+async function saveConfig() {
+  await fetch(`/api/guild/${guildId}/joinping`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      channels: Array.from(document.querySelectorAll('#channelList span')).map(s => s.innerText)
+    })
+  });
+  showToast("Settings saved!");
+}
+
+async function resetConfig() {
+  if(!confirm("Reset Join Ping settings?")) return;
+  await fetch(`/api/guild/${guildId}/joinping`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ channels: [] })
+  });
+  showToast("Settings reset!");
+  loadConfig();
+}
+
+loadConfig();
+</script>
+
+</body>
+</html>

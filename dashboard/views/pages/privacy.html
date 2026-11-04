@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Privacy Policy — Roco</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06060e;--bg1:#0d0d1a;--bg2:#111120;--bg3:#16162a;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
+  --text:#e4e4f0;--muted:#5a5a7a;--dim:#8080a0;
+  --brand:#6C53FF;--brand2:#8b6fff;--razor:#FF3333;
+  --red:#f87171;--red-bg:rgba(248,113,113,.07);--red-border:rgba(248,113,113,.2);
+  --blue:#60a5fa;--blue-bg:rgba(96,165,250,.07);--blue-border:rgba(96,165,250,.2);
+  --gold:#f59e0b;--gold-bg:rgba(245,158,11,.07);--gold-border:rgba(245,158,11,.2);
+  --green:#4ade80;--green-bg:rgba(74,222,128,.07);--green-border:rgba(74,222,128,.2);
+  --teal:#22d3ee;--teal-bg:rgba(34,211,238,.07);--teal-border:rgba(34,211,238,.2);
+  --purple-bg:rgba(108,83,255,.07);--purple-border:rgba(108,83,255,.2);
+  --font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;
+  --sidebar-w:240px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.7;min-height:100vh}
+.blobs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(120px)}
+.blob-1{width:600px;height:600px;background:rgba(34,211,238,.04);top:-200px;right:10%}
+.blob-2{width:500px;height:500px;background:rgba(108,83,255,.05);bottom:-100px;left:5%}
+.blob-3{width:400px;height:400px;background:rgba(239,68,68,.03);top:50%;right:60%}
+.topnav{position:sticky;top:0;z-index:100;background:rgba(6,6,14,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.topnav-inner{max-width:1100px;margin:0 auto;padding:0 1.5rem;height:54px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:800;font-size:.95rem;color:var(--text);text-decoration:none}
+.brand-icon{width:30px;height:30px;border-radius:.5rem;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center}
+.nav-links{display:flex;align-items:center;gap:.5rem}
+.nav-link{display:flex;align-items:center;gap:.4rem;font-size:.78rem;font-weight:600;color:var(--muted);text-decoration:none;padding:.32rem .7rem;border-radius:.45rem;border:1px solid transparent;transition:all .15s}
+.nav-link:hover{color:var(--text);border-color:var(--border);background:var(--bg2)}
+.nav-link.active{color:var(--text);border-color:var(--border2);background:var(--bg2)}
+.page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:3rem 1.5rem 6rem;display:grid;grid-template-columns:var(--sidebar-w) 1fr;gap:3rem;align-items:start}
+.toc{position:sticky;top:74px;max-height:calc(100vh - 94px);overflow-y:auto}
+.toc-label{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;padding-left:.5rem}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:2px}
+.toc-item a{display:flex;align-items:center;gap:.5rem;font-size:.72rem;font-weight:600;color:var(--muted);text-decoration:none;padding:.4rem .6rem;border-radius:.4rem;border:1px solid transparent;transition:all .15s;line-height:1.35}
+.toc-item a:hover{color:var(--dim);background:var(--bg2)}
+.toc-item a.active{color:var(--text);background:var(--teal-bg);border-color:var(--teal-border)}
+.toc-num{font-size:.6rem;font-family:var(--mono);font-weight:700;width:18px;height:18px;border-radius:4px;background:var(--bg3);display:grid;place-items:center;flex-shrink:0;color:var(--dim)}
+.toc-item a.active .toc-num{background:var(--teal);color:#000}
+.hero{margin-bottom:2.5rem}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--teal-bg);border:1px solid var(--teal-border);border-radius:99px;padding:.3rem .85rem;font-size:.7rem;font-weight:700;color:var(--teal);margin-bottom:1rem}
+.hero h1{font-size:2.4rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.5rem;line-height:1.2}
+.hero-meta{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:.75rem}
+.meta-pill{display:flex;align-items:center;gap:.35rem;font-size:.72rem;color:var(--muted);font-family:var(--mono)}
+.sections{display:flex;flex-direction:column;gap:1.5rem}
+.section{background:var(--bg1);border:1px solid var(--border);border-radius:1rem;padding:1.75rem;scroll-margin-top:80px}
+.section-head{display:flex;align-items:flex-start;gap:.85rem;margin-bottom:1.25rem}
+.section-num{width:34px;height:34px;border-radius:.55rem;background:var(--bg2);border:1px solid var(--border);display:grid;place-items:center;flex-shrink:0;font-family:var(--mono);font-size:.7rem;font-weight:700;color:var(--muted)}
+.section-title{font-size:1.05rem;font-weight:800;line-height:1.3}
+.section-subtitle{font-size:.78rem;color:var(--muted);margin-top:.2rem}
+.section.teal  {border-color:var(--teal-border); background:linear-gradient(135deg,rgba(34,211,238,.04) 0%,var(--bg1) 60%)}
+.section.red   {border-color:var(--red-border);  background:linear-gradient(135deg,rgba(248,113,113,.04) 0%,var(--bg1) 60%)}
+.section.blue  {border-color:var(--blue-border); background:linear-gradient(135deg,rgba(96,165,250,.04) 0%,var(--bg1) 60%)}
+.section.gold  {border-color:var(--gold-border); background:linear-gradient(135deg,rgba(245,158,11,.04) 0%,var(--bg1) 60%)}
+.section.green {border-color:var(--green-border);background:linear-gradient(135deg,rgba(74,222,128,.04) 0%,var(--bg1) 60%)}
+.section.purple{border-color:var(--purple-border);background:linear-gradient(135deg,rgba(108,83,255,.05) 0%,var(--bg1) 60%)}
+.section.teal  .section-num{background:var(--teal-bg); border-color:var(--teal-border); color:var(--teal)}
+.section.red   .section-num{background:var(--red-bg);  border-color:var(--red-border);  color:var(--red)}
+.section.blue  .section-num{background:var(--blue-bg); border-color:var(--blue-border); color:var(--blue)}
+.section.gold  .section-num{background:var(--gold-bg); border-color:var(--gold-border); color:var(--gold)}
+.section.green .section-num{background:var(--green-bg);border-color:var(--green-border);color:var(--green)}
+.section.purple .section-num{background:var(--purple-bg);border-color:var(--purple-border);color:var(--brand2)}
+.callout{border-radius:.65rem;padding:1rem 1.1rem;margin:1rem 0;font-size:.82rem;line-height:1.7}
+.callout.red   {background:var(--red-bg);  border:1px solid var(--red-border);  color:#fca5a5}
+.callout.gold  {background:var(--gold-bg); border:1px solid var(--gold-border); color:#fcd34d}
+.callout.blue  {background:var(--blue-bg); border:1px solid var(--blue-border); color:#93c5fd}
+.callout.green {background:var(--green-bg);border:1px solid var(--green-border);color:#86efac}
+.callout.teal  {background:var(--teal-bg); border:1px solid var(--teal-border); color:#67e8f9}
+.callout.purple{background:var(--purple-bg);border:1px solid var(--purple-border);color:#c4b5fd}
+.callout strong{font-weight:700;display:block;margin-bottom:.2rem}
+.item-grid{display:flex;flex-direction:column;gap:.85rem;margin-top:.5rem}
+.item{display:flex;gap:.75rem}
+.item-icon{width:28px;height:28px;border-radius:.45rem;background:var(--bg2);border:1px solid var(--border);display:grid;place-items:center;flex-shrink:0;margin-top:2px}
+.item-body h4{font-size:.82rem;font-weight:700;margin-bottom:.15rem}
+.item-body p{font-size:.78rem;color:var(--muted);line-height:1.65}
+.data-table{width:100%;border-collapse:collapse;font-size:.78rem;margin:.75rem 0}
+.data-table th{text-align:left;padding:.5rem .75rem;font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+.data-table td{padding:.55rem .75rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;line-height:1.6;color:var(--dim)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table td:first-child{color:var(--text);font-weight:600}
+.data-table td.badge-cell{padding:.45rem .75rem}
+.badge{font-size:.62rem;font-weight:700;font-family:var(--mono);padding:2px 7px;border-radius:4px}
+.badge.collect{background:var(--teal-bg);border:1px solid var(--teal-border);color:var(--teal)}
+.badge.encrypt{background:var(--purple-bg);border:1px solid var(--purple-border);color:var(--brand2)}
+.badge.anon   {background:var(--green-bg); border:1px solid var(--green-border); color:var(--green)}
+.badge.share  {background:var(--gold-bg);  border:1px solid var(--gold-border);  color:var(--gold)}
+.badge.delete {background:var(--red-bg);   border:1px solid var(--red-border);   color:var(--red)}
+.tag-row{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0}
+.tag{font-size:.65rem;font-weight:700;font-family:var(--mono);padding:2px 8px;border-radius:4px}
+.tag.teal  {background:var(--teal-bg); border:1px solid var(--teal-border); color:var(--teal)}
+.tag.purple{background:var(--purple-bg);border:1px solid var(--purple-border);color:var(--brand2)}
+.tag.green {background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)}
+.tag.gold  {background:var(--gold-bg); border:1px solid var(--gold-border); color:var(--gold)}
+.tag.blue  {background:var(--blue-bg); border:1px solid var(--blue-border); color:var(--blue)}
+.prose p{font-size:.83rem;color:var(--muted);margin-bottom:.75rem;line-height:1.75}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text)}
+.prose ul{margin:.35rem 0 .75rem 1.2rem;display:flex;flex-direction:column;gap:.25rem}
+.prose ul li{font-size:.8rem;color:var(--muted);line-height:1.65}
+.prose a{color:var(--brand2);text-decoration:none}
+.prose a:hover{text-decoration:underline}
+.rights-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:.5rem}
+.right-card{background:var(--bg2);border:1px solid var(--border);border-radius:.65rem;padding:.85rem;display:flex;gap:.6rem;align-items:flex-start}
+.right-icon{width:26px;height:26px;border-radius:.4rem;display:grid;place-items:center;flex-shrink:0}
+.right-body h5{font-size:.75rem;font-weight:700;margin-bottom:.1rem}
+.right-body p{font-size:.68rem;color:var(--muted);line-height:1.55}
+.doc-footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.doc-footer p{font-size:.72rem;color:var(--muted)}
+.doc-footer a{color:var(--brand2);text-decoration:none}
+.doc-footer a:hover{text-decoration:underline}
+@media(max-width:860px){
+  .page{grid-template-columns:1fr;gap:2rem}
+  .toc{display:none}
+  .hero h1{font-size:1.8rem}
+  .rights-grid{grid-template-columns:1fr}
+}
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<div class="blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="/servers" class="brand">
+      <div class="brand-icon">
+        <svg width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      Roco
+    </a>
+    <div class="nav-links">
+      <a href="/tos" class="nav-link">Terms of Service</a>
+      <a href="/privacy" class="nav-link active">Privacy Policy</a>
+      <a href="/servers" class="nav-link">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Dashboard
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <aside class="toc">
+    <div class="toc-label">On this page</div>
+    <ul class="toc-list">
+      <li class="toc-item"><a href="#s0"><span class="toc-num">!</span>Consent Notice</a></li>
+      <li class="toc-item"><a href="#s1"><span class="toc-num">01</span>Data We Collect</a></li>
+      <li class="toc-item"><a href="#s2"><span class="toc-num">02</span>How We Use It</a></li>
+      <li class="toc-item"><a href="#s3"><span class="toc-num">03</span>Third-Party Sharing</a></li>
+      <li class="toc-item"><a href="#s4"><span class="toc-num">04</span>Security</a></li>
+      <li class="toc-item"><a href="#s5"><span class="toc-num">05</span>Retention & Erasure</a></li>
+      <li class="toc-item"><a href="#s6"><span class="toc-num">06</span>Cookies & Tracking</a></li>
+      <li class="toc-item"><a href="#s7"><span class="toc-num">07</span>IP Verification Data</a></li>
+      <li class="toc-item"><a href="#s8"><span class="toc-num">08</span>COPPA</a></li>
+      <li class="toc-item"><a href="#s9"><span class="toc-num">09</span>GDPR & UK-GDPR</a></li>
+      <li class="toc-item"><a href="#s10"><span class="toc-num">10</span>CCPA / CPRA</a></li>
+      <li class="toc-item"><a href="#s11"><span class="toc-num">11</span>Discord Policy</a></li>
+      <li class="toc-item"><a href="#s12"><span class="toc-num">12</span>Policy Evolution</a></li>
+      <li class="toc-item"><a href="#s13"><span class="toc-num">13</span>Contact & Support</a></li>
+    </ul>
+  </aside>
+
+  <main>
+    <div class="hero">
+      <div class="hero-badge">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        Privacy Document
+      </div>
+      <h1>Privacy Policy</h1>
+      <div class="hero-meta">
+        <span class="meta-pill"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Last updated: May 2, 2026</span>
+        <span class="meta-pill"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>13 sections</span>
+        <span class="meta-pill" style="color:var(--teal)"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>IP Verification section added</span>
+      </div>
+    </div>
+
+    <div class="sections">
+
+      <!-- 00 — Consent -->
+      <div class="section red" id="s0">
+        <div class="section-head">
+          <div class="section-num">!</div>
+          <div>
+            <div class="section-title" style="color:var(--red)">Data Consent &amp; Acceptance</div>
+            <div class="section-subtitle">Binding notice before proceeding</div>
+          </div>
+        </div>
+        <div class="callout red">
+          <strong>BY UTILISING ROCO, YOU EXPRESSLY CONSENT TO THE DATA COLLECTION PRACTICES OUTLINED IN THIS DOCUMENT.</strong>
+          This includes collection of Discord User IDs, server metadata, dashboard telemetry, and — where the IP Verification feature is enabled by a server administrator — your IP address and associated threat intelligence. If you do not agree, you must terminate use of the bot immediately.
+        </div>
+      </div>
+
+      <!-- 01 — Data Collection -->
+      <div class="section teal" id="s1">
+        <div class="section-head">
+          <div class="section-num">01</div>
+          <div>
+            <div class="section-title">Data We Collect</div>
+            <div class="section-subtitle">A complete inventory of data collected by Roco</div>
+          </div>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Category</th><th>Data Point</th><th>Storage</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Account Identifiers</td>
+              <td>Discord Snowflake User ID — treated as PII. Associated with preferences, premium status, and admin permissions.</td>
+              <td class="badge-cell"><span class="badge encrypt">Encrypted</span></td>
+            </tr>
+            <tr>
+              <td>Command Metadata</td>
+              <td>Which command was executed, timestamp, and the server it was used in. Message content is <strong>not</strong> stored.</td>
+              <td class="badge-cell"><span class="badge anon">Anonymised</span></td>
+            </tr>
+            <tr>
+              <td>Dashboard Telemetry</td>
+              <td>Standard web server logs: IP address, browser type, referring URLs. Used for DDoS mitigation. Standard IPs deleted within 24 hours.</td>
+              <td class="badge-cell"><span class="badge encrypt">Encrypted</span></td>
+            </tr>
+            <tr>
+              <td>Server Configuration</td>
+              <td>Guild ID, channel IDs, role IDs, and all feature configurations you set up in the dashboard.</td>
+              <td class="badge-cell"><span class="badge encrypt">Encrypted</span></td>
+            </tr>
+            <tr>
+              <td>IP Verification Data</td>
+              <td>IP address (with consent only), threat intelligence, verification outcome. See <a href="#s7" style="color:var(--teal)">Section 07</a> for full details.</td>
+              <td class="badge-cell"><span class="badge encrypt">Encrypted</span></td>
+            </tr>
+            <tr>
+              <td>Ticket &amp; Support Data</td>
+              <td>When the ticket system is used: Discord User IDs of ticket participants, message content and attachments within ticket channels (stored as HTML and web transcripts), staff notes added by moderators, ticket metadata (category, timestamps, assigned staff, priority, tags), and optional satisfaction ratings (1–5 stars) submitted by ticket owners.</td>
+              <td class="badge-cell"><span class="badge encrypt">Encrypted</span></td>
+            </tr>
+            <tr>
+              <td>Staff Application Data</td>
+              <td>When a server's staff application system is used: Discord User IDs of applicants, application question responses, decision records (accepted/rejected), and timestamps. Stored per-guild and accessible to that guild's administrators only.</td>
+              <td class="badge-cell"><span class="badge encrypt">Encrypted</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout teal" style="margin-top:.5rem">
+          <strong>Data Minimisation Principle</strong>
+          Our systems are designed around collecting only the minimum data necessary to operate the service. We do not sell your data, build advertising profiles, or share it for purposes unrelated to operating Roco.
+        </div>
+      </div>
+
+      <!-- 02 — Usage -->
+      <div class="section" id="s2">
+        <div class="section-head">
+          <div class="section-num">02</div>
+          <div>
+            <div class="section-title">How We Use Your Data</div>
+            <div class="section-subtitle">Operational purposes only</div>
+          </div>
+        </div>
+        <div class="item-grid">
+          <div class="item">
+            <div class="item-icon"><svg width="13" height="13" fill="none" stroke="var(--dim)" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+            <div class="item-body"><h4>Feature Delivery</h4><p>Maintaining welcome messages, automated moderation rules, and all feature configurations.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon"><svg width="13" height="13" fill="none" stroke="var(--dim)" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div class="item-body"><h4>Abuse Prevention</h4><p>Identifying bot raids, users attempting to crash the bot, circumventing bans through alt accounts, and operating the IP Verification security feature.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon"><svg width="13" height="13" fill="none" stroke="var(--dim)" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+            <div class="item-body"><h4>Internal Analytics</h4><p>Aggregating anonymised usage data to identify underutilised features. Individual usage is never sold or used for advertising.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon"><svg width="13" height="13" fill="none" stroke="var(--dim)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+            <div class="item-body"><h4>Legal Compliance</h4><p>Responding to verified legal requests or Discord Trust &amp; Safety inquiries regarding Terms of Service violations.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 — Third-Party -->
+      <div class="section blue" id="s3">
+        <div class="section-head">
+          <div class="section-num">03</div>
+          <div>
+            <div class="section-title">Third-Party Data Sharing</div>
+            <div class="section-subtitle">Who we share data with and why</div>
+          </div>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Provider Type</th><th>Purpose</th><th>Data Shared</th></tr></thead>
+          <tbody>
+            <tr><td>Infrastructure (Cloud)</td><td>Database hosting and compute</td><td>All encrypted records</td></tr>
+            <tr><td>Payment Processors</td><td>Premium billing</td><td>Email, billing details only</td></tr>
+            <tr><td>Error Tracking</td><td>Debugging and crash reporting</td><td>System logs, stack traces (no PII)</td></tr>
+            <tr>
+              <td>IP Intelligence API</td>
+              <td>IP Verification threat analysis — VPN, proxy, Tor, hosting, risk scoring, and geolocation. Only called when a user initiates IP Verification.</td>
+              <td>IP address (per-verification, with user consent)</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout blue">
+          <strong>IP Intelligence API</strong>
+          When a user completes IP Verification, their IP address is transmitted to our third-party IP intelligence provider solely to perform the threat analysis checks configured by the server administrator. This provider does not receive any Discord identifiers. The IP address is not stored by the provider beyond the duration of the API call.
+        </div>
+      </div>
+
+      <!-- 04 — Security -->
+      <div class="section" id="s4">
+        <div class="section-head">
+          <div class="section-num">04</div>
+          <div>
+            <div class="section-title">Infrastructure &amp; Security</div>
+            <div class="section-subtitle">How your data is protected</div>
+          </div>
+        </div>
+        <div class="rights-grid">
+          <div class="right-card">
+            <div class="right-icon" style="background:var(--purple-bg);border:1px solid var(--purple-border)"><svg width="12" height="12" fill="none" stroke="var(--brand2)" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+            <div class="right-body"><h5>AES-256 Encryption at Rest</h5><p>All sensitive data including IP addresses, User IDs, and verification records are encrypted at rest using AES-256.</p></div>
+          </div>
+          <div class="right-card">
+            <div class="right-icon" style="background:var(--teal-bg);border:1px solid var(--teal-border)"><svg width="12" height="12" fill="none" stroke="var(--teal)" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div class="right-body"><h5>HMAC-Based Lookups</h5><p>User IDs and IP addresses used for deduplication are stored as HMAC hashes — one-way transforms that cannot be reversed.</p></div>
+          </div>
+          <div class="right-card">
+            <div class="right-icon" style="background:var(--green-bg);border:1px solid var(--green-border)"><svg width="12" height="12" fill="none" stroke="var(--green)" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div class="right-body"><h5>Least-Privilege Access</h5><p>Strict internal access controls. Only the minimum required team members have access to production data, and all access is audited.</p></div>
+          </div>
+          <div class="right-card">
+            <div class="right-icon" style="background:var(--gold-bg);border:1px solid var(--gold-border)"><svg width="12" height="12" fill="none" stroke="var(--gold)" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div>
+            <div class="right-body"><h5>Isolated VPC Environments</h5><p>Database and compute infrastructure is isolated in private VPCs not exposed to the public internet.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 05 — Retention -->
+      <div class="section green" id="s5">
+        <div class="section-head">
+          <div class="section-num">05</div>
+          <div>
+            <div class="section-title">Data Retention &amp; Erasure</div>
+            <div class="section-subtitle">Your right to be forgotten</div>
+          </div>
+        </div>
+        <div class="item-grid">
+          <div class="item">
+            <div class="item-icon" style="background:var(--green-bg);border-color:var(--green-border)"><svg width="13" height="13" fill="none" stroke="var(--green)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div class="item-body"><h4>Server Removal (30 Days)</h4><p>If a server removes the bot, all configurations and associated logs are queued for deletion, processed every 30 days to prevent data loss from accidental bot kicks.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--green-bg);border-color:var(--green-border)"><svg width="13" height="13" fill="none" stroke="var(--green)" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></div>
+            <div class="item-body"><h4>On-Request Erasure</h4><p>Exercise your right to erasure by contacting <strong>support@rocobot.xyz</strong> or using the <code style="background:var(--bg3);padding:1px 5px;border-radius:3px;font-family:var(--mono)">/privacy delete</code> command in Discord. Production data is removed immediately.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--purple-bg);border-color:var(--purple-border)"><svg width="13" height="13" fill="none" stroke="var(--brand2)" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div class="item-body"><h4>IP Verification Record Retention</h4><p>IP Verification records are retained for as long as the server's configuration is active, or until manually deleted by the server administrator or upon a user erasure request. Records deleted by an administrator are immediately removed from production.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--gold-bg);border-color:var(--gold-border)"><svg width="13" height="13" fill="none" stroke="var(--gold)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div>
+            <div class="item-body"><h4>Backup Persistence (90 Days)</h4><p>While data is removed from production immediately following an erasure request, it may persist in encrypted off-site backups for up to 90 days before being completely overwritten.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 06 — Cookies -->
+      <div class="section" id="s6">
+        <div class="section-head">
+          <div class="section-num">06</div>
+          <div>
+            <div class="section-title">Cookies &amp; Tracking</div>
+            <div class="section-subtitle">What our dashboard stores in your browser</div>
+          </div>
+        </div>
+        <div class="item-grid">
+          <div class="item">
+            <div class="item-icon"><svg width="13" height="13" fill="none" stroke="var(--dim)" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+            <div class="item-body"><h4>Essential Cookies</h4><p>Session cookies required for Discord OAuth2 authentication and dashboard functionality. These cannot be disabled without breaking login.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon"><svg width="13" height="13" fill="none" stroke="var(--dim)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <div class="item-body"><h4>Functional Cookies</h4><p>Used to remember UI theme preferences and dashboard settings. Stored in <code style="background:var(--bg3);padding:1px 5px;border-radius:3px;font-family:var(--mono)">localStorage</code> — not transmitted to our servers.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon"><svg width="13" height="13" fill="none" stroke="var(--dim)" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+            <div class="item-body"><h4>Consent Record</h4><p>A consent flag is stored in <code style="background:var(--bg3);padding:1px 5px;border-radius:3px;font-family:var(--mono)">localStorage</code> to track whether you have acknowledged these terms. It contains no PII and is never transmitted to our servers.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 07 — IP Verification Data (NEW) -->
+      <div class="section purple" id="s7">
+        <div class="section-head">
+          <div class="section-num">07</div>
+          <div>
+            <div class="section-title">IP Verification Data</div>
+            <div class="section-subtitle">Full disclosure of IP verification data practices — <strong style="color:var(--brand2)">Added March 2026</strong></div>
+          </div>
+        </div>
+
+        <div class="callout purple">
+          <strong>Scope of this section</strong>
+          This section only applies when a Discord server you are a member of has enabled the IP Verification feature and you have initiated the verification flow. If you have not clicked a verification button, no IP data is collected.
+        </div>
+
+        <div class="item-grid" style="margin-top:1rem">
+          <div class="item">
+            <div class="item-icon" style="background:var(--purple-bg);border-color:var(--purple-border)"><svg width="13" height="13" fill="none" stroke="var(--brand2)" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0"/><path d="M1.42 9a16 16 0 0121.16 0"/><path d="M8.53 16.11a6 6 0 016.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg></div>
+            <div class="item-body"><h4>Data Collected</h4>
+              <table class="data-table" style="margin-top:.5rem">
+                <thead><tr><th>Data Point</th><th>Purpose</th><th>Storage Method</th></tr></thead>
+                <tbody>
+                  <tr><td>IP Address</td><td>Core identifier for all checks</td><td>AES-256 encrypted + HMAC for lookups</td></tr>
+                  <tr><td>VPN / Proxy Detection</td><td>Enforce server's VPN/proxy block policy</td><td>Boolean flags, encrypted</td></tr>
+                  <tr><td>Tor Exit Node Detection</td><td>Enforce server's Tor block policy</td><td>Boolean flag, encrypted</td></tr>
+                  <tr><td>Hosting IP Detection</td><td>Block datacenter/bot traffic</td><td>Boolean flag, encrypted</td></tr>
+                  <tr><td>Risk Score (0–100)</td><td>Graduated threat assessment</td><td>Integer, encrypted</td></tr>
+                  <tr><td>Country &amp; City</td><td>Geographic allow/block policy enforcement</td><td>String, encrypted</td></tr>
+                  <tr><td>ISP / Provider Name</td><td>Logged for administrator review</td><td>String, encrypted</td></tr>
+                  <tr><td>Discord User ID</td><td>Link verification record to a user</td><td>HMAC hash + AES-256 encrypted copy</td></tr>
+                  <tr><td>Guild (Server) ID</td><td>Scope record to the verifying server</td><td>HMAC hash + AES-256 encrypted copy</td></tr>
+                  <tr><td>Verification Outcome</td><td>PASSED / BLOCKED / FLAGGED status</td><td>Plaintext enum in record</td></tr>
+                  <tr><td>Flag Reasons</td><td>Detailed reasons for block/flag</td><td>Array, plaintext in record</td></tr>
+                  <tr><td>Timestamp</td><td>Verification date and time</td><td>ISO-8601 datetime</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="item-icon" style="background:var(--purple-bg);border-color:var(--purple-border)"><svg width="13" height="13" fill="none" stroke="var(--brand2)" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="item-body"><h4>What Administrators Can See</h4>
+              <div class="prose"><p>Server administrators can view verification records via the Roco dashboard. The IP address displayed to administrators is <strong>always masked</strong> as <code style="background:var(--bg3);padding:1px 4px;border-radius:3px;font-family:var(--mono)">[hidden]</code> — they cannot see your actual IP. They can see: verification outcome, flag reasons, country, risk score, ISP, VPN/proxy flags, and your Discord User ID. They can delete any record, manually approve a blocked user, or manually ban them.</p></div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="item-icon" style="background:var(--purple-bg);border-color:var(--purple-border)"><svg width="13" height="13" fill="none" stroke="var(--brand2)" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+            <div class="item-body"><h4>Anti-Bypass Technical Guarantees</h4>
+              <div class="prose"><ul>
+                <li>The verification token is 48 cryptographically random bytes, stored as SHA-256 hash only — never in plaintext.</li>
+                <li>Each token is strictly one-use. It is burned (marked used) the moment your POST request is received.</li>
+                <li>Tokens have a server-configured TTL of 5–30 minutes. Expired tokens are deleted from the database.</li>
+                <li>The token is bound to your specific Discord User ID and Guild ID — it cannot be used by a different person.</li>
+                <li>Rate limiting: a maximum of 3 active tokens per user per guild per TTL window.</li>
+                <li>Your IP address is captured entirely server-side — it cannot be faked or spoofed by the client.</li>
+              </ul></div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="item-icon" style="background:var(--green-bg);border-color:var(--green-border)"><svg width="13" height="13" fill="none" stroke="var(--green)" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+            <div class="item-body"><h4>Your Consent Rights</h4><p>IP Verification always requires your explicit consent via a checkbox on the verification gate page. Consent is validated server-side — the system will not process your IP without it. You may withdraw participation by not completing the verification flow, though this may restrict your access to the server per the administrator's configuration.</p></div>
+          </div>
+
+          <div class="item">
+            <div class="item-icon" style="background:var(--green-bg);border-color:var(--green-border)"><svg width="13" height="13" fill="none" stroke="var(--green)" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></div>
+            <div class="item-body"><h4>Erasure of Verification Records</h4><p>You may request deletion of your IP Verification record at any time by contacting the server administrator, who has a per-record delete function in the dashboard, or by contacting Roco support at <strong>support@rocobot.xyz</strong> with your Discord User ID and the server name. Records deleted from production are removed immediately; backup copies are purged within 90 days.</p></div>
+          </div>
+        </div>
+
+        <div class="tag-row" style="margin-top:1.25rem">
+          <span class="tag teal">Consent Required</span>
+          <span class="tag purple">AES-256 Encrypted</span>
+          <span class="tag purple">HMAC Hashed</span>
+          <span class="tag green">GDPR Compliant</span>
+          <span class="tag green">Right to Erasure</span>
+          <span class="tag blue">IP Never Shown to Admins</span>
+        </div>
+      </div>
+
+      <!-- 07b — Ticket System Data -->
+      <div class="section blue" id="s7b">
+        <div class="section-head">
+          <div class="section-num">07b</div>
+          <div>
+            <div class="section-title">Ticket System Data</div>
+            <div class="section-subtitle">Data collected and stored when the ticket feature is active — <strong style="color:var(--blue)">Added May 2026</strong></div>
+          </div>
+        </div>
+
+        <div class="callout blue">
+          <strong>Scope of this section</strong>
+          This section applies only when a Discord server has enabled the Roco ticket system and a member opens or participates in a ticket. If tickets are not enabled in a server, this section does not apply.
+        </div>
+
+        <div class="item-grid" style="margin-top:1rem">
+          <div class="item">
+            <div class="item-icon" style="background:var(--blue-bg);border-color:var(--blue-border)"><svg width="13" height="13" fill="none" stroke="var(--blue)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+            <div class="item-body"><h4>What is Collected Per Ticket</h4>
+              <table class="data-table" style="margin-top:.5rem">
+                <thead><tr><th>Data Point</th><th>Purpose</th><th>Storage</th></tr></thead>
+                <tbody>
+                  <tr><td>Discord User IDs (owner &amp; participants)</td><td>Track who created and participated in the ticket</td><td>Plaintext in ticket record</td></tr>
+                  <tr><td>Username / display tag at creation</td><td>Human-readable reference in transcript header</td><td>Plaintext in ticket record</td></tr>
+                  <tr><td>Message content &amp; attachments</td><td>Full conversation stored as HTML transcript and/or web transcript — viewable by server admins</td><td>HTML file (per-ticket) + encrypted DB record</td></tr>
+                  <tr><td>Ticket metadata</td><td>Category, open/close timestamps, priority level, tags, assigned staff ID, claimed staff ID</td><td>Encrypted DB record</td></tr>
+                  <tr><td>Staff notes</td><td>Internal notes added by moderators — visible only within the ticket channel to staff</td><td>Encrypted DB record</td></tr>
+                  <tr><td>Satisfaction rating (1–5 stars)</td><td>Optional post-close rating submitted by the ticket owner via DM button</td><td>Integer in ticket record</td></tr>
+                  <tr><td>Intake question responses</td><td>Answers provided by the user when opening a ticket (if configured by the server)</td><td>Encrypted DB record</td></tr>
+                  <tr><td>Close reason</td><td>Text reason provided by staff or owner when closing the ticket</td><td>Plaintext in transcript &amp; log record</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="item-icon" style="background:var(--blue-bg);border-color:var(--blue-border)"><svg width="13" height="13" fill="none" stroke="var(--blue)" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="item-body"><h4>Who Can Access Ticket Data</h4>
+              <div class="prose">
+                <p>Server administrators and users with the configured ticket handler role can view all open and closed ticket records via the Roco dashboard, including transcripts. Roco developers may access ticket records only for the purposes of security investigations, bug fixes, or when responding to a legal request. Ticket data is never shared with third parties beyond what is described in Section 03 (infrastructure providers).</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="item-icon" style="background:var(--blue-bg);border-color:var(--blue-border)"><svg width="13" height="13" fill="none" stroke="var(--blue)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div class="item-body"><h4>Transcript Retention</h4>
+              <p>HTML transcript files and web transcript records are retained as long as the server's bot configuration is active. When a server removes the bot, all ticket records — including transcripts — are queued for deletion within 30 days. Individual ticket records can be deleted at any time by a server administrator via the dashboard. Users may request deletion of their participation data (including message content from transcripts) by contacting <strong>support@rocobot.xyz</strong> with their Discord User ID and server name.</p>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="item-icon" style="background:var(--gold-bg);border-color:var(--gold-border)"><svg width="13" height="13" fill="none" stroke="var(--gold)" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div class="item-body"><h4>Important Notice: Message Content</h4>
+              <div class="callout gold" style="margin-top:.5rem">
+                <strong>By using a server's ticket system, you acknowledge that all messages sent within a ticket channel may be captured and stored as a transcript.</strong> This includes text, images, and file attachments. Transcripts are accessible to server administrators. Do not send sensitive personal information (such as passwords, financial data, or government ID numbers) in ticket channels.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tag-row" style="margin-top:1.25rem">
+          <span class="tag blue">Admin-Scoped Access</span>
+          <span class="tag blue">Transcript Stored</span>
+          <span class="tag green">Right to Erasure</span>
+          <span class="tag gold">Contains Message Content</span>
+        </div>
+      </div>
+
+      <!-- 08 — COPPA -->
+      <div class="section" id="s8">
+        <div class="section-head">
+          <div class="section-num">08</div>
+          <div>
+            <div class="section-title">COPPA — Children's Privacy</div>
+            <div class="section-subtitle">Users under 13</div>
+          </div>
+        </div>
+        <div class="prose">
+          <p>We do not knowingly collect data from children under 13. If we discover such data has been collected, we will take immediate steps to delete it in full, including any IP Verification records. Parents or guardians may contact us at <strong>support@rocobot.xyz</strong> to request deletion.</p>
+        </div>
+      </div>
+
+      <!-- 09 — GDPR -->
+      <div class="section green" id="s9">
+        <div class="section-head">
+          <div class="section-num">09</div>
+          <div>
+            <div class="section-title">GDPR &amp; UK-GDPR</div>
+            <div class="section-subtitle">Rights for EU and UK residents</div>
+          </div>
+        </div>
+        <div class="rights-grid">
+          <div class="right-card">
+            <div class="right-icon" style="background:var(--green-bg);border:1px solid var(--green-border)"><svg width="12" height="12" fill="none" stroke="var(--green)" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+            <div class="right-body"><h5>Right of Access</h5><p>Request a copy of all personal data we hold about you, including any IP Verification records.</p></div>
+          </div>
+          <div class="right-card">
+            <div class="right-icon" style="background:var(--green-bg);border:1px solid var(--green-border)"><svg width="12" height="12" fill="none" stroke="var(--green)" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg></div>
+            <div class="right-body"><h5>Right to Rectification</h5><p>Request correction of inaccurate personal data we hold about you.</p></div>
+          </div>
+          <div class="right-card">
+            <div class="right-icon" style="background:var(--green-bg);border:1px solid var(--green-border)"><svg width="12" height="12" fill="none" stroke="var(--green)" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></div>
+            <div class="right-body"><h5>Right to Erasure</h5><p>Request deletion of your personal data, including all IP Verification records. Contact support or use <code style="font-family:var(--mono)">/privacy delete</code>.</p></div>
+          </div>
+          <div class="right-card">
+            <div class="right-icon" style="background:var(--green-bg);border:1px solid var(--green-border)"><svg width="12" height="12" fill="none" stroke="var(--green)" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+            <div class="right-body"><h5>Right to Portability</h5><p>Request an export of your data in a machine-readable format. Server admins may export IP Verification records as CSV.</p></div>
+          </div>
+        </div>
+        <div class="prose" style="margin-top:1rem">
+          <p>To exercise any GDPR right, contact our Data Protection Officer via the official support server or at <strong>support@rocobot.xyz</strong>. Legal basis for processing IP Verification data is <strong>legitimate interests</strong> (server security) combined with your explicit <strong>consent</strong>, which you may withdraw at any time.</p>
+        </div>
+      </div>
+
+      <!-- 10 — CCPA -->
+      <div class="section" id="s10">
+        <div class="section-head">
+          <div class="section-num">10</div>
+          <div>
+            <div class="section-title">CCPA / CPRA Rights</div>
+            <div class="section-subtitle">California residents</div>
+          </div>
+        </div>
+        <div class="prose">
+          <p>California residents have the right to: know what personal information we collect (including IP Verification data), request deletion of that information, and opt out of the "sale" of personal information. <strong>We do not sell your personal information.</strong></p>
+          <p>To exercise CCPA rights, submit a request via our support email. Requests are fulfilled within 45 days. IP Verification records are included in the scope of any California privacy request.</p>
+        </div>
+      </div>
+
+      <!-- 11 — Discord -->
+      <div class="section" id="s11">
+        <div class="section-head">
+          <div class="section-num">11</div>
+          <div>
+            <div class="section-title">Discord Policy Acknowledgment</div>
+            <div class="section-subtitle">What falls outside our scope</div>
+          </div>
+        </div>
+        <div class="callout gold">
+          <strong>Important</strong>
+          This policy only governs data collected directly by Roco. Your usage of the Discord platform is subject to Discord's Global Privacy Policy. We are not responsible for data collected by Discord Inc. or any other external plugins or bots you may use.
+        </div>
+      </div>
+
+      <!-- 12 — Evolution -->
+      <div class="section" id="s12">
+        <div class="section-head">
+          <div class="section-num">12</div>
+          <div>
+            <div class="section-title">Policy Evolution</div>
+            <div class="section-subtitle">How this policy changes over time</div>
+          </div>
+        </div>
+        <div class="prose">
+          <p>We reserve the right to update this policy at any time. If significant changes are made — such as new data collection categories or changes to IP Verification data practices — we will provide notice via our official Announcements channel in the support server. Your continued use of the bot after changes constitutes acceptance of the revised terms.</p>
+        </div>
+      </div>
+
+      <!-- 13 — Contact -->
+      <div class="section teal" id="s13">
+        <div class="section-head">
+          <div class="section-num">13</div>
+          <div>
+            <div class="section-title">Contact &amp; Support</div>
+            <div class="section-subtitle">Reach our team for privacy matters</div>
+          </div>
+        </div>
+        <div class="item-grid">
+          <div class="item">
+            <div class="item-icon" style="background:var(--teal-bg);border-color:var(--teal-border)"><svg width="13" height="13" fill="none" stroke="var(--teal)" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div class="item-body"><h4>Email — support@rocobot.xyz</h4><p>For data access requests, erasure requests (including IP Verification record deletion), GDPR/CCPA enquiries, and all privacy-related questions.</p></div>
+          </div>
+          <div class="item">
+            <div class="item-icon" style="background:var(--teal-bg);border-color:var(--teal-border)"><svg width="13" height="13" fill="none" stroke="var(--teal)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+            <div class="item-body"><h4>Support Server</h4><p>Primary channel for real-time support. Our legal and support team can assist with any privacy concerns via the official Discord support server.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /sections -->
+
+    <div class="doc-footer">
+      <p>
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="vertical-align:middle;opacity:.5;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        &copy; <span class="xyron-yr"></span> Roco Development &mdash; All Rights Reserved
+      </p>
+      <p>
+        <a href="/tos">Terms of Service</a> &middot;
+        <a href="/privacy">Privacy Policy</a> &middot;
+        <a href="/servers">Dashboard</a> &middot;
+        <a href="mailto:support@rocobot.xyz">support@rocobot.xyz</a>
+      </p>
+    </div>
+    <script>document.querySelectorAll('.xyron-yr').forEach(el => el.textContent = new Date().getFullYear());</script>
+  </main>
+</div>
+
+<script>
+(function(){
+  const links = document.querySelectorAll('.toc-item a');
+  const sections = Array.from(document.querySelectorAll('.section[id]'));
+  function update(){
+    // FIX: offsetTop is relative to the offset parent (a nested container),
+    // not the document root, so it never matched window.scrollY for sections
+    // deep in the page. getBoundingClientRect() is viewport-relative and
+    // works correctly regardless of DOM nesting depth.
+    let cur = sections[0]?.id || 's0';
+    for (const s of sections) {
+      if (s.getBoundingClientRect().top <= 100) cur = s.id;
+      else break;
+    }
+    links.forEach(l=>{ l.classList.toggle('active', l.getAttribute('href')==='#'+cur); });
+  }
+  window.addEventListener('scroll',update,{passive:true});
+  update();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Ticket Transcript</title>
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    const tailwind = window.tailwind || {}; tailwind.config = {
+      theme: { extend: { colors: {
+        discord: "#2a1f1f",
+        chat: "#221818",
+        razor: "#FF3333"
+      }, fontFamily: { sans: ['Inter', 'sans-serif'] } } }
+    }
+  </script>
+  <style>
+    * { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; }
+    body { background-color: #36393f; color: #dcddde; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+    
+    /* Header */
+    .header {
+      height: 56px;
+      background-color: #2f3136;
+      border-bottom: 1px solid #202225;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 50;
+      box-sizing: border-box;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .header-icon {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      background: #FF3333;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .header-icon svg { width: 16px; height: 16px; color: #1a1a1a; stroke: #1a1a1a; }
+    
+    .header-titles { overflow: hidden; min-width: 0; }
+    
+    .header-title {
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+    
+    .header-subtitle {
+      font-size: 10px;
+      color: #b9bbbe;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: monospace;
+    }
+    
+    .header-right {
+      flex-shrink: 0;
+      margin-left: 8px;
+      text-align: right;
+    }
+    
+    .header-right-label {
+      font-size: 9px;
+      color: #b9bbbe;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    
+    .header-closer {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: flex-end;
+      margin-top: 2px;
+    }
+    
+    .header-closer span {
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+      max-width: 80px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .header-closer img {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+    }
+
+    /* Main */
+    main {
+      padding-top: 68px;
+      padding-bottom: 24px;
+      max-width: 860px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Welcome block */
+    .welcome-block {
+      padding: 16px 16px 0;
+      margin-bottom: 0;
+    }
+    
+    .welcome-icon {
+      width: 44px;
+      height: 44px;
+      background: #4f545c;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    
+    .welcome-icon svg { width: 22px; height: 22px; color: white; }
+    
+    .welcome-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+    
+    .welcome-sub {
+      color: #b9bbbe;
+      font-size: 13px;
+    }
+    
+    .divider {
+      border: none;
+      border-top: 1px solid #202225;
+      margin: 16px 0 8px;
+    }
+
+    /* Messages */
+    .message-group {
+      display: flex;
+      gap: 10px;
+      padding: 6px 12px;
+      transition: background 0.1s;
+      border-radius: 4px;
+    }
+    
+    .message-group:active { background-color: #32353b; }
+    
+    @media (hover: hover) {
+      .message-group:hover { background-color: #32353b; }
+    }
+    
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 2px;
+      object-fit: cover;
+    }
+    
+    .msg-body { flex: 1; min-width: 0; }
+    
+    .msg-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 4px 6px;
+      margin-bottom: 2px;
+    }
+    
+    .author-name {
+      font-weight: 600;
+      color: white;
+      font-size: 14px;
+      word-break: break-word;
+    }
+    
+    .bot-badge {
+      background: #5865F2;
+      color: white;
+      font-size: 9px;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      align-self: center;
+    }
+    
+    .timestamp {
+      font-size: 10px;
+      color: #72767d;
+    }
+    
+    .msg-content {
+      color: #dcddde;
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    /* Attachments */
+    .attachment-img {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 8px;
+      border: 1px solid #202225;
+      margin-top: 6px;
+      display: block;
+    }
+    
+    .attachment-video {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid #202225;
+      margin-top: 6px;
+      display: block;
+    }
+    
+    .attachment-file {
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #2f3136;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #202225;
+      max-width: 280px;
+      overflow: hidden;
+    }
+    
+    .attachment-file-icon {
+      background: #202225;
+      padding: 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    
+    .attachment-file-icon svg { width: 18px; height: 18px; color: #FF3333; }
+    
+    .attachment-file-info { overflow: hidden; min-width: 0; }
+    
+    .attachment-file-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .attachment-file-link {
+      font-size: 11px;
+      color: #5865F2;
+      text-decoration: none;
+    }
+    
+    .attachment-file-link:hover { text-decoration: underline; }
+
+    /* Embeds */
+    .embed-container {
+      display: flex;
+      max-width: 100%;
+      width: fit-content;
+      max-width: min(420px, calc(100vw - 80px));
+      background-color: #2f3136;
+      border-radius: 4px;
+      margin-top: 6px;
+      border-left: 4px solid #202225;
+    }
+    
+    .embed-content { padding: 8px 10px 10px; width: 100%; min-width: 0; }
+    
+    .embed-inner { display: flex; justify-content: space-between; gap: 8px; }
+    
+    .embed-main { flex: 1; min-width: 0; }
+    
+    .embed-author {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    
+    .embed-author img { width: 14px; height: 14px; border-radius: 50%; }
+    
+    .embed-author-name { font-weight: 700; color: white; font-size: 11px; }
+    
+    .embed-title {
+      font-weight: 700;
+      color: white;
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+      word-break: break-word;
+    }
+    
+    .embed-desc {
+      font-size: 13px;
+      color: #dcddde;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+    
+    .embed-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    
+    .embed-field { }
+    .embed-field.full { grid-column: 1 / -1; }
+    
+    .embed-field-name {
+      font-weight: 700;
+      color: white;
+      font-size: 11px;
+      margin-bottom: 2px;
+    }
+    
+    .embed-field-value {
+      font-size: 11px;
+      color: #dcddde;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    
+    .embed-image {
+      max-width: 100%;
+      border-radius: 4px;
+      margin-top: 8px;
+      height: auto;
+      display: block;
+    }
+    
+    .embed-thumb {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    
+    .embed-footer {
+      font-size: 10px;
+      color: #b9bbbe;
+      display: flex;
+      align-items: center;
+      margin-top: 8px;
+      gap: 4px;
+    }
+    
+    .embed-footer img { width: 14px; height: 14px; border-radius: 50%; }
+
+    /* Loading / error states */
+    .loading-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #72767d;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+    
+    .error-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+      text-align: center;
+    }
+
+    /* Safe area for notched phones */
+    @supports (padding-top: env(safe-area-inset-top)) {
+      .header { padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); }
+      main { padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+    }
+
+    /* Tablets+ */
+    @media (min-width: 640px) {
+      .header { height: 64px; padding: 0 20px; }
+      .header-icon { width: 40px; height: 40px; }
+      .header-icon svg { width: 20px; height: 20px; }
+      .header-title { font-size: 16px; }
+      .header-subtitle { font-size: 11px; }
+      .header-closer span { font-size: 13px; max-width: none; }
+      .header-closer img { width: 24px; height: 24px; }
+      main { padding-top: 76px; padding-left: 16px; padding-right: 16px; }
+      .welcome-block { padding: 20px 20px 0; }
+      .welcome-title { font-size: 28px; }
+      .message-group { padding: 6px 16px; gap: 14px; }
+      .avatar { width: 40px; height: 40px; }
+      .author-name { font-size: 15px; }
+      .msg-content { font-size: 15px; }
+      .embed-container { max-width: 480px; }
+      .embed-thumb { width: 60px; height: 60px; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #2e3136; }
+    ::-webkit-scrollbar-thumb { background: #202225; border-radius: 10px; }
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+  <header class="header">
+    <div class="header-left">
+      <div class="header-icon">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      </div>
+      <div class="header-titles">
+        <div id="ticketName" class="header-title">Loading…</div>
+        <div class="header-subtitle">ID: <span id="ticketId">---</span></div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="header-right-label">Closed By</div>
+      <div class="header-closer">
+        <span id="closerName">---</span>
+        <img id="closerAvatar" src="" style="display:none;" alt="">
+      </div>
+    </div>
+  </header>
+
+  <main id="chatContainer">
+    <div class="loading-state">Loading transcript…</div>
+  </main>
+
+  <script nonce="<%= nonce %>">
+    const pathParts = location.pathname.split("/");
+    const ticketId = pathParts.pop();
+    const guildId = pathParts[2];
+
+    function escapeHtml(text) {
+      if (!text) return "";
+      return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+    }
+
+    fetch(`/api/guild/${guildId}/transcripts/${ticketId}`)
+      .then(res => {
+        if (!res.ok) throw new Error("not found");
+        return res.json();
+      })
+      .then(data => {
+        document.title = `Transcript: ${escapeHtml(data.ChannelName)}`;
+        document.getElementById('ticketName').innerText = `#${escapeHtml(data.ChannelName)}`;
+        document.getElementById('ticketId').innerText = data.TicketID;
+        document.getElementById('closerName').innerText = data.ClosedBy.username;
+
+        if (data.ClosedBy.avatar) {
+          const img = document.getElementById('closerAvatar');
+          img.src = data.ClosedBy.avatar;
+          img.style.display = 'block';
+        }
+
+        const container = document.getElementById('chatContainer');
+        container.innerHTML = '';
+
+        const openedDate = new Date(data.Messages[0]?.timestamp || Date.now()).toLocaleDateString();
+        container.insertAdjacentHTML('beforeend', `
+          <div class="welcome-block">
+            <div class="welcome-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+            </div>
+            <h1 class="welcome-title">Welcome to #${escapeHtml(data.ChannelName)}</h1>
+            <p class="welcome-sub">Opened by <strong>${escapeHtml(data.OpenedBy.username)}</strong> on ${openedDate}.</p>
+          </div>
+          <hr class="divider">
+        `);
+
+        data.Messages.forEach(msg => {
+          const date = new Date(msg.timestamp).toLocaleString([], {
+            hour: '2-digit', minute: '2-digit', hour12: true,
+            month: 'short', day: 'numeric'
+          });
+          const avatar = msg.authorAvatar || "https://cdn.discordapp.com/embed/avatars/0.png";
+
+          let attachmentsHtml = "";
+          if (msg.attachments?.length) {
+            msg.attachments.forEach(att => {
+              if (att.contentType?.startsWith("image/")) {
+                attachmentsHtml += `<img src="${encodeURI(att.url)}" class="attachment-img" loading="lazy" alt="${escapeHtml(att.name)}">`;
+              } else if (att.contentType?.startsWith("video/")) {
+                attachmentsHtml += `<video controls src="${encodeURI(att.url)}" class="attachment-video"></video>`;
+              } else {
+                attachmentsHtml += `
+                <div class="attachment-file">
+                  <div class="attachment-file-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                  </div>
+                  <div class="attachment-file-info">
+                    <div class="attachment-file-name">${escapeHtml(att.name)}</div>
+                    <a href="${encodeURI(att.url)}" target="_blank" class="attachment-file-link">Download</a>
+                  </div>
+                </div>`;
+              }
+            });
+          }
+
+          let embedsHtml = "";
+          if (msg.embeds?.length) {
+            msg.embeds.forEach(embed => {
+              const color = embed.color ? '#' + embed.color.toString(16).padStart(6, '0') : '#202225';
+              let fieldsHtml = "";
+              if (embed.fields?.length) {
+                fieldsHtml = '<div class="embed-fields">' +
+                  embed.fields.map(f => `
+                    <div class="embed-field ${f.inline ? '' : 'full'}">
+                      <div class="embed-field-name">${escapeHtml(f.name)}</div>
+                      <div class="embed-field-value">${escapeHtml(f.value)}</div>
+                    </div>
+                  `).join('') + '</div>';
+              }
+              embedsHtml += `
+              <div class="embed-container" style="border-left-color:${color};">
+                <div class="embed-content">
+                  <div class="embed-inner">
+                    <div class="embed-main">
+                      ${embed.author ? `<div class="embed-author"><img src="${escapeHtml(embed.author.iconURL)}" alt=""><span class="embed-author-name">${escapeHtml(embed.author.name)}</span></div>` : ''}
+                      ${embed.title ? `<span class="embed-title">${escapeHtml(embed.title)}</span>` : ''}
+                      ${embed.description ? `<div class="embed-desc">${escapeHtml(embed.description)}</div>` : ''}
+                      ${fieldsHtml}
+                      ${embed.image ? `<img src="${escapeHtml(embed.image.url)}" class="embed-image" loading="lazy" alt="">` : ''}
+                      ${embed.footer ? `<div class="embed-footer">${embed.footer.iconURL ? `<img src="${escapeHtml(embed.footer.iconURL)}" alt="">` : ''}<span>${escapeHtml(embed.footer.text)}</span></div>` : ''}
+                    </div>
+                    ${embed.thumbnail ? `<img src="${escapeHtml(embed.thumbnail.url)}" class="embed-thumb" loading="lazy" alt="">` : ''}
+                  </div>
+                </div>
+              </div>`;
+            });
+          }
+
+          container.insertAdjacentHTML('beforeend', `
+          <div class="message-group">
+            <img src="${avatar}" class="avatar" loading="lazy" alt="">
+            <div class="msg-body">
+              <div class="msg-header">
+                <span class="author-name">${escapeHtml(msg.authorName)}</span>
+                ${msg.isBot ? '<span class="bot-badge">Bot</span>' : ''}
+                <span class="timestamp">${date}</span>
+              </div>
+              ${msg.content ? `<p class="msg-content">${escapeHtml(msg.content)}</p>` : ''}
+              ${attachmentsHtml}
+              ${embedsHtml}
+            </div>
+          </div>`);
+        });
+      })
+      .catch(() => {
+        document.getElementById('chatContainer').innerHTML = `
+          <div class="error-state">
+            <h2 style="color:#f87171; font-size:18px; font-weight:700; margin-bottom:8px;">Transcript Not Found</h2>
+            <p style="color:#72767d; font-size:14px;">The transcript ID is invalid or has been deleted.</p>
+          </div>`;
+      });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guild Overview — Roco</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tailwind.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0/dist/chartjs-plugin-zoom.min.js"></script>
+<style>
+:root {
+  --ink:    #060A18;
+  --ink2:   #0B1225;
+  --ink3:   #111830;
+  --ink4:   #182040;
+  --edge:   rgba(255,255,255,.06);
+  --edge-h: rgba(255,255,255,.12);
+  --cyan:   #22D3EE;
+  --cyan-s: rgba(34,211,238,.08);
+  --cyan-b: rgba(34,211,238,.18);
+  --cyan-g: rgba(34,211,238,.14);
+  --amber:  #F59E0B;
+  --amber-s:rgba(245,158,11,.1);
+  --rose:   #FB7185;
+  --green:  #34D399;
+  --violet: #A78BFA;
+  --text:   #E2EAFF;
+  --muted:  #5A6A8A;
+  --dim:    #3A4560;
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'Fira Code', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--font-body);
+  margin: 0;
+  overflow-x: hidden;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Dot grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(34,211,238,.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(34,211,238,.15); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+
+/* ── Ambient Orbs ── */
+.orb-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.orb { position: absolute; border-radius: 50%; filter: blur(80px); }
+.orb-1 { width: 600px; height: 600px; top: -180px; right: -120px; background: radial-gradient(ellipse, rgba(34,211,238,.05), transparent 65%); animation: orbDrift1 25s ease-in-out infinite; }
+.orb-2 { width: 450px; height: 450px; bottom: 5%; left: -80px; background: radial-gradient(ellipse, rgba(245,158,11,.04), transparent 65%); animation: orbDrift2 32s ease-in-out infinite; }
+.orb-3 { width: 300px; height: 300px; top: 45%; right: 15%; background: radial-gradient(ellipse, rgba(167,139,250,.04), transparent 65%); animation: orbDrift3 20s ease-in-out infinite; }
+@keyframes orbDrift1 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(-40px,60px);} }
+@keyframes orbDrift2 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(50px,-40px);} }
+@keyframes orbDrift3 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(-30px,40px);} }
+
+/* ── Layout ── */
+.layout { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+.main-wrap { flex: 1; display: flex; justify-content: center; }
+.main-content { width: 100%; max-width: 1120px; padding: 2.5rem 2rem 6rem; }
+
+/* ── Hero Card ── */
+.hero-card {
+  background: linear-gradient(135deg, rgba(11,18,37,.95), rgba(17,24,48,.9));
+  border: 1px solid var(--edge);
+  border-radius: 1.5rem;
+  padding: 2rem 2.25rem;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(12px);
+}
+.hero-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan-b), transparent);
+}
+.hero-card::after {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(ellipse, rgba(34,211,238,.06), transparent 65%);
+  pointer-events: none;
+}
+
+/* ── Guild Icon ── */
+.guild-icon-wrap { position: relative; width: 72px; height: 72px; flex-shrink: 0; }
+.guild-icon-ring {
+  position: absolute; inset: -2px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--cyan), #7b5ea7 60%, var(--amber));
+  opacity: .5;
+}
+.guild-icon-wrap img {
+  position: relative; width: 100%; height: 100%;
+  border-radius: 16px; object-fit: cover; border: 2px solid var(--ink);
+}
+
+/* ── Plan Badge ── */
+#planBadge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 11px; border-radius: 20px;
+  font-size: 10px; font-weight: 700;
+  font-family: var(--font-mono);
+  letter-spacing: .08em; text-transform: uppercase;
+  transition: all .3s;
+}
+#planBadge.plan-loading { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); color: #333; animation: blink 1.5s infinite; }
+#planBadge.plan-free { background: rgba(90,106,138,.12); border: 1px solid rgba(90,106,138,.25); color: var(--muted); }
+#planBadge.plan-premium { background: var(--amber-s); border: 1px solid rgba(245,158,11,.3); color: var(--amber); }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ── ID Tag ── */
+.id-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--muted);
+  background: rgba(34,211,238,.04);
+  border: 1px solid rgba(34,211,238,.1);
+  border-radius: 8px; padding: 3px 10px;
+  cursor: pointer; transition: all .2s;
+}
+.id-tag:hover { background: rgba(34,211,238,.1); border-color: rgba(34,211,238,.25); color: var(--cyan); }
+
+/* ── Tip Widget ── */
+.tip-widget {
+  background: rgba(34,211,238,.04);
+  border: 1px solid rgba(34,211,238,.12);
+  border-radius: 1rem;
+  padding: 1rem 1.2rem;
+  min-height: 72px;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.tip-widget::after {
+  content: '';
+  position: absolute; bottom: -15px; right: -15px;
+  width: 80px; height: 80px;
+  background: radial-gradient(ellipse, rgba(34,211,238,.08), transparent 65%);
+}
+.tip-pulse-wrap { position: relative; width: 8px; height: 8px; flex-shrink: 0; }
+.tip-pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); }
+.tip-pulse-ring { position: absolute; inset: 0; border-radius: 50%; background: var(--cyan); animation: tipRing 1.8s ease-out infinite; }
+@keyframes tipRing { 0%{transform:scale(1);opacity:.7} 100%{transform:scale(3);opacity:0} }
+@keyframes tipIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
+@keyframes tipOut { from{opacity:1;transform:translateY(0)} to{opacity:0;transform:translateY(-5px)} }
+.tip-in { animation: tipIn .4s forwards; }
+.tip-out { animation: tipOut .3s forwards; }
+
+/* ── Stats Bar ── */
+.stats-bar { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-bottom: 1.5rem; }
+@media(max-width:640px) { .stats-bar { grid-template-columns: 1fr 1fr; } }
+
+.stat-card {
+  background: var(--ink2);
+  border: 1px solid var(--edge);
+  border-radius: 1.1rem;
+  padding: 1.3rem 1.4rem 1.2rem;
+  position: relative; overflow: hidden;
+  transition: border-color .25s, transform .2s;
+  cursor: default;
+}
+.stat-card:hover { border-color: var(--edge-h); transform: translateY(-3px); }
+.stat-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  border-radius: 0 0 1.1rem 1.1rem;
+  opacity: .6;
+  transition: opacity .25s;
+}
+.stat-card:hover::after { opacity: 1; }
+.stat-card.c-cyan::after  { background: linear-gradient(90deg, transparent, var(--cyan), transparent); }
+.stat-card.c-amber::after { background: linear-gradient(90deg, transparent, var(--amber), transparent); }
+.stat-card.c-rose::after  { background: linear-gradient(90deg, transparent, var(--rose), transparent); }
+.stat-card.c-green::after { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+
+.stat-bg-icon {
+  position: absolute; right: 12px; top: 12px;
+  opacity: .04;
+}
+.stat-label {
+  font-size: .6rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .12em; margin-bottom: .4rem;
+  font-family: var(--font-mono);
+}
+.stat-value { font-size: 1.7rem; font-weight: 800; color: var(--text); line-height: 1.1; font-family: var(--font-head); }
+.stat-value.sm { font-size: 1rem; font-weight: 600; margin-top: .15rem; }
+
+/* ── Section Panels ── */
+.section-panel {
+  background: var(--ink2);
+  border: 1px solid var(--edge);
+  border-radius: 1.1rem;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  transition: border-color .25s;
+}
+.section-panel:hover { border-color: var(--edge-h); }
+
+.section-header {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 1.2rem 1.5rem;
+  background: transparent; cursor: pointer; border: none;
+  color: inherit; font-family: inherit;
+  transition: background .15s;
+}
+.section-header:hover { background: rgba(255,255,255,.012); }
+
+.sec-icon {
+  width: 36px; height: 36px; border-radius: .7rem;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+/* ── Accordion ── */
+.accordion-content { max-height: 0; overflow: hidden; transition: max-height .45s cubic-bezier(.4,0,.2,1), opacity .35s; opacity: 0; }
+.accordion-item.open .accordion-content { max-height: 900px; opacity: 1; }
+.chevron { transition: transform .3s, color .3s; color: var(--dim); flex-shrink: 0; }
+.accordion-item.open .chevron { transform: rotate(180deg); color: var(--cyan); }
+
+.sep { height: 1px; background: var(--edge); margin: 0 1.5rem; }
+
+/* ── Chart ── */
+.chart-wrap { position: relative; height: 300px; width: 100%; }
+
+.range-btn {
+  padding: 5px 14px; font-size: 11px; font-family: var(--font-mono); font-weight: 500;
+  border-radius: 8px; background: rgba(255,255,255,.04);
+  border: 1px solid var(--edge); color: var(--muted);
+  cursor: pointer; transition: all .15s;
+}
+.range-btn:hover { background: rgba(255,255,255,.07); color: var(--text); }
+.range-btn.active { background: rgba(34,211,238,.1); border-color: rgba(34,211,238,.3); color: var(--cyan); }
+
+.reset-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 14px; font-size: 11px; font-family: var(--font-mono); font-weight: 500;
+  border-radius: 8px; background: rgba(245,158,11,.08);
+  border: 1px solid rgba(245,158,11,.2); color: var(--amber);
+  cursor: pointer; transition: all .15s; margin-left: auto;
+}
+.reset-btn:hover { background: rgba(245,158,11,.15); }
+
+/* ── Distribution stats ── */
+.dist-stat {
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--edge);
+  border-radius: .8rem; padding: .9rem 1rem;
+  transition: border-color .2s, transform .2s;
+}
+.dist-stat:hover { border-color: var(--edge-h); transform: translateY(-1px); }
+.ds-label { font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; font-family: var(--font-mono); margin-bottom: .25rem; }
+.ds-value { font-size: 1.55rem; font-weight: 800; color: var(--text); font-family: var(--font-head); }
+
+/* ── Limits Panel ── */
+.limits-header-wrap { padding: 1.3rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; }
+
+.limit-card {
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--edge);
+  border-radius: .8rem; padding: .9rem 1rem;
+  transition: all .2s; display: flex; flex-direction: column; gap: .35rem;
+}
+.limit-card:hover { border-color: var(--edge-h); transform: translateY(-1px); }
+.limit-icon-wrap { width: 28px; height: 28px; border-radius: .5rem; display: flex; align-items: center; justify-content: center; margin-bottom: .05rem; }
+.limit-label { font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--dim); font-family: var(--font-mono); }
+.limit-value { font-size: 1.15rem; font-weight: 800; font-family: var(--font-head); }
+
+/* ── Upgrade Banner ── */
+.upgrade-banner {
+  background: linear-gradient(135deg, rgba(167,139,250,.08), rgba(34,211,238,.05));
+  border: 1px solid rgba(167,139,250,.2);
+  border-radius: .9rem; padding: .85rem 1.1rem;
+  display: flex; align-items: center; gap: .85rem; margin-bottom: 1rem;
+}
+.upgrade-banner p { font-size: .8rem; color: var(--text); margin: 0; flex: 1; }
+.upgrade-banner a {
+  font-size: .75rem; font-weight: 700; color: var(--ink);
+  background: var(--cyan); border: none;
+  padding: .4rem 1rem; border-radius: .5rem;
+  text-decoration: none; white-space: nowrap; flex-shrink: 0;
+  transition: opacity .15s; font-family: var(--font-head);
+}
+.upgrade-banner a:hover { opacity: .85; }
+
+/* ── Animations ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+.fade-up { animation: fadeUp .5s ease both; }
+.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}.d4{animation-delay:.24s}.d5{animation-delay:.3s}.d6{animation-delay:.36s}
+</style>
+<link rel="stylesheet" href="/loading.css">
+<style>
+@keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+@keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+@keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(34,211,238,0)} 50%{box-shadow:0 0 0 8px rgba(34,211,238,.08)} }
+@keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+</style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+
+<!-- Loader -->
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#060A18;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:2px;background:rgba(34,211,238,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,transparent,#22D3EE,rgba(34,211,238,.6));animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:2px"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.18);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:2px solid rgba(34,211,238,.12);border-top-color:#22D3EE;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:11px;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,.2);font-family:'Fira Code',monospace;display:flex;align-items:center;">LOADING<span style="display:inline-flex;gap:2px;margin-left:6px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(34,211,238,.4);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(34,211,238,.4);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(34,211,238,.4);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide,1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<div class="orb-wrap">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="layout">
+  <aside id="razor-sidebar"></aside>
+  <div class="main-wrap">
+    <div class="main-content">
+
+      <!-- ── Hero ── -->
+      <div class="hero-card fade-up">
+        <div style="position:relative;z-index:1;display:flex;flex-direction:column;gap:1.4rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;">
+
+            <!-- Left: Icon + Info -->
+            <div style="display:flex;align-items:center;gap:1.2rem;">
+              <div class="guild-icon-wrap">
+                <div class="guild-icon-ring"></div>
+                <img id="guildIcon" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Guild Icon">
+              </div>
+              <div>
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin-bottom:.55rem;">
+                  <h1 id="guildName" style="font-size:1.65rem;font-weight:800;color:#fff;letter-spacing:-.03em;margin:0;line-height:1;font-family:var(--font-head);">Loading…</h1>
+                  <span id="planBadge" class="plan-loading">···</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;">
+                  <span class="id-tag" onclick="copyId()" title="Copy server ID">
+                    <!-- Copy icon -->
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <span id="guildId">───</span>
+                  </span>
+                  <span style="width:1px;height:12px;background:var(--edge);display:inline-block;"></span>
+                  <span style="font-size:.72rem;color:var(--muted);font-family:var(--font-mono);">owner</span>
+                  <span id="owner" style="font-size:.75rem;color:var(--text);font-weight:600;">───</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Tip widget -->
+            <div class="tip-widget" style="width:100%;max-width:270px;flex-shrink:0;">
+              <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.45rem;">
+                <div class="tip-pulse-wrap">
+                  <div class="tip-pulse-ring"></div>
+                  <div class="tip-pulse-dot"></div>
+                </div>
+                <span style="font-family:var(--font-mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);opacity:.7;">hint</span>
+              </div>
+              <div id="tip-text" style="font-size:.76rem;color:var(--muted);line-height:1.65;font-style:italic;"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Stats Bar ── -->
+      <div class="stats-bar">
+        <div class="stat-card c-cyan fade-up d1">
+          <div class="stat-bg-icon">
+            <!-- Users large bg -->
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="stat-label" style="color:var(--cyan);">Members</div>
+          <div id="members" class="stat-value">───</div>
+        </div>
+        <div class="stat-card c-amber fade-up d2">
+          <div class="stat-bg-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="stat-label" style="color:var(--amber);">Security</div>
+          <div id="securityLevel" class="stat-value sm">Loading…</div>
+        </div>
+        <div class="stat-card c-rose fade-up d3">
+          <div class="stat-bg-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"/></svg>
+          </div>
+          <div class="stat-label" style="color:var(--rose);">Boosts</div>
+          <div id="boosts" class="stat-value">───</div>
+        </div>
+        <div class="stat-card c-green fade-up d4">
+          <div class="stat-bg-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="stat-label" style="color:var(--green);">Founded</div>
+          <div id="created" class="stat-value sm">───</div>
+        </div>
+      </div>
+
+      <!-- ── Feature Limits ── -->
+      <div id="limits-panel" class="section-panel fade-up d5" style="display:none;">
+        <div class="limits-header-wrap">
+          <div style="display:flex;align-items:center;gap:.85rem;">
+            <div class="sec-icon" style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.15);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <div>
+              <h3 style="font-size:.95rem;font-weight:700;color:#fff;margin:0;font-family:var(--font-head);">Feature Limits</h3>
+              <p id="limits-subtitle" style="font-size:.7rem;color:var(--muted);margin:.1rem 0 0;font-family:var(--font-mono);">Loading plan…</p>
+            </div>
+          </div>
+          <span id="limits-badge" style="display:none;padding:3px 12px;border-radius:20px;font-size:.65rem;font-weight:700;font-family:var(--font-mono);"></span>
+        </div>
+        <div class="sep"></div>
+        <div id="limits-grid" class="fade-up" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:.6rem;padding:1.2rem clamp(.9rem,4vw,1.5rem);"></div>
+        <p id="limits-upgrade-hint" style="display:none;font-size:.7rem;text-align:center;padding:.5rem 1.5rem 1.2rem;color:var(--muted);font-family:var(--font-mono);">
+          Upgrade to <strong style="color:var(--cyan);">Roco Premium</strong> for higher limits — up to unlimited with Elite. <a href="/premium" style="color:var(--cyan);">See plans</a>
+        </p>
+      </div>
+
+      <!-- ── Accordion Sections ── -->
+      <div class="fade-up d6">
+
+        <!-- Growth Analytics -->
+        <div class="section-panel accordion-item open">
+          <button class="section-header" onclick="toggleSection(this)">
+            <div style="display:flex;align-items:center;gap:.85rem;">
+              <div class="sec-icon" style="background:var(--cyan-s);border:1px solid var(--cyan-b);">
+                <!-- TrendingUp -->
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              </div>
+              <div>
+                <h3 style="font-size:.95rem;font-weight:700;color:#fff;margin:0;font-family:var(--font-head);">Growth Analytics</h3>
+                <p style="font-size:.7rem;color:var(--muted);margin:.1rem 0 0;font-family:var(--font-mono);">Real-time member trend</p>
+              </div>
+            </div>
+            <svg class="chevron" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="sep"></div>
+          <div class="accordion-content">
+            <div style="padding:1.2rem 1.5rem;">
+              <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.1rem;align-items:center;">
+                <button class="range-btn active" data-range="7">7D</button>
+                <button class="range-btn" data-range="30">30D</button>
+                <button class="range-btn" data-range="all">All Time</button>
+                <button id="resetZoom" class="reset-btn">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.12"/></svg>
+                  Reset View
+                </button>
+              </div>
+              <div class="chart-wrap"><canvas id="growthChart"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Guild Distribution -->
+        <div class="section-panel accordion-item">
+          <button class="section-header" onclick="toggleSection(this)">
+            <div style="display:flex;align-items:center;gap:.85rem;">
+              <div class="sec-icon" style="background:rgba(251,113,133,.08);border:1px solid rgba(251,113,133,.18);">
+                <!-- PieChart -->
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FB7185" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+              </div>
+              <div>
+                <h3 style="font-size:.95rem;font-weight:700;color:#fff;margin:0;font-family:var(--font-head);">Guild Distribution</h3>
+                <p style="font-size:.7rem;color:var(--muted);margin:.1rem 0 0;font-family:var(--font-mono);">Asset counts &amp; member composition</p>
+              </div>
+            </div>
+            <svg class="chevron" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="sep"></div>
+          <div class="accordion-content">
+            <div style="padding:1.2rem 1.5rem;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;">
+                <div class="chart-wrap" style="height:240px;"><canvas id="compositionChart"></canvas></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem;">
+                  <div class="dist-stat">
+                    <div class="ds-label" style="color:var(--rose);">Roles</div>
+                    <div id="roles" class="ds-value">───</div>
+                  </div>
+                  <div class="dist-stat">
+                    <div class="ds-label" style="color:var(--amber);">Channels</div>
+                    <div id="channels" class="ds-value">───</div>
+                  </div>
+                  <div class="dist-stat">
+                    <div class="ds-label" style="color:#FB923C;">Emojis</div>
+                    <div id="emojis" class="ds-value">───</div>
+                  </div>
+                  <div class="dist-stat">
+                    <div class="ds-label" style="color:var(--cyan);">Nitro Level</div>
+                    <div id="boostLevel" class="ds-value" style="font-size:1.1rem;">───</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end accordion -->
+
+    </div><!-- end main-content -->
+  </div>
+</div>
+
+<script src="/sidebar.js"></script>
+<script>
+
+// ── Lucide-style SVG helpers ──────────────────────────────────────────────────
+const SVG = {
+  messageSquare: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+  userCheck:     `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>`,
+  pin:           `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/></svg>`,
+  heart:         `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+  trophy:        `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>`,
+  ticket:        `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>`,
+  shieldOff:     `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.69 14a6.9 6.9 0 0 0 .31-2V5l-8-3-3.16 1.18"/><path d="M4.73 4.73 4 5v7a11.64 11.64 0 0 0 8 10.7 11.57 11.57 0 0 0 5.3-2.7"/><line x1="2" y1="2" x2="22" y2="22"/></svg>`,
+  shield:        `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  gift:          `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>`,
+  fileText:      `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
+  youtube:       `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>`,
+  twitch:        `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2H3v16h5v4l4-4h5l4-4V2zM11 11V7M16 11V7"/></svg>`,
+  terminal:      `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>`,
+  star:          `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  zap:           `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+  crown:         `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg>`,
+};
+
+// ── Tips ──────────────────────────────────────────────────────────────────────
+const tips = [
+  "Use 'Reset View' to snap the growth chart back to its default state.",
+  "Click the Guild ID to copy it instantly to your clipboard.",
+  "Hover over chart points to see exact member counts for that day.",
+  "Keep your Bot-to-Human ratio low to ensure a healthy community.",
+  "The 'All Time' view shows the complete history of your guild.",
+  "Role icons help members navigate your server more intuitively.",
+  "Use the accordion sections to keep the overview clean and focused.",
+];
+let tipIdx = 0;
+const tipEl = document.getElementById('tip-text');
+tipEl.textContent = tips[0];
+function rotateTips() {
+  tipEl.classList.remove('tip-in');
+  tipEl.classList.add('tip-out');
+  setTimeout(() => {
+    tipIdx = (tipIdx + 1) % tips.length;
+    tipEl.textContent = tips[tipIdx];
+    tipEl.classList.remove('tip-out');
+    tipEl.classList.add('tip-in');
+    setTimeout(() => tipEl.classList.remove('tip-in'), 400);
+  }, 300);
+}
+setInterval(rotateTips, 6000);
+
+// ── Accordion ─────────────────────────────────────────────────────────────────
+function toggleSection(btn) {
+  const item = btn.closest('.accordion-item');
+  item.classList.toggle('open');
+  setTimeout(() => { if (window.Chart) Object.values(Chart.instances).forEach(c => c.resize()); }, 450);
+}
+
+// ── Copy ID ───────────────────────────────────────────────────────────────────
+function copyId() {
+  navigator.clipboard.writeText(document.getElementById('guildId').textContent).catch(() => {});
+}
+
+// ── Plan badge ────────────────────────────────────────────────────────────────
+function applyPlanBadge(hasPremium, plan, expiresAt, source) {
+  const badge = document.getElementById('planBadge');
+  badge.classList.remove('plan-loading', 'plan-free', 'plan-premium');
+
+  if (!hasPremium) {
+    badge.classList.add('plan-free');
+    badge.textContent = 'Free';
+    badge.title = 'Upgrade to Roco Premium for more features.';
+    badge.style.cursor = 'pointer';
+    badge.onclick = () => window.location.href = '/premium';
+
+    if (!document.getElementById('upgrade-banner-el')) {
+      const b = document.createElement('div');
+      b.id = 'upgrade-banner-el';
+      b.className = 'upgrade-banner';
+      b.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <p><strong style="color:#e2e8f0;">Upgrade to Premium</strong> — unlock Anti-Nuke, AI Chatbot, Music Filters &amp; more.</p>
+        <a href="/premium">View Plans</a>`;
+      document.querySelector('.main-content').insertBefore(b, document.getElementById('limits-panel'));
+    }
+    return;
+  }
+
+  badge.classList.add('plan-premium');
+  const tierIcons = { basic: SVG.star, pro: SVG.zap, elite: SVG.crown };
+  const icon = tierIcons[plan?.toLowerCase()] ?? SVG.star;
+  const label = plan ? plan.charAt(0).toUpperCase() + plan.slice(1) : 'Premium';
+  badge.innerHTML = icon + label;
+
+  let tip = `Premium active`;
+  if (source === 'guild') tip += ' · via guild subscription';
+  if (expiresAt && new Date(expiresAt) - Date.now() > 50 * 365 * 86400000) tip += ' · lifetime';
+  else if (expiresAt) tip += ` · expires ${new Date(expiresAt).toLocaleDateString(undefined,{dateStyle:'medium'})}`;
+  else tip += ' · lifetime';
+  badge.title = tip;
+}
+
+// ── Data fetching ─────────────────────────────────────────────────────────────
+const guildId = location.pathname.split('/')[2] || 'demo';
+
+fetch(`/api/guild/${guildId}`)
+  .then(r => r.json())
+  .then(g => {
+    document.getElementById('guildName').textContent  = g.name;
+    document.getElementById('guildId').textContent    = g.id;
+    document.getElementById('owner').textContent      = g.owner;
+    document.getElementById('created').textContent    = g.created;
+    document.getElementById('members').textContent    = g.members;
+    document.getElementById('guildIcon').src          = g.icon;
+    document.getElementById('roles').textContent      = g.roles;
+    document.getElementById('channels').textContent   = g.channels;
+    document.getElementById('emojis').textContent     = g.emojis;
+    document.getElementById('boosts').textContent     = g.boosts || 0;
+    document.getElementById('boostLevel').textContent = `Level ${g.boostLevel || 0}`;
+    renderCompositionChart(g.humans, g.bots);
+  })
+  .catch(err => console.error('[Guild]', err));
+
+fetch(`/api/guild/${guildId}/premium-status`)
+  .then(r => r.json())
+  .then(data => {
+    if (!data || data.error) return;
+    const stale = document.getElementById('upgrade-banner-el');
+    if (stale && data.hasPremium) stale.remove();
+    applyPlanBadge(data.hasPremium, data.plan, data.expiresAt, data.source);
+    renderLimits(data);
+  })
+  .catch(err => console.warn('[Premium]', err));
+
+fetch(`/api/guild/${guildId}/verification-level`)
+  .then(r => r.json())
+  .then(d => { document.getElementById('securityLevel').textContent = d.level || 'Unknown'; })
+  .catch(() => { document.getElementById('securityLevel').textContent = 'Unknown'; });
+
+// ── Charts ────────────────────────────────────────────────────────────────────
+let growthChart = null;
+
+function renderGrowthChart(labels, data) {
+  const ctx = document.getElementById('growthChart').getContext('2d');
+  const grad = ctx.createLinearGradient(0, 0, 0, 300);
+  grad.addColorStop(0, 'rgba(34,211,238,.25)');
+  grad.addColorStop(1, 'rgba(34,211,238,0)');
+  if (growthChart) { growthChart.data.labels = labels; growthChart.data.datasets[0].data = data; growthChart.update(); return; }
+  growthChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets: [{ label: 'Members', data, borderColor: '#22D3EE', backgroundColor: grad, borderWidth: 2, pointRadius: 0, pointHitRadius: 20, pointBackgroundColor: '#22D3EE', pointHoverRadius: 5, tension: 0.4, fill: true }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { backgroundColor: '#0B1225', titleColor: '#c8cfe0', bodyColor: '#22D3EE', titleFont: { family: 'Fira Code', size: 11 }, bodyFont: { family: 'Syne', size: 14, weight: '700' }, padding: 14, cornerRadius: 10, displayColors: false, borderColor: 'rgba(34,211,238,.15)', borderWidth: 1 },
+        zoom: { pan: { enabled: true, mode: 'x' }, zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' } }
+      },
+      scales: {
+        y: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#3A4560', font: { family: 'Fira Code', size: 10 }, padding: 8 } },
+        x: { grid: { display: false }, ticks: { color: '#3A4560', font: { family: 'Fira Code', size: 10 } } }
+      }
+    }
+  });
+}
+
+function renderCompositionChart(humans, bots) {
+  const ctx = document.getElementById('compositionChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels: ['Humans', 'Bots'], datasets: [{ data: [humans, bots], backgroundColor: ['#22D3EE', '#182040'], borderColor: '#0B1225', borderWidth: 5, hoverOffset: 6 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '78%',
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#5A6A8A', padding: 20, font: { family: 'Fira Code', size: 11 }, boxWidth: 12 } },
+        tooltip: { backgroundColor: '#0B1225', titleColor: '#c8cfe0', bodyColor: '#22D3EE', titleFont: { family: 'Fira Code', size: 11 }, bodyFont: { family: 'Syne', size: 13, weight: '700' }, padding: 12, cornerRadius: 10, displayColors: false, borderColor: 'rgba(34,211,238,.15)', borderWidth: 1 }
+      }
+    }
+  });
+}
+
+function fetchGrowth(range) {
+  fetch(`/api/guild/${guildId}/stats?range=${range}`)
+    .then(r => r.json())
+    .then(d => renderGrowthChart(d.labels, d.data))
+    .catch(console.error);
+}
+fetchGrowth(7);
+
+document.querySelectorAll('.range-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    fetchGrowth(btn.dataset.range);
+  });
+});
+document.getElementById('resetZoom')?.addEventListener('click', () => growthChart?.resetZoom());
+
+// ── Limits ────────────────────────────────────────────────────────────────────
+// Real per-plan limits from the bot (Utils/premiumTiers.js), sent by /premium-status
+const LIMIT_META = [
+  { key: 'autoresponders',   label: 'Autoresponders',    icon: SVG.messageSquare, color: '#60a5fa' },
+  { key: 'customCommands',   label: 'Custom Commands',   icon: SVG.terminal,      color: '#6ee7b7' },
+  { key: 'reactionRoles',    label: 'Reaction Roles',    icon: SVG.heart,         color: '#fb7185' },
+  { key: 'ticketCategories', label: 'Ticket Categories', icon: SVG.ticket,        color: '#a78bfa' },
+  { key: 'stickyMessages',   label: 'Sticky Messages',   icon: SVG.pin,           color: '#f472b6' },
+  { key: 'embedTemplates',   label: 'Saved Embeds',      icon: SVG.fileText,      color: '#94a3b8' },
+  { key: 'logChannels',      label: 'Log Channels',      icon: SVG.shield,        color: '#38bdf8' },
+  { key: 'connectionRoles',  label: 'Connection Roles',  icon: SVG.userCheck,     color: '#34d399' },
+  { key: 'playlists',        label: 'Music Playlists',   icon: SVG.star,          color: '#facc15' },
+  { key: 'backups',          label: 'Server Backups',    icon: SVG.zap,           color: '#fb923c' },
+  { key: 'youtubeNotifs',    label: 'YouTube Feeds',     icon: SVG.youtube,       color: '#f87171' },
+  { key: 'twitchNotifs',     label: 'Twitch Feeds',      icon: SVG.twitch,        color: '#a78bfa' },
+];
+
+function limitText(v) {
+  if (v === 'unlimited') return '∞';
+  if (v === true)  return 'Yes';
+  if (v === false || v == null) return '—';
+  return Number(v).toLocaleString('en-US');
+}
+
+function renderLimits(data) {
+  const isPremium = !!data.hasPremium;
+  const limits    = data.limits || {};
+  const planName  = data.tierName || (isPremium ? 'Premium' : 'Free');
+
+  const panel    = document.getElementById('limits-panel');
+  const grid     = document.getElementById('limits-grid');
+  const subtitle = document.getElementById('limits-subtitle');
+  const badge    = document.getElementById('limits-badge');
+  const hint     = document.getElementById('limits-upgrade-hint');
+
+  subtitle.textContent = isPremium ? `${planName} — higher limits active` : 'Free plan — upgrade for higher limits';
+
+  badge.style.display = 'inline-block';
+  badge.textContent = planName.replace(/^Roco /, '');
+  badge.style.cssText = isPremium
+    ? 'display:inline-block;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#F59E0B;padding:3px 12px;border-radius:20px;font-size:.65rem;font-weight:700;font-family:"Fira Code",monospace;'
+    : 'display:inline-block;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#5A6A8A;padding:3px 12px;border-radius:20px;font-size:.65rem;font-weight:700;font-family:"Fira Code",monospace;';
+  if (!isPremium) hint.style.display = 'block';
+
+  grid.innerHTML = LIMIT_META.filter(m => m.key in limits).map(({ key, label, icon, color }) => {
+    const val = limits[key];
+    return `<div class="limit-card">
+      <div class="limit-icon-wrap" style="background:${color}18;border:1px solid ${color}30;">
+        <span style="color:${color};display:flex;">${icon}</span>
+      </div>
+      <div class="limit-label">${label}</div>
+      <div class="limit-value" style="color:${isPremium ? '#F59E0B' : color};">${limitText(val)}</div>
+    </div>`;
+  }).join('');
+
+  panel.style.display = '';
+}
+</script>
+</body>
+</html>

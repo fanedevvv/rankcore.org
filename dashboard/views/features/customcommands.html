@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Commands — Roco</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#6C53FF;--brand-dim:rgba(108,83,255,0.15);--brand-border:rgba(108,83,255,0.28);
+  --razor:#FF3333;--razor-dim:rgba(255,51,51,0.1);--razor-border:rgba(255,51,51,0.2);
+  --surface:#0d0d1c;--surface-2:#111120;--card:#15152a;--card-2:#1a1a30;--card-3:#1e1e38;
+  --border:rgba(255,255,255,0.07);--border-strong:rgba(255,255,255,0.12);
+  --muted:#4a4a6a;--muted-light:#7070a0;
+  --danger:#FF4757;--danger-dim:rgba(255,71,87,0.12);
+  --warning:#FFB347;--warning-dim:rgba(255,179,71,0.12);
+  --success:#2ecc71;--success-dim:rgba(46,204,113,0.12);
+  --text:#e8e8f5;--text-dim:#b0b0cc;
+}
+body{background:var(--surface);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;font-size:14px;line-height:1.5}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(108,83,255,0.25);border-radius:99px}
+
+/* ── Layout ── */
+.layout{display:flex;min-height:100vh}
+.main{flex:1;padding:2rem 2rem;min-width:0}
+@media(max-width:900px){.main{padding:1.25rem 1rem}}
+
+/* ── Content grid: main content + help sidebar ── */
+.content-grid{display:grid;grid-template-columns:1fr 270px;gap:1.5rem;align-items:start}
+@media(max-width:1200px){.content-grid{grid-template-columns:1fr}}
+
+/* ── Help sidebar ── */
+.help-sidebar{display:flex;flex-direction:column;gap:.75rem;position:sticky;top:2rem}
+@media(max-width:1200px){.help-sidebar{display:none}}
+.help-sidebar-hd{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;gap:.4rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.25rem}
+.help-section{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:.875rem}
+.help-section-title{font-size:.775rem;font-weight:700;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem}
+.help-section-body{font-size:.72rem;color:var(--text-dim);line-height:1.55}
+.help-section-body code{font-family:'JetBrains Mono',monospace;background:rgba(108,83,255,0.12);border:1px solid rgba(108,83,255,0.2);border-radius:.25rem;padding:.05rem .28rem;font-size:.68rem;color:#a899ff}
+.help-var-row{display:flex;align-items:flex-start;gap:.4rem;padding:.275rem 0;border-top:1px solid var(--border)}
+.help-var-row:first-child{border-top:none}
+.help-var-key{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:#a899ff;flex-shrink:0;min-width:100px;word-break:break-all}
+.help-var-desc{font-size:.68rem;color:var(--muted-light);line-height:1.4}
+.limit-row{display:flex;align-items:center;justify-content:space-between;padding:.275rem 0;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-dim)}
+.limit-row:first-child{border-top:none}
+.limit-val{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;background:var(--brand-dim);border:1px solid var(--brand-border);color:#a899ff;border-radius:.3rem;padding:.08rem .35rem}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ── Toast ── */
+#toast{position:fixed;top:16px;right:16px;z-index:9999;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 12px 40px rgba(0,0,0,.5);transform:translateX(350px);transition:transform .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
+#toast.show{transform:translateX(0);pointer-events:auto}
+#toast.success{background:#0f2018;border:1px solid rgba(46,204,113,0.3);color:var(--success)}
+#toast.error{background:#200f0f;border:1px solid rgba(255,71,87,0.3);color:var(--danger)}
+
+/* ── Page header ── */
+.page-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:1.5rem;flex-wrap:wrap}
+.page-title{font-size:1.5rem;font-weight:800;letter-spacing:-.025em;display:flex;align-items:center;gap:.75rem}
+.page-icon{width:2.25rem;height:2.25rem;border-radius:.625rem;background:var(--brand-dim);border:1px solid var(--brand-border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.page-sub{font-size:.78rem;color:var(--muted-light);margin-top:.2rem;margin-left:3rem}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;padding:.12rem .45rem;border-radius:99px;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;vertical-align:middle;margin-left:.25rem}
+.badge-new{background:rgba(108,83,255,0.15);border:1px solid rgba(108,83,255,0.25);color:#a899ff}
+.badge-premium{background:rgba(255,179,71,0.12);border:1px solid rgba(255,179,71,0.25);color:var(--warning)}
+.badge-free{background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.2);color:var(--success)}
+
+/* ── Card ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:1.125rem;padding:1.375rem}
+.card+.card{margin-top:.75rem}
+.card-hd{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:1.125rem;flex-wrap:wrap}
+.card-title{font-size:.875rem;font-weight:700;display:flex;align-items:center;gap:.45rem;color:var(--text)}
+.card-title svg{color:var(--brand)}
+
+/* ── Tabs ── */
+.tabs{display:flex;gap:.2rem;background:var(--card-2);border:1px solid var(--border);border-radius:.875rem;padding:.25rem;margin-bottom:1.375rem;overflow-x:auto;flex-wrap:nowrap}
+.tab{padding:.375rem .875rem;border-radius:.55rem;font-size:.775rem;font-weight:700;cursor:pointer;color:var(--muted-light);transition:all .18s;border:none;background:none;white-space:nowrap;display:flex;align-items:center;gap:.3rem}
+.tab.active{background:var(--card);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.35)}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fadeUp .18s ease}
+
+/* ── Modal form tabs ── */
+.form-tabs{display:flex;gap:.2rem;background:rgba(0,0,0,.25);border-radius:.65rem;padding:.25rem;overflow-x:auto;margin-bottom:1.125rem}
+.form-tab{padding:.32rem .75rem;border-radius:.45rem;font-size:.75rem;font-weight:700;cursor:pointer;color:var(--muted-light);transition:all .15s;border:none;background:none;white-space:nowrap;display:flex;align-items:center;gap:.3rem}
+.form-tab.active{background:var(--brand-dim);color:#a899ff;border:1px solid var(--brand-border)}
+
+/* ── Form elements ── */
+.field-lbl{display:block;font-size:.7rem;font-weight:700;color:var(--muted-light);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.325rem}
+.field-hint{font-size:.695rem;color:var(--muted);margin-top:.275rem;line-height:1.4}
+.inp{width:100%;background:var(--card-2);border:1px solid var(--border);border-radius:.575rem;padding:.575rem .825rem;font-size:.85rem;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;font-family:inherit}
+.inp:focus{border-color:var(--brand-border);box-shadow:0 0 0 3px var(--brand-dim)}
+.inp::placeholder{color:var(--muted)}
+.inp.mono{font-family:'JetBrains Mono',monospace;font-size:.8rem}
+textarea.inp{resize:vertical;min-height:72px;line-height:1.5}
+select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%237070a0' stroke-width='2.5' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center}
+select.inp option{background:var(--card-2)}
+
+/* ── Toggle ── */
+.tog-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:.65rem .825rem;background:rgba(0,0,0,.18);border:1px solid var(--border);border-radius:.6rem;margin-bottom:.35rem}
+.tog-row>div:first-child{flex:1;min-width:0}
+.tog-label{font-size:.84rem;font-weight:600}
+.tog-desc{font-size:.7rem;color:var(--muted-light);margin-top:.1rem}
+.tog-wrap{position:relative;width:42px;height:22px;flex-shrink:0;margin-left:auto}
+.tog-cb{opacity:0;width:0;height:0;position:absolute}
+.tog-track{position:absolute;cursor:pointer;background:#1e1e36;border-radius:9999px;top:0;left:0;right:0;bottom:0;transition:background .25s;border:1px solid rgba(255,255,255,0.07)}
+.tog-track::before{content:"";position:absolute;left:2px;top:2px;width:18px;height:18px;border-radius:50%;background:#5a5a80;transition:transform .25s,background .25s}
+.tog-cb:checked+.tog-track{background:var(--brand)}
+.tog-cb:checked+.tog-track::before{transform:translateX(20px);background:#fff}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:.375rem;border:none;cursor:pointer;font-family:inherit;font-weight:700;border-radius:.6rem;transition:all .18s;padding:.55rem 1rem;font-size:.8rem;white-space:nowrap}
+.btn-primary{background:var(--razor);color:#fff}.btn-primary:hover{background:#ff5555;transform:translateY(-1px)}
+.btn-brand{background:var(--brand-dim);color:#a899ff;border:1px solid var(--brand-border)}.btn-brand:hover{background:rgba(108,83,255,0.25)}
+.btn-ghost{background:rgba(255,255,255,.05);color:#aaa;border:1px solid var(--border)}.btn-ghost:hover{background:rgba(255,255,255,.09);color:var(--text)}
+.btn-danger{background:var(--danger-dim);color:var(--danger);border:1px solid rgba(255,71,87,0.25)}.btn-danger:hover{background:rgba(255,71,87,.2)}
+.btn-sm{padding:.3rem .675rem;font-size:.75rem;border-radius:.475rem}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+@media(max-width:700px){.grid3{grid-template-columns:1fr 1fr}}
+
+/* ── Command list items ── */
+.cmd-item{display:flex;align-items:center;gap:.75rem;padding:.825rem .875rem;background:rgba(0,0,0,.18);border:1px solid var(--border);border-radius:.7rem;cursor:pointer;transition:border-color .18s,background .18s;margin-bottom:.35rem}
+.cmd-item:hover{border-color:var(--border-strong);background:rgba(0,0,0,.25)}
+.cmd-trigger{font-family:'JetBrains Mono',monospace;font-size:.775rem;font-weight:700;color:var(--brand);background:var(--brand-dim);border:1px solid var(--brand-border);border-radius:.375rem;padding:.12rem .45rem;white-space:nowrap;flex-shrink:0}
+.cmd-desc{flex:1;min-width:0;font-size:.8rem;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmd-tags{display:flex;gap:.275rem;flex-shrink:0;align-items:center}
+.cmd-tag{font-size:.6rem;font-weight:700;padding:.08rem .4rem;border-radius:.3rem;text-transform:uppercase;letter-spacing:.05em}
+.cmd-tag.embed{background:rgba(108,83,255,0.12);color:#a899ff;border:1px solid rgba(108,83,255,0.2)}
+.cmd-tag.actions{background:rgba(255,179,71,0.1);color:var(--warning);border:1px solid rgba(255,179,71,0.2)}
+.cmd-tag.dm{background:rgba(255,179,71,0.1);color:var(--warning);border:1px solid rgba(255,179,71,0.2)}
+.cmd-tag.args{background:rgba(46,204,113,0.1);color:var(--success);border:1px solid rgba(46,204,113,0.2)}
+.cmd-tag.btns{background:rgba(255,51,51,0.08);color:var(--razor);border:1px solid rgba(255,51,51,0.15)}
+.cmd-tag.off{background:rgba(255,71,87,0.1);color:#f87171;border-color:rgba(255,71,87,0.2)}
+.cmd-actions-btn{opacity:0;transition:opacity .15s;margin-left:.5rem}
+.cmd-item:hover .cmd-actions-btn{opacity:1}
+
+/* ── Empty state ── */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 2rem;text-align:center;border:1px dashed var(--border);border-radius:1rem}
+.empty-title{font-size:.9375rem;font-weight:700;margin-bottom:.375rem}
+.empty-desc{font-size:.8rem;color:var(--muted-light);max-width:320px;line-height:1.5}
+
+/* ── Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem;opacity:0;pointer-events:none;transition:opacity .22s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--card);border:1px solid var(--border-strong);border-radius:1.25rem;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;padding:1.625rem}
+.modal-hd{font-size:1rem;font-weight:800;display:flex;align-items:center;gap:.575rem;margin-bottom:1.25rem}
+.modal-ft{display:flex;align-items:center;justify-content:space-between;gap:.575rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)}
+.modal-ft-right{display:flex;gap:.5rem}
+
+/* ── Inline builder rows (args, actions, buttons) ── */
+.builder-row{display:flex;align-items:flex-start;gap:.625rem;padding:.75rem;background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:.65rem;margin-bottom:.4rem;position:relative}
+.builder-row-num{width:22px;height:22px;background:var(--brand-dim);border:1px solid var(--brand-border);border-radius:.35rem;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#a899ff;flex-shrink:0;margin-top:.15rem}
+.builder-row-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.5rem}
+.builder-row-rm{opacity:0;transition:opacity .15s;flex-shrink:0}
+.builder-row:hover .builder-row-rm{opacity:1}
+
+.sep{height:1px;background:var(--border);margin:.875rem 0}
+
+/* ── Info banner ── */
+.info-banner{background:rgba(108,83,255,0.07);border:1px solid rgba(108,83,255,0.18);border-radius:.7rem;padding:.65rem .9rem;font-size:.775rem;color:var(--text-dim);display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.875rem;line-height:1.5}
+.info-banner svg{color:var(--brand);flex-shrink:0;margin-top:.1rem}
+.warn-banner{background:rgba(255,179,71,0.07);border:1px solid rgba(255,179,71,0.2);border-radius:.7rem;padding:.65rem .9rem;font-size:.775rem;color:var(--text-dim);display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.875rem;line-height:1.5}
+.warn-banner svg{color:var(--warning);flex-shrink:0;margin-top:.1rem}
+
+/* ── Variable pills ── */
+.var-pill{display:inline-flex;padding:.12rem .45rem;background:var(--brand-dim);border:1px solid var(--brand-border);border-radius:.3rem;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#a899ff;cursor:pointer;transition:background .15s;margin:.15rem}
+.var-pill:hover{background:rgba(108,83,255,0.25)}
+
+/* ── Stats bar ── */
+.stats-bar{display:flex;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.stat-chip{background:var(--card-2);border:1px solid var(--border);border-radius:.6rem;padding:.4rem .75rem;font-size:.75rem;display:flex;align-items:center;gap:.4rem}
+.stat-chip strong{color:var(--text);font-weight:700}
+.stat-chip span{color:var(--muted-light)}
+
+/* ── Type badge ── */
+.type-badge{font-size:.625rem;font-weight:700;padding:.08rem .35rem;border-radius:.3rem;text-transform:uppercase;letter-spacing:.05em;border:1px solid}
+
+/* ── Choices list ── */
+.choice-row{display:flex;gap:.5rem;align-items:center;margin-bottom:.35rem}
+.choice-row .inp{flex:1}
+
+/* ── Field group ── */
+.field-group{display:flex;flex-direction:column;gap:.65rem}
+
+/* ── Field section header ── */
+.fsec{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-light);border-bottom:1px solid var(--border);padding-bottom:.4rem;margin-bottom:.5rem;margin-top:.25rem;display:flex;align-items:center;gap:.35rem}
+
+/* ── Body padding for fixed sidebar at desktop ── */
+/* sidebar.js uses position:sticky as flex child — no body padding needed */
+
+/* ── Main wrap — fills space left by sticky sidebar ── */
+.main-wrap{flex:1;min-width:0;overflow-x:hidden}
+
+/* ── Loader keyframes (sidebar.js / loading.js pattern) ── */
+@keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+@keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+@keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(108,83,255,0)} 50%{box-shadow:0 0 0 8px rgba(108,83,255,.08)} }
+@keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+</style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+
+<!-- ── Inlined loader (mirrors loading.js pattern) ─────────────────────── -->
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#0d0d1c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(108,83,255,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#4a35cc,#6C53FF,#8b73ff);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(108,83,255,.1);border:1px solid rgba(108,83,255,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(108,83,255,.12);border-top-color:#6C53FF;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+(function(){
+  function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+  setTimeout(hide,1500);
+})();
+</script>
+
+<div id="toast"></div>
+<div id="razor-content" class="layout">
+  <aside id="razor-sidebar"></aside>
+
+  <div class="main-wrap">
+    <div class="content-grid">
+    <main class="main">
+
+      <!-- Page header -->
+      <div class="page-hd">
+        <div>
+          <div class="page-title">
+            <div class="page-icon">
+              <svg width="16" height="16" fill="none" stroke="#6C53FF" stroke-width="2.5" viewBox="0 0 24 24"><path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </div>
+            Custom Commands
+          </div>
+          <div class="page-sub">Slash commands with arguments, actions, embeds, buttons, and conditional responses · Up to 100 commands</div>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button class="btn btn-ghost btn-sm" onclick="openVarsModal()">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Variables
+          </button>
+          <button class="btn btn-primary" onclick="openCmdModal()">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            New Command
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats bar -->
+      <div class="stats-bar" id="statsBar" style="display:none">
+        <div class="stat-chip"><strong id="statTotal">0</strong><span>/ 100 commands</span></div>
+        <div class="stat-chip"><strong id="statEnabled">0</strong><span>enabled</span></div>
+        <div class="stat-chip"><strong id="statWithArgs">0</strong><span>with args</span></div>
+        <div class="stat-chip"><strong id="statWithActions">0</strong><span>with actions</span></div>
+      </div>
+
+      <!-- Main tabs -->
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('commands',this)">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M8 9l3 3-3 3m5 0h3"/></svg>
+          Commands
+        </button>
+        <button class="tab" onclick="switchTab('settings',this)">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+          Settings
+        </button>
+        <button class="tab" onclick="switchTab('templates',this)">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Templates
+        </button>
+      </div>
+
+      <!-- ── Commands tab ── -->
+      <div id="tab-commands" class="tab-panel active">
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M8 9l3 3-3 3m5 0h3"/></svg>
+              Your Commands
+              <span id="cmdCount" style="font-size:.7rem;color:var(--muted-light);font-weight:600;background:rgba(255,255,255,0.05);padding:.08rem .45rem;border-radius:.35rem;">0</span>
+            </div>
+            <div style="display:flex;gap:.5rem;align-items:center;">
+              <select class="inp btn-sm" id="sortCmds" onchange="renderCmds()" style="width:auto;padding:.3rem .6rem;font-size:.75rem;">
+                <option value="name">Sort: A-Z</option>
+                <option value="uses">Sort: Most Used</option>
+                <option value="created">Sort: Newest</option>
+              </select>
+              <input type="text" class="inp" id="searchCmd" placeholder="Search…" style="max-width:180px;padding:.35rem .7rem;font-size:.8rem;" oninput="filterCmds()">
+            </div>
+          </div>
+          <div id="cmdList">
+            <div class="empty">
+              <div style="font-size:2rem;margin-bottom:.75rem">⚡</div>
+              <div class="empty-title">No commands yet</div>
+              <div class="empty-desc">Click <strong>New Command</strong> to create your first slash command. Add arguments, actions, embed responses, and more.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Settings tab ── -->
+      <div id="tab-settings" class="tab-panel">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:1rem">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+            Global Settings
+          </div>
+
+          <div class="fsec">Command Behaviour</div>
+          <div class="tog-row" style="margin-bottom:.875rem">
+            <div><div class="tog-label">Case-insensitive command names</div><div class="tog-desc">!Hello and !hello both resolve to the same command</div></div>
+            <label class="tog-wrap"><input type="checkbox" class="tog-cb" id="gCaseInsensitive" checked><div class="tog-track"></div></label>
+          </div>
+          <div class="tog-row" style="margin-bottom:.875rem">
+            <div><div class="tog-label">Only show enabled commands in /help</div><div class="tog-desc">Disabled commands are hidden from the command list</div></div>
+            <label class="tog-wrap"><input type="checkbox" class="tog-cb" id="gOnlyEnabled" checked><div class="tog-track"></div></label>
+          </div>
+
+          <div class="fsec" style="margin-top:.875rem">Limits at a glance</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.5rem;margin-bottom:1rem;">
+            <div class="tog-row" style="flex-direction:column;align-items:flex-start;gap:.2rem;margin-bottom:0">
+              <div class="tog-desc" style="font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;">Max commands</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:800;color:#a899ff">100</div>
+            </div>
+            <div class="tog-row" style="flex-direction:column;align-items:flex-start;gap:.2rem;margin-bottom:0">
+              <div class="tog-desc" style="font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;">Max arguments</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:800;color:#a899ff">25</div>
+            </div>
+            <div class="tog-row" style="flex-direction:column;align-items:flex-start;gap:.2rem;margin-bottom:0">
+              <div class="tog-desc" style="font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;">Max actions</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:800;color:#a899ff">10</div>
+            </div>
+            <div class="tog-row" style="flex-direction:column;align-items:flex-start;gap:.2rem;margin-bottom:0">
+              <div class="tog-desc" style="font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;">Max buttons</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:800;color:#a899ff">5</div>
+            </div>
+            <div class="tog-row" style="flex-direction:column;align-items:flex-start;gap:.2rem;margin-bottom:0">
+              <div class="tog-desc" style="font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;">Max embed fields</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:800;color:#a899ff">25</div>
+            </div>
+            <div class="tog-row" style="flex-direction:column;align-items:flex-start;gap:.2rem;margin-bottom:0">
+              <div class="tog-desc" style="font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;">Max variants</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:800;color:#a899ff">10</div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+        </div>
+      </div>
+
+      <!-- ── Templates tab ── -->
+      <div id="tab-templates" class="tab-panel">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem;">
+          <div class="card" style="cursor:pointer;border-color:rgba(108,83,255,0.2)" onclick="useTemplate('blank')">
+            <div style="font-size:1.5rem;margin-bottom:.5rem">✨</div>
+            <div style="font-weight:700;margin-bottom:.25rem">Start Blank</div>
+            <div style="font-size:.78rem;color:var(--muted-light)">Empty form — build from scratch</div>
+          </div>
+          <div class="card" style="cursor:pointer;border-color:rgba(255,51,51,0.2)" onclick="useTemplate('simple-response')">
+            <div style="font-size:1.5rem;margin-bottom:.5rem">💬</div>
+            <div style="font-weight:700;margin-bottom:.25rem">Simple Response</div>
+            <div style="font-size:.78rem;color:var(--muted-light)">Bot replies with a plain text message</div>
+          </div>
+          <div class="card" style="cursor:pointer;border-color:rgba(96,165,250,0.2)" onclick="useTemplate('mention-reply')">
+            <div style="font-size:1.5rem;margin-bottom:.5rem">👋</div>
+            <div style="font-weight:700;margin-bottom:.25rem">Mention &amp; Reply</div>
+            <div style="font-size:.78rem;color:var(--muted-light)">Reply with a target user's mention</div>
+          </div>
+          <div class="card" style="cursor:pointer;border-color:rgba(192,132,252,0.2)" onclick="useTemplate('give-role')">
+            <div style="font-size:1.5rem;margin-bottom:.5rem">🎭</div>
+            <div style="font-weight:700;margin-bottom:.25rem">Give Role</div>
+            <div style="font-size:.78rem;color:var(--muted-light)">Give the command runner a fixed role</div>
+          </div>
+          <div class="card" style="cursor:pointer;border-color:rgba(34,211,238,0.2)" onclick="useTemplate('embed-card')">
+            <div style="font-size:1.5rem;margin-bottom:.5rem">🎨</div>
+            <div style="font-weight:700;margin-bottom:.25rem">Rich Embed</div>
+            <div style="font-size:.78rem;color:var(--muted-light)">Respond with a formatted embed card</div>
+          </div>
+          <div class="card" style="cursor:pointer;border-color:rgba(245,158,11,0.2)" onclick="useTemplate('random-response')">
+            <div style="font-size:1.5rem;margin-bottom:.5rem">🎲</div>
+            <div style="font-weight:700;margin-bottom:.25rem">Random Response</div>
+            <div style="font-size:.78rem;color:var(--muted-light)">Bot picks a random reply from a list</div>
+          </div>
+          <div class="card" style="cursor:pointer;border-color:rgba(248,113,113,0.2)" onclick="useTemplate('role-from-arg')">
+            <div style="font-size:1.5rem;margin-bottom:.5rem">🎯</div>
+            <div style="font-weight:700;margin-bottom:.25rem">Role from Argument</div>
+            <div style="font-size:.78rem;color:var(--muted-light)">User picks a role → bot assigns it</div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ── Help Sidebar ── -->
+    <aside class="help-sidebar" id="helpSidebar">
+      <div class="help-sidebar-hd">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        Help &amp; Reference
+      </div>
+
+      <div class="help-section" id="helpBasic">
+        <div class="help-section-title">⚡ Basic</div>
+        <div class="help-section-body">
+          <p><strong>Command Name</strong> — registers as a Discord slash command (e.g. <code>/greet</code>). Lowercase, numbers and hyphens only. No spaces.</p>
+          <div class="sep" style="margin:.6rem 0"></div>
+          <p><strong>Description</strong> — shown in Discord's command picker. Max 100 chars.</p>
+          <div class="sep" style="margin:.6rem 0"></div>
+          <p><strong>Response</strong> — supports Discord markdown and variables like <code>{user.mention}</code>.</p>
+        </div>
+      </div>
+
+      <div class="help-section" id="helpVars">
+        <div class="help-section-title">📝 Variables</div>
+        <div class="help-section-body">
+          <div class="help-var-row"><span class="help-var-key">{user.mention}</span><span class="help-var-desc">Pings the invoker</span></div>
+          <div class="help-var-row"><span class="help-var-key">{user.tag}</span><span class="help-var-desc">Username like john#1234</span></div>
+          <div class="help-var-row"><span class="help-var-key">{user.id}</span><span class="help-var-desc">Discord User ID</span></div>
+          <div class="help-var-row"><span class="help-var-key">{server}</span><span class="help-var-desc">Server name</span></div>
+          <div class="help-var-row"><span class="help-var-key">{memberCount}</span><span class="help-var-desc">Total members</span></div>
+          <div class="help-var-row"><span class="help-var-key">{channel}</span><span class="help-var-desc">Channel name</span></div>
+          <div class="help-var-row"><span class="help-var-key">{random:1-100}</span><span class="help-var-desc">Random number</span></div>
+          <div class="help-var-row"><span class="help-var-key">{arg:name}</span><span class="help-var-desc">Value of an argument</span></div>
+          <div class="help-var-row"><span class="help-var-key">{arg:name.mention}</span><span class="help-var-desc">Mention from USER/ROLE arg</span></div>
+          <div class="help-var-row"><span class="help-var-key">{arg:name.url}</span><span class="help-var-desc">URL from FILE arg</span></div>
+        </div>
+      </div>
+
+      <div class="help-section" id="helpArgs">
+        <div class="help-section-title">🔤 Argument Types</div>
+        <div class="help-section-body">
+          <div class="help-var-row"><span class="help-var-key">String</span><span class="help-var-desc">Free text. Supports choices dropdown.</span></div>
+          <div class="help-var-row"><span class="help-var-key">Integer</span><span class="help-var-desc">Whole numbers, min/max range</span></div>
+          <div class="help-var-row"><span class="help-var-key">Number</span><span class="help-var-desc">Decimal numbers, min/max range</span></div>
+          <div class="help-var-row"><span class="help-var-key">Boolean</span><span class="help-var-desc">True/false — Discord dropdown</span></div>
+          <div class="help-var-row"><span class="help-var-key">User</span><span class="help-var-desc">User picker → {arg:n.mention}</span></div>
+          <div class="help-var-row"><span class="help-var-key">Channel</span><span class="help-var-desc">Channel picker → {arg:n.mention}</span></div>
+          <div class="help-var-row"><span class="help-var-key">Role</span><span class="help-var-desc">Role picker → {arg:n.mention}</span></div>
+          <div class="help-var-row"><span class="help-var-key">File</span><span class="help-var-desc">Upload → {arg:n.url}</span></div>
+        </div>
+      </div>
+
+      <div class="help-section" id="helpLimits">
+        <div class="help-section-title">📏 Limits</div>
+        <div class="help-section-body">
+          <div class="limit-row"><span>Max commands</span><span class="limit-val">100</span></div>
+          <div class="limit-row"><span>Max arguments</span><span class="limit-val">25</span></div>
+          <div class="limit-row"><span>Max choices per arg</span><span class="limit-val">25</span></div>
+          <div class="limit-row"><span>Max actions</span><span class="limit-val">10</span></div>
+          <div class="limit-row"><span>Max buttons</span><span class="limit-val">5</span></div>
+          <div class="limit-row"><span>Max embed fields</span><span class="limit-val">25</span></div>
+          <div class="limit-row"><span>Max random variants</span><span class="limit-val">10</span></div>
+          <div class="limit-row"><span>Max aliases</span><span class="limit-val">3</span></div>
+          <div class="limit-row"><span>Max tags</span><span class="limit-val">5</span></div>
+          <div class="limit-row"><span>Max conditionals</span><span class="limit-val">10</span></div>
+          <div class="limit-row"><span>Response length</span><span class="limit-val">2000</span></div>
+          <div class="limit-row"><span>Embed description</span><span class="limit-val">4096</span></div>
+          <div class="limit-row"><span>Button label</span><span class="limit-val">80</span></div>
+        </div>
+      </div>
+
+      <div class="help-section" id="helpActions">
+        <div class="help-section-title">🎯 Actions</div>
+        <div class="help-section-body">
+          <p style="margin-bottom:.5rem">Actions run on the server after the response is sent.</p>
+          <div class="help-var-row"><span class="help-var-key">Role actions</span><span class="help-var-desc">Add/remove roles from invoker or a USER arg</span></div>
+          <div class="help-var-row"><span class="help-var-key">DM invoker</span><span class="help-var-desc">Send a private message to command runner</span></div>
+          <div class="help-var-row"><span class="help-var-key">Send to channel</span><span class="help-var-desc">Post to a fixed or chosen channel</span></div>
+          <div class="help-var-row"><span class="help-var-key">React with emoji</span><span class="help-var-desc">React to the bot's response</span></div>
+          <div class="help-var-row"><span class="help-var-key">Set nickname</span><span class="help-var-desc">Change invoker or target user's nick</span></div>
+          <div class="help-var-row"><span class="help-var-key">Timeout / Kick / Ban</span><span class="help-var-desc">Moderation on a USER arg</span></div>
+        </div>
+      </div>
+    </aside>
+  </div><!-- end content-grid -->
+  </div><!-- end main-wrap -->
+</div><!-- end layout -->
+
+<!-- ══ NEW / EDIT COMMAND MODAL ══ -->
+<div id="cmdModal" class="modal-overlay" onclick="if(event.target===this)closeCmdModal()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="page-icon" style="width:1.875rem;height:1.875rem;">
+        <svg width="13" height="13" fill="none" stroke="#6C53FF" stroke-width="2.5" viewBox="0 0 24 24"><path d="M8 9l3 3-3 3m5 0h3"/></svg>
+      </div>
+      <span id="modalTitle">New Custom Command</span>
+    </div>
+
+    <!-- Form tabs -->
+    <div class="form-tabs" id="formTabs">
+      <button class="form-tab active" onclick="switchFormTab('basic',this)">⚡ Basic</button>
+      <button class="form-tab" onclick="switchFormTab('args',this)">🔤 Arguments</button>
+      <button class="form-tab" onclick="switchFormTab('actions',this)">🎯 Actions</button>
+      <button class="form-tab" onclick="switchFormTab('embed',this)">🎨 Embed</button>
+      <button class="form-tab" onclick="switchFormTab('buttons',this)">🔘 Buttons</button>
+      <button class="form-tab" onclick="switchFormTab('rules',this)">⚙️ Rules</button>
+    </div>
+
+    <!-- ── BASIC tab ── -->
+    <div id="formtab-basic" class="tab-panel active">
+      <div class="field-group">
+        <div class="grid2">
+          <div>
+            <label class="field-lbl">Command Name *</label>
+            <input type="text" class="inp mono" id="cName" placeholder="greet" maxlength="32" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'')">
+            <div class="field-hint">Lowercase, hyphens only. Registers as /greet in Discord.</div>
+          </div>
+          <div>
+            <label class="field-lbl">Description *</label>
+            <input type="text" class="inp" id="cDesc" placeholder="Greet a user" maxlength="100">
+            <div class="field-hint">Shown in Discord's command picker. Max 100 chars.</div>
+          </div>
+        </div>
+
+        <div>
+          <label class="field-lbl">Response</label>
+          <textarea class="inp" id="cResponse" placeholder="Hello {user.mention}! Welcome to **{server}**." rows="3" maxlength="2000"></textarea>
+          <div class="field-hint">Supports Discord markdown and all variables. Max 2000 chars. Leave blank if using embed-only response.</div>
+        </div>
+
+        <div class="tog-row">
+          <div><div class="tog-label">Send as Embed</div><div class="tog-desc">Use the Embed tab to configure a rich card response</div></div>
+          <label class="tog-wrap"><input type="checkbox" class="tog-cb" id="cIsEmbed" onchange="toggleEmbedHint()"><div class="tog-track"></div></label>
+        </div>
+        <div id="embedHint" style="display:none" class="info-banner">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          Switch to the <strong>🎨 Embed</strong> tab to set the embed title, description, colour, fields and more.
+        </div>
+
+        <div class="tog-row">
+          <div><div class="tog-label">Random Variants</div><div class="tog-desc">Bot picks randomly from multiple response options</div></div>
+          <label class="tog-wrap"><input type="checkbox" class="tog-cb" id="cMultiResponse" onchange="toggleVariants()"><div class="tog-track"></div></label>
+        </div>
+        <div id="variantsSection" style="display:none">
+          <div class="info-banner" style="margin-bottom:.5rem">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            Up to <strong>10 variants</strong>. Optionally set weights to make some replies more likely.
+          </div>
+          <div id="variantsList"></div>
+          <button class="btn btn-ghost btn-sm" onclick="addVariant()" style="width:100%;justify-content:center;border-style:dashed;margin-top:.35rem">+ Add Variant</button>
+        </div>
+
+        <div class="tog-row">
+          <div><div class="tog-label">Enabled</div><div class="tog-desc">Disabled commands won't appear in /help or trigger</div></div>
+          <label class="tog-wrap"><input type="checkbox" class="tog-cb" id="cEnabled" checked><div class="tog-track"></div></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ARGS tab ── -->
+    <div id="formtab-args" class="tab-panel">
+      <div class="info-banner">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        Arguments appear as slash command options. Use <code>{arg:name}</code> in your response. Up to <strong>25 arguments</strong>. Required args must be filled before the command fires.
+      </div>
+      <div id="argsList"></div>
+      <button class="btn btn-ghost btn-sm" onclick="addArg()" style="width:100%;justify-content:center;border-style:dashed">+ Add Argument</button>
+    </div>
+
+    <!-- ── ACTIONS tab ── -->
+    <div id="formtab-actions" class="tab-panel">
+      <div class="info-banner">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        Actions run <strong>after</strong> the response is sent. Up to <strong>10 actions</strong>. The Roco bot must have the required Discord permissions for each action.
+      </div>
+      <div id="actionsList"></div>
+      <button class="btn btn-ghost btn-sm" onclick="addAction()" style="width:100%;justify-content:center;border-style:dashed">+ Add Action</button>
+    </div>
+
+    <!-- ── EMBED tab ── -->
+    <div id="formtab-embed" class="tab-panel">
+      <div class="field-group">
+        <div class="fsec">Embed Content</div>
+        <div class="grid2">
+          <div>
+            <label class="field-lbl">Embed Title</label>
+            <input type="text" class="inp" id="cEmbedTitle" placeholder="📖 Help Guide" maxlength="256">
+          </div>
+          <div>
+            <label class="field-lbl">Accent Colour</label>
+            <input type="text" class="inp mono" id="cEmbedColor" placeholder="#6C53FF" maxlength="7">
+          </div>
+        </div>
+        <div>
+          <label class="field-lbl">Embed Description</label>
+          <textarea class="inp" id="cEmbedDesc" placeholder="Main embed body. Supports variables and Discord markdown." rows="3" maxlength="4096"></textarea>
+          <div class="field-hint">Max 4096 characters.</div>
+        </div>
+
+        <div class="fsec" style="margin-top:.25rem">Author &amp; Images</div>
+        <div class="grid2">
+          <div>
+            <label class="field-lbl">Author Name</label>
+            <input type="text" class="inp" id="cEmbedAuthor" placeholder="Roco Bot" maxlength="256">
+          </div>
+          <div>
+            <label class="field-lbl">Author Icon URL</label>
+            <input type="text" class="inp" id="cEmbedAuthorIcon" placeholder="https://…">
+          </div>
+        </div>
+        <div class="grid2">
+          <div>
+            <label class="field-lbl">Thumbnail URL</label>
+            <input type="text" class="inp" id="cEmbedThumb" placeholder="https://… (top-right corner)">
+          </div>
+          <div>
+            <label class="field-lbl">Large Image URL</label>
+            <input type="text" class="inp" id="cEmbedImage" placeholder="https://… (bottom full-width)">
+          </div>
+        </div>
+        <div class="grid2">
+          <div>
+            <label class="field-lbl">Footer Text</label>
+            <input type="text" class="inp" id="cEmbedFooter" placeholder="Powered by Roco" maxlength="2048">
+          </div>
+          <div>
+            <label class="field-lbl">Footer Icon URL</label>
+            <input type="text" class="inp" id="cEmbedFooterIcon" placeholder="https://…">
+          </div>
+        </div>
+
+        <div class="fsec">Fields <span style="font-size:.7rem;font-weight:400;color:var(--muted)">max 25</span></div>
+        <div id="embedFieldsList"></div>
+        <button class="btn btn-ghost btn-sm" onclick="addEmbedField()" style="width:100%;justify-content:center;border-style:dashed">+ Add Field</button>
+      </div>
+    </div>
+
+    <!-- ── BUTTONS tab ── -->
+    <div id="formtab-buttons" class="tab-panel">
+      <div class="info-banner">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        Clickable buttons attached below the response. Up to <strong>5 buttons</strong>. Response buttons send a follow-up message; Link buttons open a URL.
+      </div>
+      <div id="buttonsList"></div>
+      <button class="btn btn-ghost btn-sm" onclick="addButton()" style="width:100%;justify-content:center;border-style:dashed">+ Add Button</button>
+    </div>
+
+    <!-- ── RULES tab ── -->
+    <div id="formtab-rules" class="tab-panel">
+      <div class="field-group">
+        <div class="fsec">Response Visibility</div>
+        <div class="tog-row">
+          <div><div class="tog-label">Ephemeral Response</div><div class="tog-desc">Only the command runner can see the bot's response — no one else in the channel</div></div>
+          <label class="tog-wrap"><input type="checkbox" class="tog-cb" id="cEphemeral"><div class="tog-track"></div></label>
+        </div>
+
+        <div class="fsec">Cooldowns</div>
+        <div class="grid2">
+          <div>
+            <label class="field-lbl">Per-User Cooldown (seconds)</label>
+            <input type="number" class="inp" id="cUserCooldown" value="0" min="0" max="86400" placeholder="0">
+            <div class="field-hint">Each user must wait this long before running again</div>
+          </div>
+          <div>
+            <label class="field-lbl">Global Cooldown (seconds)</label>
+            <input type="number" class="inp" id="cGlobalCooldown" value="0" min="0" max="86400" placeholder="0">
+            <div class="field-hint">Entire server must wait — one use sets timer for everyone</div>
+          </div>
+        </div>
+
+        <div class="fsec">Permission Gate</div>
+        <div>
+          <label class="field-lbl">Required Discord Permission</label>
+          <select class="inp" id="cPermission">
+            <option value="">None (everyone can use)</option>
+            <option value="MANAGE_MESSAGES">Manage Messages</option>
+            <option value="MANAGE_CHANNELS">Manage Channels</option>
+            <option value="MANAGE_ROLES">Manage Roles</option>
+            <option value="MANAGE_GUILD">Manage Server</option>
+            <option value="KICK_MEMBERS">Kick Members</option>
+            <option value="BAN_MEMBERS">Ban Members</option>
+            <option value="ADMINISTRATOR">Administrator</option>
+          </select>
+          <div class="field-hint">Discord enforces this — the command is hidden from users who don't have the permission</div>
+        </div>
+
+        <div class="fsec">Channel &amp; Role Restrictions</div>
+        <div class="grid2">
+          <div>
+            <label class="field-lbl">Allowed Channel IDs</label>
+            <textarea class="inp mono" id="cAllowedChannels" placeholder="One ID per line&#10;Command only works here" rows="3" style="font-size:.75rem"></textarea>
+            <div class="field-hint">Whitelist — only these channels can trigger it</div>
+          </div>
+          <div>
+            <label class="field-lbl">Denied Channel IDs</label>
+            <textarea class="inp mono" id="cDeniedChannels" placeholder="One ID per line&#10;Command blocked here" rows="3" style="font-size:.75rem"></textarea>
+            <div class="field-hint">Blacklist — these channels cannot use it</div>
+          </div>
+        </div>
+        <div class="grid2">
+          <div>
+            <label class="field-lbl">Allowed Role IDs</label>
+            <textarea class="inp mono" id="cAllowedRoles" placeholder="One ID per line&#10;Only these roles can use it" rows="3" style="font-size:.75rem"></textarea>
+          </div>
+          <div>
+            <label class="field-lbl">Denied Role IDs</label>
+            <textarea class="inp mono" id="cDeniedRoles" placeholder="One ID per line&#10;These roles cannot use it" rows="3" style="font-size:.75rem"></textarea>
+          </div>
+        </div>
+
+        <div class="fsec">Delete Trigger</div>
+        <div class="tog-row">
+          <div><div class="tog-label">Delete trigger message</div><div class="tog-desc">Remove the user's message after this command fires</div></div>
+          <label class="tog-wrap"><input type="checkbox" class="tog-cb" id="cDeleteMsg"><div class="tog-track"></div></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-ft">
+      <div>
+        <button class="btn btn-danger btn-sm" id="deleteCmdBtn" style="display:none" onclick="deleteCmd()">Delete</button>
+      </div>
+      <div class="modal-ft-right">
+        <button class="btn btn-ghost" onclick="closeCmdModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveCmd()">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+          Save Command
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Variables modal -->
+<div id="varsModal" class="modal-overlay" onclick="if(event.target===this)document.getElementById('varsModal').classList.remove('open')">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-hd">📝 Available Variables</div>
+    <div style="font-size:.72rem;color:var(--muted-light);margin-bottom:.75rem">Click a variable to copy it to your clipboard</div>
+    <div class="fsec">User</div>
+    <div style="display:flex;flex-wrap:wrap;margin-bottom:.75rem">
+      <span class="var-pill" onclick="copyVar('{user.mention}')">{user.mention}</span>
+      <span class="var-pill" onclick="copyVar('{user.tag}')">{user.tag}</span>
+      <span class="var-pill" onclick="copyVar('{user.id}')">{user.id}</span>
+      <span class="var-pill" onclick="copyVar('{user.username}')">{user.username}</span>
+      <span class="var-pill" onclick="copyVar('{user.avatar}')">{user.avatar}</span>
+    </div>
+    <div class="fsec">Server</div>
+    <div style="display:flex;flex-wrap:wrap;margin-bottom:.75rem">
+      <span class="var-pill" onclick="copyVar('{server}')">{server}</span>
+      <span class="var-pill" onclick="copyVar('{memberCount}')">{memberCount}</span>
+      <span class="var-pill" onclick="copyVar('{channel}')">{channel}</span>
+      <span class="var-pill" onclick="copyVar('{channel.mention}')">{channel.mention}</span>
+      <span class="var-pill" onclick="copyVar('{date}')">{date}</span>
+      <span class="var-pill" onclick="copyVar('{time}')">{time}</span>
+    </div>
+    <div class="fsec">Arguments</div>
+    <div style="display:flex;flex-wrap:wrap;margin-bottom:.75rem">
+      <span class="var-pill" onclick="copyVar('{arg:name}')">{arg:name}</span>
+      <span class="var-pill" onclick="copyVar('{arg:name.mention}')">{arg:name.mention}</span>
+      <span class="var-pill" onclick="copyVar('{arg:name.url}')">{arg:name.url}</span>
+    </div>
+    <div class="fsec">Random</div>
+    <div style="display:flex;flex-wrap:wrap;margin-bottom:.75rem">
+      <span class="var-pill" onclick="copyVar('{random:1-100}')">{random:1-100}</span>
+      <span class="var-pill" onclick="copyVar('{random:a,b,c}')">{random:a,b,c}</span>
+    </div>
+    <div class="modal-ft" style="margin-top:.75rem">
+      <div></div>
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('varsModal').classList.remove('open')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const guildId = window.location.pathname.split('/')[2] || 'demo';
+let commands = [], editingCmd = null;
+
+// ── Toast ──────────────────────────────────────────────────────────────────
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.className = '';
+  void t.offsetWidth;
+  t.classList.add(type, 'show');
+  t.textContent = msg;
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ── Tab switching ──────────────────────────────────────────────────────────
+function switchTab(name, el) {
+  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => { if (p.closest('.modal')) return; p.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  // Update help sidebar context
+  updateHelp(name);
+}
+
+function switchFormTab(name, el) {
+  document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#cmdModal .tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('formtab-'+name).classList.add('active');
+  updateHelp(name);
+}
+
+function updateHelp(ctx) {
+  const sections = ['helpBasic','helpVars','helpArgs','helpActions','helpLimits'];
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  const map = {
+    basic: ['helpBasic','helpVars','helpLimits'],
+    args: ['helpArgs','helpVars'],
+    actions: ['helpActions','helpLimits'],
+    embed: ['helpBasic','helpLimits'],
+    buttons: ['helpLimits'],
+    rules: ['helpLimits'],
+    commands: ['helpBasic','helpVars','helpLimits'],
+    settings: ['helpLimits'],
+    templates: ['helpBasic','helpVars'],
+  };
+  const show = map[ctx] || ['helpBasic','helpLimits'];
+  show.forEach(id => { const el = document.getElementById(id); if(el) el.style.display='block'; });
+}
+updateHelp('commands');
+
+// ── Form tab helpers ───────────────────────────────────────────────────────
+function toggleEmbedHint() {
+  const on = document.getElementById('cIsEmbed').checked;
+  document.getElementById('embedHint').style.display = on ? 'flex' : 'none';
+}
+function toggleVariants() {
+  const on = document.getElementById('cMultiResponse').checked;
+  document.getElementById('variantsSection').style.display = on ? 'block' : 'none';
+}
+
+// ── Variants ───────────────────────────────────────────────────────────────
+let variants = [];
+function addVariant() {
+  if (variants.length >= 10) { showToast('Max 10 variants','error'); return; }
+  variants.push({ response: '', weight: 1 });
+  renderVariants();
+}
+function removeVariant(i) { variants.splice(i,1); renderVariants(); }
+function renderVariants() {
+  const c = document.getElementById('variantsList');
+  if (!variants.length) { c.innerHTML = ''; return; }
+  c.innerHTML = variants.map((v,i) => `
+    <div class="builder-row">
+      <div class="builder-row-num">${i+1}</div>
+      <div class="builder-row-body">
+        <div class="grid2">
+          <div><label class="field-lbl">Response</label><input type="text" class="inp" value="${escHtml(v.response)}" placeholder="Bot reply…" oninput="variants[${i}].response=this.value" maxlength="2000"></div>
+          <div><label class="field-lbl">Weight</label><input type="number" class="inp" value="${v.weight}" min="1" max="100" oninput="variants[${i}].weight=+this.value" style="width:80px"></div>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm builder-row-rm" onclick="removeVariant(${i})">✕</button>
+    </div>`).join('');
+}
+
+// ── Arguments ──────────────────────────────────────────────────────────────
+const ARG_TYPES = ['String','Integer','Number','Boolean','User','Channel','Role','Mentionable','File'];
+let args = [];
+function addArg() {
+  if (args.length >= 25) { showToast('Max 25 arguments','error'); return; }
+  args.push({ name:'', description:'', type:'String', required:true, choices:[] });
+  renderArgs();
+}
+function removeArg(i) { args.splice(i,1); renderArgs(); }
+function renderArgs() {
+  const c = document.getElementById('argsList');
+  if (!args.length) { c.innerHTML = '<div class="empty" style="padding:1.5rem;margin-bottom:.5rem"><div class="empty-title" style="font-size:.85rem">No arguments yet</div><div class="empty-desc">Add arguments to let users input data when running the command.</div></div>'; return; }
+  c.innerHTML = args.map((a,i) => `
+    <div class="builder-row">
+      <div class="builder-row-num">${i+1}</div>
+      <div class="builder-row-body">
+        <div class="grid3">
+          <div><label class="field-lbl">Name</label><input type="text" class="inp mono" value="${escHtml(a.name)}" placeholder="user" oninput="args[${i}].name=this.value.toLowerCase().replace(/[^a-z0-9-_]/g,'')" maxlength="32"></div>
+          <div><label class="field-lbl">Type</label><select class="inp" onchange="args[${i}].type=this.value;renderArgs()">${ARG_TYPES.map(t=>`<option value="${t}" ${a.type===t?'selected':''}>${t}</option>`).join('')}</select></div>
+          <div style="display:flex;flex-direction:column;justify-content:flex-end"><div class="tog-row" style="margin-bottom:0;padding:.45rem .6rem"><div><div class="tog-label" style="font-size:.78rem">Required</div></div><label class="tog-wrap" style="width:36px;height:18px"><input type="checkbox" class="tog-cb" ${a.required?'checked':''} onchange="args[${i}].required=this.checked"><div class="tog-track" style="height:18px"></div><style>.tog-track::before{width:14px;height:14px}.tog-cb:checked+.tog-track::before{transform:translateX(18px)}</style></label></div></div>
+        </div>
+        <div><label class="field-lbl">Description</label><input type="text" class="inp" value="${escHtml(a.description)}" placeholder="Describe this argument" oninput="args[${i}].description=this.value" maxlength="100"></div>
+        ${['String','Integer','Number'].includes(a.type) ? `
+        <div><label class="field-lbl">Predefined Choices <span style="font-weight:400;font-size:.68rem">(max 25, optional)</span></label>
+          <div id="choices-${i}">${renderChoices(i)}</div>
+          <button class="btn btn-ghost btn-sm" onclick="addChoice(${i})" style="margin-top:.3rem">+ Choice</button>
+        </div>` : ''}
+      </div>
+      <button class="btn btn-ghost btn-sm builder-row-rm" onclick="removeArg(${i})">✕</button>
+    </div>`).join('');
+}
+function renderChoices(argIdx) {
+  const a = args[argIdx];
+  return (a.choices||[]).map((ch,ci) => `
+    <div class="choice-row">
+      <input type="text" class="inp" value="${escHtml(ch.name)}" placeholder="Label" oninput="args[${argIdx}].choices[${ci}].name=this.value" style="flex:1">
+      <input type="text" class="inp" value="${escHtml(ch.value)}" placeholder="Value" oninput="args[${argIdx}].choices[${ci}].value=this.value" style="flex:1">
+      <button class="btn btn-ghost btn-sm" onclick="args[${argIdx}].choices.splice(${ci},1);renderArgs()">✕</button>
+    </div>`).join('');
+}
+function addChoice(argIdx) {
+  if (!args[argIdx].choices) args[argIdx].choices = [];
+  if (args[argIdx].choices.length >= 25) { showToast('Max 25 choices','error'); return; }
+  args[argIdx].choices.push({ name:'', value:'' });
+  renderArgs();
+}
+
+// ── Actions ────────────────────────────────────────────────────────────────
+const ACTION_DEFS = [
+  { value:'add_role', label:'➕ Add Role → Invoker (fixed)', group:'Roles', needsTarget:'role_id' },
+  { value:'remove_role', label:'➖ Remove Role → Invoker (fixed)', group:'Roles', needsTarget:'role_id' },
+  { value:'add_role_arg', label:'➕ Add Role (arg) → Invoker', group:'Roles', needsArgArg:true, argTypes:['Role'] },
+  { value:'remove_role_arg', label:'➖ Remove Role (arg) → Invoker', group:'Roles', needsArgArg:true, argTypes:['Role'] },
+  { value:'add_role_to_user_arg', label:'➕ Add Role (fixed) → User (arg)', group:'Roles', needsTarget:'role_id', needsUserArg:true },
+  { value:'remove_role_from_user_arg', label:'➖ Remove Role (fixed) → User (arg)', group:'Roles', needsTarget:'role_id', needsUserArg:true },
+  { value:'dm_invoker', label:'📨 DM the Invoker', group:'Messaging', needsValue:'message' },
+  { value:'dm_user_arg', label:'📨 DM User (arg)', group:'Messaging', needsArgArg:true, argTypes:['User','Mentionable'], needsValue:'message' },
+  { value:'send_channel', label:'📢 Send to Channel (fixed)', group:'Messaging', needsTarget:'channel_id', needsValue:'message' },
+  { value:'send_channel_arg', label:'📢 Send to Channel (arg)', group:'Messaging', needsArgArg:true, argTypes:['Channel'], needsValue:'message' },
+  { value:'react', label:'😄 React with Emoji', group:'Messaging', needsValue:'emoji' },
+  { value:'set_nickname', label:'✏️ Set Nickname → Invoker', group:'Moderation', needsValue:'nickname' },
+  { value:'set_nickname_user_arg', label:'✏️ Set Nickname → User (arg)', group:'Moderation', needsUserArg:true, needsValue:'nickname' },
+  { value:'timeout_user', label:'⏱️ Timeout User (arg)', group:'Moderation', needsArgArg:true, argTypes:['User'], needsValue:'duration' },
+  { value:'kick_user', label:'🦵 Kick User (arg)', group:'Moderation', needsArgArg:true, argTypes:['User'], needsValue:'reason' },
+  { value:'ban_user', label:'🔨 Ban User (arg)', group:'Moderation', needsArgArg:true, argTypes:['User'], needsValue:'reason' },
+];
+let actions = [];
+function addAction() {
+  if (actions.length >= 10) { showToast('Max 10 actions','error'); return; }
+  actions.push({ type:'add_role', roleId:'', channelId:'', message:'', emoji:'', argName:'', userArgName:'', nickname:'', duration:0, reason:'' });
+  renderActions();
+}
+function removeAction(i) { actions.splice(i,1); renderActions(); }
+function renderActions() {
+  const c = document.getElementById('actionsList');
+  if (!actions.length) { c.innerHTML = '<div class="empty" style="padding:1.5rem;margin-bottom:.5rem"><div class="empty-title" style="font-size:.85rem">No actions yet</div><div class="empty-desc">Actions run on the server after the response is sent — assign roles, send DMs, moderate users, and more.</div></div>'; return; }
+  const userArgs = args.filter(a=>['User','Mentionable'].includes(a.type)).map(a=>a.name);
+  c.innerHTML = actions.map((ac,i) => {
+    const def = ACTION_DEFS.find(d=>d.value===ac.type) || ACTION_DEFS[0];
+    const argOptions = args.filter(a=>!def.argTypes||(def.argTypes||[]).includes(a.type));
+    return `
+    <div class="builder-row">
+      <div class="builder-row-num">${i+1}</div>
+      <div class="builder-row-body">
+        <div><label class="field-lbl">Action Type</label>
+          <select class="inp" onchange="actions[${i}].type=this.value;renderActions()">
+            ${ACTION_DEFS.map(d=>`<option value="${d.value}" ${ac.type===d.value?'selected':''}>${d.label}</option>`).join('')}
+          </select>
+        </div>
+        ${def.needsTarget==='role_id' ? `<div><label class="field-lbl">Role ID</label><input type="text" class="inp mono" value="${escHtml(ac.roleId||'')}" placeholder="Paste Discord Role ID" oninput="actions[${i}].roleId=this.value"></div>` : ''}
+        ${def.needsTarget==='channel_id' ? `<div><label class="field-lbl">Channel ID</label><input type="text" class="inp mono" value="${escHtml(ac.channelId||'')}" placeholder="Paste Discord Channel ID" oninput="actions[${i}].channelId=this.value"></div>` : ''}
+        ${def.needsArgArg && argOptions.length ? `<div><label class="field-lbl">From Argument</label><select class="inp" oninput="actions[${i}].argName=this.value"><option value="">— select arg —</option>${argOptions.map(a=>`<option value="${a.name}" ${ac.argName===a.name?'selected':''}>${a.name} (${a.type})</option>`).join('')}</select></div>` : ''}
+        ${def.needsUserArg && userArgs.length ? `<div><label class="field-lbl">Target User Arg</label><select class="inp" oninput="actions[${i}].userArgName=this.value"><option value="">— select arg —</option>${userArgs.map(n=>`<option value="${n}" ${ac.userArgName===n?'selected':''}>${n}</option>`).join('')}</select></div>` : ''}
+        ${def.needsValue==='message' ? `<div><label class="field-lbl">Message</label><textarea class="inp" rows="2" placeholder="Message content… supports variables" oninput="actions[${i}].message=this.value">${escHtml(ac.message||'')}</textarea></div>` : ''}
+        ${def.needsValue==='emoji' ? `<div><label class="field-lbl">Emoji</label><input type="text" class="inp" value="${escHtml(ac.emoji||'')}" placeholder="😊 or :emoji_name:" oninput="actions[${i}].emoji=this.value"></div>` : ''}
+        ${def.needsValue==='nickname' ? `<div><label class="field-lbl">Nickname</label><input type="text" class="inp" value="${escHtml(ac.nickname||'')}" placeholder="New nickname… supports {arg:name}" oninput="actions[${i}].nickname=this.value" maxlength="32"></div>` : ''}
+        ${def.needsValue==='duration' ? `<div><label class="field-lbl">Duration (seconds)</label><input type="number" class="inp" value="${ac.duration||0}" min="1" max="2419200" oninput="actions[${i}].duration=+this.value"></div>` : ''}
+        ${def.needsValue==='reason' ? `<div><label class="field-lbl">Reason</label><input type="text" class="inp" value="${escHtml(ac.reason||'')}" placeholder="Reason…" oninput="actions[${i}].reason=this.value"></div>` : ''}
+        ${def.group==='Moderation' ? `<div class="warn-banner" style="margin:0"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg> Roco must have the required permission and be higher in the role hierarchy than the target.</div>` : ''}
+      </div>
+      <button class="btn btn-ghost btn-sm builder-row-rm" onclick="removeAction(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ── Embed Fields ───────────────────────────────────────────────────────────
+let embedFields = [];
+function addEmbedField() {
+  if (embedFields.length >= 25) { showToast('Max 25 embed fields','error'); return; }
+  embedFields.push({ name:'', value:'', inline:false });
+  renderEmbedFields();
+}
+function removeEmbedField(i) { embedFields.splice(i,1); renderEmbedFields(); }
+function renderEmbedFields() {
+  const c = document.getElementById('embedFieldsList');
+  if (!embedFields.length) { c.innerHTML = ''; return; }
+  c.innerHTML = embedFields.map((f,i) => `
+    <div class="builder-row">
+      <div class="builder-row-num">${i+1}</div>
+      <div class="builder-row-body">
+        <div class="grid2">
+          <div><label class="field-lbl">Field Name</label><input type="text" class="inp" value="${escHtml(f.name)}" placeholder="Field Title" oninput="embedFields[${i}].name=this.value" maxlength="256"></div>
+          <div><label class="field-lbl">Field Value</label><input type="text" class="inp" value="${escHtml(f.value)}" placeholder="Field content…" oninput="embedFields[${i}].value=this.value" maxlength="1024"></div>
+        </div>
+        <div class="tog-row" style="margin-bottom:0">
+          <div><div class="tog-label">Inline (side-by-side)</div></div>
+          <label class="tog-wrap"><input type="checkbox" class="tog-cb" ${f.inline?'checked':''} onchange="embedFields[${i}].inline=this.checked"><div class="tog-track"></div></label>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm builder-row-rm" onclick="removeEmbedField(${i})">✕</button>
+    </div>`).join('');
+}
+
+// ── Buttons ────────────────────────────────────────────────────────────────
+const BTN_STYLES = [
+  { value:'PRIMARY', label:'Blurple' },
+  { value:'SECONDARY', label:'Grey' },
+  { value:'SUCCESS', label:'Green' },
+  { value:'DANGER', label:'Red' },
+  { value:'LINK', label:'Link (URL)' },
+];
+let buttons = [];
+function addButton() {
+  if (buttons.length >= 5) { showToast('Max 5 buttons','error'); return; }
+  buttons.push({ label:'', style:'PRIMARY', type:'response', response:'', url:'', ephemeral:true });
+  renderButtons();
+}
+function removeButton(i) { buttons.splice(i,1); renderButtons(); }
+function renderButtons() {
+  const c = document.getElementById('buttonsList');
+  if (!buttons.length) { c.innerHTML = '<div class="empty" style="padding:1.5rem;margin-bottom:.5rem"><div class="empty-title" style="font-size:.85rem">No buttons yet</div><div class="empty-desc">Buttons appear below the bot\'s message. Response buttons send follow-up messages, link buttons open URLs.</div></div>'; return; }
+  c.innerHTML = buttons.map((b,i) => `
+    <div class="builder-row">
+      <div class="builder-row-num">${i+1}</div>
+      <div class="builder-row-body">
+        <div class="grid2">
+          <div><label class="field-lbl">Label</label><input type="text" class="inp" value="${escHtml(b.label)}" placeholder="Click me!" oninput="buttons[${i}].label=this.value" maxlength="80"></div>
+          <div><label class="field-lbl">Style</label><select class="inp" onchange="buttons[${i}].style=this.value;renderButtons()">${BTN_STYLES.map(s=>`<option value="${s.value}" ${b.style===s.value?'selected':''}>${s.label}</option>`).join('')}</select></div>
+        </div>
+        <div><label class="field-lbl">Button Type</label><select class="inp" onchange="buttons[${i}].type=this.value;renderButtons()">
+          <option value="response" ${b.type==='response'?'selected':''}>Response Button (sends follow-up)</option>
+          <option value="link" ${b.type==='link'?'selected':''}>Link Button (opens URL)</option>
+        </select></div>
+        ${b.type==='response' ? `<div><label class="field-lbl">Follow-up Message</label><textarea class="inp" rows="2" placeholder="Message to send when clicked… supports variables" oninput="buttons[${i}].response=this.value">${escHtml(b.response)}</textarea></div>` : ''}
+        ${b.type==='link' ? `<div><label class="field-lbl">URL</label><input type="text" class="inp" value="${escHtml(b.url)}" placeholder="https://…" oninput="buttons[${i}].url=this.value"></div>` : ''}
+      </div>
+      <button class="btn btn-ghost btn-sm builder-row-rm" onclick="removeButton(${i})">✕</button>
+    </div>`).join('');
+}
+
+// ── Modal open/close ───────────────────────────────────────────────────────
+function openCmdModal(cmd = null) {
+  editingCmd = cmd;
+  args = []; actions = []; embedFields = []; buttons = []; variants = [];
+  document.getElementById('modalTitle').textContent = cmd ? 'Edit Command' : 'New Custom Command';
+  document.getElementById('deleteCmdBtn').style.display = cmd ? 'inline-flex' : 'none';
+
+  document.getElementById('cName').value = cmd?.name || '';
+  document.getElementById('cDesc').value = cmd?.description || '';
+  document.getElementById('cResponse').value = cmd?.response || '';
+  document.getElementById('cIsEmbed').checked = cmd?.isEmbed || false;
+  document.getElementById('cEphemeral').checked = cmd?.ephemeral || false;
+  document.getElementById('cEnabled').checked = cmd ? cmd.enabled !== false : true;
+  document.getElementById('cDeleteMsg').checked = cmd?.deleteInvoking || false;
+  document.getElementById('cUserCooldown').value = cmd?.cooldown || 0;
+  document.getElementById('cGlobalCooldown').value = cmd?.globalCooldown || 0;
+  document.getElementById('cPermission').value = cmd?.requiredPermission || '';
+  document.getElementById('cAllowedChannels').value = (cmd?.allowedChannels||[]).join('\n');
+  document.getElementById('cDeniedChannels').value = (cmd?.deniedChannels||[]).join('\n');
+  document.getElementById('cAllowedRoles').value = (cmd?.allowedRoles||[]).join('\n');
+  document.getElementById('cDeniedRoles').value = (cmd?.deniedRoles||[]).join('\n');
+  document.getElementById('cEmbedTitle').value = cmd?.embedTitle || '';
+  document.getElementById('cEmbedColor').value = cmd?.embedColor || '';
+  document.getElementById('cEmbedDesc').value = cmd?.response || '';
+  document.getElementById('cEmbedAuthor').value = cmd?.embedAuthorName || '';
+  document.getElementById('cEmbedAuthorIcon').value = cmd?.embedAuthorIcon || '';
+  document.getElementById('cEmbedThumb').value = cmd?.embedThumbnail || '';
+  document.getElementById('cEmbedImage').value = cmd?.embedImage || '';
+  document.getElementById('cEmbedFooter').value = cmd?.embedFooter || '';
+  document.getElementById('cEmbedFooterIcon').value = cmd?.embedFooterIcon || '';
+
+  if (cmd) {
+    args = JSON.parse(JSON.stringify(cmd.arguments || []));
+    actions = JSON.parse(JSON.stringify(cmd.actions || []));
+    embedFields = JSON.parse(JSON.stringify(cmd.embedFields || []));
+    buttons = JSON.parse(JSON.stringify(cmd.buttons || []));
+    variants = JSON.parse(JSON.stringify(cmd.responseVariants || []));
+  }
+
+  const multiOn = variants.length > 0 || cmd?.multiResponseEnabled;
+  document.getElementById('cMultiResponse').checked = multiOn;
+  toggleEmbedHint();
+  toggleVariants();
+  renderVariants();
+  renderArgs();
+  renderActions();
+  renderEmbedFields();
+  renderButtons();
+
+  // Reset to basic tab
+  switchFormTab('basic', document.querySelector('.form-tab'));
+  document.getElementById('cmdModal').classList.add('open');
+  updateHelp('basic');
+}
+function closeCmdModal() {
+  document.getElementById('cmdModal').classList.remove('open');
+}
+
+// ── Save command ───────────────────────────────────────────────────────────
+function saveCmd() {
+  const name = document.getElementById('cName').value.trim();
+  const desc = document.getElementById('cDesc').value.trim();
+  if (!name) { showToast('Command name is required','error'); switchFormTab('basic', document.querySelector('.form-tab')); return; }
+  if (!desc) { showToast('Description is required','error'); switchFormTab('basic', document.querySelector('.form-tab')); return; }
+
+  const data = {
+    name, description: desc,
+    response: document.getElementById('cResponse').value,
+    isEmbed: document.getElementById('cIsEmbed').checked,
+    ephemeral: document.getElementById('cEphemeral').checked,
+    enabled: document.getElementById('cEnabled').checked,
+    deleteInvoking: document.getElementById('cDeleteMsg').checked,
+    cooldown: +document.getElementById('cUserCooldown').value || 0,
+    globalCooldown: +document.getElementById('cGlobalCooldown').value || 0,
+    requiredPermission: document.getElementById('cPermission').value || null,
+    allowedChannels: document.getElementById('cAllowedChannels').value.split('\n').map(l=>l.trim()).filter(Boolean),
+    deniedChannels: document.getElementById('cDeniedChannels').value.split('\n').map(l=>l.trim()).filter(Boolean),
+    allowedRoles: document.getElementById('cAllowedRoles').value.split('\n').map(l=>l.trim()).filter(Boolean),
+    deniedRoles: document.getElementById('cDeniedRoles').value.split('\n').map(l=>l.trim()).filter(Boolean),
+    embedTitle: document.getElementById('cEmbedTitle').value,
+    embedColor: document.getElementById('cEmbedColor').value,
+    embedFooter: document.getElementById('cEmbedFooter').value,
+    embedImage: document.getElementById('cEmbedImage').value,
+    embedThumbnail: document.getElementById('cEmbedThumb').value,
+    embedAuthorName: document.getElementById('cEmbedAuthor').value,
+    embedAuthorIcon: document.getElementById('cEmbedAuthorIcon').value,
+    embedUrl: '',
+    embedFooterIcon: document.getElementById('cEmbedFooterIcon').value,
+    embedFields,
+    arguments: args,
+    actions,
+    buttons,
+    multiResponseEnabled: document.getElementById('cMultiResponse').checked,
+    responseVariants: variants,
+  };
+
+  const url = editingCmd ? `/api/guild/${guildId}/customcommands/${editingCmd.name}` : `/api/guild/${guildId}/customcommands`;
+  const method = editingCmd ? 'PATCH' : 'POST';
+  fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+    .then(r => r.json()).then(res => {
+      if (res.success === true) {
+        showToast(editingCmd ? '✅ Command updated!' : '✅ Command created!');
+        closeCmdModal();
+        loadCmds();
+      } else { showToast(res.error || res.message || 'Failed to save', 'error'); }
+    }).catch(() => {
+      // Demo mode: update local array
+      if (editingCmd) {
+        const idx = commands.findIndex(c=>c.name===editingCmd.name);
+        if (idx>=0) commands[idx] = data;
+      } else {
+        if (commands.length >= 100) { showToast('Limit: 100 commands max','error'); return; }
+        commands.push({ ...data, createdAt: new Date().toISOString(), usageCount: 0 });
+      }
+      showToast(editingCmd ? '✅ Command updated!' : '✅ Command created!');
+      closeCmdModal();
+      renderCmds();
+    });
+}
+
+function deleteCmd() {
+  if (!editingCmd) return;
+  if (!confirm(`Delete command /${editingCmd.name}?`)) return;
+  fetch(`/api/guild/${guildId}/customcommands/${editingCmd.name}`, { method: 'DELETE' })
+    .then(() => { showToast('Command deleted'); closeCmdModal(); loadCmds(); })
+    .catch(() => {
+      commands = commands.filter(c => c.name !== editingCmd.name);
+      showToast('Command deleted');
+      closeCmdModal();
+      renderCmds();
+    });
+}
+
+// ── Load & render commands ─────────────────────────────────────────────────
+function loadCmds() {
+  fetch(`/api/guild/${guildId}/customcommands`)
+    .then(r => r.json())
+    .then(data => { commands = Array.isArray(data) ? data : (data.commands || []); renderCmds(); })
+    .catch(() => renderCmds());
+}
+
+function renderCmds(list) {
+  const sortBy = document.getElementById('sortCmds').value;
+  let sorted = list || [...commands];
+  if (sortBy === 'uses') sorted.sort((a,b) => (b.usageCount||0)-(a.usageCount||0));
+  else if (sortBy === 'created') sorted.sort((a,b) => new Date(b.createdAt||0)-new Date(a.createdAt||0));
+  else sorted.sort((a,b) => (a.name||'').localeCompare(b.name||''));
+
+  document.getElementById('cmdCount').textContent = sorted.length;
+
+  // Stats bar
+  if (commands.length > 0) {
+    document.getElementById('statsBar').style.display = 'flex';
+    document.getElementById('statTotal').textContent = commands.length;
+    document.getElementById('statEnabled').textContent = commands.filter(c=>c.enabled!==false).length;
+    document.getElementById('statWithArgs').textContent = commands.filter(c=>(c.arguments||[]).length>0).length;
+    document.getElementById('statWithActions').textContent = commands.filter(c=>(c.actions||[]).length>0).length;
+  } else {
+    document.getElementById('statsBar').style.display = 'none';
+  }
+
+  const container = document.getElementById('cmdList');
+  if (!sorted.length) {
+    container.innerHTML = `<div class="empty"><div style="font-size:2rem;margin-bottom:.75rem">⚡</div><div class="empty-title">No commands yet</div><div class="empty-desc">Click <strong>New Command</strong> to create your first slash command.</div></div>`;
+    return;
+  }
+
+  container.innerHTML = sorted.map(c => {
+    const tags = [];
+    if ((c.arguments||[]).length) tags.push(`<span class="cmd-tag args">${c.arguments.length} arg${c.arguments.length!==1?'s':''}</span>`);
+    if ((c.actions||[]).length) tags.push(`<span class="cmd-tag actions">${c.actions.length} action${c.actions.length!==1?'s':''}</span>`);
+    if (c.isEmbed) tags.push(`<span class="cmd-tag embed">Embed</span>`);
+    if ((c.buttons||[]).length) tags.push(`<span class="cmd-tag btns">Buttons</span>`);
+    if (c.ephemeral) tags.push(`<span class="cmd-tag" style="background:rgba(108,83,255,0.1);color:#a899ff;border:1px solid rgba(108,83,255,0.2);">Ephemeral</span>`);
+    if (c.enabled===false) tags.push(`<span class="cmd-tag off">Off</span>`);
+    return `
+      <div class="cmd-item" onclick='openCmdModal(${JSON.stringify(c).replace(/'/g,"&apos;")})'>
+        <span class="cmd-trigger">/${escHtml(c.name)}</span>
+        <span class="cmd-desc">${escHtml(c.description || c.response || '—')}</span>
+        <div class="cmd-tags">${tags.join('')}</div>
+        ${c.usageCount ? `<span style="font-size:.68rem;color:var(--muted-light);white-space:nowrap">${c.usageCount} uses</span>` : ''}
+      </div>`;
+  }).join('');
+}
+
+function filterCmds() {
+  const q = document.getElementById('searchCmd').value.toLowerCase();
+  renderCmds(commands.filter(c =>
+    (c.name||'').toLowerCase().includes(q) ||
+    (c.description||'').toLowerCase().includes(q) ||
+    (c.response||'').toLowerCase().includes(q)
+  ));
+}
+
+// ── Settings ───────────────────────────────────────────────────────────────
+function saveSettings() {
+  const data = {
+    caseInsensitive: document.getElementById('gCaseInsensitive').checked,
+    onlyEnabled: document.getElementById('gOnlyEnabled').checked,
+  };
+  fetch(`/api/guild/${guildId}/customcommands/settings`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) })
+    .then(() => showToast('✅ Settings saved!'))
+    .catch(() => showToast('✅ Settings saved!'));
+}
+
+// ── Templates ──────────────────────────────────────────────────────────────
+const TEMPLATES = {
+  blank: {},
+  'simple-response': { name:'info', description:'Get server information', response:'📊 **{server}** has **{memberCount}** members!\n\nYou\'re viewing this from {channel}.' },
+  'mention-reply': { name:'greet', description:'Greet a user', response:'Hey {arg:user.mention}, welcome to **{server}**! 🎉', arguments:[{name:'user',description:'Who to greet',type:'User',required:true,choices:[]}] },
+  'give-role': { name:'get-member', description:'Give yourself the Member role', response:'✅ Done! You\'ve been given a role.', ephemeral:true, actions:[{type:'add_role',roleId:'',channelId:'',message:'',emoji:'',argName:'',userArgName:'',nickname:'',duration:0,reason:''}] },
+  'embed-card': { name:'help', description:'Show help information', response:'Need help? Here\'s how to use this bot!', isEmbed:true, embedTitle:'📖 Help Guide', embedColor:'#6C53FF', embedFooter:'Powered by Roco' },
+  'random-response': { name:'fortune', description:'Get a random fortune', response:'🎱 Ask again later.', multiResponseEnabled:true, responseVariants:[{response:'🎱 It is certain.',weight:1},{response:'🎱 Ask again later.',weight:1},{response:'🎱 Outlook not so good.',weight:1},{response:'🎱 Signs point to yes!',weight:1}] },
+  'role-from-arg': { name:'assign', description:'Assign a role to yourself', response:'✅ Done — added {arg:role.mention} to your roles.', ephemeral:true, arguments:[{name:'role',description:'Which role to assign',type:'Role',required:true,choices:[]}], actions:[{type:'add_role_arg',roleId:'',channelId:'',message:'',emoji:'',argName:'role',userArgName:'',nickname:'',duration:0,reason:''}] },
+};
+function useTemplate(id) {
+  const tpl = TEMPLATES[id];
+  if (!tpl) return;
+  switchTab('commands', document.querySelector('.tabs .tab'));
+  openCmdModal(Object.keys(tpl).length ? tpl : null);
+  if (!Object.keys(tpl).length) return;
+  document.getElementById('cName').value = tpl.name || '';
+  document.getElementById('cDesc').value = tpl.description || '';
+}
+
+// ── Variables modal ────────────────────────────────────────────────────────
+function openVarsModal() { document.getElementById('varsModal').classList.add('open'); }
+function copyVar(v) {
+  navigator.clipboard.writeText(v).catch(()=>{});
+  showToast(`Copied ${v}`);
+}
+
+// ── Utilities ──────────────────────────────────────────────────────────────
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+loadCmds();
+</script>
+
+<script src="/sidebar.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" class="hub-mode">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Roco · Community</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <link rel="stylesheet" href="/loading.css">
+  <link rel="stylesheet" href="/css/hub.css">
+  <style>
+    #nx-progress { position:fixed; top:0; left:0; height:2px; z-index:99998; pointer-events:none; background:linear-gradient(90deg,#059669,#34d399,#6ee7b7); box-shadow:0 0 10px rgba(52,211,153,.7); width:0%; opacity:0; }
+    #nx-loader { position:fixed; inset:0; z-index:999999; background:#05060a; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; transition:opacity .35s ease,visibility .35s ease }
+    @keyframes nx-spin { to { transform:translate(-50%,-50%) rotate(360deg) } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,0)} 50%{box-shadow:0 0 0 8px rgba(52,211,153,.08)} }
+    @keyframes nx-dot { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader"><div class="nx-bar-wrap"><div class="nx-bar"></div></div><div class="nx-ring"><div class="nx-logo"><img src="/logo.png" alt="" onerror="this.style.display='none'"></div><div class="nx-spin"></div></div><div class="nx-label">Loading<span class="nx-dots"><span></span><span></span><span></span></span></div></div>
+<script>
+  (function(){function h(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(h,80);});}else{setTimeout(h,80);}setTimeout(h,1500);})();
+</script>
+<script src="/loading.js" defer></script>
+
+<div class="flex min-h-screen" id="razor-content">
+  <aside id="razor-sidebar"></aside>
+  <main class="flex-1 overflow-x-hidden" style="position:relative;z-index:1;">
+
+    <div class="hub-header">
+      <a class="hub-header-back" href="/guild/${guildId}">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        Overview
+      </a>
+      <h1>Community</h1>
+      <p>Engage members with levels, roles, suggestions, and interactive channels</p>
+      <div class="hub-header-accent" style="background:#34d399;"></div>
+    </div>
+
+    <div class="hub-search">
+      <div class="hub-search-wrap">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input class="hub-search-input" type="text" placeholder="Search community..." autocomplete="off" spellcheck="false">
+        <button class="hub-search-clear" aria-label="Clear search">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="hub-search-count"></div>
+    </div>
+
+    <div class="hub-section" data-section="leveling">
+      <div class="hub-section-header">Leveling & Roles</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/leveling" class="hub-item" data-search="leveling xp levels ranks rewards experience">
+          <div class="hub-item-icon" style="background:rgba(245,158,11,0.12);color:#f59e0b;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Leveling System</div>
+            <div class="hub-item-desc">Award XP, rank up, and unlock rewards as members chat</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/reactionrole" class="hub-item" data-search="reaction roles emoji roles self assign">
+          <div class="hub-item-icon" style="background:rgba(167,139,250,0.12);color:#a78bfa;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Reaction Roles</div>
+            <div class="hub-item-desc">Let members self-assign roles by reacting to messages</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hub-section" data-section="community">
+      <div class="hub-section-header">Community Features</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/suggestions" class="hub-item" data-search="suggestions feedback voting approve">
+          <div class="hub-item-icon" style="background:rgba(96,165,250,0.12);color:#60a5fa;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18h6m-3-5A5 5 0 1 0 7 8a5 5 0 0 0 2 4v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-3a5 5 0 0 0 2-4 5 5 0 1 0-5 5z"/><line x1="10" y1="22" x2="14" y2="22"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Suggestions</div>
+            <div class="hub-item-desc">Collect and vote on community suggestions for your server</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/confession" class="hub-item" data-search="confessions anonymous messages secret">
+          <div class="hub-item-icon" style="background:rgba(244,114,182,0.12);color:#f472b6;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Confessions</div>
+            <div class="hub-item-desc">Allow members to send anonymous messages to a channel</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/qotd" class="hub-item" data-search="question of the day qotd daily poll">
+          <div class="hub-item-icon" style="background:rgba(52,211,153,0.12);color:#34d399;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Question of the Day</div>
+            <div class="hub-item-desc">Auto-post daily questions to spark conversation</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/invite-config" class="hub-item" data-search="invite tracking invites leaderboard stats">
+          <div class="hub-item-icon" style="background:rgba(249,115,22,0.12);color:#f97316;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Invite Tracking</div>
+            <div class="hub-item-desc">Track invites, build leaderboards, and reward top referrers</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hub-section" data-section="voice">
+      <div class="hub-section-header">Voice & Music</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/jtc" class="hub-item" data-search="join to create jtc voice channels temporary">
+          <div class="hub-item-icon" style="background:rgba(34,211,238,0.12);color:#22d3ee;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Join To Create</div>
+            <div class="hub-item-desc">Let members spawn temporary voice channels on demand</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="/guild/${guildId}/music" class="hub-item" data-search="music control playback queue commands">
+          <div class="hub-item-icon" style="background:rgba(168,85,247,0.12);color:#a855f7;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Music Control</div>
+            <div class="hub-item-desc">Play, queue, and manage music from your favorite sources</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hub-section" data-section="staff">
+      <div class="hub-section-header">Staff Visibility</div>
+      <div class="hub-list">
+        <a href="/guild/${guildId}/staff-list" class="hub-item" data-search="staff list staff team members roles">
+          <div class="hub-item-icon" style="background:rgba(129,140,248,0.12);color:#818cf8;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+          </div>
+          <div class="hub-item-body">
+            <div class="hub-item-title">Staff List</div>
+            <div class="hub-item-desc">Display your server staff team with roles and contact info</div>
+          </div>
+          <svg class="hub-item-chevron" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<nav class="hub-tabs">[tabs]</nav>
+
+<script src="/sidebar.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.hub-tab[href]').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        var href = link.getAttribute('href');
+        if (window.__razorNavigate) window.__razorNavigate(href);
+        else location.href = href;
+      });
+    });
+
+    var searchInput = document.querySelector('.hub-search-input');
+    var searchClear = document.querySelector('.hub-search-clear');
+    var searchCount = document.querySelector('.hub-search-count');
+    if (!searchInput) return;
+
+    function filterFeatures() {
+      var q = searchInput.value.toLowerCase().trim();
+      var items = document.querySelectorAll('.hub-item');
+      var sections = document.querySelectorAll('.hub-section');
+      var visibleCount = 0;
+
+      items.forEach(function(item) {
+        var terms = item.getAttribute('data-search') || item.textContent.toLowerCase();
+        var match = !q || terms.indexOf(q) !== -1;
+        item.classList.toggle('hub-item-hidden', !match);
+        if (match) visibleCount++;
+      });
+
+      sections.forEach(function(sec) {
+        var visibleItems = sec.querySelectorAll('.hub-item:not(.hub-item-hidden)').length;
+        sec.classList.toggle('hub-section-hidden', visibleItems === 0);
+      });
+      document.querySelectorAll('.hub-section-header').forEach(function(hdr) {
+        var sec = hdr.closest('.hub-section');
+        hdr.classList.toggle('hub-section-hidden', sec && sec.classList.contains('hub-section-hidden'));
+      });
+
+      if (q) {
+        searchCount.textContent = visibleCount + ' feature' + (visibleCount !== 1 ? 's' : '') + ' found';
+        searchCount.classList.add('is-visible');
+        searchClear.classList.add('is-visible');
+      } else {
+        searchCount.classList.remove('is-visible');
+        searchClear.classList.remove('is-visible');
+      }
+    }
+
+    searchInput.addEventListener('input', filterFeatures);
+    searchClear.addEventListener('click', function() {
+      searchInput.value = '';
+      filterFeatures();
+      searchInput.focus();
+    });
+  });
+</script>
+
+</body>
+</html>

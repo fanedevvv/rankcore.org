@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Moderation</title>
+  
+  <link rel="icon" type="image/png" href="/logo.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <script>
+    const tailwind = window.tailwind || {}; tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { 
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'] 
+          },
+colors: { 
+    razor: "#FF3333",       // main green highlight
+    razorDark: "#CC2222",   // darker green accent
+    success: "#10B981",     // keep same green for success
+    danger: "#EF4444"       // keep red for danger/errors
+}
+
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #6C53FF; }
+
+    /* Toggle Switch */
+    .toggle-checkbox:checked { transform: translateX(100%); border-color: white; }
+    .toggle-checkbox:checked + .toggle-label { background-color: #6C53FF; box-shadow: 0 0 15px rgba(108, 83, 255, 0.4); }
+    .toggle-checkbox { right: auto; left: 2px; top: 2px; z-index: 10; border: none; transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); }
+    .toggle-label { width: 44px; height: 24px; border-radius: 9999px; background-color: #2b2b40; transition: background-color 0.3s ease-in-out, box-shadow 0.3s; border: 1px solid rgba(255,255,255,0.1); }
+    
+    /* Input Focus Glow */
+    .input-glow:focus { box-shadow: 0 0 0 2px rgba(108, 83, 255, 0.3); border-color: #6C53FF; }
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body class="bg-[#0b0b14] text-white">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<div id="toast" class="fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-x-[400px] transition-transform duration-300 z-50">
+  <span id="toastMessage"></span>
+</div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+
+  <main class="flex-1 p-8">
+    
+    <div class="mb-8 flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight mb-1 flex items-center gap-3">
+          <svg class="w-8 h-8 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          Security Center
+        </h1>
+        <p class="text-gray-400 text-sm ml-11">Configure automated protection rules and content filters.</p>
+      </div>
+      <div class="flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full">
+        <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+        <span class="text-xs font-bold text-red-500 uppercase tracking-wider">Systems Active</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      
+      <div class="bg-[#1a1a2e] rounded-2xl p-6 border border-white/5 relative overflow-hidden group hover:border-razor/30 transition-all">
+        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+          <svg class="w-24 h-24 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+        </div>
+        <div class="relative z-10">
+          <div class="w-12 h-12 bg-razor/10 rounded-xl flex items-center justify-center text-razor mb-4 border border-razor/20">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          </div>
+          <h3 class="font-bold text-white text-lg">Profanity Filter</h3>
+          <p class="text-sm text-gray-400 mt-1 mb-6 h-10">Automatically blocks common slurs, swear words, and toxic language.</p>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Status</span>
+            <div class="relative inline-block w-[44px] align-middle select-none">
+                <input type="checkbox" id="toggle-profanity" onchange="toggleRule('profanity')" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white appearance-none cursor-pointer"/>
+                <label for="toggle-profanity" class="toggle-label block overflow-hidden cursor-pointer"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-[#1a1a2e] rounded-2xl p-6 border border-white/5 relative overflow-hidden group hover:border-yellow-500/30 transition-all">
+        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+          <svg class="w-24 h-24 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <div class="relative z-10">
+          <div class="w-12 h-12 bg-yellow-500/10 rounded-xl flex items-center justify-center text-yellow-500 mb-4 border border-yellow-500/20">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+          </div>
+          <h3 class="font-bold text-white text-lg">Spam Filter</h3>
+          <p class="text-sm text-gray-400 mt-1 mb-6 h-10">Detects and blocks repeated text, copy-pastas, and rapid messaging.</p>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Status</span>
+            <div class="relative inline-block w-[44px] align-middle select-none">
+                <input type="checkbox" id="toggle-spam" onchange="toggleRule('spam')" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white appearance-none cursor-pointer"/>
+                <label for="toggle-spam" class="toggle-label block overflow-hidden cursor-pointer"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-[#1a1a2e] rounded-2xl p-6 border border-white/5 relative overflow-hidden group hover:border-blue-500/30 transition-all">
+        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+          <svg class="w-24 h-24 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+        </div>
+        <div class="relative z-10">
+          <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500 mb-4 border border-blue-500/20">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+          </div>
+          <h3 class="font-bold text-white text-lg">Anti-Link System</h3>
+          <p class="text-sm text-gray-400 mt-1 mb-6 h-10">Blocks unauthorized links including Discord invites and phishing sites.</p>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Status</span>
+            <div class="relative inline-block w-[44px] align-middle select-none">
+                <input type="checkbox" id="toggle-antilink" onchange="toggleRule('antilink')" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white appearance-none cursor-pointer"/>
+                <label for="toggle-antilink" class="toggle-label block overflow-hidden cursor-pointer"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        
+        <div class="bg-[#1a1a2e] rounded-2xl border border-white/5 overflow-hidden">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+                <h2 class="text-lg font-bold flex items-center gap-2">
+                    <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+                    Mention Spam
+                </h2>
+                <button onclick="disableMentionSpam()" class="text-xs font-bold text-red-400 hover:text-white bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-lg transition-all">DISABLE RULE</button>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-400 text-sm mb-4">Automatically punish users who ping too many people in a single message.</p>
+                <div class="flex gap-4">
+                    <div class="relative flex-1">
+                        <input type="number" id="mentionLimit" class="w-full bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 text-sm input-glow outline-none text-white placeholder-gray-600 transition-all font-mono" placeholder="Max Mentions (e.g. 5)">
+                    </div>
+                    <button onclick="saveMentionSpam()" class="bg-razor hover:bg-razor/80 text-white font-bold px-6 py-2 rounded-xl transition-all shadow-lg shadow-razor/20 text-sm">
+                        Save Limit
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-[#1a1a2e] rounded-2xl border border-white/5 overflow-hidden">
+            <div class="p-6 border-b border-white/5 bg-white/[0.02]">
+                <h2 class="text-lg font-bold flex items-center gap-2">
+                    <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                    Blocked Keywords
+                </h2>
+            </div>
+
+            <div class="p-6 flex flex-col h-full">
+                <div class="flex gap-4 mb-6">
+                    <div class="relative flex-1">
+                        <input type="text" id="keywordInput" class="w-full bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 text-sm input-glow outline-none text-white placeholder-gray-600 transition-all" placeholder="Enter word to block...">
+                        <div class="absolute right-3 top-3 text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                    </div>
+                    <button onclick="addKeyword()" class="bg-white/10 hover:bg-white/20 text-white font-bold px-6 py-2 rounded-xl transition-all text-sm border border-white/5">
+                        Add Rule
+                    </button>
+                </div>
+
+                <div id="keywordsList" class="flex flex-wrap gap-2 content-start">
+                    <span class="text-gray-500 italic text-sm p-2">Loading rules...</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<div class="mt-6 p-6 bg-[#1a1a2e] border border-white/5 rounded-2xl text-gray-400 text-sm">
+  <h3 class="font-bold text-white text-lg mb-6">How to Change the Automod Log Channel in Discord</h3>
+
+  <div class="space-y-8">
+
+    <!-- Step 1 -->
+    <div class="flex flex-col md:flex-row gap-6 items-start">
+      <img src="https://images.noxxbot.com/blYVzoTmkZX9IGaih044L1WESlwgfqeulHW" alt="Step 1" class="rounded-xl border border-white/10 shadow-md w-full md:w-1/3 max-w-[400px] h-auto object-cover">
+      <div class="md:w-2/3">
+        <p class="font-bold text-white mb-2">Step 1: Open Server Settings → Moderation → Auto Moderation</p>
+        <p>Navigate to your Discord server settings, then select the <strong>Moderation</strong> tab and open <strong>Auto Moderation</strong>.</p>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="flex flex-col md:flex-row gap-6 items-start">
+      <img src="https://images.noxxbot.com/At5zCiX7Y4Tq3EzXP00Weby3lfS6z9fAGcv" alt="Step 2" class="rounded-xl border border-white/10 shadow-md w-full md:w-1/3 max-w-[400px] h-auto object-cover">
+      <div class="md:w-2/3">
+        <p class="font-bold text-white mb-2">Step 2: Click the Rule You Want to Log</p>
+        <p>Select the automod rule you want to track (Keyword Filter, Spam, or Blocked Links).</p>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="flex flex-col md:flex-row gap-6 items-start">
+      <img src="https://images.noxxbot.com/MzokgDdF_hgrevMvXBmqvUp4pTVp3x_F0i7" alt="Step 3" class="rounded-xl border border-white/10 shadow-md w-full md:w-1/3 max-w-[400px] h-auto object-cover">
+      <div class="md:w-2/3">
+        <p class="font-bold text-white mb-2">Step 3: Select the Log Channel</p>
+        <p>Scroll down to the <strong>Audit Log Channel</strong> option and choose the text channel where you want automod actions to appear.</p>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="flex flex-col md:flex-row gap-6 items-start">
+      <img src="https://images.noxxbot.com/BzzgYZpwNKNzLs2fX-23YHWTEZoUvaXCD_Q" alt="Step 4" class="rounded-xl border border-white/10 shadow-md w-full md:w-1/3 max-w-[400px] h-auto object-cover">
+      <div class="md:w-2/3">
+        <p class="font-bold text-white mb-2">Step 4: Save Changes</p>
+        <p>Click <strong>Save Changes</strong> to apply the new log channel.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="mt-6 text-gray-500 text-xs italic">Tip: Make sure your bot has <strong>View Channel</strong> and <strong>Send Messages</strong> permissions in the selected channel.</p>
+</div>
+
+
+
+
+  </main>
+</div>
+
+<script src="/sidebar.js"></script>
+<script>
+const guildId = location.pathname.split("/")[2];
+
+/* TOAST */
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  const msg = document.getElementById('toastMessage');
+  msg.innerText = message;
+  toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 z-50 text-white ${type === 'error' ? 'bg-red-600' : 'bg-red-600'}`;
+  toast.style.transform = 'translateX(0)';
+  setTimeout(() => toast.style.transform = 'translateX(400px)', 3000);
+}
+
+/* FETCH STATUS */
+async function loadStatus() {
+  try {
+    const res = await fetch(`/api/guild/${guildId}/automod`);
+    const data = await res.json();
+    if (!res.ok) {
+      showToast(data.error || 'Failed to load AutoMod settings', 'error');
+      const box = document.getElementById('keywordsList');
+      box.textContent = data.error || 'Failed to load AutoMod settings.';
+      box.className += ' text-red-400 text-sm';
+      return;
+    }
+
+    // Existing toggles
+    document.getElementById('toggle-profanity').checked = data.profanity;
+    document.getElementById('toggle-spam').checked = data.spam;
+    document.getElementById('toggle-antilink').checked = data.antilink;
+
+    // Mention Spam
+    if (data.mentionSpam.enabled) document.getElementById('mentionLimit').value = data.mentionSpam.limit;
+
+    // Keywords
+    const container = document.getElementById('keywordsList');
+    if (data.keywords.length === 0) {
+      container.innerHTML = '<div class="w-full text-center py-4 border-2 border-dashed border-white/5 rounded-xl text-gray-500 text-sm">No keyword rules active. Add one above.</div>';
+    } else {
+      const escKw = v => String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      container.innerHTML = data.keywords.map(k => `
+        <div class="group flex items-center gap-2 pl-3 pr-2 py-1.5 bg-[#0b0b14] border border-white/10 rounded-lg text-sm text-gray-300 shadow-sm hover:border-razor/50 transition-colors">
+          <span class="font-mono text-razor">#</span>
+          <span>${escKw(k)}</span>
+          <button data-keyword="${escKw(k)}" onclick="deleteKeyword(this.dataset.keyword)" class="ml-1 p-1 hover:bg-red-500/20 hover:text-red-400 rounded-md transition-colors opacity-0 group-hover:opacity-100">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // Prefill log channel
+    if (data.logChannel) document.getElementById('logChannelInput').value = data.logChannel;
+
+  } catch (e) { console.error(e); }
+}
+
+async function loadChannels() {
+  try {
+    const res = await fetch(`/api/guild/${guildId}/channels`);
+    const data = await res.json();
+    const select = document.getElementById('logChannelSelect');
+    rzrPopulateChannels(select, data, null, 'Select a channel');
+
+    // Preselect current log channel if any
+    const automodDataRes = await fetch(`/api/guild/${guildId}/automod`);
+    const automodData = await automodDataRes.json();
+    if (automodData.logChannel) select.value = automodData.logChannel;
+
+  } catch(e) { 
+    console.error(e);
+    document.getElementById('logChannelSelect').innerHTML = '<option value="">Failed to load channels</option>';
+  }
+}
+
+// Save selected log channel
+async function saveLogChannel() {
+  const channelId = document.getElementById('logChannelSelect').value;
+  if (!channelId) return showToast('Select a channel', 'error');
+
+  try {
+    const res = await fetch(`/api/guild/${guildId}/automod/logchannel`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ channelId })
+    });
+    if (res.ok) showToast('Log channel saved');
+    else showToast('Failed to save log channel', 'error');
+  } catch(e) { showToast('Connection error', 'error'); }
+}
+
+
+
+/* ACTIONS */
+async function toggleRule(type) {
+  const checkbox = document.getElementById(`toggle-${type}`);
+  const enabled = checkbox.checked;
+  
+  try {
+    const res = await fetch(`/api/guild/${guildId}/automod/toggle`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, enabled })
+    });
+    
+    if (res.ok) showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} ${enabled ? 'Enabled' : 'Disabled'}`);
+    else {
+      checkbox.checked = !enabled;
+      showToast((await res.json().catch(() => ({}))).error || 'Failed to update rule', 'error');
+    }
+  } catch (e) {
+    checkbox.checked = !enabled;
+    showToast('Connection error', 'error');
+  }
+}
+
+async function saveMentionSpam() {
+  const limit = document.getElementById('mentionLimit').value;
+  if (!limit) return showToast('Please enter a limit', 'error');
+
+  try {
+    const res = await fetch(`/api/guild/${guildId}/automod/mention`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ limit: parseInt(limit) })
+    });
+    if (res.ok) showToast('Mention limit saved');
+    else showToast((await res.json().catch(() => ({}))).error || 'Failed to save', 'error');
+  } catch(e) { showToast('Connection error', 'error'); }
+}
+
+async function disableMentionSpam() {
+  if(!confirm("Disable mention spam protection?")) return;
+  try {
+    const res = await fetch(`/api/guild/${guildId}/automod/mention`, { method: 'DELETE' });
+    if (res.ok) {
+      document.getElementById('mentionLimit').value = '';
+      showToast('Rule disabled');
+    }
+  } catch(e) { showToast('Connection error', 'error'); }
+}
+
+async function addKeyword() {
+  const word = document.getElementById('keywordInput').value.trim();
+  if (!word) return showToast('Enter a word', 'error');
+
+  try {
+    const res = await fetch(`/api/guild/${guildId}/automod/keyword`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ word })
+    });
+
+    if (res.ok) {
+      document.getElementById('keywordInput').value = '';
+      showToast(`Blocked: ${word}`);
+      loadStatus(); 
+    } else {
+        showToast((await res.json().catch(() => ({}))).error || 'Failed to add rule', 'error');
+    }
+  } catch(e) { showToast('Connection error', 'error'); }
+}
+
+async function deleteKeyword(word) {
+  if(!confirm(`Unblock word: "${word}"?`)) return;
+  try {
+    const res = await fetch(`/api/guild/${guildId}/automod/keyword`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ word })
+    });
+    if (res.ok) {
+      showToast('Rule removed');
+      loadStatus();
+    }
+  } catch(e) { showToast('Connection error', 'error'); }
+}
+
+loadStatus();
+loadChannels();
+</script>
+
+</body>
+</html>

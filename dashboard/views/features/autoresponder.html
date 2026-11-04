@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autoresponders</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <script>
+    const tailwind = window.tailwind || {}; tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { razor:"#FF3333" } } }
+    };
+  </script>
+  <style>
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:#0b0b14}
+    ::-webkit-scrollbar-thumb{background:#2d2d3d;border-radius:4px}
+    ::-webkit-scrollbar-thumb:hover{background:#6C53FF}
+
+    .tog-wrap{position:relative;display:inline-flex;align-items:center;cursor:pointer}
+    .tog-input{opacity:0;width:0;height:0;position:absolute}
+    .tog-track{width:40px;height:22px;border-radius:9999px;background:#2b2b40;border:1px solid rgba(255,255,255,.1);transition:background .2s;flex-shrink:0}
+    .tog-thumb{position:absolute;left:3px;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s}
+    .tog-input:checked~.tog-track{background:#6C53FF}
+    .tog-input:checked~.tog-thumb{transform:translateX(18px)}
+
+    .etab{padding:4px 11px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;color:#9ca3af;transition:all .15s}
+    .etab.active{background:#6C53FF22;color:#6C53FF}
+    .etab:hover:not(.active){color:#d1d5db}
+
+    .msg-type-btn{padding:6px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.1);transition:all .15s;color:#9ca3af}
+    .msg-type-btn.active{background:#5865f2;color:#fff;border-color:#5865f2}
+    .msg-type-btn:hover:not(.active){color:#fff;background:rgba(255,255,255,.06)}
+
+    /* Discord preview */
+    .dsc-msg{display:flex;gap:16px;padding:4px 16px}
+    .dsc-avatar{width:40px;height:40px;border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:18px}
+    .dsc-body{flex:1;min-width:0}
+    .dsc-username{font-weight:700;color:#fff;font-size:15px}
+    .dsc-tag{color:#6C53FF;font-size:10px;font-weight:700;background:#6C53FF22;padding:1px 5px;border-radius:4px;margin-left:6px;vertical-align:middle}
+    .dsc-text{color:#dcddde;font-size:15px;margin-top:2px;line-height:1.375;word-break:break-word;white-space:pre-wrap}
+    .dsc-embed{border-left:4px solid #6C53FF;background:#2b2d31;border-radius:0 4px 4px 0;padding:12px 16px;margin-top:6px;max-width:520px;overflow:hidden}
+    .dsc-embed-title{color:#fff;font-size:15px;font-weight:700;margin-bottom:4px}
+    .dsc-embed-desc{color:#dcddde;font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+    .dsc-embed-author{display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:13px;font-weight:600;color:#fff}
+    .dsc-embed-author img{width:20px;height:20px;border-radius:50%}
+    .dsc-embed-fields{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .dsc-embed-field-name{color:#fff;font-size:13px;font-weight:700;margin-bottom:2px}
+    .dsc-embed-field-value{color:#dcddde;font-size:13px}
+    .dsc-embed-image{width:100%;border-radius:4px;margin-top:10px;object-fit:cover;display:block}
+    .dsc-embed-thumbnail{float:right;width:72px;height:72px;border-radius:4px;margin-left:14px;object-fit:cover}
+    .dsc-embed-footer{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;color:#72767d;clear:both}
+    .dsc-embed-footer img{width:14px;height:14px;border-radius:50%}
+    .dsc-reply{display:flex;align-items:center;gap:6px;margin-bottom:2px;padding-left:56px;font-size:12px;color:#72767d}
+    .dsc-reply::before{content:'';display:inline-block;width:26px;height:10px;border-top:2px solid #4f545c;border-left:2px solid #4f545c;border-radius:8px 0 0 0;margin-right:4px;flex-shrink:0}
+    .dsc-v2-text{color:#dcddde;font-size:14px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+    .dsc-v2-sep{border:none;border-top:1px solid rgba(255,255,255,.08);margin:8px 0}
+    .dsc-v2-section{display:flex;align-items:center;gap:12px;background:#2b2d31;border-radius:10px;padding:10px 14px;margin-top:4px}
+    .dsc-v2-btn-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+    .dsc-v2-btn{padding:6px 16px;border-radius:4px;font-size:13px;font-weight:600;cursor:default}
+    .dsc-v2-gallery-1 img{width:100%;max-height:180px;object-fit:cover;border-radius:10px}
+    .dsc-v2-gallery-2{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+    .dsc-v2-gallery-2 img,.dsc-v2-gallery-n img{width:100%;height:90px;object-fit:cover;border-radius:4px}
+    .dsc-v2-gallery-n{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+    .dsc-container{border-left:4px solid var(--c,#5865f2);background:#2b2d31;border-radius:4px;padding:10px 14px;margin-top:4px}
+
+    .tag-chip{font-size:10px;background:rgba(255,255,255,.06);padding:2px 7px;border-radius:6px;color:#9ca3af;font-family:monospace;cursor:pointer;transition:all .15s;border:1px solid transparent}
+    .tag-chip:hover{color:#fff;border-color:rgba(108,83,255,.5)}
+
+    .comp-block{background:#14142b;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;position:relative;margin-bottom:8px}
+    .comp-block:hover .rm-btn{opacity:1}
+    .rm-btn{opacity:0;transition:opacity .15s;font-size:11px;color:#f87171;cursor:pointer;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);padding:2px 8px;border-radius:6px}
+    .rm-btn:hover{background:rgba(248,113,113,.2)}
+
+    .btn-style-1{background:#5865f2;color:#fff}
+    .btn-style-2{background:#4e5058;color:#fff}
+    .btn-style-3{background:#248046;color:#fff}
+    .btn-style-4{background:#da373c;color:#fff}
+    .btn-style-5{background:#4e5058;color:#fff}
+
+    #editPanel{transition:transform .25s cubic-bezier(.4,0,.2,1)}
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body class="bg-[#0b0b14] text-white font-sans">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<div id="toast" class="fixed top-4 right-4 px-5 py-3 rounded-xl shadow-xl transform translate-x-[420px] transition-transform duration-300 z-[60] text-sm font-semibold">
+  <span id="toastMsg"></span>
+</div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+
+  <main class="flex-1 p-6 max-w-6xl mx-auto">
+
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold tracking-tight mb-1">Autoresponders</h1>
+      <p class="text-gray-400 text-sm">Automatically respond to triggers — supports plain text, rich embeds, V2 components & buttons.</p>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-[1fr_420px] gap-5">
+
+      <!-- LEFT: Builder -->
+      <div class="space-y-4">
+
+        <!-- Trigger -->
+        <div class="bg-[#1a1a2e] rounded-2xl p-5 border border-white/5">
+          <h2 class="text-sm font-bold mb-3 flex items-center gap-2">
+            <span class="w-1 h-4 bg-razor rounded-full"></span>Trigger
+          </h2>
+          <input id="trigger" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-razor text-white" placeholder="e.g. hello, !help, support" oninput="updatePreview()">
+          <p class="text-xs text-gray-500 mt-1.5">Bot will respond when a message <em>contains</em> this text (case-insensitive).</p>
+        </div>
+
+        <!-- Message Type Selector -->
+        <div class="bg-[#1a1a2e] rounded-2xl p-5 border border-white/5">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-bold flex items-center gap-2">
+              <span class="w-1 h-4 bg-[#5865f2] rounded-full"></span>Message Type
+            </h2>
+          </div>
+          <div class="flex gap-2 flex-wrap">
+            <button class="msg-type-btn active" data-type="text" onclick="setMsgType('text')">📝 Text</button>
+            <button class="msg-type-btn" data-type="embed" onclick="setMsgType('embed')">📋 Embed (V1)</button>
+            <button class="msg-type-btn" data-type="v2" onclick="setMsgType('v2')">✨ Components (V2)</button>
+          </div>
+        </div>
+
+        <!-- TEXT PANEL -->
+        <div id="panel-text" class="bg-[#1a1a2e] rounded-2xl p-5 border border-white/5">
+          <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Response Text</label>
+          <textarea id="response" rows="3" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-razor text-white" placeholder="Hello {user}! How can I help?" oninput="updatePreview()"></textarea>
+          <div class="flex gap-2 mt-2">
+            <span class="tag-chip" onclick="insertTag('{user}','response')">{user}</span>
+            <span class="tag-chip" onclick="insertTag('{username}','response')">{username}</span>
+            <span class="tag-chip" onclick="insertTag('{server}','response')">{server}</span>
+          </div>
+
+          <!-- Buttons on text response -->
+          <div class="mt-4 pt-4 border-t border-white/5">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Action Buttons</span>
+              <button onclick="addTextButton()" class="text-xs px-3 py-1 bg-[#5865f222] text-[#5865f2] hover:bg-[#5865f244] border border-[#5865f233] rounded-lg font-semibold transition-colors">+ Add Button</button>
+            </div>
+            <div id="textButtonsList" class="space-y-2">
+              <p id="textBtnsEmpty" class="text-xs text-gray-600 italic">No buttons. Buttons show below the message.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- EMBED PANEL (V1) -->
+        <div id="panel-embed" class="hidden bg-[#1a1a2e] rounded-2xl p-5 border border-white/5 space-y-4">
+          <!-- Plain text optional -->
+          <div>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Plain Text <span class="font-normal text-gray-500 normal-case">(above embed, optional)</span></label>
+            <input id="embedPlainText" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-razor text-white" placeholder="Optional text above embed" oninput="updatePreview()">
+          </div>
+          <div class="flex gap-1 flex-wrap" id="embedTabs">
+            <span class="etab active" data-tab="general" onclick="switchTab('general')">General</span>
+            <span class="etab" data-tab="author"  onclick="switchTab('author')">Author</span>
+            <span class="etab" data-tab="media"   onclick="switchTab('media')">Images</span>
+            <span class="etab" data-tab="footer"  onclick="switchTab('footer')">Footer</span>
+            <span class="etab" data-tab="fields"  onclick="switchTab('fields')">Fields</span>
+            <span class="etab" data-tab="ebuttons" onclick="switchTab('ebuttons')">Buttons</span>
+          </div>
+
+          <div id="tab-general" class="tab-panel space-y-3">
+            <div class="flex gap-3 items-end">
+              <div class="flex-1">
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Title</label>
+                <input id="embedTitle" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="Embed title" oninput="updatePreview()">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Color</label>
+                <input type="color" id="embedColor" value="#6C53FF" class="h-10 w-14 rounded-lg border border-white/10 bg-[#14142b]" oninput="updatePreview()">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Description</label>
+              <textarea id="embedDescription" rows="4" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="Embed body text..." oninput="updatePreview()"></textarea>
+              <div class="flex gap-2 mt-2">
+                <span class="tag-chip" onclick="insertTag('{user}','embedDescription')">{user}</span>
+                <span class="tag-chip" onclick="insertTag('{username}','embedDescription')">{username}</span>
+                <span class="tag-chip" onclick="insertTag('{server}','embedDescription')">{server}</span>
+              </div>
+            </div>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <label class="tog-wrap">
+                <input type="checkbox" id="embedTimestamp" class="tog-input" onchange="updatePreview()">
+                <span class="tog-track"></span><span class="tog-thumb"></span>
+              </label>
+              <span class="text-sm text-gray-300">Include timestamp</span>
+            </label>
+          </div>
+
+          <div id="tab-author" class="tab-panel hidden space-y-3">
+            <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Author Name</label>
+            <input id="embedAuthorName" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="Author name" oninput="updatePreview()"></div>
+            <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Author Icon URL</label>
+            <input id="embedAuthorIcon" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="https://..." oninput="updatePreview()"></div>
+          </div>
+
+          <div id="tab-media" class="tab-panel hidden space-y-3">
+            <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Thumbnail URL</label>
+            <input id="embedThumbnail" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="https://..." oninput="updatePreview()"></div>
+            <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Large Image URL</label>
+            <input id="embedImage" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="https://..." oninput="updatePreview()"></div>
+          </div>
+
+          <div id="tab-footer" class="tab-panel hidden space-y-3">
+            <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Footer Text</label>
+            <input id="embedFooterText" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="Footer text" oninput="updatePreview()"></div>
+            <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Footer Icon URL</label>
+            <input id="embedFooterIcon" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="https://..." oninput="updatePreview()"></div>
+          </div>
+
+          <div id="tab-fields" class="tab-panel hidden">
+            <div id="fieldsList" class="space-y-2 mb-3"></div>
+            <button onclick="addField()" class="w-full py-2 rounded-xl border border-dashed border-white/20 text-sm text-gray-400 hover:text-white hover:border-[#6C53FF] transition-colors">+ Add Field</button>
+          </div>
+
+          <!-- Embed Buttons tab -->
+          <div id="tab-ebuttons" class="tab-panel hidden">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Action Row Buttons</span>
+              <button onclick="addEmbedButton()" class="text-xs px-3 py-1 bg-[#5865f222] text-[#5865f2] hover:bg-[#5865f244] border border-[#5865f233] rounded-lg font-semibold transition-colors">+ Add Button</button>
+            </div>
+            <div id="embedButtonsList" class="space-y-2">
+              <p id="embedBtnsEmpty" class="text-xs text-gray-600 italic">No buttons added yet.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- V2 PANEL -->
+        <div id="panel-v2" class="hidden bg-[#1a1a2e] rounded-2xl p-5 border border-white/5">
+          <!-- ADD COMPONENT bar -->
+          <div class="mb-3">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Add Component</p>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="addV2Block('text')" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/20 rounded-lg hover:bg-blue-500/20 transition-colors">≡ Text</button>
+              <button onclick="addV2Block('sep')" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-gray-500/10 text-gray-300 border border-gray-500/20 rounded-lg hover:bg-gray-500/20 transition-colors">— Separator</button>
+              <button onclick="addV2Block('section')" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-red-500/10 text-green-300 border border-red-500/20 rounded-lg hover:bg-red-500/20 transition-colors">▦ Section</button>
+              <button onclick="addV2Block('buttons')" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-purple-500/10 text-purple-300 border border-purple-500/20 rounded-lg hover:bg-purple-500/20 transition-colors">⊙ Action Row</button>
+              <button onclick="addV2Block('container')" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded-lg hover:bg-indigo-500/20 transition-colors">◫ Container</button>
+              <button onclick="addV2Block('gallery')" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-pink-500/10 text-pink-300 border border-pink-500/20 rounded-lg hover:bg-pink-500/20 transition-colors">⊞ Gallery</button>
+            </div>
+          </div>
+
+          <div id="v2BlocksContainer" class="space-y-2 min-h-[60px]">
+            <p id="v2EmptyHint" class="text-xs text-gray-600 italic py-4 text-center">No components yet. Click a button above to add one.</p>
+          </div>
+        </div>
+
+        <button onclick="saveResponder()" class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-razor hover:bg-razor/90 shadow-lg shadow-razor/20 rounded-xl text-sm font-bold text-black transition-all">
+          💾 Save Autoresponder
+        </button>
+
+      </div><!-- /left -->
+
+      <!-- RIGHT: Preview + List -->
+      <div class="space-y-4">
+
+        <!-- Discord Preview -->
+        <div class="bg-[#313338] rounded-2xl border border-[#1e1f22] overflow-hidden sticky top-4">
+          <div class="px-4 py-2.5 bg-[#2b2d31] border-b border-[#1e1f22] flex items-center gap-2">
+            <span class="text-gray-400 font-bold text-sm">#</span>
+            <span class="text-xs font-bold text-gray-300">preview-channel</span>
+            <span id="prevMsgTypeBadge" class="ml-auto text-[10px] bg-[#5865f222] text-[#5865f2] px-2 py-0.5 rounded font-bold">TEXT</span>
+          </div>
+          <div class="py-3 min-h-[150px] max-h-[400px] overflow-y-auto">
+            <!-- user msg -->
+            <div class="dsc-msg">
+              <div class="dsc-avatar" style="background:linear-gradient(135deg,#5865f2,#eb459e)">👤</div>
+              <div class="dsc-body">
+                <span class="dsc-username">User<span class="dsc-tag">USER</span></span>
+                <div class="dsc-text" id="prevTriggerText">hello</div>
+              </div>
+            </div>
+            <!-- bot reply -->
+            <div>
+              <div class="dsc-reply">
+                <span class="text-gray-200 font-semibold text-xs mr-1">Roco</span>
+                <span class="text-gray-500 truncate text-xs" id="prevReplyQuote">hello</span>
+              </div>
+              <div class="dsc-msg">
+                <div class="dsc-avatar" style="background:linear-gradient(135deg,#FF3333,#6C53FF)">🤖</div>
+                <div class="dsc-body">
+                  <span class="dsc-username">Roco<span class="dsc-tag">BOT</span></span>
+                  <div id="prevContent" class="dsc-text"></div>
+                  <div id="prevEmbed"></div>
+                  <div id="prevV2"></div>
+                  <div id="prevButtons" class="dsc-v2-btn-row mt-1"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Responder List -->
+        <div class="bg-[#1a1a2e] rounded-2xl p-5 border border-white/5">
+          <h2 class="text-sm font-bold mb-3 text-razor flex items-center gap-2">Existing Responders</h2>
+          <div id="responderList" class="space-y-2 max-h-[360px] overflow-y-auto pr-1"></div>
+          <p id="noResponders" class="text-gray-500 text-sm text-center py-5 hidden">No autoresponders yet.</p>
+        </div>
+
+      </div><!-- /right -->
+    </div>
+  </main>
+</div>
+
+<!-- Edit Slide Panel -->
+<div id="editPanel" class="fixed top-0 right-0 h-full w-[520px] bg-[#111120] border-l border-white/5 shadow-2xl flex flex-col z-40 transform translate-x-full overflow-y-auto">
+  <div class="flex items-center justify-between px-6 py-4 border-b border-white/5 sticky top-0 bg-[#111120] z-10">
+    <h2 class="text-base font-semibold text-razor">Edit Responder</h2>
+    <button onclick="closeEditPanel()" class="text-gray-400 hover:text-white text-xl font-bold leading-none">✕</button>
+  </div>
+  <div class="flex-1 p-5 space-y-4">
+    <div>
+      <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Trigger</label>
+      <input id="editTrigger" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-razor text-white" placeholder="Trigger">
+    </div>
+
+    <!-- Edit message type -->
+    <div>
+      <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Message Type</label>
+      <div class="flex gap-2">
+        <button class="msg-type-btn active" data-type="text" onclick="setEditMsgType('text')">📝 Text</button>
+        <button class="msg-type-btn" data-type="embed" onclick="setEditMsgType('embed')">📋 Embed</button>
+        <button class="msg-type-btn" data-type="v2" onclick="setEditMsgType('v2')">✨ V2</button>
+      </div>
+    </div>
+
+    <!-- Edit text panel -->
+    <div id="edit-panel-text">
+      <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Response Text</label>
+      <textarea id="editResponse" rows="3" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-razor text-white" placeholder="Response text"></textarea>
+      <div class="flex gap-2 mt-2">
+        <span class="tag-chip" onclick="insertTag('{user}','editResponse')">{user}</span>
+        <span class="tag-chip" onclick="insertTag('{username}','editResponse')">{username}</span>
+        <span class="tag-chip" onclick="insertTag('{server}','editResponse')">{server}</span>
+      </div>
+      <div class="mt-3 pt-3 border-t border-white/5">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Buttons</span>
+          <button onclick="addEditTextButton()" class="text-xs px-3 py-1 bg-[#5865f222] text-[#5865f2] hover:bg-[#5865f244] border border-[#5865f233] rounded-lg font-semibold transition-colors">+ Button</button>
+        </div>
+        <div id="editTextButtonsList" class="space-y-2">
+          <p id="editTextBtnsEmpty" class="text-xs text-gray-600 italic">No buttons added.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit embed panel -->
+    <div id="edit-panel-embed" class="hidden space-y-3">
+      <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Plain Text (optional)</label>
+      <input id="editEmbedPlainText" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-razor text-white" placeholder="Text above embed"></div>
+
+      <div class="flex gap-1 flex-wrap" id="editEmbedTabs">
+        <span class="etab active" data-tab="egeneral" onclick="switchEditTab('egeneral')">General</span>
+        <span class="etab" data-tab="eauthor" onclick="switchEditTab('eauthor')">Author</span>
+        <span class="etab" data-tab="emedia" onclick="switchEditTab('emedia')">Images</span>
+        <span class="etab" data-tab="efooter" onclick="switchEditTab('efooter')">Footer</span>
+        <span class="etab" data-tab="efields" onclick="switchEditTab('efields')">Fields</span>
+        <span class="etab" data-tab="eebuttons" onclick="switchEditTab('eebuttons')">Buttons</span>
+      </div>
+
+      <div id="etab-egeneral" class="etab-panel space-y-3">
+        <div class="flex gap-3 items-end">
+          <div class="flex-1"><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Title</label>
+          <input id="editEmbedTitle" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="Title"></div>
+          <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Color</label>
+          <input type="color" id="editEmbedColor" value="#6C53FF" class="h-9 w-12 rounded-lg border border-white/10 bg-[#14142b]"></div>
+        </div>
+        <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Description</label>
+        <textarea id="editEmbedDescription" rows="4" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="Description"></textarea>
+        <div class="flex gap-2 mt-2">
+          <span class="tag-chip" onclick="insertTag('{user}','editEmbedDescription')">{user}</span>
+          <span class="tag-chip" onclick="insertTag('{username}','editEmbedDescription')">{username}</span>
+          <span class="tag-chip" onclick="insertTag('{server}','editEmbedDescription')">{server}</span>
+        </div></div>
+        <label class="flex items-center gap-3 cursor-pointer">
+          <label class="tog-wrap"><input type="checkbox" id="editEmbedTimestamp" class="tog-input"><span class="tog-track"></span><span class="tog-thumb"></span></label>
+          <span class="text-sm text-gray-300">Include timestamp</span>
+        </label>
+      </div>
+      <div id="etab-eauthor" class="etab-panel hidden space-y-3">
+        <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Author Name</label><input id="editEmbedAuthorName" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="Author name"></div>
+        <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Author Icon URL</label><input id="editEmbedAuthorIcon" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="https://..."></div>
+      </div>
+      <div id="etab-emedia" class="etab-panel hidden space-y-3">
+        <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Thumbnail URL</label><input id="editEmbedThumbnail" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="https://..."></div>
+        <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Large Image URL</label><input id="editEmbedImage" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="https://..."></div>
+      </div>
+      <div id="etab-efooter" class="etab-panel hidden space-y-3">
+        <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Footer Text</label><input id="editEmbedFooterText" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="Footer text"></div>
+        <div><label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Footer Icon URL</label><input id="editEmbedFooterIcon" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white" placeholder="https://..."></div>
+      </div>
+      <div id="etab-efields" class="etab-panel hidden">
+        <div id="editFieldsList" class="space-y-2 mb-3"></div>
+        <button onclick="addEditField()" class="w-full py-2 rounded-xl border border-dashed border-white/20 text-sm text-gray-400 hover:text-white hover:border-[#6C53FF] transition-colors">+ Add Field</button>
+      </div>
+      <div id="etab-eebuttons" class="etab-panel hidden">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Action Buttons</span>
+          <button onclick="addEditEmbedButton()" class="text-xs px-3 py-1 bg-[#5865f222] text-[#5865f2] hover:bg-[#5865f244] border border-[#5865f233] rounded-lg font-semibold transition-colors">+ Button</button>
+        </div>
+        <div id="editEmbedButtonsList" class="space-y-2"><p id="editEmbedBtnsEmpty" class="text-xs text-gray-600 italic">No buttons.</p></div>
+      </div>
+    </div>
+
+    <!-- Edit V2 panel -->
+    <div id="edit-panel-v2" class="hidden">
+      <p class="text-xs text-gray-500 mb-3">V2 Components (JSON)</p>
+      <textarea id="editV2Json" rows="8" class="w-full bg-[#14142b] border border-white/10 rounded-xl px-4 py-3 text-xs font-mono focus:outline-none focus:border-razor text-red-400" placeholder='[{"type":10,"content":"Hello!"}]'></textarea>
+      <p class="text-xs text-gray-500 mt-1">Paste or edit the V2 components JSON array.</p>
+    </div>
+  </div>
+
+  <div class="px-5 py-4 border-t border-white/5 flex gap-3 sticky bottom-0 bg-[#111120]">
+    <button onclick="saveEditedResponder()" class="flex-1 px-6 py-2.5 bg-razor hover:bg-razor/90 shadow-lg shadow-razor/20 rounded-xl text-sm font-bold text-black transition-all">Save Changes</button>
+    <button onclick="closeEditPanel()" class="px-6 py-2.5 bg-[#2d2d40] hover:bg-[#3d3d50] rounded-xl text-sm font-bold transition-all">Cancel</button>
+  </div>
+</div>
+
+<script src="/sidebar.js"></script>
+<script>
+const guildId = location.pathname.split('/')[2];
+let currentEditId = null;
+let addFields = [];
+let editFieldsData = [];
+let currentMsgType = 'text';
+let editMsgType = 'text';
+let textButtons = [];     // [{label, style, custom_id, url, action}]
+let embedButtons = [];
+let editTextButtons = [];
+let editEmbedButtons = [];
+
+// ── Utils ────────────────────────────────────────────────────────────────────
+function esc(s) { if(s==null)return''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function gv(id) { const e=document.getElementById(id); return e?e.value:''; }
+function gc(id) { const e=document.getElementById(id); return e?e.checked:false; }
+function sv(id,v) { const e=document.getElementById(id); if(e)e.value=v||''; }
+function sc(id,v) { const e=document.getElementById(id); if(e)e.checked=!!v; }
+
+function insertTag(tag, targetId) {
+  const el = document.getElementById(targetId); if (!el) return;
+  const s=el.selectionStart, e=el.selectionEnd;
+  el.value=el.value.substring(0,s)+tag+el.value.substring(e);
+  el.focus(); el.selectionStart=el.selectionEnd=s+tag.length;
+  updatePreview();
+}
+
+function showToast(msg, type='success') {
+  const t=document.getElementById('toast');
+  t.querySelector('#toastMsg').innerText=msg;
+  t.className=`fixed top-4 right-4 px-5 py-3 rounded-xl shadow-xl transform transition-transform duration-300 z-[60] text-sm font-semibold text-white ${type==='error'?'bg-red-600':type==='warn'?'bg-yellow-600':'bg-red-600'}`;
+  t.style.transform='translateX(0)';
+  setTimeout(()=>t.style.transform='translateX(420px)',3000);
+}
+
+// ── Message Type ─────────────────────────────────────────────────────────────
+function setMsgType(type) {
+  currentMsgType = type;
+  document.querySelectorAll('[data-type]').forEach(b => {
+    if (b.closest('#editPanel')) return;
+    b.classList.toggle('active', b.dataset.type === type);
+  });
+  document.getElementById('panel-text').classList.toggle('hidden', type!=='text');
+  document.getElementById('panel-embed').classList.toggle('hidden', type!=='embed');
+  document.getElementById('panel-v2').classList.toggle('hidden', type!=='v2');
+  document.getElementById('prevMsgTypeBadge').textContent = type==='v2'?'V2 COMPONENTS':type.toUpperCase();
+  updatePreview();
+}
+
+function setEditMsgType(type) {
+  editMsgType = type;
+  document.querySelectorAll('#editPanel [data-type]').forEach(b => b.classList.toggle('active', b.dataset.type===type));
+  document.getElementById('edit-panel-text').classList.toggle('hidden', type!=='text');
+  document.getElementById('edit-panel-embed').classList.toggle('hidden', type!=='embed');
+  document.getElementById('edit-panel-v2').classList.toggle('hidden', type!=='v2');
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('#embedTabs .etab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));
+  document.querySelectorAll('#panel-embed .tab-panel').forEach(p=>p.classList.toggle('hidden',p.id!=='tab-'+name));
+}
+function switchEditTab(name) {
+  document.querySelectorAll('#editEmbedTabs .etab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));
+  document.querySelectorAll('#edit-panel-embed .etab-panel').forEach(p=>p.classList.toggle('hidden',p.id!=='etab-'+name));
+}
+
+// ── Button Builder ────────────────────────────────────────────────────────────
+const BTN_STYLE_LABELS = {1:'Primary (Blue)',2:'Secondary (Grey)',3:'Success (Green)',4:'Danger (Red)',5:'Link (URL)'};
+const BTN_STYLE_COLORS = {1:'#5865f2',2:'#4e5058',3:'#248046',4:'#da373c',5:'#4e5058'};
+const BTN_ACTION_LABELS = {none:'No Action',reply:'Reply with message',dm:'DM user',role_add:'Add Role',role_remove:'Remove Role',role_toggle:'Toggle Role'};
+
+function renderBtnEntry(btn, i, prefix) {
+  const isLink = btn.style == 5;
+  const actionOpts = Object.entries(BTN_ACTION_LABELS).map(([v,l])=>`<option value="${v}" ${btn.action?.type===v?'selected':''}>${l}</option>`).join('');
+  const styleOpts = Object.entries(BTN_STYLE_LABELS).map(([v,l])=>`<option value="${v}" ${btn.style==v?'selected':''}>${l}</option>`).join('');
+  const actionDetail = btn.action?.type && btn.action.type!=='none' ? `
+    <div class="mt-2 space-y-1 bg-[#0d0d1f] p-3 rounded-xl border border-white/5">
+      ${btn.action.type==='reply'||btn.action.type==='dm'?`<textarea class="w-full px-3 py-2 text-xs rounded-lg bg-[#14142b] border border-white/10 text-white focus:outline-none focus:border-razor resize-none" rows="2" placeholder="Message content..." onchange="updBtn('${prefix}',${i},'action_content',this.value)">${esc(btn.action.content||'')}</textarea>
+      <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer"><input type="checkbox" ${btn.action.ephemeral?'checked':''} onchange="updBtn('${prefix}',${i},'action_ephemeral',this.checked)" class="accent-[#5865f2]"> Ephemeral (only visible to clicker)</label>` : ''}
+      ${btn.action.type==='role_add'||btn.action.type==='role_remove'||btn.action.type==='role_toggle'?`<input class="w-full px-3 py-2 text-xs rounded-lg bg-[#14142b] border border-white/10 text-white focus:outline-none focus:border-razor" placeholder="Role ID" value="${esc(btn.action.roleId||'')}" onchange="updBtn('${prefix}',${i},'action_roleId',this.value)">` : ''}
+    </div>` : '';
+  return `<div class="comp-block bg-[#0f0f20]" data-btn-idx="${i}">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-xs font-bold text-purple-300">Button ${i+1}</span>
+      <button class="rm-btn" onclick="removeBtn('${prefix}',${i})">Remove</button>
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+      <input class="px-3 py-2 text-xs rounded-lg bg-[#14142b] border border-white/10 text-white focus:outline-none focus:border-razor" placeholder="Label" value="${esc(btn.label||'')}" oninput="updBtn('${prefix}',${i},'label',this.value)">
+      <select class="px-3 py-2 text-xs rounded-lg bg-[#14142b] border border-white/10 text-white focus:outline-none appearance-none" onchange="updBtn('${prefix}',${i},'style',parseInt(this.value));renderButtons('${prefix}')">${styleOpts}</select>
+      ${!isLink?`<input class="col-span-2 px-3 py-2 text-xs rounded-lg bg-[#14142b] border border-white/10 text-white focus:outline-none focus:border-razor" placeholder="Custom ID (e.g. open_ticket)" value="${esc(btn.custom_id||'')}" oninput="updBtn('${prefix}',${i},'custom_id',this.value)">`:`<input class="col-span-2 px-3 py-2 text-xs rounded-lg bg-[#14142b] border border-white/10 text-white focus:outline-none focus:border-razor" placeholder="URL (https://...)" value="${esc(btn.url||'')}" oninput="updBtn('${prefix}',${i},'url',this.value)">`}
+      <input class="px-3 py-2 text-xs rounded-lg bg-[#14142b] border border-white/10 text-white focus:outline-none focus:border-razor" placeholder="Emoji (optional)" value="${esc(btn.emoji||'')}" oninput="updBtn('${prefix}',${i},'emoji',this.value)">
+      <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer px-1"><input type="checkbox" ${btn.disabled?'checked':''} onchange="updBtn('${prefix}',${i},'disabled',this.checked)" class="accent-[#5865f2]"> Disabled</label>
+    </div>
+    ${!isLink?`<div class="mt-2"><select class="w-full px-3 py-2 text-xs rounded-lg bg-[#14142b] border border-white/10 text-white focus:outline-none appearance-none" onchange="updBtn('${prefix}',${i},'action_type',this.value);renderButtons('${prefix}')">${actionOpts}</select>${actionDetail}</div>`:''}
+  </div>`;
+}
+
+function getBtnArr(prefix) {
+  if(prefix==='text-') return textButtons;
+  if(prefix==='embed-') return embedButtons;
+  if(prefix==='edit-text-') return editTextButtons;
+  if(prefix==='edit-embed-') return editEmbedButtons;
+  return [];
+}
+function setBtnArr(prefix, arr) {
+  if(prefix==='text-') textButtons=arr;
+  if(prefix==='embed-') embedButtons=arr;
+  if(prefix==='edit-text-') editTextButtons=arr;
+  if(prefix==='edit-embed-') editEmbedButtons=arr;
+}
+function getListId(prefix) {
+  if(prefix==='text-') return 'textButtonsList';
+  if(prefix==='embed-') return 'embedButtonsList';
+  if(prefix==='edit-text-') return 'editTextButtonsList';
+  if(prefix==='edit-embed-') return 'editEmbedButtonsList';
+}
+function getEmptyId(prefix) {
+  if(prefix==='text-') return 'textBtnsEmpty';
+  if(prefix==='embed-') return 'embedBtnsEmpty';
+  if(prefix==='edit-text-') return 'editTextBtnsEmpty';
+  if(prefix==='edit-embed-') return 'editEmbedBtnsEmpty';
+}
+
+function renderButtons(prefix) {
+  const arr = getBtnArr(prefix);
+  const listEl = document.getElementById(getListId(prefix));
+  const emptyEl = document.getElementById(getEmptyId(prefix));
+  if(!listEl) return;
+  if(!arr.length) { listEl.innerHTML=''; if(emptyEl)emptyEl.style.display=''; return; }
+  if(emptyEl) emptyEl.style.display='none';
+  listEl.innerHTML = arr.map((b,i)=>renderBtnEntry(b,i,prefix)).join('');
+  updatePreview();
+}
+
+function addBtnToArr(prefix) {
+  const arr = getBtnArr(prefix);
+  if(arr.length>=5) return showToast('Max 5 buttons per row','warn');
+  arr.push({label:'Button',style:1,custom_id:`btn_${Math.random().toString(36).slice(2,8)}`,emoji:'',disabled:false,action:{type:'none'}});
+  setBtnArr(prefix, arr);
+  renderButtons(prefix);
+}
+function addTextButton() { addBtnToArr('text-'); }
+function addEmbedButton() { addBtnToArr('embed-'); }
+function addEditTextButton() { addBtnToArr('edit-text-'); }
+function addEditEmbedButton() { addBtnToArr('edit-embed-'); }
+
+function updBtn(prefix, i, field, value) {
+  const arr = getBtnArr(prefix);
+  if(!arr[i]) return;
+  if(field.startsWith('action_')) {
+    if(!arr[i].action) arr[i].action={type:'none'};
+    const aField = field.replace('action_','');
+    if(aField==='type') arr[i].action.type=value;
+    else arr[i].action[aField]=value;
+  } else {
+    arr[i][field]=value;
+  }
+  setBtnArr(prefix,arr);
+  updatePreview();
+}
+
+function removeBtn(prefix, i) {
+  const arr = getBtnArr(prefix);
+  arr.splice(i,1);
+  setBtnArr(prefix,arr);
+  renderButtons(prefix);
+  updatePreview();
+}
+
+// ── Fields ────────────────────────────────────────────────────────────────────
+function renderAddFields() {
+  document.getElementById('fieldsList').innerHTML = addFields.map((f,i)=>`
+    <div class="bg-[#14142b] rounded-xl p-3 border border-white/5 space-y-2">
+      <div class="flex gap-2"><input placeholder="Field name" value="${esc(f.name)}" oninput="addFields[${i}].name=this.value;updatePreview()" class="flex-1 bg-[#0b0b14] border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white">
+      <button onclick="removeAddField(${i})" class="text-red-400 hover:text-red-300 px-2">✕</button></div>
+      <textarea placeholder="Field value" rows="2" oninput="addFields[${i}].value=this.value;updatePreview()" class="w-full bg-[#0b0b14] border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white">${esc(f.value)}</textarea>
+      <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer"><input type="checkbox" ${f.inline?'checked':''} onchange="addFields[${i}].inline=this.checked;updatePreview()" class="accent-[#6C53FF]"> Inline</label>
+    </div>`).join('');
+}
+function addField() { if(addFields.length>=25)return showToast('Max 25 fields','warn'); addFields.push({name:'',value:'',inline:false}); renderAddFields(); }
+function removeAddField(i) { addFields.splice(i,1); renderAddFields(); updatePreview(); }
+
+function renderEditFields() {
+  document.getElementById('editFieldsList').innerHTML = editFieldsData.map((f,i)=>`
+    <div class="bg-[#14142b] rounded-xl p-3 border border-white/5 space-y-2">
+      <div class="flex gap-2"><input placeholder="Field name" value="${esc(f.name)}" oninput="editFieldsData[${i}].name=this.value" class="flex-1 bg-[#0b0b14] border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white">
+      <button onclick="removeEditField(${i})" class="text-red-400 hover:text-red-300 px-2">✕</button></div>
+      <textarea placeholder="Field value" rows="2" oninput="editFieldsData[${i}].value=this.value" class="w-full bg-[#0b0b14] border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white">${esc(f.value)}</textarea>
+      <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer"><input type="checkbox" ${f.inline?'checked':''} onchange="editFieldsData[${i}].inline=this.checked" class="accent-[#6C53FF]"> Inline</label>
+    </div>`).join('');
+}
+function addEditField() { if(editFieldsData.length>=25)return showToast('Max 25 fields','warn'); editFieldsData.push({name:'',value:'',inline:false}); renderEditFields(); }
+function removeEditField(i) { editFieldsData.splice(i,1); renderEditFields(); }
+
+// ── V2 Builder ────────────────────────────────────────────────────────────────
+function addV2Block(type) {
+  document.getElementById('v2EmptyHint')?.classList.add('hidden');
+  const c = document.getElementById('v2BlocksContainer'); if(!c) return;
+
+  const d = document.createElement('div');
+  d.className='comp-block'; d.dataset.type=type;
+
+  if(type==='text') {
+    d.innerHTML=`<div class="flex items-center justify-between mb-2">
+      <span class="text-xs font-bold text-blue-400 uppercase tracking-wide flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-400 inline-block"></span>Text Display <span class="text-[10px] text-gray-500 font-normal normal-case ml-1">type 10</span></span>
+      <button class="rm-btn" onclick="this.closest('[data-type]').remove();document.querySelectorAll('#v2BlocksContainer>.comp-block').length===0&&document.getElementById('v2EmptyHint')?.classList.remove('hidden');updatePreview()">Remove</button>
+    </div>
+    <textarea class="v2-text-content w-full px-3 py-2 text-sm placeholder-gray-600 rounded-lg bg-[#14142b] border border-white/10 text-white focus:border-razor outline-none" rows="3" placeholder="Text content (markdown supported)..." oninput="updatePreview()"></textarea>`;
+  } else if(type==='sep') {
+    d.innerHTML=`<div class="flex items-center justify-between">
+      <span class="text-xs font-bold text-gray-400 uppercase tracking-wide flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-gray-400 inline-block"></span>Separator <span class="text-[10px] text-gray-500 font-normal normal-case ml-1">type 14</span></span>
+      <div class="flex items-center gap-3">
+        <label class="flex items-center gap-1.5 cursor-pointer text-xs text-gray-400"><input type="checkbox" class="v2-sep-divider accent-razor" checked onchange="updatePreview()"> Divider line</label>
+        <select class="v2-sep-spacing text-xs px-2 py-1 rounded-lg bg-[#14142b] border border-white/10 text-white outline-none" onchange="updatePreview()"><option value="1">Small gap</option><option value="2">Large gap</option></select>
+        <button class="rm-btn" onclick="this.closest('[data-type]').remove();updatePreview()">Remove</button>
+      </div>
+    </div>`;
+  } else if(type==='section') {
+    d.innerHTML=`<div class="flex items-center justify-between mb-2">
+      <span class="text-xs font-bold text-red-400 uppercase tracking-wide flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-400 inline-block"></span>Section <span class="text-[10px] text-gray-500 font-normal normal-case ml-1">type 9</span></span>
+      <button class="rm-btn" onclick="this.closest('[data-type]').remove();updatePreview()">Remove</button>
+    </div>
+    <textarea class="v2-section-text w-full px-3 py-2 text-sm placeholder-gray-600 rounded-lg bg-[#14142b] border border-white/10 text-white focus:border-razor outline-none mb-2" rows="2" placeholder="Section text..." oninput="updatePreview()"></textarea>
+    <div class="space-y-1.5">
+      <label class="text-xs text-gray-500 font-semibold uppercase tracking-wide">Accessory</label>
+      <select class="v2-section-accessory w-full text-xs px-3 py-2 rounded-lg bg-[#14142b] border border-white/10 text-white outline-none" onchange="toggleSectionAcc(this)"><option value="">None</option><option value="button">Button</option><option value="thumbnail">Thumbnail</option></select>
+      <div class="v2-section-btn-fields hidden space-y-1.5">
+        <input class="v2-section-acc-label w-full px-3 py-2 text-xs placeholder-gray-600 rounded-lg bg-[#14142b] border border-white/10 text-white focus:border-razor outline-none" placeholder="Button label" oninput="updatePreview()">
+        <input class="v2-section-acc-id w-full px-3 py-2 text-xs placeholder-gray-600 rounded-lg bg-[#14142b] border border-white/10 text-white focus:border-razor outline-none" placeholder="Custom ID" oninput="updatePreview()">
+      </div>
+      <input class="v2-section-acc-url hidden w-full px-3 py-2 text-xs placeholder-gray-600 rounded-lg bg-[#14142b] border border-white/10 text-white focus:border-razor outline-none" placeholder="Thumbnail URL (https://...)" oninput="updatePreview()">
+    </div>`;
+  } else if(type==='container') {
+    d.innerHTML=`<div class="flex items-center justify-between mb-3">
+      <span class="text-xs font-bold text-indigo-400 uppercase tracking-wide flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-indigo-400 inline-block"></span>Container <span class="text-[10px] text-gray-500 font-normal normal-case ml-1">type 17</span></span>
+      <button class="rm-btn" onclick="this.closest('[data-type]').remove();updatePreview()">Remove</button>
+    </div>
+    <div class="flex items-center gap-3 mb-3">
+      <div class="flex-1"><label class="text-xs text-gray-500 uppercase tracking-wide font-semibold block mb-1">Accent Color</label>
+      <div class="flex gap-2 items-center"><input type="color" class="v2-container-color h-8 w-10 rounded-lg border border-white/10 bg-[#14142b]" value="#5865F2" oninput="updatePreview()"><span class="v2-container-color-text text-xs text-gray-400 font-mono">#5865F2</span></div></div>
+      <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer mt-4"><input type="checkbox" class="v2-container-spoiler accent-razor" onchange="updatePreview()"> Spoiler</label>
+    </div>
+    <p class="text-xs text-gray-500 mb-2 uppercase tracking-wide font-semibold">Add inside:</p>
+    <div class="flex flex-wrap gap-1.5 mb-3">
+      <button onclick="addInsideContainer(this,'text')" class="px-2 py-1 text-[11px] font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/20 rounded-md hover:bg-blue-500/20">≡ Text</button>
+      <button onclick="addInsideContainer(this,'sep')" class="px-2 py-1 text-[11px] font-semibold bg-gray-500/10 text-gray-300 border border-gray-500/20 rounded-md hover:bg-gray-500/20">— Sep.</button>
+      <button onclick="addInsideContainer(this,'section')" class="px-2 py-1 text-[11px] font-semibold bg-red-500/10 text-green-300 border border-red-500/20 rounded-md hover:bg-red-500/20">▦ Section</button>
+      <button onclick="addInsideContainer(this,'buttons')" class="px-2 py-1 text-[11px] font-semibold bg-purple-500/10 text-purple-300 border border-purple-500/20 rounded-md hover:bg-purple-500/20">⊙ Action Row</button>
+      <button onclick="addInsideContainer(this,'gallery')" class="px-2 py-1 text-[11px] font-semibold bg-pink-500/10 text-pink-300 border border-pink-500/20 rounded-md hover:bg-pink-500/20">⊞ Gallery</button>
+    </div>
+    <div class="v2-container-inner space-y-2 ml-3 pl-3 border-l-2 border-indigo-500/20"></div>`;
+
+    // Update color hex display
+    d.querySelector('.v2-container-color').addEventListener('input', function() {
+      d.querySelector('.v2-container-color-text').textContent = this.value.toUpperCase();
+    });
+  } else if(type==='gallery') {
+    d.innerHTML=`<div class="flex items-center justify-between mb-2">
+      <span class="text-xs font-bold text-pink-400 uppercase tracking-wide flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-pink-400 inline-block"></span>Gallery <span class="text-[10px] text-gray-500 font-normal normal-case ml-1">max 10</span></span>
+      <div class="flex gap-1.5"><button onclick="addGalleryItem(this)" class="text-xs px-2.5 py-1 bg-pink-500/15 text-pink-300 border border-pink-500/30 rounded-lg hover:bg-pink-500/25">+ Image</button>
+      <button class="rm-btn" onclick="this.closest('[data-type]').remove();updatePreview()">Remove</button></div>
+    </div>
+    <div class="v2-gallery-items space-y-1.5"></div>`;
+  } else if(type==='buttons') {
+    d.innerHTML=`<div class="flex items-center justify-between mb-2">
+      <span class="text-xs font-bold text-purple-400 uppercase tracking-wide flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-400 inline-block"></span>Action Row <span class="text-[10px] text-gray-500 font-normal normal-case ml-1">max 5</span></span>
+      <div class="flex gap-1.5"><button onclick="addV2RowBtn(this)" class="text-xs px-2.5 py-1 bg-purple-500/15 text-purple-300 border border-purple-500/30 rounded-lg hover:bg-purple-500/25">+ Button</button>
+      <button class="rm-btn" onclick="this.closest('[data-type]').remove();updatePreview()">Remove</button></div>
+    </div>
+    <div class="v2-btn-container space-y-2"><p class="v2-btn-empty text-xs text-gray-600 italic">No buttons.</p></div>`;
+  }
+
+  c.appendChild(d); updatePreview();
+}
+
+function toggleSectionAcc(sel) {
+  const block = sel.closest('[data-type]'); if(!block) return;
+  block.querySelector('.v2-section-btn-fields')?.classList.toggle('hidden', sel.value!=='button');
+  block.querySelector('.v2-section-acc-url')?.classList.toggle('hidden', sel.value!=='thumbnail');
+  updatePreview();
+}
+
+function addInsideContainer(btn, type) {
+  const inner = btn.closest('[data-type="container"]')?.querySelector('.v2-container-inner');
+  if(!inner) return;
+  const d = document.createElement('div');
+  d.className='comp-block bg-[#0a0a1e] border-indigo-500/10'; d.dataset.type=type;
+  // Re-use same logic, but scoped inside container
+  if(type==='text') {
+    d.innerHTML=`<div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-blue-300">Text Display</span><button class="rm-btn" onclick="this.closest('[data-type]').remove();updatePreview()">Remove</button></div>
+    <textarea class="v2-text-content w-full px-3 py-2 text-xs placeholder-gray-600 rounded-lg bg-[#14142b] border border-white/10 text-white focus:border-razor outline-none" rows="2" placeholder="Text content..." oninput="updatePreview()"></textarea>`;
+  } else if(type==='sep') {
+    d.innerHTML=`<div class="flex items-center justify-between"><span class="text-xs font-bold text-gray-300">Separator</span>
+    <div class="flex gap-2 items-center"><label class="flex items-center gap-1 text-xs text-gray-400 cursor-pointer"><input type="checkbox" class="v2-sep-divider accent-razor" checked onchange="updatePreview()"> Divider</label>
+    <button class="rm-btn" onclick="this.closest('[data-type]').remove();updatePreview()">Remove</button></div></div>`;
+  } else if(type==='buttons') {
+    d.innerHTML=`<div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-purple-300">Action Row</span>
+    <div class="flex gap-1.5"><button onclick="addV2RowBtn(this)" class="text-xs px-2 py-0.5 bg-purple-500/15 text-purple-300 border border-purple-500/30 rounded hover:bg-purple-500/25">+ Button</button>
+    <button class="rm-btn" onclick="this.closest('[data-type]').remove();updatePreview()">Remove</button></div></div>
+    <div class="v2-btn-container space-y-2"><p class="v2-btn-empty text-xs text-gray-600 italic">No buttons.</p></div>`;
+  } else if(type==='gallery') {
+    d.innerHTML=`<div class="flex items-center justify-between mb-2"><span class="text-xs font-bold text-pink-300">Gallery</span>
+    <div class="flex gap-1.5"><button onclick="addGalleryItem(this)" class="text-xs px-2 py-0.5 bg-pink-500/15 text-pink-300 border border-pink-500/30 rounded hover:bg-pink-500/25">+ Image</button>
+    <button class="rm-btn" onclick="this.closest('[data-type]').remove();updatePreview()">Remove</button></div></div>
+    <div class="v2-gallery-items space-y-1"></div>`;
+  } else if(type==='section') {
+    d.innerHTML=`<div class="flex items-center justify-between mb-1"><span class="text-xs font-bold text-green-300">Section</span><button class="rm-btn" onclick="this.closest('[data-type]').remove();updatePreview()">Remove</button></div>
+    <textarea class="v2-section-text w-full px-3 py-1.5 text-xs placeholder-gray-600 rounded-lg bg-[#14142b] border border-white/10 text-white outline-none" rows="2" placeholder="Section text..." oninput="updatePreview()"></textarea>`;
+  }
+  inner.appendChild(d); updatePreview();
+}
+
+function addGalleryItem(btn) {
+  const cont = btn.closest('[data-type]')?.querySelector('.v2-gallery-items'); if(!cont) return;
+  const count = cont.querySelectorAll('.v2-gallery-entry').length;
+  if(count>=10) return showToast('Max 10 images','warn');
+  const d = document.createElement('div'); d.className='v2-gallery-entry flex gap-2 items-center';
+  d.innerHTML=`<span class="text-xs text-gray-500 w-4 text-right">${count+1}.</span>
+  <input class="v2-gallery-url flex-1 px-3 py-1.5 text-xs placeholder-gray-600 rounded-lg bg-[#14142b] border border-white/10 text-white focus:border-razor outline-none" placeholder="Image URL (https://...)" oninput="updatePreview()">
+  <button onclick="this.closest('.v2-gallery-entry').remove();updatePreview()" class="text-red-400 hover:text-red-300 text-sm px-1 flex-shrink-0">✕</button>`;
+  cont.appendChild(d); updatePreview();
+}
+
+function addV2RowBtn(btn) {
+  const cont = btn.closest('[data-type]')?.querySelector('.v2-btn-container'); if(!cont) return;
+  cont.querySelector('.v2-btn-empty')?.remove();
+  const count = cont.querySelectorAll('.v2-row-btn-entry').length;
+  if(count>=5) return showToast('Max 5 buttons','warn');
+  const d = document.createElement('div'); d.className='v2-row-btn-entry grid grid-cols-2 gap-2 p-3 bg-[#14142b] rounded-xl border border-white/10';
+  const styleOpts = Object.entries(BTN_STYLE_LABELS).map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
+  const actionOpts = Object.entries(BTN_ACTION_LABELS).map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
+  d.innerHTML=`<input class="v2-row-btn-label px-3 py-2 text-xs placeholder-gray-600 rounded-lg bg-[#0f0f20] border border-white/10 text-white focus:border-razor outline-none" placeholder="Label" oninput="updatePreview()">
+  <select class="v2-row-btn-style appearance-none px-3 py-2 text-xs rounded-lg bg-[#0f0f20] border border-white/10 text-white outline-none" onchange="onV2BtnStyleChange(this)">${styleOpts}</select>
+  <div class="v2-btn-id-wrap col-span-2"><input class="v2-row-btn-id w-full px-3 py-2 text-xs placeholder-gray-600 rounded-lg bg-[#0f0f20] border border-white/10 text-white focus:border-razor outline-none" placeholder="Custom ID" oninput="updatePreview()"></div>
+  <div class="v2-btn-url-wrap col-span-2 hidden"><input class="v2-row-btn-url w-full px-3 py-2 text-xs placeholder-gray-600 rounded-lg bg-[#0f0f20] border border-white/10 text-white focus:border-razor outline-none" placeholder="URL (https://...)" oninput="updatePreview()"></div>
+  <input class="v2-row-btn-emoji px-3 py-2 text-xs placeholder-gray-600 rounded-lg bg-[#0f0f20] border border-white/10 text-white focus:border-razor outline-none" placeholder="Emoji (optional)" oninput="updatePreview()">
+  <div class="flex items-center justify-between">
+    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" class="v2-row-btn-disabled accent-razor" onchange="updatePreview()"><span class="text-xs text-gray-400">Disabled</span></label>
+    <button onclick="this.closest('.v2-row-btn-entry').remove();updatePreview()" class="text-xs bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-1 rounded-lg hover:bg-red-500/20">Remove</button>
+  </div>
+  <div class="col-span-2 p-2.5 bg-[#0a0a1a] rounded-xl border border-white/5">
+    <label class="text-xs text-gray-500 font-bold uppercase tracking-wide block mb-1.5">Button Action</label>
+    <select class="v2-row-btn-action w-full px-3 py-2 text-xs rounded-lg bg-[#0f0f20] border border-white/10 text-white outline-none" onchange="onV2ActionChange(this)">${actionOpts}</select>
+    <div class="v2-action-reply-fields hidden mt-2 space-y-1.5">
+      <textarea class="v2-action-reply-content w-full px-3 py-2 text-xs placeholder-gray-600 rounded-lg bg-[#0f0f20] border border-white/10 text-white outline-none resize-none" rows="2" placeholder="Reply message (max 2000)..."></textarea>
+      <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer"><input type="checkbox" class="v2-action-ephemeral accent-razor" checked> Ephemeral</label>
+    </div>
+    <div class="v2-action-role-fields hidden mt-2">
+      <input class="v2-action-role-id w-full px-3 py-2 text-xs placeholder-gray-600 rounded-lg bg-[#0f0f20] border border-white/10 text-white outline-none" placeholder="Role ID">
+    </div>
+  </div>`;
+  cont.appendChild(d); updatePreview();
+}
+
+function onV2BtnStyleChange(sel) {
+  const e = sel.closest('.v2-row-btn-entry'); if(!e) return;
+  const isLink = sel.value==='5';
+  e.querySelector('.v2-btn-id-wrap')?.classList.toggle('hidden', isLink);
+  e.querySelector('.v2-btn-url-wrap')?.classList.toggle('hidden', !isLink);
+  updatePreview();
+}
+
+function onV2ActionChange(sel) {
+  const e = sel.closest('.v2-row-btn-entry'); if(!e) return;
+  const v = sel.value;
+  e.querySelector('.v2-action-reply-fields')?.classList.toggle('hidden', v!=='reply'&&v!=='dm');
+  e.querySelector('.v2-action-role-fields')?.classList.toggle('hidden', !v.startsWith('role_'));
+}
+
+// ── Preview ───────────────────────────────────────────────────────────────────
+const mdToHtml = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
+  .replace(/`(.+?)`/g,'<code class="bg-black/20 px-1 rounded text-xs">$1</code>').replace(/~~(.+?)~~/g,'<s>$1</s>')
+  .replace(/\n/g,'<br>');
+const resolve = s => (s||'').replace(/{user}/g,'@Roco').replace(/{username}/g,'Roco').replace(/{server}/g,'My Server');
+
+function updatePreview() {
+  const trigger = gv('trigger')||'hello';
+  document.getElementById('prevTriggerText').textContent=trigger;
+  document.getElementById('prevReplyQuote').textContent=trigger;
+
+  document.getElementById('prevContent').innerHTML='';
+  document.getElementById('prevEmbed').innerHTML='';
+  document.getElementById('prevV2').innerHTML='';
+  document.getElementById('prevButtons').innerHTML='';
+
+  if(currentMsgType==='text') {
+    const plain = resolve(gv('response'));
+    document.getElementById('prevContent').innerHTML = mdToHtml(plain);
+    renderPreviewButtons(textButtons);
+  } else if(currentMsgType==='embed') {
+    const pt = gv('embedPlainText');
+    if(pt) document.getElementById('prevContent').innerHTML=mdToHtml(resolve(pt));
+    document.getElementById('prevEmbed').innerHTML = buildEmbedPreview();
+    renderPreviewButtons(embedButtons);
+  } else if(currentMsgType==='v2') {
+    document.getElementById('prevV2').innerHTML = buildV2Preview();
+  }
+}
+
+function renderPreviewButtons(btns) {
+  if(!btns||!btns.length) return;
+  const el = document.getElementById('prevButtons');
+  el.innerHTML = btns.filter(b=>b.label).map(b=>{
+    const bg = BTN_STYLE_COLORS[b.style]||'#4e5058';
+    const opacity = b.disabled?'opacity-40':'';
+    return `<button class="dsc-v2-btn ${opacity}" style="background:${bg};color:#fff">${esc(b.emoji||'')}${esc(b.label)}</button>`;
+  }).join('');
+}
+
+function buildEmbedPreview() {
+  const color=gv('embedColor')||'#6C53FF';
+  const title=resolve(gv('embedTitle'));
+  const desc=resolve(gv('embedDescription'));
+  const authorName=resolve(gv('embedAuthorName'));
+  const authorIcon=gv('embedAuthorIcon');
+  const thumbnail=gv('embedThumbnail');
+  const image=gv('embedImage');
+  const footerText=resolve(gv('embedFooterText'));
+  const footerIcon=gv('embedFooterIcon');
+  const ts=gc('embedTimestamp');
+  if(!title&&!desc&&!authorName) return '';
+  let h=`<div class="dsc-embed" style="border-left-color:${esc(color)}">`;
+  if(thumbnail) h+=`<img class="dsc-embed-thumbnail" src="${esc(thumbnail)}" onerror="this.style.display='none'">`;
+  if(authorName) h+=`<div class="dsc-embed-author">${authorIcon?`<img src="${esc(authorIcon)}" onerror="this.style.display='none'">`:''}${esc(authorName)}</div>`;
+  if(title) h+=`<div class="dsc-embed-title">${esc(title)}</div>`;
+  if(desc) h+=`<div class="dsc-embed-desc">${mdToHtml(desc)}</div>`;
+  const vf=addFields.filter(f=>f.name&&f.value);
+  if(vf.length) {
+    h+=`<div class="dsc-embed-fields">`;
+    for(const f of vf) h+=`<div style="${f.inline?'flex:1;min-width:120px':'width:100%'}"><div class="dsc-embed-field-name">${esc(resolve(f.name))}</div><div class="dsc-embed-field-value">${esc(resolve(f.value))}</div></div>`;
+    h+=`</div>`;
+  }
+  if(image) h+=`<img class="dsc-embed-image" src="${esc(image)}" onerror="this.style.display='none'">`;
+  if(footerText||ts) {
+    h+=`<div class="dsc-embed-footer">`;
+    if(footerIcon) h+=`<img src="${esc(footerIcon)}" onerror="this.style.display='none'">`;
+    if(footerText) h+=`<span>${esc(footerText)}</span>`;
+    if(footerText&&ts) h+=`<span>·</span>`;
+    if(ts) h+=`<span>${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>`;
+    h+=`</div>`;
+  }
+  h+=`</div>`;
+  return h;
+}
+
+function buildV2Preview() {
+  const cont = document.getElementById('v2BlocksContainer'); if(!cont) return '';
+  const blocks = cont.querySelectorAll(':scope > .comp-block');
+  return Array.from(blocks).map(b=>renderV2Block(b)).join('');
+}
+
+function renderV2Block(block) {
+  const t = block.dataset.type;
+  if(t==='text') {
+    const txt = block.querySelector('.v2-text-content')?.value||'';
+    return `<div class="dsc-v2-text my-1">${mdToHtml(txt)}</div>`;
+  }
+  if(t==='sep') {
+    const div = block.querySelector('.v2-sep-divider')?.checked;
+    const sp = block.querySelector('.v2-sep-spacing')?.value;
+    return `<div class="${sp==='2'?'my-4':'my-2'}">${div?'<hr class="dsc-v2-sep">':''}</div>`;
+  }
+  if(t==='section') {
+    const txt = block.querySelector('.v2-section-text')?.value||'';
+    const acc = block.querySelector('.v2-section-accessory')?.value;
+    let accHtml='';
+    if(acc==='button') {
+      const lbl=block.querySelector('.v2-section-acc-label')?.value||'Click';
+      accHtml=`<button class="dsc-v2-btn btn-style-1 ml-2 flex-shrink-0">${esc(lbl)}</button>`;
+    } else if(acc==='thumbnail') {
+      const url=block.querySelector('.v2-section-acc-url')?.value;
+      if(url) accHtml=`<img src="${esc(url)}" class="w-14 h-14 rounded-lg object-cover flex-shrink-0" onerror="this.style.display='none'">`;
+    }
+    return `<div class="dsc-v2-section my-1"><div class="flex-1 text-sm text-gray-200">${mdToHtml(txt)}</div>${accHtml}</div>`;
+  }
+  if(t==='gallery') {
+    const items = Array.from(block.querySelectorAll('.v2-gallery-url')).map(i=>i.value).filter(Boolean);
+    if(!items.length) return `<p class="text-xs text-gray-600 italic my-1">Gallery (no images)</p>`;
+    const cls = items.length===1?'dsc-v2-gallery-1':items.length===2?'dsc-v2-gallery-2':'dsc-v2-gallery-n';
+    return `<div class="${cls} my-1.5">${items.map(u=>`<img src="${esc(u)}" onerror="this.style.display='none'">`).join('')}</div>`;
+  }
+  if(t==='buttons') {
+    const btns = Array.from(block.querySelectorAll('.v2-row-btn-entry'));
+    if(!btns.length) return '';
+    return `<div class="dsc-v2-btn-row mt-1">${btns.map(be=>{
+      const style=be.querySelector('.v2-row-btn-style')?.value||'1';
+      const label=be.querySelector('.v2-row-btn-label')?.value||'Button';
+      const emoji=be.querySelector('.v2-row-btn-emoji')?.value||'';
+      const disabled=be.querySelector('.v2-row-btn-disabled')?.checked;
+      return `<button class="dsc-v2-btn btn-style-${style}" style="${disabled?'opacity:.4':''}">${esc(emoji)}${esc(label)}</button>`;
+    }).join('')}</div>`;
+  }
+  if(t==='container') {
+    const color = block.querySelector('.v2-container-color')?.value||'#5865F2';
+    const inner = Array.from(block.querySelectorAll('.v2-container-inner > .comp-block')).map(renderV2Block).join('');
+    return `<div class="dsc-container my-1" style="--c:${color}">${inner||'<p class="text-xs text-gray-600 italic">Empty container</p>'}</div>`;
+  }
+  return '';
+}
+
+// ── Build Payload ─────────────────────────────────────────────────────────────
+function buildV2Payload() {
+  const cont = document.getElementById('v2BlocksContainer'); if(!cont) return [];
+  return Array.from(cont.querySelectorAll(':scope > .comp-block')).map(b=>extractBlockPayload(b)).filter(Boolean);
+}
+
+function extractBlockPayload(block) {
+  const t = block.dataset.type;
+  if(t==='text') return {type:10, content:block.querySelector('.v2-text-content')?.value||''};
+  if(t==='sep') return {type:14, divider:block.querySelector('.v2-sep-divider')?.checked??true, spacing:parseInt(block.querySelector('.v2-sep-spacing')?.value||'1')};
+  if(t==='section') {
+    const acc=block.querySelector('.v2-section-accessory')?.value;
+    const s={type:9,components:[{type:10,content:block.querySelector('.v2-section-text')?.value||''}]};
+    if(acc==='button') s.accessory={type:2,label:block.querySelector('.v2-section-acc-label')?.value||'Click',style:1,custom_id:block.querySelector('.v2-section-acc-id')?.value||`sec_${Math.random().toString(36).slice(2,8)}`};
+    else if(acc==='thumbnail') s.accessory={type:11,media:{url:block.querySelector('.v2-section-acc-url')?.value||''}};
+    return s;
+  }
+  if(t==='gallery') {
+    const items=Array.from(block.querySelectorAll('.v2-gallery-url')).map(i=>({media:{url:i.value}})).filter(i=>i.media.url);
+    return {type:12,items};
+  }
+  if(t==='buttons') {
+    const btns=Array.from(block.querySelectorAll('.v2-row-btn-entry')).map(e=>{
+      const style=parseInt(e.querySelector('.v2-row-btn-style')?.value||'1');
+      const b={type:2,label:e.querySelector('.v2-row-btn-label')?.value||'Button',style,disabled:e.querySelector('.v2-row-btn-disabled')?.checked??false};
+      if(style===5) b.url=e.querySelector('.v2-row-btn-url')?.value||'';
+      else b.custom_id=e.querySelector('.v2-row-btn-id')?.value||`btn_${Math.random().toString(36).slice(2,8)}`;
+      const emoji=e.querySelector('.v2-row-btn-emoji')?.value?.trim();
+      if(emoji) b.emoji={name:emoji};
+      const actionType=e.querySelector('.v2-row-btn-action')?.value;
+      if(actionType&&actionType!=='none') {
+        b._action={type:actionType};
+        if(actionType==='reply'||actionType==='dm') { b._action.content=e.querySelector('.v2-action-reply-content')?.value||''; b._action.ephemeral=e.querySelector('.v2-action-ephemeral')?.checked??true; }
+        if(actionType.startsWith('role_')) b._action.roleId=e.querySelector('.v2-action-role-id')?.value||'';
+      }
+      return b;
+    });
+    return {type:1,components:btns};
+  }
+  if(t==='container') {
+    const color=block.querySelector('.v2-container-color')?.value||'#5865F2';
+    const spoiler=block.querySelector('.v2-container-spoiler')?.checked??false;
+    const inner=Array.from(block.querySelectorAll('.v2-container-inner > .comp-block')).map(extractBlockPayload).filter(Boolean);
+    return {type:17,accent_color:parseInt(color.replace('#',''),16),spoiler,components:inner};
+  }
+  return null;
+}
+
+function buildButtonsPayload(btns) {
+  if(!btns||!btns.length) return undefined;
+  return {type:1, components: btns.filter(b=>b.label).map(b=>{
+    const c={type:2,label:b.label,style:parseInt(b.style)||1,disabled:!!b.disabled};
+    if(parseInt(b.style)===5) c.url=b.url||''; else c.custom_id=b.custom_id||`btn_${Math.random().toString(36).slice(2,8)}`;
+    if(b.emoji) c.emoji={name:b.emoji};
+    if(b.action?.type&&b.action.type!=='none') c._action=b.action;
+    return c;
+  })};
+}
+
+// ── Load List ─────────────────────────────────────────────────────────────────
+async function loadResponders() {
+  const res = await fetch(`/api/guild/${guildId}/autoresponders`);
+  const data = await res.json();
+  const list=document.getElementById('responderList'), none=document.getElementById('noResponders');
+  if(!data.length) { list.innerHTML=''; none.classList.remove('hidden'); return; }
+  none.classList.add('hidden');
+  list.innerHTML = data.map(r=>{
+    const type = r.v2Components?.length?'V2':r.embed?.enabled?'EMBED':'TEXT';
+    const colors={TEXT:'text-gray-400 bg-gray-500/10',EMBED:'text-[#6C53FF] bg-[#6C53FF]/10',V2:'text-[#5865f2] bg-[#5865f2]/10'};
+    const preview = type==='V2'?'V2 Components':type==='EMBED'?(r.embed.title||r.embed.description||'Embed response').slice(0,50):esc((r.response||'').slice(0,60));
+    const hasBtns = r.buttons?.components?.length;
+    return `<div class="flex items-center justify-between bg-[#14142b] p-3 rounded-xl border border-white/5 gap-3">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2">
+          <p class="text-sm text-gray-200 font-bold truncate">${esc(r.trigger)}</p>
+          <span class="text-[10px] px-1.5 py-0.5 rounded font-bold ${colors[type]}">${type}</span>
+          ${hasBtns?`<span class="text-[10px] px-1.5 py-0.5 rounded font-bold text-purple-300 bg-purple-500/10">BUTTONS</span>`:''}
+        </div>
+        <p class="text-xs text-gray-400 truncate mt-0.5">${preview}</p>
+      </div>
+      <div class="flex gap-2 shrink-0">
+        <button onclick='editResponder("${r._id}")' class="text-xs px-3 py-1.5 bg-[#6C53FF22] text-[#6C53FF] hover:bg-[#6C53FF44] rounded-lg font-semibold transition-colors">Edit</button>
+        <button onclick='deleteResponder("${r._id}")' class="text-xs px-3 py-1.5 bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded-lg font-semibold transition-colors">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Save ─────────────────────────────────────────────────────────────────────
+async function saveResponder() {
+  const trigger=gv('trigger').trim();
+  if(!trigger) return showToast('Trigger is required','error');
+
+  let body={trigger};
+
+  if(currentMsgType==='text') {
+    const response=gv('response');
+    if(!response) return showToast('Response text is required','error');
+    body.response=response;
+    body.embed={enabled:false};
+    const btns=buildButtonsPayload(textButtons);
+    if(btns) body.buttons=btns;
+  } else if(currentMsgType==='embed') {
+    const title=gv('embedTitle'), desc=gv('embedDescription');
+    if(!title&&!desc) return showToast('Embed needs a title or description','error');
+    body.response=gv('embedPlainText');
+    body.embed={enabled:true,color:gv('embedColor'),title,description:desc,authorName:gv('embedAuthorName'),authorIcon:gv('embedAuthorIcon'),thumbnail:gv('embedThumbnail'),image:gv('embedImage'),footerText:gv('embedFooterText'),footerIcon:gv('embedFooterIcon'),timestamp:gc('embedTimestamp'),fields:addFields};
+    const btns=buildButtonsPayload(embedButtons);
+    if(btns) body.buttons=btns;
+  } else if(currentMsgType==='v2') {
+    const comps=buildV2Payload();
+    if(!comps.length) return showToast('Add at least one V2 component','error');
+    body.v2Components=comps;
+    body.embed={enabled:false};
+  }
+
+  const res = await fetch(`/api/guild/${guildId}/autoresponders`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const json = await res.json();
+  if(!res.ok) return showToast(json.error||'Failed to save','error');
+
+  showToast('Autoresponder saved!');
+  resetForm();
+  loadResponders();
+}
+
+function resetForm() {
+  ['trigger','response','embedPlainText','embedTitle','embedAuthorName','embedAuthorIcon','embedThumbnail','embedImage','embedFooterText','embedFooterIcon'].forEach(id=>sv(id,''));
+  sv('embedColor','#6C53FF');
+  sc('embedTimestamp',false);
+  addFields=[]; renderAddFields();
+  textButtons=[]; renderButtons('text-');
+  embedButtons=[]; renderButtons('embed-');
+  document.getElementById('v2BlocksContainer').innerHTML='';
+  document.getElementById('v2EmptyHint')?.classList.remove('hidden');
+  setMsgType('text');
+  updatePreview();
+}
+
+// ── Edit Panel ────────────────────────────────────────────────────────────────
+async function editResponder(id) {
+  const res=await fetch(`/api/guild/${guildId}/autoresponders/${id}`);
+  if(!res.ok) return showToast('Could not load responder','error');
+  const d=await res.json();
+  sv('editTrigger',d.trigger);
+
+  // Detect type
+  const type = d.v2Components?.length?'v2':d.embed?.enabled?'embed':'text';
+  setEditMsgType(type);
+
+  if(type==='text') {
+    sv('editResponse',d.response||'');
+    editTextButtons = d.buttons?.components?.map(b=>({label:b.label,style:b.style||1,custom_id:b.custom_id||'',url:b.url||'',emoji:b.emoji?.name||'',disabled:!!b.disabled,action:b._action||{type:'none'}})) || [];
+    renderButtons('edit-text-');
+  } else if(type==='embed') {
+    sv('editEmbedPlainText',d.response||'');
+    const e=d.embed||{};
+    sv('editEmbedTitle',e.title); sv('editEmbedColor',e.color||'#6C53FF'); sv('editEmbedDescription',e.description);
+    sv('editEmbedAuthorName',e.authorName); sv('editEmbedAuthorIcon',e.authorIcon);
+    sv('editEmbedThumbnail',e.thumbnail); sv('editEmbedImage',e.image);
+    sv('editEmbedFooterText',e.footerText); sv('editEmbedFooterIcon',e.footerIcon);
+    sc('editEmbedTimestamp',e.timestamp);
+    editFieldsData=Array.isArray(e.fields)?e.fields.map(f=>({...f})):[];
+    renderEditFields();
+    switchEditTab('egeneral');
+    editEmbedButtons = d.buttons?.components?.map(b=>({label:b.label,style:b.style||1,custom_id:b.custom_id||'',url:b.url||'',emoji:b.emoji?.name||'',disabled:!!b.disabled,action:b._action||{type:'none'}})) || [];
+    renderButtons('edit-embed-');
+  } else if(type==='v2') {
+    sv('editV2Json',JSON.stringify(d.v2Components||[],null,2));
+  }
+
+  currentEditId=id;
+  document.getElementById('editPanel').style.transform='translateX(0)';
+}
+
+function closeEditPanel() {
+  document.getElementById('editPanel').style.transform='translateX(100%)';
+  currentEditId=null;
+}
+
+async function saveEditedResponder() {
+  const trigger=document.getElementById('editTrigger').value.trim();
+  if(!trigger) return showToast('Trigger is required','error');
+
+  let body={trigger};
+
+  if(editMsgType==='text') {
+    body.response=gv('editResponse'); body.embed={enabled:false};
+    const btns=buildButtonsPayload(editTextButtons);
+    if(btns) body.buttons=btns;
+  } else if(editMsgType==='embed') {
+    body.response=gv('editEmbedPlainText');
+    body.embed={enabled:true,color:gv('editEmbedColor'),title:gv('editEmbedTitle'),description:gv('editEmbedDescription'),authorName:gv('editEmbedAuthorName'),authorIcon:gv('editEmbedAuthorIcon'),thumbnail:gv('editEmbedThumbnail'),image:gv('editEmbedImage'),footerText:gv('editEmbedFooterText'),footerIcon:gv('editEmbedFooterIcon'),timestamp:gc('editEmbedTimestamp'),fields:editFieldsData};
+    const btns=buildButtonsPayload(editEmbedButtons);
+    if(btns) body.buttons=btns;
+  } else if(editMsgType==='v2') {
+    try { body.v2Components=JSON.parse(gv('editV2Json')); } catch(e) { return showToast('Invalid V2 JSON','error'); }
+    body.embed={enabled:false};
+  }
+
+  const res=await fetch(`/api/guild/${guildId}/autoresponders/${currentEditId}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const json=await res.json();
+  if(!res.ok) return showToast(json.error||'Failed to update','error');
+  showToast('Updated!'); closeEditPanel(); loadResponders();
+}
+
+async function deleteResponder(id) {
+  if(!confirm('Delete this autoresponder?')) return;
+  const res=await fetch(`/api/guild/${guildId}/autoresponders/${id}`,{method:'DELETE'});
+  if(res.ok) { showToast('Deleted'); loadResponders(); }
+  else showToast('Failed to delete','error');
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+updatePreview();
+loadResponders();
+</script>
+
+</body>
+</html>

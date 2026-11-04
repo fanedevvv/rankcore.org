@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leveling System — Roco</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tailwind.css">
+<style>
+:root{--accent:#6C53FF;--accent-glow:rgba(108,83,255,.22);--accent-soft:rgba(108,83,255,.13);--bg:#0b0b14;--bg-card:#13131f;--bg-card2:#1a1a2e;--border:rgba(255,255,255,.07);--border-accent:rgba(108,83,255,.35);--text:#e8e8f5;--muted:#6b7280;}
+*,*::before,*::after{box-sizing:border-box;}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#2d2d3d;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+#toast{position:fixed;top:1.25rem;right:1.25rem;padding:.8rem 1.4rem;border-radius:.75rem;transform:translateX(500px);transition:transform .3s cubic-bezier(.34,1.56,.64,1);z-index:9999;color:#fff;font-weight:700;font-size:.82rem;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,.6);min-width:200px;display:flex;align-items:center;gap:.5rem;}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;margin:0;}
+.layout{display:flex;min-height:100vh;}
+.main-wrap{flex:1;display:flex;justify-content:center;}
+.main-content{width:100%;max-width:960px;padding:2.5rem 2.5rem 5rem;}
+.page-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;}
+.page-title-group{display:flex;align-items:center;gap:1rem;}
+.page-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--accent-soft);border:1px solid var(--border-accent);}
+.page-title{font-size:1.55rem;font-weight:800;letter-spacing:-.02em;margin:0;}
+.page-subtitle{font-size:.8rem;color:var(--muted);margin:.2rem 0 0;}
+.header-actions{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;}
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem 1.1rem;border-radius:.7rem;font-size:.82rem;font-weight:700;cursor:pointer;border:none;transition:all .15s;font-family:inherit;white-space:nowrap;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 18px var(--accent-glow);}
+.btn-primary:hover{background:#7c68ff;}
+.btn-ghost{background:rgba(255,255,255,.05);color:var(--text);border:1px solid var(--border);}
+.btn-ghost:hover{background:rgba(255,255,255,.09);}
+.btn-danger{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.22);}
+.btn-danger:hover{background:rgba(239,68,68,.2);}
+.btn-sm{padding:.38rem .75rem;font-size:.78rem;}
+.btn-xs{padding:.26rem .6rem;font-size:.72rem;border-radius:.45rem;}
+.btn-add{background:var(--accent-soft);color:#a78bfa;border:1px solid var(--border-accent);}
+.btn-add:hover{background:rgba(108,83,255,.22);}
+.enable-row{display:flex;align-items:center;gap:.6rem;padding:.5rem .9rem;border-radius:.7rem;border:1px solid var(--border);background:rgba(255,255,255,.03);font-size:.82rem;font-weight:600;cursor:pointer;}
+.tabs-bar{display:flex;gap:.25rem;margin-bottom:1.5rem;padding:.3rem;border-radius:.75rem;background:rgba(0,0,0,.3);width:fit-content;flex-wrap:wrap;}
+.tab-btn{padding:.42rem 1rem;border-radius:.55rem;font-size:.78rem;font-weight:700;cursor:pointer;border:1px solid transparent;color:var(--muted);background:transparent;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:.4rem;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{background:var(--bg-card2);border-color:var(--border);color:var(--text);}
+.tab-pane{display:none;}.tab-pane.active{display:block;}
+.card{background:var(--bg-card2);border:1px solid var(--border);border-radius:1rem;padding:1.4rem;}
+.card-title{font-size:.9rem;font-weight:700;margin:0 0 1rem;display:flex;align-items:center;gap:.5rem;}
+.card-title svg{color:var(--accent);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:700px){.grid-2{grid-template-columns:1fr;}}
+.field{margin-bottom:0;}
+.label{display:block;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;}
+.label-note{font-size:.68rem;font-weight:400;color:#4b5563;text-transform:none;margin-left:.3rem;}
+input[type=text],input[type=number],input[type=time],textarea,select{width:100%;background:#0d0d1c;border:1px solid rgba(255,255,255,.1);border-radius:.6rem;padding:.55rem .9rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s;}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
+textarea{resize:vertical;}
+select option{background:#0d0d1c;}
+.mono{font-family:'JetBrains Mono',monospace;}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.tog-wrap{display:inline-block;position:relative;width:44px;height:24px;flex-shrink:0;}
+.tog-cb{opacity:0;width:0;height:0;position:absolute;}
+.tog-track{position:absolute;cursor:pointer;background:#1e1e38;border-radius:9999px;top:0;left:0;right:0;bottom:0;transition:background .25s;border:1px solid rgba(255,255,255,.08);}
+.tog-track::before{content:"";position:absolute;left:2px;top:2px;width:20px;height:20px;border-radius:50%;background:#5a5a80;transition:transform .25s,background .25s;}
+.tog-cb:checked+.tog-track{background:var(--accent);border-color:var(--accent);}
+.tog-cb:checked+.tog-track::before{transform:translateX(20px);background:#fff;}
+.tog-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.75rem 1rem;background:rgba(0,0,0,.18);border-radius:.65rem;border:1px solid var(--border);}
+.tog-row-label h4{font-size:.875rem;font-weight:600;color:var(--text);margin:0;}
+.tog-row-label p{font-size:.72rem;color:var(--muted);margin:.15rem 0 0;}
+.var-pill{display:inline-block;background:var(--accent-soft);color:#a78bfa;border:1px solid var(--border-accent);border-radius:.35rem;padding:.05rem .45rem;font-size:.7rem;font-family:'JetBrains Mono',monospace;margin:1px;cursor:pointer;}
+.var-pill:hover{background:rgba(108,83,255,.25);}
+.item-row{display:flex;align-items:center;gap:.5rem;padding:.55rem .75rem;background:rgba(0,0,0,.2);border-radius:.65rem;border:1px solid var(--border);}
+.item-badge{font-size:.72rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:#a78bfa;min-width:3rem;flex-shrink:0;}
+.item-name{flex:1;font-size:.85rem;color:var(--text);}
+.item-remove{background:none;border:none;cursor:pointer;color:#ef4444;padding:.2rem .35rem;border-radius:.3rem;transition:background .1s;display:flex;align-items:center;}
+.item-remove:hover{background:rgba(239,68,68,.15);}
+.bl-item{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.4rem .75rem;border-radius:.5rem;background:rgba(0,0,0,.2);border:1px solid var(--border);}
+.color-row{display:flex;gap:.5rem;align-items:center;}
+.color-swatch{width:44px;height:38px;border-radius:.5rem;border:1px solid rgba(255,255,255,.1);cursor:pointer;flex-shrink:0;background:transparent;}
+.danger-card{background:var(--bg-card2);border:1px solid rgba(239,68,68,.15);border-radius:1rem;padding:1.4rem;}
+.divider{border:none;border-top:1px solid var(--border);margin:1rem 0;}
+.space-y-3>*+*{margin-top:.75rem;}
+.space-y-4>*+*{margin-top:1rem;}
+/* Razor */
+.rzr-wrap{position:relative;width:100%;display:block;}
+.rzr-wrap-parent.select-wrap::after,.rzr-wrap-parent::after{display:none!important;content:none!important;}
+.rzr-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);background:#0d0d1c;color:#fff;cursor:pointer;font-size:14px;font-family:inherit;min-height:44px;width:100%;transition:border-color .15s,box-shadow .15s;user-select:none;box-sizing:border-box;}
+.rzr-trigger:hover{border-color:rgba(255,255,255,0.22);}
+.rzr-trigger.is-open{border-color:rgba(108,83,255,.6);box-shadow:0 0 0 3px rgba(108,83,255,.12);}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4;}
+.rzr-label.is-ph{color:#6b7280;}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s;}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:var(--accent);}
+.rzr-panel{position:fixed;z-index:999999;background:rgba(11,11,20,.98);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;box-shadow:0 24px 60px rgba(0,0,0,.7);overflow:hidden;animation:rzrIn .16s ease;}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07);}
+.rzr-search-inp{display:block;width:100%;background:#06060f;border:1px solid rgba(255,255,255,.09);border-radius:7px;padding:6px 11px;color:#fff;font-size:13px;font-family:inherit;outline:none;box-sizing:border-box;transition:border-color .15s;}
+.rzr-search-inp:focus{border-color:rgba(108,83,255,.45);}
+.rzr-search-inp::placeholder{color:#374151;}
+.rzr-list{max-height:220px;overflow-y:auto;padding:5px;}
+.rzr-list::-webkit-scrollbar{width:4px;}
+.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:6px;}
+.rzr-list::-webkit-scrollbar-thumb:hover{background:var(--accent);}
+.rzr-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 11px;border-radius:8px;cursor:pointer;font-size:13px;color:#9ca3af;transition:background .1s,color .1s;}
+.rzr-item:hover{background:rgba(255,255,255,.055);color:#fff;}
+.rzr-item.is-sel{background:rgba(108,83,255,.13);color:#a78bfa;font-weight:600;}
+.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:var(--accent);opacity:0;}
+.rzr-item.is-sel .rzr-item-chk{opacity:1;}
+.rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px;}
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<div id="toast"></div>
+<div class="layout">
+  <aside id="razor-sidebar"></aside>
+  <div class="main-wrap">
+    <div class="main-content">
+
+      <!-- Header -->
+      <header class="page-header">
+        <div class="page-title-group">
+          <div class="page-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </div>
+          <div>
+            <h1 class="page-title">&#x2728; Leveling System</h1>
+            <p class="page-subtitle">XP gains, level-up notifications, role rewards, multipliers &amp; restrictions.</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <label class="enable-row">
+            <label class="tog-wrap" style="width:36px;height:20px"><input type="checkbox" id="enabled" class="tog-cb"><span class="tog-track"></span></label>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Enable Leveling
+          </label>
+          <button onclick="saveConfig()" id="saveBtn" class="btn btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Save Changes
+          </button>
+        </div>
+      </header>
+
+      <!-- Tabs -->
+      <div class="tabs-bar">
+        <button class="tab-btn active" onclick="switchTab('general',this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          General
+        </button>
+        <button class="tab-btn" onclick="switchTab('xp',this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          XP Settings
+        </button>
+        <button class="tab-btn" onclick="switchTab('message',this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Level-Up Message
+        </button>
+        <button class="tab-btn" onclick="switchTab('rewards',this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+          Role Rewards
+        </button>
+        <button class="tab-btn" onclick="switchTab('restrictions',this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+          Restrictions
+        </button>
+      </div>
+
+      <!-- TAB: General -->
+      <div id="tab-general" class="tab-pane active">
+        <div class="grid-2">
+          <div class="card space-y-4">
+            <h2 class="card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              &#x1F514; Notification
+            </h2>
+            <div class="field">
+              <label class="label">Notify Mode</label>
+              <select id="notifyMode">
+                <option value="channel">&#x1F4E2; Post in channel</option>
+                <option value="dm">&#x1F4EC; DM the user</option>
+                <option value="both">&#x1F4E1; Both channel + DM</option>
+                <option value="none">&#x1F507; Disabled (silent level-up)</option>
+              </select>
+            </div>
+            <div class="field" id="channelRow">
+              <label class="label">Notification Channel <span class="label-note">blank = same channel as message</span></label>
+              <select id="channelSelect"><option value="">Same channel as message</option></select>
+            </div>
+            <div class="field">
+              <label class="label">Leaderboard Channel <span class="label-note">optional</span></label>
+              <select id="leaderboardChannel"><option value="">None</option></select>
+              <p style="font-size:.72rem;color:var(--muted);margin:.4rem 0 0;display:flex;align-items:center;gap:.3rem;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Auto-updates the top 10 leaderboard in this channel.
+              </p>
+            </div>
+          </div>
+
+          <div class="card space-y-3">
+            <h2 class="card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41M2 12H4m16 0h2M6.34 6.34L4.93 4.93M17.66 17.66l1.41 1.41M12 2v2m0 16v2"/></svg>
+              &#x2699;&#xFE0F; Behaviour
+            </h2>
+            <div class="tog-row">
+              <div class="tog-row-label"><h4>&#x1F514; Ping User on Level-Up</h4><p>Mention them in the message</p></div>
+              <label class="tog-wrap"><input type="checkbox" id="pingOnLevelUp" class="tog-cb" checked><span class="tog-track"></span></label>
+            </div>
+            <div class="tog-row">
+              <div class="tog-row-label"><h4>&#x1F4CA; Show XP Progress Bar</h4><p>Display progress in the embed</p></div>
+              <label class="tog-wrap"><input type="checkbox" id="showProgress" class="tog-cb" checked><span class="tog-track"></span></label>
+            </div>
+            <div class="tog-row">
+              <div class="tog-row-label"><h4>&#x1F3C6; Stack Level Roles</h4><p>Keep all previous level roles (off = replace)</p></div>
+              <label class="tog-wrap"><input type="checkbox" id="stackRoles" class="tog-cb" checked><span class="tog-track"></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: XP Settings -->
+      <div id="tab-xp" class="tab-pane">
+        <div class="grid-2">
+          <div class="card space-y-4">
+            <h2 class="card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              &#x26A1; XP Per Message
+            </h2>
+            <div class="input-row">
+              <div class="field"><label class="label">Min XP</label><input type="number" id="xpMin" value="8" min="1" max="100" class="mono"></div>
+              <div class="field"><label class="label">Max XP</label><input type="number" id="xpMax" value="18" min="1" max="200" class="mono"></div>
+            </div>
+            <div class="field">
+              <label class="label">Cooldown <span class="label-note">seconds between XP gains</span></label>
+              <input type="number" id="cooldown" value="60" min="0" max="3600" class="mono">
+            </div>
+          </div>
+
+          <div class="card space-y-3">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.25rem;">
+              <h2 class="card-title" style="margin-bottom:0;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                &#x1F680; XP Multiplier Roles
+              </h2>
+              <button onclick="addMultiplier()" class="btn btn-add btn-xs">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add
+              </button>
+            </div>
+            <p style="font-size:.72rem;color:var(--muted);">Members with these roles earn boosted XP. Highest multiplier wins.</p>
+            <div id="multiplierList" class="space-y-3"></div>
+            <hr class="divider">
+            <div class="input-row">
+              <div class="field"><label class="label">Role</label><select id="newMultiRole"><option value="">Select role...</option></select></div>
+              <div class="field"><label class="label">Multiplier</label><input type="number" id="newMultiValue" value="2" min="1.1" max="10" step="0.1" class="mono"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Level-Up Message -->
+      <div id="tab-message" class="tab-pane">
+        <div class="grid-2">
+          <div class="card space-y-4">
+            <h2 class="card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              &#x1F4DD; Message Content
+            </h2>
+            <div class="field">
+              <label class="label">Level-Up Message</label>
+              <p style="font-size:.72rem;color:var(--muted);margin:.25rem 0 .5rem;">Variables (click to insert):
+                <span class="var-pill" onclick="insertVar('{user}')">user</span>
+                <span class="var-pill" onclick="insertVar('{username}')">username</span>
+                <span class="var-pill" onclick="insertVar('{level}')">level</span>
+                <span class="var-pill" onclick="insertVar('{xp}')">xp</span>
+                <span class="var-pill" onclick="insertVar('{nextXp}')">nextXp</span>
+                <span class="var-pill" onclick="insertVar('{progress}')">progress%</span>
+                <span class="var-pill" onclick="insertVar('{progressBar}')">progressBar</span>
+                <span class="var-pill" onclick="insertVar('{role}')">role</span>
+                <span class="var-pill" onclick="insertVar('{guild}')">guild</span>
+              </p>
+              <textarea id="levelUpMessage" rows="3">🎉 {user} just reached **Level {level}**!</textarea>
+            </div>
+            <div class="tog-row">
+              <div class="tog-row-label"><h4>&#x1F5BC;&#xFE0F; Use Embed</h4><p>Wrap message in a Discord embed</p></div>
+              <label class="tog-wrap"><input type="checkbox" id="useEmbed" class="tog-cb" checked onchange="toggleEmbedFields()"><span class="tog-track"></span></label>
+            </div>
+          </div>
+
+          <div class="card space-y-4" id="embedFields">
+            <h2 class="card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+              &#x1F3A8; Embed Appearance
+            </h2>
+            <div class="field"><label class="label">Embed Title</label><input type="text" id="embedTitle" value="Level Up!" maxlength="100"></div>
+            <div class="field"><label class="label">Embed Footer</label><input type="text" id="embedFooter" placeholder="Optional footer text" maxlength="200"></div>
+            <div class="field">
+              <label class="label">Embed Colour</label>
+              <div class="color-row">
+                <input type="text" id="embedColorHex" value="#6C53FF" maxlength="7" class="mono" style="flex:1" oninput="syncColorPicker()">
+                <input type="color" id="embedColorPicker" value="#6C53FF" class="color-swatch" oninput="syncColorHex()">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Role Rewards -->
+      <div id="tab-rewards" class="tab-pane">
+        <div class="grid-2">
+          <div class="card space-y-3">
+            <h2 class="card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              &#x1F3C5; Add Reward
+            </h2>
+            <div class="input-row">
+              <div class="field"><label class="label">At Level</label><input type="number" id="rewardLevel" min="1" max="1000" placeholder="e.g. 5" class="mono"></div>
+              <div class="field"><label class="label">Give Role</label><select id="rewardRole"><option value="">Select role...</option></select></div>
+            </div>
+            <button onclick="addReward()" class="btn btn-add" style="width:100%;justify-content:center;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Role Reward
+            </button>
+          </div>
+          <div class="card">
+            <h2 class="card-title" style="margin-bottom:.75rem;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              &#x1F4CB; Current Rewards
+            </h2>
+            <div id="rewardList" class="space-y-3" style="max-height:280px;overflow-y:auto;">
+              <p style="font-size:.82rem;color:var(--muted);">No rewards yet.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Restrictions -->
+      <div id="tab-restrictions" class="tab-pane">
+        <div class="grid-2" style="margin-bottom:1rem;">
+          <div class="card space-y-3">
+            <h2 class="card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
+              &#x1F6AB; Blacklisted Channels
+            </h2>
+            <p style="font-size:.72rem;color:var(--muted);margin:-.5rem 0 .25rem;">No XP earned in these channels.</p>
+            <div style="display:flex;gap:.5rem;">
+              <select id="blChannelAdd" style="flex:1"><option value="">Add channel...</option></select>
+              <button onclick="addBlChannel()" class="btn btn-ghost btn-sm">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add
+              </button>
+            </div>
+            <div id="blChannelList" class="space-y-3"></div>
+          </div>
+
+          <div class="card space-y-3">
+            <h2 class="card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
+              &#x1F6AB; Blacklisted Roles
+            </h2>
+            <p style="font-size:.72rem;color:var(--muted);margin:-.5rem 0 .25rem;">Members with these roles earn no XP.</p>
+            <div style="display:flex;gap:.5rem;">
+              <select id="blRoleAdd" style="flex:1"><option value="">Add role...</option></select>
+              <button onclick="addBlRole()" class="btn btn-ghost btn-sm">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add
+              </button>
+            </div>
+            <div id="blRoleList" class="space-y-3"></div>
+          </div>
+        </div>
+
+        <div class="danger-card">
+          <h2 style="font-size:.9rem;font-weight:700;color:#f87171;margin:0 0 .5rem;display:flex;align-items:center;gap:.5rem;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            &#x26A0;&#xFE0F; Danger Zone
+          </h2>
+          <p style="font-size:.82rem;color:var(--muted);margin:0 0 1rem;">Wipe all XP and levels for every member in this server. This cannot be undone.</p>
+          <button onclick="resetAll()" class="btn btn-danger">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            Reset All XP &amp; Levels
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /main-content -->
+  </div><!-- /main-wrap -->
+</div><!-- /layout -->
+
+<script src="/sidebar.js"></script>
+<script>
+const guildId=location.pathname.split('/')[2];
+let allChannels=[],allRoles=[],xpMultipliers=[],blChannels=[],blRoles=[],levelRewards=[];
+
+function toast(msg,ok=true){
+  const el=document.getElementById('toast');
+  const ico=ok?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  el.innerHTML=ico+msg;el.style.background=ok?'#10B981':'#EF4444';el.style.transform='translateX(0)';clearTimeout(el._t);el._t=setTimeout(()=>el.style.transform='translateX(500px)',3500);
+}
+function val(id){return document.getElementById(id)?.value??'';}
+function chk(id){return document.getElementById(id)?.checked??false;}
+function set(id,v){const el=document.getElementById(id);if(el)el.value=v??'';}
+function setChk(id,v){const el=document.getElementById(id);if(el)el.checked=!!v;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function switchTab(name,btn){document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');btn.classList.add('active');}
+function toggleEmbedFields(){document.getElementById('embedFields').style.opacity=chk('useEmbed')?'1':'0.4';document.getElementById('embedFields').style.pointerEvents=chk('useEmbed')?'':'none';}
+function syncColorPicker(){const v=val('embedColorHex');if(/^#[0-9a-fA-F]{6}$/.test(v))document.getElementById('embedColorPicker').value=v;}
+function syncColorHex(){set('embedColorHex',document.getElementById('embedColorPicker').value);}
+document.addEventListener('focusin',e=>{if(e.target.id==='levelUpMessage')window._lvlFocus=e.target;});
+function insertVar(v){const el=document.getElementById('levelUpMessage');const s=el.selectionStart,e2=el.selectionEnd;el.value=el.value.slice(0,s)+v+el.value.slice(e2);el.selectionStart=el.selectionEnd=s+v.length;el.focus();}
+
+const REMOVE_BTN=`<button class="item-remove"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
+
+function renderBlChannels(){const el=document.getElementById('blChannelList');if(!blChannels.length){el.innerHTML='<p style="font-size:.78rem;color:var(--muted)">None added.</p>';return;}el.innerHTML=blChannels.map((id,i)=>{const ch=allChannels.find(c=>c.id===id);return`<div class="bl-item"><span style="font-size:.82rem">#${esc(ch?.name||id)}</span><button onclick="removeBlChannel(${i})" class="item-remove"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>`;}).join('');}
+function addBlChannel(){const v=document.getElementById('blChannelAdd').value;if(!v||blChannels.includes(v))return;blChannels.push(v);renderBlChannels();}
+function removeBlChannel(i){blChannels.splice(i,1);renderBlChannels();}
+
+function renderBlRoles(){const el=document.getElementById('blRoleList');if(!blRoles.length){el.innerHTML='<p style="font-size:.78rem;color:var(--muted)">None added.</p>';return;}el.innerHTML=blRoles.map((id,i)=>{const r=allRoles.find(r=>r.id===id);return`<div class="bl-item"><span style="font-size:.82rem">@${esc(r?.name||id)}</span><button onclick="removeBlRole(${i})" class="item-remove"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>`;}).join('');}
+function addBlRole(){const v=document.getElementById('blRoleAdd').value;if(!v||blRoles.includes(v))return;blRoles.push(v);renderBlRoles();}
+function removeBlRole(i){blRoles.splice(i,1);renderBlRoles();}
+
+function renderMultipliers(){const el=document.getElementById('multiplierList');if(!xpMultipliers.length){el.innerHTML='<p style="font-size:.78rem;color:var(--muted)">No multiplier roles.</p>';return;}el.innerHTML=xpMultipliers.map((m,i)=>{const r=allRoles.find(r=>r.id===m.roleId);return`<div class="item-row"><span class="item-name">@${esc(r?.name||m.roleId)}</span><span class="item-badge">${m.multiplier}&times;</span><button onclick="removeMultiplier(${i})" class="item-remove"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>`;}).join('');}
+function addMultiplier(){const roleId=val('newMultiRole');const mult=parseFloat(val('newMultiValue'))||2;if(!roleId)return toast('Select a role',false);const idx=xpMultipliers.findIndex(m=>m.roleId===roleId);if(idx!==-1)xpMultipliers[idx].multiplier=mult;else xpMultipliers.push({roleId,multiplier:mult});renderMultipliers();}
+function removeMultiplier(i){xpMultipliers.splice(i,1);renderMultipliers();}
+
+function renderRewards(){const el=document.getElementById('rewardList');if(!levelRewards.length){el.innerHTML='<p style="font-size:.82rem;color:var(--muted)">No rewards yet.</p>';return;}const sorted=[...levelRewards].sort((a,b)=>a.level-b.level);el.innerHTML=sorted.map(r=>{const role=allRoles.find(x=>x.id===r.roleId);return`<div class="item-row"><span class="item-badge">Lv.${r.level}</span><span class="item-name">@${esc(role?.name||r.roleId)}</span><button onclick="removeReward(${r.level})" class="item-remove"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>`;}).join('');}
+async function addReward(){const level=parseInt(val('rewardLevel'));const roleId=val('rewardRole');if(!level||!roleId)return toast('Enter a level and select a role.',false);try{const r=await fetch(`/api/guild/${guildId}/leveling/rewards`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({level,roleId})});const d=await r.json();if(!d.success)return toast(d.error||'Failed',false);const idx=levelRewards.findIndex(x=>x.level===level);if(idx!==-1)levelRewards[idx].roleId=roleId;else levelRewards.push({level,roleId});renderRewards();set('rewardLevel','');toast('Reward added!');}catch(e){toast('Error: '+e.message,false);}}
+async function removeReward(level){try{await fetch(`/api/guild/${guildId}/leveling/rewards/${level}`,{method:'DELETE'});levelRewards=levelRewards.filter(r=>r.level!==level);renderRewards();toast('Removed');}catch(e){toast('Error: '+e.message,false);}}
+
+async function load(){
+  try{
+    const[chRes,roleRes,cfgRes]=await Promise.all([fetch(`/api/guild/${guildId}/channels`),fetch(`/api/guild/${guildId}/roles`),fetch(`/api/guild/${guildId}/leveling`)]);
+    if(!chRes.ok||!roleRes.ok){toast('Failed to load channels/roles: '+(!chRes.ok?chRes.status:roleRes.status),false);return;}
+    const chData=await chRes.json();const rolesData=await roleRes.json();const data=cfgRes.ok?await cfgRes.json():{config:{},rewards:[]};const cfg=data.config||{};
+    allChannels=Array.isArray(chData)?chData:(chData.channels||[]);
+    allRoles=(rolesData||[]).filter(r=>!r.managed&&r.name!=='@everyone');
+    rzrPopulateChannels(document.getElementById('channelSelect'),chData,cfg.NotificationChannel||'','Same channel as message');
+    rzrPopulateChannels(document.getElementById('leaderboardChannel'),chData,cfg.leaderboardChannelId||'','None');
+    rzrPopulateChannels(document.getElementById('blChannelAdd'),chData,'','Add channel...');
+    ['rewardRole','newMultiRole','blRoleAdd'].forEach(id=>{const sel=document.getElementById(id);sel.innerHTML='<option value="">Select role...</option>';allRoles.forEach(r=>{const o=document.createElement('option');o.value=r.id;o.textContent='@'+r.name;sel.appendChild(o);});});
+    setChk('enabled',cfg.Disabled!=='disabled');set('notifyMode',cfg.notifyMode||'channel');set('xpMin',cfg.xpMin??8);set('xpMax',cfg.xpMax??18);set('cooldown',cfg.cooldown??60);
+    setChk('pingOnLevelUp',cfg.pingOnLevelUp!==false);setChk('showProgress',cfg.showProgress!==false);setChk('stackRoles',cfg.stackRoles!==false);setChk('useEmbed',cfg.useEmbed!==false);
+    set('levelUpMessage',cfg.levelUpMessage||'🎉 {user} just reached **Level {level}**!');set('embedTitle',cfg.embedTitle||'Level Up!');set('embedFooter',cfg.embedFooter||'');set('embedColorHex',cfg.embedColor||'#6C53FF');document.getElementById('embedColorPicker').value=cfg.embedColor||'#6C53FF';
+    toggleEmbedFields();xpMultipliers=cfg.xpMultipliers||[];renderMultipliers();blChannels=cfg.blacklistedChannels||[];blRoles=cfg.blacklistedRoles||[];renderBlChannels();renderBlRoles();levelRewards=data.rewards||[];renderRewards();
+  }catch(e){toast('Failed to load: '+e.message,false);}
+}
+
+async function saveConfig(){
+  const payload={enabled:chk('enabled'),channel:val('channelSelect'),notifyMode:val('notifyMode'),leaderboardChannelId:val('leaderboardChannel')||null,xpMin:parseInt(val('xpMin'))||8,xpMax:parseInt(val('xpMax'))||18,cooldown:parseInt(val('cooldown'))||60,xpMultipliers,blacklistedChannels:blChannels,blacklistedRoles:blRoles,stackRoles:chk('stackRoles'),pingOnLevelUp:chk('pingOnLevelUp'),showProgress:chk('showProgress'),useEmbed:chk('useEmbed'),levelUpMessage:val('levelUpMessage'),embedTitle:val('embedTitle'),embedFooter:val('embedFooter'),embedColor:val('embedColorHex')};
+  const btn=document.getElementById('saveBtn');btn.disabled=true;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg> Saving\u2026';
+  try{const r=await fetch(`/api/guild/${guildId}/leveling/config`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const d=await r.json();if(d.success)toast('Saved!');else toast(d.error||'Save failed',false);}catch(e){toast('Network error: '+e.message,false);}
+  finally{btn.disabled=false;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Save Changes';}
+}
+
+async function resetAll(){if(!confirm('Reset ALL XP and levels for every member? This cannot be undone.'))return;try{const r=await fetch(`/api/guild/${guildId}/leveling/reset`,{method:'DELETE'});const d=await r.json();if(d.success)toast('All XP reset.');else toast(d.error||'Failed',false);}catch(e){toast('Error: '+e.message,false);}}
+load();
+</script>
+<!-- Razor Custom Select JS -->
+<script>
+(function(){'use strict';var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';var wrapped=new WeakSet();var openWrap=null;function cleanText(t){t=String(t||'');var d=document.createElement('div');d.innerHTML=t;return(d.textContent||d.innerText||'').trim();}function optText(opt){return cleanText(opt.text||opt.textContent||opt.label||'');}function positionPanel(wrap){var r=wrap._t.getBoundingClientRect();var p=wrap._p;var panelH=p.offsetHeight||240;var spaceBelow=window.innerHeight-r.bottom;var spaceAbove=r.top;var width=Math.max(r.width,160);p.style.width=width+'px';p.style.left=r.left+'px';p.style.right='auto';if(spaceBelow>=panelH||spaceBelow>=spaceAbove){p.style.top=(r.bottom+4)+'px';p.style.bottom='auto';}else{p.style.bottom=(window.innerHeight-r.top+4)+'px';p.style.top='auto';}}document.addEventListener('mousedown',function(e){if(!openWrap)return;if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);},true);window.addEventListener('scroll',function(){if(openWrap)positionPanel(openWrap);},true);window.addEventListener('resize',function(){if(openWrap)positionPanel(openWrap);});function open_(wrap){if(openWrap&&openWrap!==wrap)close_(openWrap);openWrap=wrap;buildList(wrap,'');wrap._si.value='';wrap._sw.style.display='';document.body.appendChild(wrap._p);wrap._p.style.display='block';wrap._t.classList.add('is-open');wrap._t.setAttribute('aria-expanded','true');requestAnimationFrame(function(){positionPanel(wrap);});setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);}function close_(wrap){if(!wrap)return;if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);wrap._p.style.display='none';wrap._t.classList.remove('is-open');wrap._t.setAttribute('aria-expanded','false');if(openWrap===wrap)openWrap=null;}function buildList(wrap,q){var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();var opts=Array.from(sel.options).filter(function(o){var t=optText(o);return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);});if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}list.innerHTML='';opts.forEach(function(opt){var it=document.createElement('div');it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');it.dataset.v=opt.value;var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';it.appendChild(tx);it.appendChild(ck);it.addEventListener('mousedown',function(e){e.preventDefault();e.stopPropagation();sel.value=opt.value;updateLabel(wrap);close_(wrap);sel.dispatchEvent(new Event('change',{bubbles:true}));});list.appendChild(it);});}function updateLabel(wrap){var sel=wrap._s,lbl=wrap._lb;var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;var text=opt?optText(opt):'';if(text){lbl.textContent=text;lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));}else{lbl.textContent='Select\u2026';lbl.classList.add('is-ph');}wrap._last=sel.value;}function wrapSelect(sel){if(wrapped.has(sel))return;if(sel.hasAttribute('data-rzr-skip'))return;if(sel.size&&sel.size>1)return;wrapped.add(sel);if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';var sib=sel.nextElementSibling;if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';var t=document.createElement('div');t.className='rzr-trigger';t.setAttribute('tabindex','0');t.setAttribute('role','combobox');t.setAttribute('aria-haspopup','listbox');t.setAttribute('aria-expanded','false');var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;t.appendChild(lb);t.appendChild(cv);var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';var sw=document.createElement('div');sw.className='rzr-panel-search';var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;sw.appendChild(si);var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');p.appendChild(sw);p.appendChild(l);var w=document.createElement('div');w.className='rzr-wrap';w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;w.appendChild(t);w.appendChild(p);sel.parentNode.insertBefore(w,sel);w.appendChild(sel);si.addEventListener('input',function(){buildList(w,si.value);});si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});t.addEventListener('click',function(e){e.stopPropagation();openWrap===w?close_(w):open_(w);});t.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}if(e.key==='Escape')close_(w);});var mo=new MutationObserver(function(){updateLabel(w);if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}});mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});var pid=setInterval(function(){if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}if(sel.value!==w._last)updateLabel(w);},150);updateLabel(w);}function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType!==1)return;if(n.tagName==='SELECT')wrapSelect(n);else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);});});}).observe(document.body,{childList:true,subtree:true});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);else initAll();})();
+</script>
+
+</body>
+</html>

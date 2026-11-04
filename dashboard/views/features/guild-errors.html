@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error Log</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <script>const tailwind=window.tailwind||{};tailwind.config={theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','sans-serif']},colors:{razor:"#FF3333"}}}}</script>
+  <style>
+    ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:#0b0b14}::-webkit-scrollbar-thumb{background:#2d2d3d;border-radius:4px}::-webkit-scrollbar-thumb:hover{background:#FF3333}
+    .card{background:#1a1a2e;border-radius:16px;border:1px solid rgba(255,255,255,0.05);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
+    .error-row{border-bottom:1px solid rgba(255,255,255,0.04);padding:14px 0;cursor:pointer;transition:background .1s}
+    .error-row:last-child{border-bottom:none}
+    .error-row:hover{background:rgba(255,255,255,0.02);border-radius:8px;padding-left:8px;padding-right:8px;margin:0 -8px}
+    .badge-error{background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.2);padding:2px 8px;border-radius:9999px;font-size:10px;font-weight:700}
+    .badge-warn{background:rgba(245,158,11,0.12);color:#fbbf24;border:1px solid rgba(245,158,11,0.2);padding:2px 8px;border-radius:9999px;font-size:10px;font-weight:700}
+    .source-badge{background:rgba(255,255,255,0.05);color:#9ca3af;border:1px solid rgba(255,255,255,0.08);padding:2px 8px;border-radius:9999px;font-size:10px;font-weight:600;font-family:monospace}
+    .stack-block{background:#0d0d1a;border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:12px;font-size:11px;font-family:monospace;color:#9ca3af;white-space:pre-wrap;word-break:break-all;margin-top:10px;max-height:200px;overflow-y:auto}
+    .filter-btn{padding:5px 12px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:#9ca3af;cursor:pointer;transition:all .15s}
+    .filter-btn:hover,.filter-btn.active{background:rgba(255,51,51,0.1);color:#FF3333;border-color:rgba(255,51,51,0.25)}
+    .filter-btn.active-error{background:rgba(239,68,68,0.1);color:#f87171;border-color:rgba(239,68,68,0.2)}
+    .filter-btn.active-warn{background:rgba(245,158,11,0.1);color:#fbbf24;border-color:rgba(245,158,11,0.2)}
+    .btn-danger{background:rgba(239,68,68,0.1);color:#ef4444;font-weight:600;padding:8px 16px;border-radius:10px;font-size:13px;transition:all .2s;border:1px solid rgba(239,68,68,0.2);cursor:pointer}
+    .btn-danger:hover{background:rgba(239,68,68,0.2)}
+    .expanded-content{display:none;padding:0 0 6px}
+    .expanded-content.open{display:block}
+    @keyframes spin{to{transform:rotate(360deg)}}.spin{animation:spin .8s linear infinite}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}.fade-in{animation:fadeIn .2s ease}
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body class="bg-[#0b0b14] text-white font-sans">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<div id="toast" class="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium shadow-xl border transition-all duration-300 opacity-0 pointer-events-none" style="min-width:260px;background:#1a1a2e;border-color:rgba(255,255,255,0.08)">
+  <div id="toastIcon" class="w-5 h-5 flex-shrink-0"></div>
+  <span id="toastMsg"></span>
+</div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+  <main class="flex-1 p-6 lg:p-8 overflow-x-hidden" style="">
+
+    <!-- Header -->
+    <div class="mb-7 flex items-start justify-between gap-4 flex-wrap">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight mb-1">Error Log</h1>
+        <p class="text-gray-400 text-sm">Errors and warnings from bot features in your server. Entries expire after 7 days.</p>
+      </div>
+      <button onclick="clearAll()" class="btn-danger flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        Clear All
+      </button>
+    </div>
+
+    <!-- Filters + stats -->
+    <div class="card p-4 mb-5 flex items-center gap-3 flex-wrap">
+      <div class="flex gap-2">
+        <button class="filter-btn active" id="filter-all" onclick="setFilter('all')">All</button>
+        <button class="filter-btn" id="filter-error" onclick="setFilter('error')">
+          <span class="inline-block w-2 h-2 rounded-full bg-red-400 mr-1.5"></span>Errors
+        </button>
+        <button class="filter-btn" id="filter-warn" onclick="setFilter('warn')">
+          <span class="inline-block w-2 h-2 rounded-full bg-yellow-400 mr-1.5"></span>Warnings
+        </button>
+      </div>
+      <div class="flex-1"></div>
+      <div class="text-sm text-gray-500" id="countLabel">—</div>
+      <button onclick="loadErrors()" class="text-sm text-razor hover:underline flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Refresh
+      </button>
+    </div>
+
+    <!-- Error list -->
+    <div class="card p-6" id="errorContainer">
+      <div class="text-gray-500 text-sm text-center py-8">Loading errors...</div>
+    </div>
+
+  </main>
+</div>
+
+<script src="/sidebar.js" nonce="<%= nonce %>"></script>
+<script nonce="<%= nonce %>">
+const guildId = location.pathname.split('/')[2];
+let currentFilter = 'all';
+let errors = [];
+let expanded = new Set();
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function toast(msg,ok=true){
+  const t=document.getElementById('toast'),icon=document.getElementById('toastIcon'),text=document.getElementById('toastMsg');
+  icon.innerHTML=ok
+    ?`<svg class="w-5 h-5 text-razor" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 15 4 10"/></svg>`
+    :`<svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+  text.textContent=msg;t.style.borderColor=ok?'rgba(255,51,51,0.2)':'rgba(239,68,68,0.2)';
+  t.style.opacity='1';t.style.pointerEvents='auto';
+  setTimeout(()=>{t.style.opacity='0';t.style.pointerEvents='none'},3200);
+}
+
+function setFilter(f){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active','active-error','active-warn'));
+  const btn=document.getElementById(`filter-${f}`);
+  btn.classList.add('active');
+  if(f==='error') btn.classList.add('active-error');
+  if(f==='warn') btn.classList.add('active-warn');
+  render();
+}
+
+function relativeTime(dateStr){
+  const diff=Date.now()-new Date(dateStr).getTime();
+  const s=Math.floor(diff/1000),m=Math.floor(s/60),h=Math.floor(m/60),d=Math.floor(h/24);
+  if(d>0) return `${d}d ago`;
+  if(h>0) return `${h}h ago`;
+  if(m>0) return `${m}m ago`;
+  return `${s}s ago`;
+}
+
+async function loadErrors(){
+  const url=`/api/guild/${guildId}/errors?limit=100`;
+  try{
+    const r=await fetch(url);
+    errors=await r.json();
+    if(!Array.isArray(errors)) errors=[];
+    render();
+  }catch(e){
+    document.getElementById('errorContainer').innerHTML='<p class="text-red-400 text-sm">Failed to load errors.</p>';
+  }
+}
+
+function render(){
+  const filtered=currentFilter==='all'?errors:errors.filter(e=>e.level===currentFilter);
+  const errCount=errors.filter(e=>e.level==='error').length;
+  const warnCount=errors.filter(e=>e.level==='warn').length;
+  document.getElementById('countLabel').innerHTML=
+    `<span class="text-red-400 font-semibold">${errCount}</span> error${errCount!==1?'s':''}&nbsp;&nbsp;<span class="text-yellow-400 font-semibold">${warnCount}</span> warning${warnCount!==1?'s':''}`;
+
+  const container=document.getElementById('errorContainer');
+  if(!filtered.length){
+    container.innerHTML=`<div class="text-center py-12">
+      <svg class="w-10 h-10 text-gray-700 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <p class="text-gray-500 text-sm">${currentFilter==='all'?'No errors logged for this server.':
+        `No ${currentFilter}s found.`}</p>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML=`<div class="divide-y divide-white/[0.04]">${filtered.map((err,i)=>{
+    const isExp=expanded.has(err._id);
+    const badge=err.level==='error'?'<span class="badge-error">ERROR</span>':'<span class="badge-warn">WARN</span>';
+    const hasExtra=err.stack||err.context;
+    return `
+      <div class="error-row fade-in ${hasExtra?'cursor-pointer':''}" onclick="${hasExtra?`toggleExpand('${err._id}')`:''}" id="row-${esc(err._id)}">
+        <div class="flex items-start gap-3">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              ${badge}
+              <span class="source-badge">${esc(err.source)}</span>
+              <span class="text-gray-600 text-xs ml-auto flex-shrink-0">${relativeTime(err.createdAt)}</span>
+            </div>
+            <p class="text-sm text-gray-200 leading-relaxed">${esc(err.message)}</p>
+          </div>
+          ${hasExtra?`<svg class="w-4 h-4 text-gray-600 flex-shrink-0 mt-1 transition-transform duration-200 ${isExp?'rotate-180':''}" id="chevron-${esc(err._id)}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>`:''}
+        </div>
+        <div class="expanded-content ${isExp?'open':''}" id="exp-${esc(err._id)}">
+          ${err.stack?`<div class="stack-block">${esc(err.stack)}</div>`:''}
+          ${err.context?`<pre class="stack-block mt-2">${esc(JSON.stringify(err.context,null,2))}</pre>`:''}
+        </div>
+      </div>
+    `;
+  }).join('')}</div>`;
+}
+
+function toggleExpand(id){
+  if(expanded.has(id)) expanded.delete(id); else expanded.add(id);
+  const exp=document.getElementById(`exp-${id}`);
+  const chev=document.getElementById(`chevron-${id}`);
+  if(exp) exp.classList.toggle('open');
+  if(chev) chev.classList.toggle('rotate-180');
+}
+
+async function clearAll(){
+  if(!confirm('Clear all error logs for this server? This cannot be undone.')) return;
+  const r=await fetch(`/api/guild/${guildId}/errors`,{method:'DELETE'});
+  const d=await r.json();
+  if(d.success){
+    errors=[];
+    toast(`Cleared ${d.deleted} log${d.deleted!==1?'s':''}`);
+    render();
+  } else toast(d.error||'Failed to clear',false);
+}
+
+loadErrors();
+// Auto-refresh every 30s
+setInterval(loadErrors, 30000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Suggestion System</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --razor: #FF3333;
+      --razor-dark: #CC2222;
+      --razor-glow: rgba(255,51,51,0.18);
+      --bg: #08080f;
+      --bg2: #0f0f1c;
+      --bg3: #161625;
+      --bg4: #1d1d30;
+      --border: rgba(255,255,255,0.06);
+      --border-hover: rgba(255,255,255,0.12);
+      --text: #f0f0f8;
+      --text-muted: #6b6b8a;
+      --text-dim: #9494b0;
+      --red: #f87171;
+      --red-bg: rgba(248,113,113,0.08);
+      --red-border: rgba(248,113,113,0.2);
+      --orange: #fb923c;
+      --gold: #f59e0b;
+      --blue: #818cf8;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--razor-glow); }
+
+    .layout { display: flex; min-height: 100vh; }
+    .main { flex: 1; padding: 2.5rem 2.75rem; max-width: 1400px; margin: 0 auto; overflow-x: hidden; }
+
+    /* Toast */
+    #toast {
+      position: fixed; top: 1.25rem; right: 1.25rem; z-index: 9999;
+      padding: .75rem 1.25rem; border-radius: .875rem; font-size: .8125rem; font-weight: 600;
+      display: flex; align-items: center; gap: .5rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      transform: translateX(120%); transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+      pointer-events: none;
+    }
+    #toast.show { transform: translateX(0); pointer-events: auto; }
+    #toast.success { background: #0f2018; border: 1px solid rgba(255,51,51,0.3); color: var(--razor); }
+    #toast.error   { background: #200f0f; border: 1px solid rgba(248,113,113,0.3); color: var(--red); }
+
+    /* Header */
+    .page-header { margin-bottom: 2.25rem; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .page-title {
+      display: flex; align-items: center; gap: .875rem;
+      font-size: 1.75rem; font-weight: 800; letter-spacing: -.03em; color: var(--text);
+    }
+    .page-title-icon {
+      width: 2.5rem; height: 2.5rem; background: var(--razor-glow);
+      border: 1px solid rgba(255,51,51,0.25); border-radius: .75rem;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .page-title-icon svg { color: var(--razor); }
+    .page-subtitle { color: var(--text-muted); font-size: .8125rem; margin-top: .35rem; margin-left: 3.375rem; }
+    .status-badge {
+      display: flex; align-items: center; gap: .5rem;
+      padding: .375rem .875rem; border-radius: 99px;
+      background: rgba(255,51,51,0.07); border: 1px solid rgba(255,51,51,0.2);
+      font-size: .6875rem; font-weight: 800; color: var(--razor);
+      text-transform: uppercase; letter-spacing: .1em;
+    }
+    .status-badge.off { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
+    .status-dot { width: 6px; height: 6px; border-radius: 99px; background: var(--razor); animation: pulse 2s ease-in-out infinite; }
+    .status-dot.off { background: var(--red); animation: none; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255,51,51,0.4); }
+      50%       { opacity: .7; box-shadow: 0 0 0 5px rgba(255,51,51,0); }
+    }
+
+    /* Card */
+    .card {
+      background: var(--bg3); border: 1px solid var(--border); border-radius: 1.125rem;
+      padding: 1.5rem;
+    }
+    .card-title {
+      display: flex; align-items: center; gap: .625rem;
+      font-size: .9375rem; font-weight: 800; color: var(--text); margin-bottom: 1.25rem;
+    }
+    .card-title svg { color: var(--razor); flex-shrink: 0; }
+    .card-title-icon {
+      width: 28px; height: 28px; border-radius: .5rem;
+      background: var(--razor-glow); border: 1px solid rgba(255,51,51,0.2);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .card-subtitle { font-size: .75rem; color: var(--text-muted); margin-top: -.75rem; margin-bottom: 1.25rem; }
+
+    /* Grid layout */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .grid-channels { display: grid; grid-template-columns: 1fr 1fr; gap: .875rem; }
+    .full-span { grid-column: 1 / -1; }
+
+    /* Fields */
+    .field { margin-bottom: 1.125rem; }
+    .field:last-child { margin-bottom: 0; }
+    .slabel {
+      display: block; font-size: .6875rem; font-weight: 800; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .1em; margin-bottom: .5rem;
+    }
+    .inp {
+      width: 100%; background: var(--bg); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: .75rem; padding: .75rem 1rem; font-size: .875rem; color: var(--text);
+      outline: none; transition: border-color .2s, box-shadow .2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .inp:focus { border-color: rgba(255,51,51,0.5); box-shadow: 0 0 0 3px rgba(255,51,51,0.06); }
+    .inp::placeholder { color: var(--text-muted); }
+    .inp[type="number"] { -moz-appearance: textfield; }
+    .inp[type="number"]::-webkit-outer-spin-button,
+    .inp[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .field-hint { font-size: .6875rem; color: var(--text-muted); margin-top: .375rem; line-height: 1.5; }
+    .num-row { display: flex; gap: .875rem; }
+    .num-row .field { flex: 1; }
+
+    /* Toggle row */
+    .tog-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .875rem 1rem; background: var(--bg); border-radius: .875rem;
+      border: 1px solid var(--border); gap: 1rem; transition: border-color .2s;
+    }
+    .tog-row:hover { border-color: var(--border-hover); }
+    .tog-info h3 { font-size: .875rem; font-weight: 700; color: var(--text); }
+    .tog-info p  { font-size: .7rem; color: var(--text-muted); margin-top: .2rem; }
+    .toggle { position: relative; width: 42px; height: 22px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-track {
+      position: absolute; inset: 0; background: var(--bg4);
+      border-radius: 99px; border: 1px solid var(--border);
+      cursor: pointer; transition: background .25s, border-color .25s, box-shadow .25s;
+    }
+    .toggle-thumb {
+      position: absolute; top: 2px; left: 2px;
+      width: 16px; height: 16px; border-radius: 99px;
+      background: white; transition: transform .25s cubic-bezier(.34,1.56,.64,1);
+      pointer-events: none; box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+    .toggle input:checked ~ .toggle-track {
+      background: var(--razor); border-color: transparent;
+      box-shadow: 0 0 12px rgba(255,51,51,0.3);
+    }
+    .toggle input:checked ~ .toggle-thumb { transform: translateX(20px); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      padding: .65rem 1.25rem; border-radius: .75rem; font-weight: 700; font-size: .8125rem;
+      cursor: pointer; transition: all .15s; border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif; white-space: nowrap;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+    .btn-primary { background: var(--razor); color: #06060d; box-shadow: 0 4px 20px rgba(255,51,51,.15); }
+    .btn-primary:hover:not(:disabled) { background: var(--razor-dark); }
+    .btn-ghost { background: rgba(255,255,255,.05); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: rgba(255,255,255,.09); border-color: var(--border-hover); }
+    .btn-danger { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+    .btn-danger:hover { background: rgba(248,113,113,0.14); }
+    .save-row { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+    /* Divider */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+    .space-y > * + * { margin-top: .875rem; }
+
+    /* Preview */
+    .dc-wrap { background: #313338; border-radius: 1rem; padding: 1.25rem; }
+    .dc-bot-row { display: flex; gap: .875rem; }
+    .dc-avatar {
+      width: 2.5rem; height: 2.5rem; border-radius: 99px;
+      background: #5865F2; display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: .875rem; flex-shrink: 0; color: white;
+    }
+    .dc-meta { font-size: .8125rem; color: white; font-weight: 700; margin-bottom: .625rem; }
+    .dc-meta span { font-size: .6875rem; color: #80848e; font-weight: 400; margin-left: .375rem; }
+    .dc-embed { border-left: 4px solid #5865F2; background: #2b2d31; border-radius: 0 .5rem .5rem 0; padding: .875rem 1rem; }
+    .dc-embed-title { font-weight: 700; font-size: .9375rem; color: white; margin-bottom: .375rem; }
+    .dc-embed-desc { font-size: .8125rem; color: #dbdee1; white-space: pre-wrap; line-height: 1.6; }
+    .dc-embed-footer { font-size: .6875rem; color: #80848e; margin-top: .625rem; }
+    .dc-btns { display: flex; gap: .5rem; margin-top: .75rem; }
+    .dc-btn { font-size: .75rem; padding: .375rem .875rem; border-radius: .375rem; font-weight: 600; cursor: default; }
+    .dc-btn-green { background: rgba(87,242,135,.2); color: #57f287; }
+    .dc-btn-red   { background: rgba(218,55,60,.2); color: #f87171; }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .main { padding: 1.5rem; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .grid-channels { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .main { padding: 1rem; }
+      .num-row { flex-direction: column; }
+    }
+  </style>
+
+  <!-- Razor Custom Select (shared widget) -->
+  <style>
+    .rzr-wrap{position:relative;width:100%;display:block}
+    .rzr-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);background:#0d0d1c;color:#fff;cursor:pointer;font-size:14px;font-family:inherit;min-height:44px;width:100%;transition:border-color .15s,box-shadow .15s;user-select:none;box-sizing:border-box;}
+    .rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
+    .rzr-trigger.is-open{border-color:rgba(255,51,51,.6);box-shadow:0 0 0 3px rgba(255,51,51,.1);}
+    .rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
+    .rzr-label.is-ph{color:#6b7280}
+    .rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
+    .rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+    .rzr-panel{position:fixed;z-index:999999;background:rgba(11,11,20,.98);backdrop-filter:blur(16px);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;box-shadow:0 24px 60px rgba(0,0,0,.7);overflow:hidden;animation:rzrIn .16s ease;}
+    @keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+    .rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
+    .rzr-search-inp{display:block;width:100%;background:#06060f;border:1px solid rgba(255,255,255,.09);border-radius:7px;padding:6px 11px;color:#fff;font-size:13px;font-family:inherit;outline:none;box-sizing:border-box;transition:border-color .15s;}
+    .rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+    .rzr-search-inp::placeholder{color:#374151}
+    .rzr-list{overflow-y:auto;max-height:220px;padding:4px;}
+    .rzr-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:7px;cursor:pointer;font-size:13px;color:#d1d5db;transition:background .12s,color .12s;}
+    .rzr-item:hover{background:rgba(255,255,255,.07);color:#fff}
+    .rzr-item.is-sel{color:#FF3333;background:rgba(255,51,51,.07);}
+    .rzr-item-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .rzr-item-chk{font-size:11px;opacity:0;color:#FF3333;flex-shrink:0;transition:opacity .1s;}
+    .rzr-item.is-sel .rzr-item-chk{opacity:1}
+    .rzr-empty{padding:20px;text-align:center;font-size:13px;color:#4b5563;}
+    optgroup{font-weight:700;color:#9494b0;}
+  /* ── Icon helper ── */
+  .btn-icon {
+    display:inline-block; vertical-align:middle; flex-shrink:0;
+    width:1em; height:1em; font-size:inherit;
+  }
+  .tab .btn-icon, .card-title .btn-icon, .page-title .btn-icon { width:1.1em; height:1.1em; }
+  .dc-btn .btn-icon { width:.875em; height:.875em; }
+  .feat-icon { width:1em; height:1em; flex-shrink:0; margin-top:.125em; }
+
+  /* ── Tabs ── */
+  .tabs-bar { display:flex; gap:.25rem; border-bottom:1px solid var(--border); margin-bottom:2rem; padding-bottom:0; }
+  .tab {
+    position:relative; padding:.625rem .875rem; padding-bottom:.75rem;
+    font-size:.8rem; font-weight:700; color:var(--text-muted);
+    cursor:pointer; transition:color .2s; letter-spacing:.02em;
+    background:none; border:none; font-family:'Plus Jakarta Sans',sans-serif;
+    border-radius:.5rem .5rem 0 0;
+    display:inline-flex; align-items:center; gap:.4rem;
+  }
+  .tab:hover { color:var(--text-dim); }
+  .tab::after {
+    content:''; position:absolute; bottom:-1px; left:.5rem; right:.5rem;
+    height:2px; background:var(--razor); border-radius:99px;
+    transform:scaleX(0); transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .tab.active { color:var(--text); }
+  .tab.active::after { transform:scaleX(1); }
+
+  /* ── Views ── */
+  .view { display:none; }
+  .view.active { display:block; animation:fadeUp .2s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+
+  /* ── Grid ── */
+  .g2 { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+  .g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; }
+  .g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.75rem; }
+  .full { grid-column:1/-1; }
+
+  /* ── Stat card ── */
+  .stat-card {
+    background:var(--bg3); border:1px solid var(--border); border-radius:1rem;
+    padding:1.125rem 1.25rem; transition:border-color .2s;
+  }
+  .stat-card:hover { border-color:var(--border-hover); }
+  .stat-lbl { font-size:.6875rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.1em; font-family:'JetBrains Mono',monospace; margin-bottom:.5rem; }
+  .stat-val { font-size:1.75rem; font-weight:800; font-family:'JetBrains Mono',monospace; color:var(--text); letter-spacing:-.02em; }
+  .stat-val.green { color:var(--razor); }
+  .stat-val.red   { color:var(--red); }
+  .stat-val.blue  { color:var(--blue); }
+  .stat-val.gold  { color:var(--gold); }
+
+  /* ── Chip / tag ── */
+  .chip {
+    display:inline-flex; align-items:center; gap:.375rem;
+    padding:.3rem .7rem; background:rgba(255,51,51,.07);
+    border:1px solid rgba(255,51,51,.18); border-radius:.5rem;
+    font-size:.75rem; color:var(--razor); font-weight:600;
+    animation:chipIn .15s ease;
+  }
+  @keyframes chipIn { from{opacity:0;transform:scale(.9)} to{opacity:1;transform:scale(1)} }
+  .chip-x { cursor:pointer; opacity:.5; transition:opacity .15s,color .15s; display:flex;align-items:center;padding:0 .1rem; }
+  .chip-x:hover { opacity:1; color:var(--red); }
+  .chip-list { display:flex; flex-wrap:wrap; gap:.5rem; min-height:2.25rem; }
+  .chip-empty { font-size:.75rem; color:var(--text-muted); font-style:italic; align-self:center; }
+  .chip-blue { background:rgba(129,140,248,.08); border-color:rgba(129,140,248,.2); color:var(--blue); }
+  .chip-red  { background:var(--red-bg); border-color:var(--red-border); color:var(--red); }
+  .chip-gold { background:rgba(245,158,11,.08); border-color:rgba(245,158,11,.2); color:var(--gold); }
+
+  /* ── Inline number pair ── */
+  .num-row { display:flex; gap:.875rem; }
+  .num-row .field { flex:1; }
+
+  /* ── Section divider with label ── */
+  .sect-divider { display:flex; align-items:center; gap:.75rem; margin:1.5rem 0 1rem; }
+  .sect-divider::before,.sect-divider::after { content:''; flex:1; border-top:1px solid var(--border); }
+  .sect-label { font-size:.6875rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:.1em; white-space:nowrap; }
+
+  /* ── Preview ── */
+  .dc-wrap { background:#313338; border-radius:1rem; padding:1.25rem; }
+  .dc-bot-row { display:flex; gap:.875rem; }
+  .dc-avatar { width:2.5rem; height:2.5rem; border-radius:99px; background:#5865F2; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.875rem; flex-shrink:0; color:white; }
+  .dc-meta { font-size:.8125rem; color:white; font-weight:700; margin-bottom:.625rem; }
+  .dc-meta span { font-size:.6875rem; color:#80848e; font-weight:400; margin-left:.375rem; }
+  .dc-embed { border-left:4px solid #5865F2; background:#2b2d31; border-radius:0 .5rem .5rem 0; padding:.875rem 1rem; }
+  .dc-embed-title { font-weight:700; font-size:.9375rem; color:white; margin-bottom:.25rem; }
+  .dc-embed-body  { font-size:.8125rem; color:#dbdee1; line-height:1.5; margin-bottom:.5rem; }
+  .dc-embed-fields { display:grid; grid-template-columns:1fr 1fr 1fr; gap:.375rem .75rem; margin:.5rem 0; }
+  .dc-field-name  { font-size:.6875rem; font-weight:700; color:#dbdee1; }
+  .dc-field-val   { font-size:.75rem; color:#b5bac1; }
+  .dc-embed-footer { font-size:.6875rem; color:#80848e; margin-top:.5rem; }
+  .dc-btns { display:flex; gap:.5rem; margin-top:.75rem; flex-wrap:wrap; }
+  .dc-btn { font-size:.75rem; padding:.375rem .875rem; border-radius:.375rem; font-weight:600; cursor:default; display:inline-flex; align-items:center; gap:.35rem; }
+  .dc-btn-green { background:rgba(87,242,135,.2); color:#57f287; }
+  .dc-btn-red   { background:rgba(218,55,60,.2); color:#f87171; }
+  .dc-btn-gray  { background:rgba(78,80,88,.4); color:#b5bac1; }
+  .dc-btn-blue  { background:rgba(88,101,242,.3); color:#7289da; }
+
+  /* ── Responsive ── */
+  @media (max-width:1024px) { .main{padding:1.5rem} .g2,.g3{grid-template-columns:1fr} .g4{grid-template-columns:1fr 1fr} }
+  @media (max-width:640px)  { .main{padding:1rem} .g4{grid-template-columns:1fr} .num-row{flex-direction:column} }
+
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<div class="layout">
+  <aside id="razor-sidebar"></aside>
+
+  <main class="main">
+
+    <!-- ── Header ────────────────────────────────────────────────────────── -->
+    <div class="page-header">
+      <div>
+        <div class="page-title">
+          <div class="page-title-icon">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              <path d="M8 10h8M8 14h5"/>
+            </svg>
+          </div>
+          Suggestion System
+        </div>
+        <p class="page-subtitle">Full-featured suggestion system with voting, review workflow, auto-actions and role-gating.</p>
+      </div>
+      <div id="statusBadge" class="status-badge off">
+        <span class="status-dot off" id="statusDot"></span>
+        <span id="statusText">Not Configured</span>
+      </div>
+    </div>
+
+    <!-- ── Stats row ──────────────────────────────────────────────────────── -->
+    <div class="g4">
+      <div class="stat-card">
+        <div class="stat-lbl">Total Suggestions</div>
+        <div class="stat-val blue" id="statTotal">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Approved</div>
+        <div class="stat-val green" id="statApproved">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Rejected</div>
+        <div class="stat-val red" id="statRejected">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Approval Rate</div>
+        <div class="stat-val gold" id="statRate">—</div>
+      </div>
+    </div>
+
+    <!-- ── Tabs ───────────────────────────────────────────────────────────── -->
+    <div class="tabs-bar">
+      <button class="tab active" onclick="switchTab('channels',this)"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12" y2="20.01"/></svg> Channels</button>
+      <button class="tab"        onclick="switchTab('access',this)"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/><circle cx="12" cy="16" r="1"/></svg> Access &amp; Roles</button>
+      <button class="tab"        onclick="switchTab('behaviour',this)"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 22v-2"/><path d="m17 20.66-1-1.73"/><path d="M11 10.27 7 3.34"/><path d="m20.66 17-1.73-1"/><path d="m3.34 7 1.73 1"/><path d="M14 12h8"/><path d="M2 12h2"/><path d="m20.66 7-1.73 1"/><path d="m3.34 17 1.73-1"/><path d="m17 3.34-1 1.73"/><path d="m11 13.73-4 6.93"/></svg> Behaviour</button>
+      <button class="tab"        onclick="switchTab('limits',this)"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg> Limits</button>
+      <button class="tab"        onclick="switchTab('auto',this)"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg> Auto Actions</button>
+      <button class="tab"        onclick="switchTab('preview',this)"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Preview</button>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- TAB: Channels                                                       -->
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <div class="view active" id="view-channels">
+      <div class="g2">
+
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            Core Channels
+          </div>
+          <p class="card-subtitle">Where suggestions are posted and routed.</p>
+
+          <div class="field">
+            <label class="slabel">Suggestion Channel <span style="color:var(--red)">*</span></label>
+            <div class="rzr-wrap"><select id="channelSelect"><option value="">Select a channel</option></select></div>
+            <p class="field-hint">Members submit suggestions here via <code>/suggestion send</code>.</p>
+          </div>
+          <div class="field">
+            <label class="slabel">Review Channel</label>
+            <div class="rzr-wrap"><select id="reviewChannelSelect"><option value="">— None —</option></select></div>
+            <p class="field-hint">If <strong>Review Mode</strong> is on, new suggestions go here first. Mods approve → they move to the main channel.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+            Result Routing
+          </div>
+          <p class="card-subtitle">Where resolved suggestions are forwarded or logged.</p>
+
+          <div class="field">
+            <label class="slabel">Approved Channel</label>
+            <div class="rzr-wrap"><select id="approvedChannelSelect"><option value="">— None —</option></select></div>
+            <p class="field-hint">Approved suggestions are copied here.</p>
+          </div>
+          <div class="field">
+            <label class="slabel">Rejected Channel</label>
+            <div class="rzr-wrap"><select id="rejectedChannelSelect"><option value="">— None —</option></select></div>
+            <p class="field-hint">Rejected suggestions are archived here.</p>
+          </div>
+          <div class="field">
+            <label class="slabel">Mod Log Channel</label>
+            <div class="rzr-wrap"><select id="logChannelSelect"><option value="">— None —</option></select></div>
+            <p class="field-hint">All approve/reject/implement actions are logged here for mod audit.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- TAB: Access & Roles                                                 -->
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <div class="view" id="view-access">
+      <div class="g2">
+
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            Role Access
+          </div>
+          <p class="card-subtitle">Control who can submit and who can moderate suggestions.</p>
+
+          <div class="field">
+            <label class="slabel">Staff Roles</label>
+            <p class="field-hint" style="margin-bottom:.5rem">Members with these roles can approve/reject/implement suggestions.</p>
+            <div style="display:flex;gap:.5rem;margin-bottom:.5rem">
+              <div class="rzr-wrap" style="flex:1"><select id="staffRoleAdd"><option value="">Select a role to add</option></select></div>
+              <button class="btn btn-ghost btn-sm" onclick="addRole('staffRoleIds','staffRoleAdd','staffChips','Staff role')">Add</button>
+            </div>
+            <div class="chip-list" id="staffChips"><span class="chip-empty">No staff roles set — Manage Server permission required.</span></div>
+          </div>
+
+          <hr class="divider">
+
+          <div class="field">
+            <label class="slabel">Required Roles</label>
+            <p class="field-hint" style="margin-bottom:.5rem">Members must have <em>at least one</em> of these roles to submit.</p>
+            <div style="display:flex;gap:.5rem;margin-bottom:.5rem">
+              <div class="rzr-wrap" style="flex:1"><select id="reqRoleAdd"><option value="">Select a role to add</option></select></div>
+              <button class="btn btn-ghost btn-sm" onclick="addRole('requiredRoleIds','reqRoleAdd','reqChips','Required role')">Add</button>
+            </div>
+            <div class="chip-list" id="reqChips"><span class="chip-empty">No required roles — anyone can submit.</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            </div>
+            Blocked Roles &amp; Notifications
+          </div>
+          <p class="card-subtitle">Block specific roles and configure new-suggestion pings.</p>
+
+          <div class="field">
+            <label class="slabel">Blocked Roles</label>
+            <p class="field-hint" style="margin-bottom:.5rem">Members with these roles cannot submit suggestions.</p>
+            <div style="display:flex;gap:.5rem;margin-bottom:.5rem">
+              <div class="rzr-wrap" style="flex:1"><select id="blockedRoleAdd"><option value="">Select a role to block</option></select></div>
+              <button class="btn btn-ghost btn-sm" onclick="addRole('blockedRoleIds','blockedRoleAdd','blockedChips','Blocked role')">Add</button>
+            </div>
+            <div class="chip-list" id="blockedChips"><span class="chip-empty">No blocked roles.</span></div>
+          </div>
+
+          <hr class="divider">
+
+          <div class="field">
+            <label class="slabel">Ping Role on New Suggestion</label>
+            <div class="rzr-wrap"><select id="pingRoleSelect"><option value="">— None —</option></select></div>
+            <p class="field-hint">This role is @mentioned whenever a new suggestion is posted.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- TAB: Behaviour                                                      -->
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <div class="view" id="view-behaviour">
+      <div class="g2">
+        <div class="card full">
+          <div class="card-title">
+            <div class="card-title-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            </div>
+            Feature Toggles
+          </div>
+          <p class="card-subtitle">Enable or disable individual features of the suggestion system.</p>
+
+          <div class="g2">
+            <div class="space-y">
+              <div class="tog-row">
+                <div class="tog-info">
+                  <h3>Review Mode</h3>
+                  <p>New suggestions go to the Review Channel first. Mods approve them before they appear publicly.</p>
+                </div>
+                <label class="toggle"><input type="checkbox" id="togReview"><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+              </div>
+              <div class="tog-row">
+                <div class="tog-info">
+                  <h3>Create Discussion Thread</h3>
+                  <p>Automatically starts a thread under each suggestion for community discussion.</p>
+                </div>
+                <label class="toggle"><input type="checkbox" id="togThread"><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+              </div>
+              <div class="tog-row">
+                <div class="tog-info">
+                  <h3>DM Author on Result</h3>
+                  <p>Sends the suggestion author a DM when their suggestion is approved, rejected, or implemented.</p>
+                </div>
+                <label class="toggle"><input type="checkbox" id="togDm"><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+              </div>
+              <div class="tog-row">
+                <div class="tog-info">
+                  <h3>Allow Suggestion Edits</h3>
+                  <p>Authors can edit their suggestion before it receives any votes. Staff can always edit.</p>
+                </div>
+                <label class="toggle"><input type="checkbox" id="togEdit"><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+              </div>
+            </div>
+            <div class="space-y">
+              <div class="tog-row">
+                <div class="tog-info">
+                  <h3>Require Reason on Reject</h3>
+                  <p>Forces moderators to provide a written reason when rejecting a suggestion.</p>
+                </div>
+                <label class="toggle"><input type="checkbox" id="togReason"><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+              </div>
+              <div class="tog-row">
+                <div class="tog-info">
+                  <h3>Anonymous Mode</h3>
+                  <p>Hides the author's identity in the suggestion embed. Staff can still see who submitted via <code>/suggestion info</code>.</p>
+                </div>
+                <label class="toggle"><input type="checkbox" id="togAnon"><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+              </div>
+              <div class="tog-row">
+                <div class="tog-info">
+                  <h3>Allow Self-Vote</h3>
+                  <p>Authors can vote on their own suggestions. Disabled by default to prevent gaming.</p>
+                </div>
+                <label class="toggle"><input type="checkbox" id="togSelfVote"><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+              </div>
+              <div class="tog-row">
+                <div class="tog-info">
+                  <h3>Allow Vote Change</h3>
+                  <p>Users can switch from upvote to downvote (and vice versa) after casting their vote.</p>
+                </div>
+                <label class="toggle"><input type="checkbox" id="togVoteChange"><span class="toggle-track"></span><span class="toggle-thumb"></span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- TAB: Limits                                                         -->
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <div class="view" id="view-limits">
+      <div class="g2">
+
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+            </div>
+            Content Limits
+          </div>
+          <p class="card-subtitle">Control the length of suggestion content.</p>
+
+          <div class="num-row">
+            <div class="field">
+              <label class="slabel">Min Length</label>
+              <input class="inp" type="number" id="minLength" placeholder="0" min="0" max="500">
+              <p class="field-hint">Minimum characters required. 0 = no minimum.</p>
+            </div>
+            <div class="field">
+              <label class="slabel">Max Length</label>
+              <input class="inp" type="number" id="maxLength" placeholder="1024" min="50" max="1024">
+              <p class="field-hint">Maximum characters allowed. Max 1024.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            Submission Limits
+          </div>
+          <p class="card-subtitle">Prevent spam and limit per-user activity.</p>
+
+          <div class="field">
+            <label class="slabel">Cooldown (seconds)</label>
+            <input class="inp" type="number" id="cooldown" placeholder="0 — no cooldown" min="0">
+            <p class="field-hint">How long a member must wait between suggestions. 0 = no cooldown.</p>
+          </div>
+          <div class="field" style="margin-top:.875rem">
+            <label class="slabel">Max Active Suggestions Per User</label>
+            <input class="inp" type="number" id="maxActive" placeholder="0 — unlimited" min="0">
+            <p class="field-hint">Maximum pending/under-review suggestions a single user can have at once. 0 = unlimited.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- TAB: Auto Actions                                                   -->
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <div class="view" id="view-auto">
+      <div class="g2">
+
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            Vote Thresholds
+          </div>
+          <p class="card-subtitle">Automatically resolve suggestions based on vote counts.</p>
+
+          <div class="field">
+            <label class="slabel">Auto-Approve at Upvotes</label>
+            <input class="inp" type="number" id="autoApprove" placeholder="0 — disabled" min="0">
+            <p class="field-hint">Automatically approve a suggestion when it reaches this many upvotes. 0 = disabled.</p>
+          </div>
+          <div class="field" style="margin-top:.875rem">
+            <label class="slabel">Auto-Reject at Downvotes</label>
+            <input class="inp" type="number" id="autoReject" placeholder="0 — disabled" min="0">
+            <p class="field-hint">Automatically reject a suggestion when it reaches this many downvotes. 0 = disabled.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 8v4l3 3"/></svg>
+            </div>
+            Auto-Close
+          </div>
+          <p class="card-subtitle">Automatically close voting after a set time.</p>
+
+          <div class="field">
+            <label class="slabel">Auto-Close Voting After (hours)</label>
+            <input class="inp" type="number" id="autoCloseHours" placeholder="0 — never closes" min="0">
+            <p class="field-hint">Voting buttons are disabled after this many hours. 0 = voting never closes automatically.</p>
+          </div>
+
+          <div class="tog-row" style="margin-top:1rem">
+            <div class="tog-info">
+              <h3>Auto-actions send DMs</h3>
+              <p>When a suggestion is auto-approved/rejected by threshold, the author receives a DM (requires DM on Result to be enabled).</p>
+            </div>
+            <div style="font-size:.75rem;color:var(--text-muted);font-style:italic">Follows DM setting</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <!-- TAB: Preview                                                        -->
+    <!-- ════════════════════════════════════════════════════════════════════ -->
+    <div class="view" id="view-preview">
+      <div class="g2">
+
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            Live Preview
+          </div>
+          <p class="card-subtitle">How your suggestion embed looks in Discord. Updates as you change settings.</p>
+
+          <div class="dc-wrap">
+            <div class="dc-bot-row">
+              <div class="dc-avatar">N</div>
+              <div style="flex:1;min-width:0">
+                <div class="dc-meta">Roco <span>BOT · Today at 12:00</span></div>
+                <div class="dc-embed">
+                  <div class="dc-embed-title" id="prevTitle"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg> Suggestion #1</div>
+                  <div class="dc-embed-body" id="prevBody">Add a music bot to the server so we can listen together in voice channels.</div>
+                  <div class="dc-embed-fields">
+                    <div>
+                      <div class="dc-field-name"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Author</div>
+                      <div class="dc-field-val" id="prevAuthor">@YourName</div>
+                    </div>
+                    <div>
+                      <div class="dc-field-name"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Status</div>
+                      <div class="dc-field-val"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg> Pending</div>
+                    </div>
+                    <div>
+                      <div class="dc-field-name"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Submitted</div>
+                      <div class="dc-field-val">just now</div>
+                    </div>
+                  </div>
+                  <div style="margin-top:.375rem">
+                    <div class="dc-field-name"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> Votes</div>
+                    <div class="dc-field-val">No votes yet — be the first!</div>
+                  </div>
+                  <div class="dc-embed-footer" id="prevFooter">ServerName · Suggestion #1</div>
+                </div>
+                <div class="dc-btns">
+                  <div class="dc-btn dc-btn-green"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> 0</div>
+                  <div class="dc-btn dc-btn-red"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg> 0</div>
+                  <div class="dc-btn dc-btn-gray"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg> Voters</div>
+                </div>
+                <div class="dc-btns" style="margin-top:.25rem">
+                  <div class="dc-btn dc-btn-green"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Approve</div>
+                  <div class="dc-btn dc-btn-red"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Reject</div>
+                  <div class="dc-btn dc-btn-blue"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg> Implemented</div>
+                  <div class="dc-btn dc-btn-gray"><svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg> Duplicate</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:.6875rem;color:var(--text-muted);text-align:center;margin-top:.75rem">
+            Mod action buttons (Approve / Reject / Implemented / Duplicate) are only clickable by staff.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-icon">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            Feature Summary
+          </div>
+          <p class="card-subtitle">What's active in your current configuration.</p>
+
+          <div id="featureSummary" class="space-y">
+            <p style="color:var(--text-muted);font-size:.8125rem;font-style:italic">Save your config to see the feature summary.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Save bar ────────────────────────────────────────────────────────── -->
+    <div class="save-row" style="margin-top:1.75rem">
+      <button class="btn btn-primary" id="saveBtn" onclick="saveConfig()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save Changes
+      </button>
+      <button class="btn btn-ghost" onclick="resetForm()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+        Reset
+      </button>
+      <button class="btn btn-danger" onclick="disableSystem()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        Disable System
+      </button>
+    </div>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script src="/sidebar.js"></script>
+<script>
+// rzrPopulateChannels — inline fallback (works with or without channel-grouping sidebar patch)
+if (typeof window.rzrPopulateChannels !== 'function') {
+  window.rzrPopulateChannels = function(selects, data, savedId, placeholder) {
+    if (!Array.isArray(selects)) selects = [selects];
+    selects = selects.map(function(s) {
+      if (!s) return null;
+      if (typeof s === 'string') return document.getElementById(s);
+      return s;
+    }).filter(Boolean);
+    if (!selects.length) return;
+
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    var channels, categories;
+    if (Array.isArray(data)) {
+      channels = data; categories = [];
+    } else {
+      channels   = (data && data.channels)    || [];
+      categories = (data && data._categories) || [];
+    }
+
+    var html = (placeholder != null) ? '<option value="">' + esc(placeholder) + '</option>' : '';
+
+    if (categories.length === 0) {
+      html += channels.map(function(c) {
+        return '<option value="' + esc(c.id) + '">#' + esc(c.name) + '</option>';
+      }).join('');
+    } else {
+      var byParent = {};
+      var uncategorised = [];
+      channels.forEach(function(ch) {
+        if (ch.parentId) {
+          if (!byParent[ch.parentId]) byParent[ch.parentId] = [];
+          byParent[ch.parentId].push(ch);
+        } else {
+          uncategorised.push(ch);
+        }
+      });
+      if (uncategorised.length) {
+        html += uncategorised.map(function(c) {
+          return '<option value="' + esc(c.id) + '">#' + esc(c.name) + '</option>';
+        }).join('');
+      }
+      var sortedCats = categories.slice().sort(function(a, b) {
+        return (a.rawPosition || 0) - (b.rawPosition || 0);
+      });
+      sortedCats.forEach(function(cat) {
+        var chs = byParent[cat.id];
+        if (!chs || !chs.length) return;
+        html += '<optgroup label="' + esc(cat.name.toUpperCase()) + '">';
+        html += chs.map(function(c) {
+          return '<option value="' + esc(c.id) + '">#' + esc(c.name) + '</option>';
+        }).join('');
+        html += '</optgroup>';
+      });
+    }
+
+    selects.forEach(function(sel) {
+      var prev = sel.value;
+      sel.innerHTML = html;
+      var target = (savedId != null && savedId !== '') ? String(savedId) : prev;
+      if (target) sel.value = target;
+    });
+  };
+}
+</script>
+<!-- Razor Custom Select JS -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet();
+var openWrap=null;
+
+/* strip any html tags from option text just in case */
+function cleanText(t){
+  t=String(t||'');
+  var d=document.createElement('div');
+  d.innerHTML=t;
+  return (d.textContent||d.innerText||'').trim();
+}
+
+/* get clean option text */
+function optText(opt){
+  return cleanText(opt.text||opt.textContent||opt.label||'');
+}
+
+/* position panel relative to trigger using fixed coords */
+function positionPanel(wrap){
+  var r=wrap._t.getBoundingClientRect();
+  var p=wrap._p;
+  var panelH=p.offsetHeight||240;
+  var spaceBelow=window.innerHeight-r.bottom;
+  var spaceAbove=r.top;
+  var width=Math.max(r.width,160);
+  p.style.width=width+'px';
+  p.style.left=r.left+'px';
+  p.style.right='auto';
+  if(spaceBelow>=panelH||spaceBelow>=spaceAbove){
+    p.style.top=(r.bottom+4)+'px';
+    p.style.bottom='auto';
+  } else {
+    p.style.bottom=(window.innerHeight-r.top+4)+'px';
+    p.style.top='auto';
+  }
+}
+
+/* close on outside click */
+document.addEventListener('mousedown',function(e){
+  if(!openWrap)return;
+  if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);
+},true);
+
+/* close on scroll anywhere (reposition) */
+window.addEventListener('scroll',function(){
+  if(openWrap)positionPanel(openWrap);
+},true);
+window.addEventListener('resize',function(){
+  if(openWrap)positionPanel(openWrap);
+});
+
+function open_(wrap){
+  if(openWrap&&openWrap!==wrap)close_(openWrap);
+  openWrap=wrap;
+  buildList(wrap,'');
+  wrap._si.value='';
+  /* show search only when >5 real options */
+  var n=Array.from(wrap._s.options).filter(function(o){return optText(o);}).length;
+  wrap._sw.style.display='';
+  document.body.appendChild(wrap._p);
+  wrap._p.style.display='block';
+  wrap._t.classList.add('is-open');
+  wrap._t.setAttribute('aria-expanded','true');
+  /* position after display:block so offsetHeight is known */
+  requestAnimationFrame(function(){positionPanel(wrap);});
+  setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);
+}
+
+function close_(wrap){
+  if(!wrap)return;
+  if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);
+  wrap._p.style.display='none';
+  wrap._t.classList.remove('is-open');
+  wrap._t.setAttribute('aria-expanded','false');
+  if(openWrap===wrap)openWrap=null;
+}
+
+function buildList(wrap,q){
+  var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();
+  var opts=Array.from(sel.options).filter(function(o){
+    var t=optText(o);
+    return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);
+  });
+  if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}
+  list.innerHTML='';
+  opts.forEach(function(opt){
+    var it=document.createElement('div');
+    it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');
+    it.dataset.v=opt.value;
+    var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);
+    var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';
+    it.appendChild(tx);it.appendChild(ck);
+    it.addEventListener('mousedown',function(e){
+      e.preventDefault();e.stopPropagation();
+      sel.value=opt.value;
+      updateLabel(wrap);
+      close_(wrap);
+      sel.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    list.appendChild(it);
+  });
+}
+
+function updateLabel(wrap){
+  var sel=wrap._s,lbl=wrap._lb;
+  var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;
+  var text=opt?optText(opt):'';
+  if(text){
+    lbl.textContent=text;
+    /* treat index-0 empty-value options as placeholders */
+    lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));
+  } else {
+    lbl.textContent='Select\u2026';
+    lbl.classList.add('is-ph');
+  }
+  wrap._last=sel.value;
+}
+
+function wrapSelect(sel){
+  if(wrapped.has(sel))return;
+  if(sel.hasAttribute('data-rzr-skip'))return;
+  if(sel.size&&sel.size>1)return;
+  wrapped.add(sel);
+
+  /* mark parent to suppress ::after chevrons */
+  if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');
+
+  /* hide native */
+  sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';
+
+  /* hide sibling fake-chevron divs */
+  var sib=sel.nextElementSibling;
+  if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';
+
+  /* trigger */
+  var t=document.createElement('div');
+  t.className='rzr-trigger';
+  t.setAttribute('tabindex','0');
+  t.setAttribute('role','combobox');
+  t.setAttribute('aria-haspopup','listbox');
+  t.setAttribute('aria-expanded','false');
+  var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';
+  var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;
+  t.appendChild(lb);t.appendChild(cv);
+
+  /* panel — will be moved to body on open */
+  var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';
+  var sw=document.createElement('div');sw.className='rzr-panel-search';
+  var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;
+  sw.appendChild(si);
+  var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');
+  p.appendChild(sw);p.appendChild(l);
+
+  /* outer wrap */
+  var w=document.createElement('div');w.className='rzr-wrap';
+  w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;
+
+  w.appendChild(t);
+  /* panel stays in wrap until open — moved to body on open() */
+  w.appendChild(p);
+  sel.parentNode.insertBefore(w,sel);
+  w.appendChild(sel);
+
+  /* search */
+  si.addEventListener('input',function(){buildList(w,si.value);});
+  si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});
+
+  /* trigger events */
+  t.addEventListener('click',function(e){
+    e.stopPropagation();
+    openWrap===w?close_(w):open_(w);
+  });
+  t.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}
+    if(e.key==='Escape')close_(w);
+  });
+
+  /* watch option changes (async population: channels, roles) */
+  var mo=new MutationObserver(function(){
+    updateLabel(w);
+    if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}
+  });
+  mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});
+
+  /* poll for programmatic .value changes */
+  var pid=setInterval(function(){
+    if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}
+    if(sel.value!==w._last)updateLabel(w);
+  },150);
+
+  updateLabel(w);
+}
+
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+
+new MutationObserver(function(ms){
+  ms.forEach(function(m){
+    m.addedNodes.forEach(function(n){
+      if(n.nodeType!==1)return;
+      if(n.tagName==='SELECT')wrapSelect(n);
+      else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);
+    });
+  });
+}).observe(document.body,{childList:true,subtree:true});
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);
+else initAll();
+})();
+</script>
+<!-- End Razor Custom Select JS -->
+<script>
+  const guildId = location.pathname.split("/")[2];
+  let _config   = {};
+  let _chData   = null;
+  let _roleData = [];
+
+  // ── Role state ───────────────────────────────────────────────────────────────
+  const _roles = {
+    staffRoleIds:    [],
+    requiredRoleIds: [],
+    blockedRoleIds:  [],
+  };
+
+  // ── Utilities ─────────────────────────────────────────────────────────────────
+  function showToast(msg, type = "success") {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.className = `show ${type}`;
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.className = "", 3200);
+  }
+
+  function setStatus(active) {
+    const badge = document.getElementById("statusBadge");
+    const dot   = document.getElementById("statusDot");
+    const txt   = document.getElementById("statusText");
+    badge.className = active ? "status-badge"     : "status-badge off";
+    dot.className   = active ? "status-dot"       : "status-dot off";
+    txt.textContent = active ? "Active"            : "Not Configured";
+  }
+
+  function switchTab(name, btn) {
+    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.getElementById("view-" + name).classList.add("active");
+    btn.classList.add("active");
+    if (name === "preview") updatePreview();
+    if (name === "preview") updateFeatureSummary();
+  }
+
+  // ── Channels ──────────────────────────────────────────────────────────────────
+  async function loadChannels() {
+    const res  = await fetch(`/api/guild/${guildId}/channels`);
+    _chData    = await res.json();
+    const ids  = ["channelSelect","reviewChannelSelect","approvedChannelSelect","rejectedChannelSelect","logChannelSelect"];
+    const phs  = ["Select a channel","— None —","— None —","— None —","— None —"];
+    ids.forEach((id, i) => rzrPopulateChannels(document.getElementById(id), _chData, null, phs[i]));
+  }
+
+  // ── Roles ─────────────────────────────────────────────────────────────────────
+  async function loadRoles() {
+    try {
+      const res  = await fetch(`/api/guild/${guildId}/roles`);
+      _roleData  = (await res.json()) || [];
+      const makeOpts = (sel, skip = []) => {
+        let html = `<option value="">Select a role</option>`;
+        _roleData
+          .filter(r => !skip.includes(r.id) && r.name !== "@everyone")
+          .forEach(r => { html += `<option value="${r.id}">${r.name}</option>`; });
+        document.getElementById(sel).innerHTML = html;
+      };
+      makeOpts("staffRoleAdd");
+      makeOpts("reqRoleAdd");
+      makeOpts("blockedRoleAdd");
+      // Ping role — any role
+      let html = `<option value="">— None —</option>`;
+      _roleData.filter(r => r.name !== "@everyone").forEach(r => { html += `<option value="${r.id}">${r.name}</option>`; });
+      document.getElementById("pingRoleSelect").innerHTML = html;
+    } catch { /* roles endpoint may not exist */ }
+  }
+
+  function roleNameById(id) {
+    return _roleData.find(r => r.id === id)?.name ?? id;
+  }
+
+  function addRole(stateKey, selectId, chipListId, label) {
+    const sel = document.getElementById(selectId);
+    const id  = sel.value;
+    if (!id) return;
+    if (_roles[stateKey].includes(id)) { showToast(`${label} already added`, "error"); return; }
+    _roles[stateKey].push(id);
+    renderChips(stateKey, chipListId, label);
+    sel.value = "";
+  }
+
+  function removeRole(stateKey, id, chipListId, label) {
+    _roles[stateKey] = _roles[stateKey].filter(x => x !== id);
+    renderChips(stateKey, chipListId, label);
+  }
+
+  const CHIP_DEFAULTS = {
+    staffRoleIds:    { listId: "staffChips",   empty: "No staff roles set — Manage Server permission required.", label: "Staff role",    cls: "chip" },
+    requiredRoleIds: { listId: "reqChips",      empty: "No required roles — anyone can submit.",                  label: "Required role", cls: "chip chip-blue" },
+    blockedRoleIds:  { listId: "blockedChips",  empty: "No blocked roles.",                                        label: "Blocked role",  cls: "chip chip-red" },
+  };
+
+  function renderChips(stateKey, chipListId, label) {
+    const info = CHIP_DEFAULTS[stateKey];
+    const ids  = _roles[stateKey];
+    const el   = document.getElementById(chipListId || info.listId);
+    if (!ids.length) { el.innerHTML = `<span class="chip-empty">${info.empty}</span>`; return; }
+    el.innerHTML = ids.map(id => {
+      const name = roleNameById(id);
+      return `<span class="${info.cls}">${name}<span class="chip-x" onclick="removeRole('${stateKey}','${id}','${info.listId}','${info.label}')">✕</span></span>`;
+    }).join("");
+  }
+
+  function renderAllChips() {
+    Object.keys(CHIP_DEFAULTS).forEach(k => renderChips(k));
+  }
+
+  // ── Apply config → form ───────────────────────────────────────────────────────
+  function applyConfig(d) {
+    if (!d) d = {};
+
+    // Channels
+    if (_chData) {
+      const ch = [["channelSelect",d.channelId],["reviewChannelSelect",d.reviewChannelId],
+                  ["approvedChannelSelect",d.approvedChannelId],["rejectedChannelSelect",d.rejectedChannelId],
+                  ["logChannelSelect",d.logChannelId]];
+      const phs = ["Select a channel","— None —","— None —","— None —","— None —"];
+      ch.forEach(([id, val], i) => rzrPopulateChannels(document.getElementById(id), _chData, val, phs[i]));
+    }
+
+    // Role pickers
+    if (d.pingRoleId) document.getElementById("pingRoleSelect").value = d.pingRoleId;
+
+    // Role arrays
+    _roles.staffRoleIds    = d.staffRoleIds    ?? [];
+    _roles.requiredRoleIds = d.requiredRoleIds ?? [];
+    _roles.blockedRoleIds  = d.blockedRoleIds  ?? [];
+    renderAllChips();
+
+    // Toggles
+    document.getElementById("togReview").checked    = !!d.reviewMode;
+    document.getElementById("togThread").checked    = !!d.threadOnSuggest;
+    document.getElementById("togDm").checked        = !!d.dmOnResult;
+    document.getElementById("togEdit").checked      = !!d.allowEdit;
+    document.getElementById("togReason").checked    = !!d.requireReason;
+    document.getElementById("togAnon").checked      = !!d.anonymousMode;
+    document.getElementById("togSelfVote").checked  = !!d.selfVoteAllowed;
+    document.getElementById("togVoteChange").checked = d.allowVoteChange !== false; // default true
+
+    // Limits
+    document.getElementById("minLength").value     = d.minLength         || "";
+    document.getElementById("maxLength").value     = d.maxLength         || "";
+    document.getElementById("cooldown").value      = d.cooldownSeconds   || "";
+    document.getElementById("maxActive").value     = d.maxActiveSuggestions || "";
+
+    // Auto
+    document.getElementById("autoApprove").value    = d.autoApproveUpvotes   || "";
+    document.getElementById("autoReject").value     = d.autoRejectDownvotes  || "";
+    document.getElementById("autoCloseHours").value = d.autoCloseHours       || "";
+
+    // Stats
+    const total    = (d.totalSuggestions ?? 0);
+    const approved = (d.totalApproved    ?? 0);
+    const rejected = (d.totalRejected    ?? 0);
+    const rate     = total > 0 ? ((approved / total) * 100).toFixed(1) + "%" : "—";
+    document.getElementById("statTotal").textContent    = total;
+    document.getElementById("statApproved").textContent = approved;
+    document.getElementById("statRejected").textContent = rejected;
+    document.getElementById("statRate").textContent     = rate;
+
+    setStatus(!!d.channelId);
+  }
+
+  // ── Load config ───────────────────────────────────────────────────────────────
+  async function loadConfig() {
+    try {
+      const res = await fetch(`/api/guild/${guildId}/suggestions`);
+      _config = (await res.json()) || {};
+    } catch { _config = {}; }
+  }
+
+  // ── Build payload ─────────────────────────────────────────────────────────────
+  function buildPayload() {
+    return {
+      channelId:            document.getElementById("channelSelect").value          || null,
+      reviewChannelId:      document.getElementById("reviewChannelSelect").value    || null,
+      approvedChannelId:    document.getElementById("approvedChannelSelect").value  || null,
+      rejectedChannelId:    document.getElementById("rejectedChannelSelect").value  || null,
+      logChannelId:         document.getElementById("logChannelSelect").value       || null,
+
+      staffRoleIds:         [..._roles.staffRoleIds],
+      requiredRoleIds:      [..._roles.requiredRoleIds],
+      blockedRoleIds:       [..._roles.blockedRoleIds],
+      pingRoleId:           document.getElementById("pingRoleSelect").value         || null,
+
+      reviewMode:           document.getElementById("togReview").checked,
+      threadOnSuggest:      document.getElementById("togThread").checked,
+      dmOnResult:           document.getElementById("togDm").checked,
+      allowEdit:            document.getElementById("togEdit").checked,
+      requireReason:        document.getElementById("togReason").checked,
+      anonymousMode:        document.getElementById("togAnon").checked,
+      selfVoteAllowed:      document.getElementById("togSelfVote").checked,
+      allowVoteChange:      document.getElementById("togVoteChange").checked,
+
+      minLength:            parseInt(document.getElementById("minLength").value)     || 0,
+      maxLength:            parseInt(document.getElementById("maxLength").value)     || 1024,
+      cooldownSeconds:      parseInt(document.getElementById("cooldown").value)      || 0,
+      maxActiveSuggestions: parseInt(document.getElementById("maxActive").value)     || 0,
+
+      autoApproveUpvotes:   parseInt(document.getElementById("autoApprove").value)    || 0,
+      autoRejectDownvotes:  parseInt(document.getElementById("autoReject").value)     || 0,
+      autoCloseHours:       parseInt(document.getElementById("autoCloseHours").value) || 0,
+    };
+  }
+
+  // ── Save ──────────────────────────────────────────────────────────────────────
+  async function saveConfig() {
+    const btn = document.getElementById("saveBtn");
+    btn.disabled = true; btn.textContent = "Saving…";
+    try {
+      const payload = buildPayload();
+      const res = await fetch(`/api/guild/${guildId}/suggestions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Save failed");
+      _config = { ..._config, ...payload };
+      setStatus(!!payload.channelId);
+      applyConfig(_config);
+      showToast("✓ Suggestion system saved!", "success");
+    } catch (e) {
+      showToast(e.message || "Failed to save", "error");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Changes`;
+    }
+  }
+
+  function resetForm() {
+    _roles.staffRoleIds    = _config.staffRoleIds    ?? [];
+    _roles.requiredRoleIds = _config.requiredRoleIds ?? [];
+    _roles.blockedRoleIds  = _config.blockedRoleIds  ?? [];
+    applyConfig(_config);
+    showToast("Form reset to last saved state", "success");
+  }
+
+  async function disableSystem() {
+    if (!confirm("Disable the suggestion system? This will delete all configuration (suggestion history is preserved).")) return;
+    try {
+      await fetch(`/api/guild/${guildId}/suggestions`, { method: "DELETE" });
+      _config = {};
+      _roles.staffRoleIds = _roles.requiredRoleIds = _roles.blockedRoleIds = [];
+      applyConfig({});
+      showToast("Suggestion system disabled", "success");
+    } catch { showToast("Failed to disable", "error"); }
+  }
+
+  // ── Live Preview ──────────────────────────────────────────────────────────────
+  function updatePreview() {
+    const anon = document.getElementById("togAnon").checked;
+    document.getElementById("prevAuthor").textContent = anon ? "Anonymous" : "@YourName";
+  }
+
+  function updateFeatureSummary() {
+    const features = [];
+    const tog = id => document.getElementById(id).checked;
+    if (tog("togReview"))     features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`, text:"Review Mode — suggestions need mod approval before going public", on:true });
+    if (tog("togThread"))     features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`, text:"Discussion threads auto-created on each suggestion", on:true });
+    if (tog("togDm"))         features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`, text:"DM notifications on approve/reject/implement", on:true });
+    if (tog("togEdit"))       features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,  text:"Authors can edit suggestions before votes arrive", on:true });
+    if (tog("togReason"))     features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`, text:"Rejection reason required", on:true });
+    if (tog("togAnon"))       features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`, text:"Anonymous mode — author hidden in embed", on:true });
+    if (!tog("togSelfVote"))  features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>`, text:"Self-voting disabled", on:true });
+    if (tog("togVoteChange")) features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>`, text:"Vote changes allowed", on:true });
+    const aa = parseInt(document.getElementById("autoApprove").value)    || 0;
+    const ar = parseInt(document.getElementById("autoReject").value)     || 0;
+    const ac = parseInt(document.getElementById("autoCloseHours").value) || 0;
+    if (aa) features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`, text:`Auto-approve at ${aa} upvotes`, on:true });
+    if (ar) features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`, text:`Auto-reject at ${ar} downvotes`, on:true });
+    if (ac) features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/></svg>`, text:`Voting closes after ${ac} hours`, on:true });
+    const cd = parseInt(document.getElementById("cooldown").value) || 0;
+    if (cd) features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`, text:`${cd}s cooldown between submissions`, on:true });
+    const ma = parseInt(document.getElementById("maxActive").value) || 0;
+    if (ma) features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`, text:`Max ${ma} active suggestion(s) per user`, on:true });
+    const sr = _roles.staffRoleIds.length;
+    if (sr) features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/><circle cx="12" cy="16" r="1"/></svg>`, text:`${sr} staff role${sr>1?"s":""} configured`, on:true });
+    const rr = _roles.requiredRoleIds.length;
+    if (rr) features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`, text:`${rr} required role${rr>1?"s":""} — gated access`, on:true });
+    const br = _roles.blockedRoleIds.length;
+    if (br) features.push({ icon:`<svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>`, text:`${br} blocked role${br>1?"s":""}`, on:true });
+
+    const el = document.getElementById("featureSummary");
+    if (!features.length) {
+      el.innerHTML = `<p style="color:var(--text-muted);font-size:.8125rem">No special features enabled — basic suggestion system with public voting.</p>`;
+      return;
+    }
+    el.innerHTML = features.map(f => {
+      // Replace btn-icon class with feat-icon for the feature summary sizing
+      const icon = typeof f.icon === 'string' ? f.icon.replace(/class="btn-icon"/g, 'class="feat-icon"') : f.icon;
+      return `<div style="display:flex;gap:.625rem;align-items:flex-start;font-size:.8125rem;color:var(--text)">
+        <span style="flex-shrink:0;margin-top:.1rem">${icon}</span><span>${f.text}</span>
+      </div>`;
+    }).join("");
+  }
+
+  // ── Boot ──────────────────────────────────────────────────────────────────────
+  (async () => {
+    await Promise.all([loadChannels(), loadRoles(), loadConfig()]);
+    applyConfig(_config);
+    updatePreview();
+  })();
+</script>
+
+</html>

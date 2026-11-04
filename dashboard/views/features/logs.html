@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit Logs</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tailwind.css">
+<script>
+function escapeHtml(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+const tailwind=window.tailwind||{};tailwind.config={theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','sans-serif'],mono:['"JetBrains Mono"','monospace']},colors:{razor:"#FF3333",razorDark:"#CC2222",success:"#10B981",danger:"#EF4444",warning:"#F59E0B"}}}};
+</script>
+<style>
+:root{--accent:#FF3333;--accent-dim:rgba(255,51,51,.12);--bg:#0b0b14;--panel:#12121f;--panel-raised:#1a1a2e;--border:rgba(255,255,255,.07);--text:#e2e8f0;--text-muted:#6b7280;}
+*{box-sizing:border-box;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:#252538;border-radius:4px;}::-webkit-scrollbar-thumb:hover{background:var(--accent);}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;margin:0;}
+/* ── Log card ── */
+.log-card{background:linear-gradient(145deg,rgba(255,255,255,.03) 0%,rgba(255,255,255,.01) 100%);border:1px solid rgba(255,255,255,.06);transition:all .3s cubic-bezier(.4,0,.2,1);}
+.log-card:hover{border-color:rgba(255,51,51,.35);box-shadow:0 10px 30px -10px rgba(255,51,51,.12);transform:translateY(-2px);}
+/* ── Pulse ── */
+.pulse-dot{box-shadow:0 0 0 0 rgba(16,185,129,.7);animation:pulse-g 2s infinite;}
+@keyframes pulse-g{0%{transform:scale(.95);box-shadow:0 0 0 0 rgba(16,185,129,.7);}70%{transform:scale(1);box-shadow:0 0 0 6px rgba(16,185,129,0);}100%{transform:scale(.95);box-shadow:0 0 0 0 rgba(16,185,129,0);}}
+/* ── Section label ── */
+.section-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);padding:.15rem .5rem;background:rgba(255,255,255,.04);border-radius:5px;}
+/* ── Event table ── */
+.event-table{width:100%;border-collapse:collapse;}
+.event-table th{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);padding:.45rem .75rem;text-align:left;border-bottom:1px solid var(--border);}
+.event-row{border-bottom:1px solid rgba(255,255,255,.03);transition:background .12s;}
+.event-row:hover{background:rgba(255,255,255,.025);}
+.event-row:last-child{border-bottom:none;}
+.event-row td{padding:.55rem .75rem;vertical-align:middle;font-size:.82rem;}
+.event-name{font-weight:600;color:var(--text);}
+.event-desc{color:var(--text-muted);font-size:.74rem;margin-top:1px;}
+/* ── Toggle ── */
+.toggle-wrap{position:relative;display:inline-block;width:38px;height:21px;flex-shrink:0;}
+.toggle-wrap input{opacity:0;width:0;height:0;}
+.toggle-track{position:absolute;inset:0;background:#1e1e32;border-radius:999px;border:1px solid var(--border);cursor:pointer;transition:background .2s;}
+.toggle-track::before{content:'';position:absolute;left:2px;top:2px;width:15px;height:15px;background:#fff;border-radius:50%;transition:transform .2s;}
+input:checked+.toggle-track{background:var(--accent);}
+input:checked+.toggle-track::before{transform:translateX(17px);}
+/* ── Channel badge ── */
+.ch-badge{display:inline-flex;align-items:center;gap:4px;font-size:.73rem;font-weight:700;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(255,51,51,.2);border-radius:6px;padding:.18rem .5rem;cursor:pointer;transition:background .12s;white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;}
+.ch-badge:hover{background:rgba(255,51,51,.2);}
+.ch-badge.unset{color:var(--text-muted);background:rgba(255,255,255,.04);border-color:var(--border);}
+.ch-badge.unset:hover{background:rgba(255,255,255,.08);}
+/* ── Icon btn ── */
+.icon-btn{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text-muted);border-radius:7px;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .12s;}
+.icon-btn:hover{background:rgba(255,255,255,.09);color:var(--text);}
+.icon-btn.danger:hover{background:rgba(255,83,83,.12);border-color:rgba(255,83,83,.3);color:#ff5353;}
+/* ── Modal backdrop ── */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(7px);z-index:9990;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity .18s;}
+.modal-box{background:var(--panel-raised);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:1.7rem;width:100%;max-width:520px;box-shadow:0 24px 64px rgba(0,0,0,.55);position:relative;}
+/* ── Form inputs ── */
+.frm-label{font-size:.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.35rem;}
+.frm-input{width:100%;background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:.6rem .85rem;font-size:.85rem;font-family:inherit;outline:none;transition:border-color .15s;}
+.frm-input:focus{border-color:var(--accent);}
+.frm-select{appearance:none;background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:.6rem .85rem;font-size:.85rem;font-family:inherit;outline:none;width:100%;cursor:pointer;}
+.frm-select:focus{border-color:var(--accent);}
+.frm-textarea{width:100%;background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:.65rem .85rem;font-size:.82rem;font-family:'JetBrains Mono',monospace;outline:none;resize:vertical;min-height:110px;transition:border-color .15s;line-height:1.55;}
+.frm-textarea:focus{border-color:var(--accent);}
+/* ── Variable chips ── */
+.var-chip{display:inline-block;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.18rem .5rem;font-size:.72rem;font-family:'JetBrains Mono',monospace;color:#94a3b8;cursor:pointer;transition:all .1s;user-select:none;}
+.var-chip:hover{background:rgba(255,51,51,.15);border-color:rgba(255,51,51,.35);color:var(--accent);}
+/* ── Toast ── */
+#toast{position:fixed;top:1.25rem;right:1.25rem;padding:.8rem 1.3rem;border-radius:12px;transform:translateX(440px);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:99999;color:#fff;font-weight:600;font-size:.875rem;display:flex;align-items:center;gap:.5rem;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+/* ── Cat tabs ── */
+.cat-tab{padding:.45rem 1rem;border-radius:8px;font-size:.8rem;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all .15s;white-space:nowrap;}
+.cat-tab.active,.cat-tab:hover{background:rgba(255,255,255,.07);color:var(--text);}
+.cat-tab.active{color:var(--accent);}
+/* ── Inherited chip ── */
+.inh-chip{font-size:.68rem;font-weight:600;color:var(--text-muted);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;padding:.12rem .4rem;}
+/* ── Message type buttons ── */
+.msg-type-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;border:1px solid var(--border);transition:all .15s;color:var(--text-muted);background:transparent}
+.msg-type-btn.active{background:rgba(108,83,255,.15);color:#a78bfa;border-color:rgba(108,83,255,.4)}
+.msg-type-btn:hover:not(.active){color:#fff;background:rgba(255,255,255,.05)}
+/* ── Embed tabs ── */
+.etab{padding:5px 11px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;color:var(--text-muted);transition:all .15s}
+.etab.active{background:rgba(108,83,255,.15);color:#a78bfa}
+.etab:hover:not(.active){color:#fff}
+/* ── Discord preview styles ── */
+.dsc-msg{display:flex;gap:12px;padding:2px 12px}
+.dsc-avatar{width:36px;height:36px;border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.dsc-body{flex:1;min-width:0}
+.dsc-username{font-weight:700;color:#fff;font-size:13px}
+.dsc-tag{color:#fff;font-size:8px;font-weight:700;background:#FF3333;padding:1px 4px;border-radius:3px;margin-left:5px;vertical-align:middle}
+.dsc-text{color:#dcddde;font-size:12.5px;margin-top:2px;line-height:1.4;word-break:break-word;white-space:pre-wrap}
+.dsc-embed{border-left:3px solid var(--c,#FF3333);background:#2b2d31;border-radius:0 4px 4px 0;padding:8px 12px;margin-top:5px;max-width:400px}
+.dsc-embed-title{color:#fff;font-size:13px;font-weight:700;margin-bottom:2px}
+.dsc-embed-desc{color:#dcddde;font-size:12px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.dsc-embed-author{display:flex;align-items:center;gap:5px;margin-bottom:4px;font-size:11px;font-weight:600;color:#fff}
+.dsc-embed-author img{width:16px;height:16px;border-radius:50%}
+.dsc-embed-image{width:100%;border-radius:4px;margin-top:6px;object-fit:cover;display:block}
+.dsc-embed-thumbnail{float:right;width:56px;height:56px;border-radius:4px;margin-left:10px;object-fit:cover}
+.dsc-embed-footer{display:flex;align-items:center;gap:4px;margin-top:6px;font-size:10px;color:#72767d;clear:both}
+.dsc-embed-footer img{width:12px;height:12px;border-radius:50%}
+</style>
+<link rel="stylesheet" href="/loading.css">
+<style>
+@keyframes nx-spin{to{transform:translate(-50%,-50%) rotate(360deg);}}
+@keyframes nx-bar-move{0%{margin-left:-40%}100%{margin-left:140%}}
+@keyframes nx-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)}50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)}}
+@keyframes nx-dot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1.2);opacity:1}}
+</style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body class="bg-[#0b0b14] text-white">
+
+<!-- Loader -->
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center"><div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite"><img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'"></div><div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div></div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;">Loading&hellip;</div>
+</div>
+<script>(function(){function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}setTimeout(hide,1500);})();</script>
+<script src="/loading.js" defer></script>
+
+<!-- Toast -->
+<div id="toast"><span id="toastMsg"></span></div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+
+  <main class="flex-1 p-8 max-w-[1400px]">
+
+    <!-- Header -->
+    <div class="mb-8 flex items-center justify-between gap-4 flex-wrap">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight mb-1 flex items-center gap-3">
+          <svg class="w-8 h-8 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Audit Logging
+        </h1>
+        <p class="text-gray-400 text-sm ml-11">Per-event channels, custom message templates, and full variable support.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 px-4 py-2 bg-[#1a1a2e] border border-white/10 rounded-xl">
+          <div class="flex flex-col items-end">
+            <span class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">System</span>
+            <span id="statusText" class="text-sm font-bold text-red-400">Offline</span>
+          </div>
+          <div id="statusDot" class="w-3 h-3 bg-red-500 rounded-full"></div>
+        </div>
+        <button onclick="saveAll()" class="px-5 py-2.5 bg-razor hover:bg-razorDark text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-razor/20 flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Save All
+        </button>
+      </div>
+    </div>
+
+    <!-- Category channel cards -->
+    <div class="mb-2">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="section-label">Category Channels</span>
+        <span class="text-xs text-gray-600">— fallback channel used when an event has no specific override</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-8" id="catCardsGrid"></div>
+    </div>
+
+    <!-- Per-event section -->
+    <div class="mb-4 flex items-center justify-between gap-3 flex-wrap">
+      <span class="section-label">Per-Event Configuration</span>
+      <div class="flex gap-1 flex-wrap" id="catTabs"></div>
+    </div>
+
+    <!-- Event panel -->
+    <div class="log-card rounded-2xl overflow-hidden" id="eventPanel">
+      <table class="event-table">
+        <thead>
+          <tr>
+            <th style="width:30%">Event</th>
+            <th style="width:12%">Enabled</th>
+            <th style="width:25%">Channel Override</th>
+            <th style="width:25%">Custom Message</th>
+            <th style="width:8%"></th>
+          </tr>
+        </thead>
+        <tbody id="eventTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Danger zone -->
+    <div class="mt-8 border-t border-white/5 pt-6">
+      <h3 class="text-xs font-bold text-gray-600 uppercase tracking-wider mb-3">Danger Zone</h3>
+      <button onclick="disableAll()" class="px-5 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-xl text-sm font-bold transition-all flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        Disable All Logging
+      </button>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════ CHANNEL PICKER MODAL ═══════════════════════════ -->
+<div class="modal-backdrop" id="chanModal" onclick="if(event.target===this)closeChanModal()">
+  <div class="modal-box">
+    <div class="flex justify-between items-start mb-5">
+      <div>
+        <h2 class="text-xl font-bold mb-1">Set Log Channel</h2>
+        <p class="text-sm text-gray-500" id="chanModalDesc">Choose where this event's logs will be sent.</p>
+      </div>
+      <button onclick="closeChanModal()" class="icon-btn"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <label class="frm-label">Target Channel</label>
+    <div class="relative mb-5">
+      <select id="chanModalSelect" class="frm-select pr-8">
+        <option value="">— Inherit from category —</option>
+      </select>
+      <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="closeChanModal()" class="flex-1 py-2.5 bg-white/5 hover:bg-white/10 text-white rounded-xl font-bold text-sm transition-all border border-white/5">Cancel</button>
+      <button onclick="saveChanModal()" class="flex-1 py-2.5 bg-razor hover:bg-razorDark text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-razor/20">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ TEMPLATE EDITOR MODAL ═══════════════════════════ -->
+<div class="modal-backdrop" id="tplModal" onclick="if(event.target===this)closeTplModal()">
+  <div class="modal-box" style="max-width:720px;">
+    <div class="flex justify-between items-start mb-5">
+      <div>
+        <h2 class="text-xl font-bold mb-1">Custom Message Template</h2>
+        <p class="text-sm text-gray-500" id="tplModalDesc">Overrides the default embed for this event. Leave blank to use the default.</p>
+      </div>
+      <button onclick="closeTplModal()" class="icon-btn"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+
+    <!-- Message Type Tabs -->
+    <div class="flex gap-2 mb-4">
+      <button class="msg-type-btn active" data-type="text" onclick="setLogMsgType('text')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/><line x1="12" x2="12" y1="4" y2="20"/></svg>
+        Text
+      </button>
+      <button class="msg-type-btn" data-type="embed" onclick="setLogMsgType('embed')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
+        Embed
+      </button>
+    </div>
+
+    <!-- Text panel -->
+    <div id="log-panel-text">
+      <label class="frm-label">Template</label>
+      <textarea id="logTextInput" class="frm-textarea mb-3" placeholder="e.g. {user.tag} deleted a message in {channel.name}..." oninput="logUpdatePreview()"></textarea>
+      <div class="mb-4">
+        <div class="frm-label mb-2">Available Variables <span class="text-gray-600 font-normal normal-case tracking-normal">(click to insert)</span></div>
+        <div id="tplVarsWrap" class="flex flex-wrap gap-1.5"></div>
+      </div>
+    </div>
+
+    <!-- Embed panel -->
+    <div id="log-panel-embed" class="hidden">
+      <div class="flex gap-1 flex-wrap pb-2 mb-3 border-b border-white/5" id="logEmbedTabs">
+        <span class="etab active" data-tab="general" onclick="logSwitchEmbedTab('general')">General</span>
+        <span class="etab" data-tab="author" onclick="logSwitchEmbedTab('author')">Author</span>
+        <span class="etab" data-tab="media" onclick="logSwitchEmbedTab('media')">Images</span>
+        <span class="etab" data-tab="footer" onclick="logSwitchEmbedTab('footer')">Footer</span>
+      </div>
+      
+      <!-- General tab -->
+      <div id="log-tab-general" class="log-embed-tab space-y-3">
+        <div class="flex gap-3 items-end">
+          <div class="flex-1">
+            <label class="frm-label">Title</label>
+            <input id="logEmbedTitle" class="frm-input" placeholder="Embed title" oninput="logUpdatePreview()">
+          </div>
+          <div>
+            <label class="frm-label">Color</label>
+            <input type="color" id="logEmbedColor" value="#FF3333" class="frm-input" style="height:38px;width:50px;padding:3px 6px;cursor:pointer" oninput="logUpdatePreview()">
+          </div>
+        </div>
+        <div>
+          <label class="frm-label">Description</label>
+          <textarea id="logEmbedDesc" class="frm-textarea mb-2" rows="3" placeholder="Embed description..." oninput="logUpdatePreview()"></textarea>
+          <div class="flex gap-1.5 flex-wrap" id="logEmbedVarsWrap"></div>
+        </div>
+      </div>
+
+      <!-- Author tab -->
+      <div id="log-tab-author" class="log-embed-tab hidden space-y-3">
+        <div>
+          <label class="frm-label">Author Name</label>
+          <input id="logEmbedAuthor" class="frm-input" placeholder="Author name" oninput="logUpdatePreview()">
+        </div>
+        <div>
+          <label class="frm-label">Author Icon URL</label>
+          <input id="logEmbedAuthorIcon" class="frm-input" placeholder="https://..." oninput="logUpdatePreview()">
+        </div>
+      </div>
+
+      <!-- Media tab -->
+      <div id="log-tab-media" class="log-embed-tab hidden space-y-3">
+        <div>
+          <label class="frm-label">Thumbnail URL <span class="text-gray-500 font-normal">(small, top right)</span></label>
+          <input id="logEmbedThumb" class="frm-input" placeholder="https://..." oninput="logUpdatePreview()">
+        </div>
+        <div>
+          <label class="frm-label">Image URL <span class="text-gray-500 font-normal">(bottom of embed)</span></label>
+          <input id="logEmbedImage" class="frm-input" placeholder="https://..." oninput="logUpdatePreview()">
+        </div>
+      </div>
+
+      <!-- Footer tab -->
+      <div id="log-tab-footer" class="log-embed-tab hidden space-y-3">
+        <div>
+          <label class="frm-label">Footer Text</label>
+          <input id="logEmbedFooter" class="frm-input" placeholder="Footer text" oninput="logUpdatePreview()">
+        </div>
+        <div>
+          <label class="frm-label">Footer Icon URL</label>
+          <input id="logEmbedFooterIcon" class="frm-input" placeholder="https://..." oninput="logUpdatePreview()">
+        </div>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" id="logEmbedTimestamp" onchange="logUpdatePreview()">
+          <span class="text-sm text-gray-400">Include timestamp</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="mt-4 mb-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="frm-label mb-0">Preview</span>
+        <button onclick="logTogglePreviewRaw()" class="text-xs text-gray-500 hover:text-razor transition-colors">Edit as JSON</button>
+      </div>
+      <div class="rounded-xl overflow-hidden" style="background:#313338;border:1px solid #1e1f22">
+        <div class="flex items-center gap-2 px-3 py-2" style="background:#2b2d31;border-bottom:1px solid #1e1f22">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#72767d" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span class="text-xs font-bold" style="color:#72767d">preview</span>
+        </div>
+        <div class="p-3" style="max-height:250px;overflow-y:auto">
+          <div class="dsc-msg">
+            <div class="dsc-avatar" style="background:linear-gradient(135deg,#FF333320,#6C53FF20);border:1px solid rgba(255,51,51,.3);overflow:hidden"><img src="/logo.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.style.display='none';this.parentElement.textContent='🤖'"></div>
+            <div class="dsc-body">
+              <span class="dsc-username">Roco<span class="dsc-tag">BOT</span></span>
+              <div id="logPrevContent" class="dsc-text"></div>
+              <div id="logPrevEmbed"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Raw JSON editor (hidden by default) -->
+    <div id="logRawEditor" class="hidden mb-3">
+      <label class="frm-label">Raw Template JSON</label>
+      <textarea id="logRawInput" class="frm-textarea font-mono text-xs" rows="6" placeholder='{"type":"text","content":"..."}'></textarea>
+    </div>
+
+    <div class="flex gap-3">
+      <button onclick="clearTemplate()" class="px-4 py-2.5 bg-white/5 hover:bg-white/10 text-gray-400 rounded-xl font-bold text-sm transition-all border border-white/5">Clear</button>
+      <div class="flex-1"></div>
+      <button onclick="closeTplModal()" class="px-4 py-2.5 bg-white/5 hover:bg-white/10 text-white rounded-xl font-bold text-sm transition-all border border-white/5">Cancel</button>
+      <button onclick="saveTplModal()" class="px-6 py-2.5 bg-razor hover:bg-razorDark text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-razor/20">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="/sidebar.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════════════════
+const guildId = location.pathname.split('/')[2];
+let logConfig  = { LogChannels: {} };
+let channels   = [];
+let activeCat  = 'message';
+
+// Channel modal state
+let _chanTarget = null; // { type: 'category'|'event', key: string }
+
+// Template modal state
+let _tplTarget = null; // event key
+
+// ─── Event definitions ────────────────────────────────────────────────────────
+const CATEGORIES = [
+  { key: 'message', label: 'Messages',  icon: '💬', color: 'red'    },
+  { key: 'member',  label: 'Members',   icon: '👥', color: 'pink'   },
+  { key: 'channel', label: 'Channels',  icon: '#',  color: 'purple' },
+  { key: 'role',    label: 'Roles',     icon: '🛡', color: 'yellow' },
+  { key: 'voice',   label: 'Voice',     icon: '🔊', color: 'indigo' },
+  { key: 'guild',   label: 'Server',    icon: '🏠', color: 'orange' },
+  { key: 'emoji',   label: 'Emoji',     icon: '😀', color: 'green'  },
+  { key: 'invite',  label: 'Invites',   icon: '🔗', color: 'cyan'   },
+  { key: 'webhook', label: 'Webhooks',  icon: '⚙', color: 'gray'   },
+  { key: 'automod', label: 'AutoMod',   icon: '🤖', color: 'rose'   },
+  { key: 'thread',  label: 'Threads',   icon: '🧵', color: 'teal'   },
+];
+
+const CAT_EVENTS = {
+  message: [
+    { key: 'messageDelete',     label: 'Message Delete',     desc: 'A message was deleted',                  vars: ['user','channel','message'] },
+    { key: 'messageUpdate',     label: 'Message Edit',       desc: 'A message was edited',                   vars: ['user','channel','message'] },
+    { key: 'messageBulkDelete', label: 'Bulk Delete',        desc: 'Multiple messages purged at once',        vars: ['channel','count','moderator'] },
+  ],
+  member: [
+    { key: 'guildMemberAdd',      label: 'Member Join',         desc: 'A user joined the server',              vars: ['user','guild'] },
+    { key: 'guildMemberRemove',   label: 'Member Leave',        desc: 'A user left or was kicked',             vars: ['user','guild'] },
+    { key: 'guildMemberUpdate',   label: 'Member Update',       desc: 'Roles or nickname changed',             vars: ['user','guild','moderator'] },
+    { key: 'guildMemberNickname', label: 'Nickname Change',     desc: 'A member changed their nickname',       vars: ['user','oldNick','newNick'] },
+    { key: 'guildBanAdd',         label: 'Member Banned',       desc: 'A member was banned',                   vars: ['user','moderator','reason'] },
+    { key: 'guildBanRemove',      label: 'Member Unbanned',     desc: 'A ban was removed',                     vars: ['user','moderator'] },
+  ],
+  channel: [
+    { key: 'channelCreate',     label: 'Channel Create',     desc: 'A channel was created',                  vars: ['channel','moderator'] },
+    { key: 'channelDelete',     label: 'Channel Delete',     desc: 'A channel was deleted',                  vars: ['channel','moderator'] },
+    { key: 'channelUpdate',     label: 'Channel Update',     desc: 'A channel setting was changed',          vars: ['channel','moderator'] },
+    { key: 'channelPinsUpdate', label: 'Pins Update',        desc: 'A pin was added or removed',             vars: ['channel'] },
+  ],
+  role: [
+    { key: 'roleCreate', label: 'Role Create', desc: 'A role was created', vars: ['role','moderator'] },
+    { key: 'roleDelete', label: 'Role Delete', desc: 'A role was deleted', vars: ['role','moderator'] },
+    { key: 'roleUpdate', label: 'Role Update', desc: 'A role was modified', vars: ['role','moderator'] },
+  ],
+  voice: [
+    { key: 'voiceChannelJoin',   label: 'VC Join',    desc: 'User joined a voice channel',  vars: ['user','channel'] },
+    { key: 'voiceChannelLeave',  label: 'VC Leave',   desc: 'User left a voice channel',    vars: ['user','channel'] },
+    { key: 'voiceChannelSwitch', label: 'VC Switch',  desc: 'User moved between VCs',       vars: ['user','oldChannel','newChannel'] },
+    { key: 'voiceStateUpdate',   label: 'Voice State','desc': 'Mute, deafen, or stream state changed', vars: ['user','channel'] },
+  ],
+  guild: [
+    { key: 'guildUpdate',   label: 'Server Update',  desc: 'Server settings changed',    vars: ['guild','moderator'] },
+    { key: 'webhookUpdate', label: 'Webhook Update', desc: 'A webhook was changed',       vars: ['channel','moderator'] },
+    { key: 'emojiCreate',   label: 'Emoji Created',  desc: 'An emoji was added',          vars: ['emoji','moderator'] },
+    { key: 'emojiDelete',   label: 'Emoji Deleted',  desc: 'An emoji was removed',        vars: ['emoji','moderator'] },
+    { key: 'emojiUpdate',   label: 'Emoji Updated',  desc: 'An emoji was edited',         vars: ['emoji','moderator'] },
+  ],
+  emoji: [
+    { key: 'stickerCreate', label: 'Sticker Created', desc: 'A sticker was added',   vars: ['sticker','moderator'] },
+    { key: 'stickerDelete', label: 'Sticker Deleted', desc: 'A sticker was removed', vars: ['sticker','moderator'] },
+    { key: 'stickerUpdate', label: 'Sticker Updated', desc: 'A sticker was edited',  vars: ['sticker','moderator'] },
+  ],
+  invite: [
+    { key: 'inviteCreate', label: 'Invite Created', desc: 'A new invite was created', vars: ['invite','user','channel'] },
+    { key: 'inviteDelete', label: 'Invite Deleted', desc: 'An invite was deleted',    vars: ['invite','user','channel'] },
+  ],
+  webhook: [
+    { key: 'webhookUpdate', label: 'Webhook Change', desc: 'A webhook was created, edited, or deleted', vars: ['channel','moderator'] },
+  ],
+  automod: [
+    { key: 'automodAction',     label: 'AutoMod Action',      desc: 'AutoMod took action on a message',  vars: ['user','channel','rule','action'] },
+    { key: 'automodRuleCreate', label: 'AutoMod Rule Created','desc':'A new AutoMod rule was added',     vars: ['rule','moderator'] },
+    { key: 'automodRuleDelete', label: 'AutoMod Rule Deleted','desc':'An AutoMod rule was removed',      vars: ['rule','moderator'] },
+    { key: 'automodRuleUpdate', label: 'AutoMod Rule Updated','desc':'An AutoMod rule was modified',     vars: ['rule','moderator'] },
+  ],
+  thread: [
+    { key: 'threadCreate',       label: 'Thread Created',  desc: 'A thread was opened',        vars: ['thread','user'] },
+    { key: 'threadDelete',       label: 'Thread Deleted',  desc: 'A thread was deleted',       vars: ['thread','moderator'] },
+    { key: 'threadUpdate',       label: 'Thread Updated',  desc: 'Thread settings changed',    vars: ['thread','moderator'] },
+    { key: 'threadMemberUpdate', label: 'Thread Members',  desc: 'Member added/removed from thread', vars: ['thread','user'] },
+  ],
+};
+
+// All variable labels
+const ALL_VARS = {
+  'user.id':           'User ID',
+  'user.tag':          'User Tag',
+  'user.mention':      'User Mention',
+  'user.avatar':       'Avatar URL',
+  'user.createdAt':    'Account Created',
+  'channel.id':        'Channel ID',
+  'channel.name':      'Channel Name',
+  'channel.mention':   'Channel Mention',
+  'message.id':        'Message ID',
+  'message.content':   'Message Content',
+  'message.url':       'Message URL',
+  'guild.id':          'Server ID',
+  'guild.name':        'Server Name',
+  'guild.memberCount': 'Member Count',
+  'moderator.tag':     'Moderator Tag',
+  'moderator.mention': 'Moderator Mention',
+  'reason':            'Reason',
+  'role.id':           'Role ID',
+  'role.name':         'Role Name',
+  'role.mention':      'Role Mention',
+  'role.color':        'Role Colour',
+  'oldNick':           'Old Nickname',
+  'newNick':           'New Nickname',
+  'rule.name':         'AutoMod Rule Name',
+  'action':            'Action Taken',
+  'count':             'Count',
+  'invite.code':       'Invite Code',
+  'invite.uses':       'Invite Uses',
+  'invite.maxUses':    'Max Uses',
+  'thread.name':       'Thread Name',
+  'thread.id':         'Thread ID',
+  'emoji.name':        'Emoji Name',
+  'sticker.name':      'Sticker Name',
+  'oldChannel.name':   'Old VC Name',
+  'newChannel.name':   'New VC Name',
+  'timestamp':         'Timestamp',
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════════════════════════
+function toast(msg, err=false) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.style.background = err ? '#7f1d1d' : '#14532d';
+  t.style.transform = 'translateX(0)';
+  setTimeout(() => t.style.transform = 'translateX(440px)', 3000);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// LOAD / SAVE
+// ═══════════════════════════════════════════════════════════════════════════════
+async function load() {
+  try {
+    const [cfgRes, chRes] = await Promise.all([
+      fetch(`/api/guild/${guildId}/logs`),
+      fetch(`/api/guild/${guildId}/channels`),
+    ]);
+    logConfig = await cfgRes.json();
+    ({ channels } = await chRes.json());
+    if (!Array.isArray(channels)) channels = [];
+
+    // Populate channel selects
+    const opts = '<option value="">— Inherit from category —</option>' +
+      channels.map(c => `<option value="${c.id}">#${escapeHtml(c.name)}</option>`).join('');
+    document.getElementById('chanModalSelect').innerHTML = opts;
+
+    renderCatCards();
+    renderCatTabs();
+    renderEventTable(activeCat);
+    updateStatus();
+  } catch(err) {
+    console.error(err);
+    toast('Failed to load config', true);
+  }
+}
+
+async function saveAll() {
+  try {
+    const body = { LogChannels: logConfig.LogChannels || {}, events: {} };
+    // Gather per-event data
+    Object.values(CAT_EVENTS).flat().forEach(ev => {
+      const cfg = logConfig['event.' + ev.key] || {};
+      body.events[ev.key] = {
+        channelId: cfg.channelId || null,
+        enabled:   cfg.enabled !== false,
+        template:  cfg.template || null,
+      };
+    });
+    const res = await fetch(`/api/guild/${guildId}/logs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    res.ok ? toast('Logging config saved ✓') : toast('Failed to save', true);
+  } catch(err) {
+    toast('Network error', true);
+  }
+}
+
+async function disableAll() {
+  if (!confirm('This will delete all logging configuration. Are you sure?')) return;
+  try {
+    await fetch(`/api/guild/${guildId}/logs`, { method: 'DELETE' });
+    logConfig = { LogChannels: {} };
+    renderCatCards();
+    renderEventTable(activeCat);
+    updateStatus();
+    toast('All logging disabled');
+  } catch { toast('Failed', true); }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// STATUS
+// ═══════════════════════════════════════════════════════════════════════════════
+function updateStatus() {
+  const lc = logConfig.LogChannels || {};
+  const active = Object.values(lc).some(v => v);
+  document.getElementById('statusText').textContent  = active ? 'ONLINE' : 'OFFLINE';
+  document.getElementById('statusText').className    = 'text-sm font-bold ' + (active ? 'text-emerald-400' : 'text-red-400');
+  document.getElementById('statusDot').className     = 'w-3 h-3 rounded-full ' + (active ? 'bg-emerald-400 pulse-dot' : 'bg-red-500');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CATEGORY CARDS
+// ═══════════════════════════════════════════════════════════════════════════════
+const CAT_COLORS = {
+  red:    ['bg-red-500/10','text-red-400','border-red-500/20'],
+  pink:   ['bg-pink-500/10','text-pink-400','border-pink-500/20'],
+  purple: ['bg-purple-500/10','text-purple-400','border-purple-500/20'],
+  yellow: ['bg-yellow-500/10','text-yellow-400','border-yellow-500/20'],
+  indigo: ['bg-indigo-500/10','text-indigo-400','border-indigo-500/20'],
+  orange: ['bg-orange-500/10','text-orange-400','border-orange-500/20'],
+  green:  ['bg-green-500/10','text-green-400','border-green-500/20'],
+  cyan:   ['bg-cyan-500/10','text-cyan-400','border-cyan-500/20'],
+  gray:   ['bg-gray-500/10','text-gray-400','border-gray-500/20'],
+  rose:   ['bg-rose-500/10','text-rose-400','border-rose-500/20'],
+  teal:   ['bg-teal-500/10','text-teal-400','border-teal-500/20'],
+};
+
+function getChanName(id) {
+  if (!id) return null;
+  const ch = channels.find(c => c.id === id);
+  return ch ? '#' + ch.name : '#' + id;
+}
+
+function renderCatCards() {
+  const grid = document.getElementById('catCardsGrid');
+  // Only show 'all' + the categories that have channels or are well-known
+  const shown = [
+    { key: 'all', label: 'All Logs', icon: '📋', color: 'gray', desc: 'Master fallback for every event' },
+    ...CATEGORIES,
+  ];
+  grid.innerHTML = shown.map(cat => {
+    const chId   = (logConfig.LogChannels || {})[cat.key];
+    const chName = getChanName(chId);
+    const [bg, text, border] = CAT_COLORS[cat.color || 'gray'];
+    const evCount = (CAT_EVENTS[cat.key] || []).length;
+    return `
+    <div class="log-card rounded-xl p-4 flex flex-col gap-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">${cat.icon}</span>
+          <div>
+            <div class="font-bold text-sm">${escapeHtml(cat.label)}</div>
+            ${evCount ? `<div class="text-xs text-gray-600">${evCount} event${evCount!==1?'s':''}</div>` : '<div class="text-xs text-gray-600">catch-all</div>'}
+          </div>
+        </div>
+        ${chId ? `<button onclick="openChanModal('category','${cat.key}')" class="ch-badge">${escapeHtml(chName||chId)}</button>` : `<button onclick="openChanModal('category','${cat.key}')" class="ch-badge unset">Set channel</button>`}
+      </div>
+      ${chId ? `<button onclick="clearCatChannel('${cat.key}')" class="text-xs text-gray-600 hover:text-red-400 transition-colors text-left">✕ Remove channel</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function clearCatChannel(key) {
+  if (!logConfig.LogChannels) logConfig.LogChannels = {};
+  delete logConfig.LogChannels[key];
+  renderCatCards();
+  renderEventTable(activeCat);
+  updateStatus();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CATEGORY TABS
+// ═══════════════════════════════════════════════════════════════════════════════
+function renderCatTabs() {
+  const tabs = document.getElementById('catTabs');
+  tabs.innerHTML = CATEGORIES.map(cat =>
+    `<button class="cat-tab ${cat.key===activeCat?'active':''}" onclick="switchCat('${cat.key}')">${escapeHtml(cat.label)}</button>`
+  ).join('');
+}
+
+function switchCat(key) {
+  activeCat = key;
+  renderCatTabs();
+  renderEventTable(key);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// EVENT TABLE
+// ═══════════════════════════════════════════════════════════════════════════════
+function renderEventTable(catKey) {
+  const tbody = document.getElementById('eventTableBody');
+  const events = CAT_EVENTS[catKey] || [];
+  const catChId = (logConfig.LogChannels||{})[catKey];
+  const catChName = getChanName(catChId);
+
+  tbody.innerHTML = events.map(ev => {
+    const cfg     = logConfig['event.' + ev.key] || {};
+    const enabled = cfg.enabled !== false;
+    const evChId  = cfg.channelId || null;
+    const evChName= getChanName(evChId);
+    const hasTpl  = !!(cfg.template && cfg.template.trim());
+
+    const chDisplay = evChId
+      ? `<button onclick="openChanModal('event','${ev.key}')" class="ch-badge">${escapeHtml(evChName||evChId)}</button>`
+      : catChId
+        ? `<button onclick="openChanModal('event','${ev.key}')" class="ch-badge unset" title="Currently inheriting from category">${escapeHtml(catChName)} <span class='inh-chip'>inherited</span></button>`
+        : `<button onclick="openChanModal('event','${ev.key}')" class="ch-badge unset">Set override</button>`;
+
+    return `<tr class="event-row" id="evrow-${ev.key}">
+      <td>
+        <div class="event-name">${escapeHtml(ev.label)}</div>
+        <div class="event-desc">${escapeHtml(ev.desc)}</div>
+      </td>
+      <td>
+        <label class="toggle-wrap">
+          <input type="checkbox" ${enabled?'checked':''} onchange="setEventEnabled('${ev.key}',this.checked)">
+          <span class="toggle-track"></span>
+        </label>
+      </td>
+      <td>${chDisplay}</td>
+      <td>
+        <button onclick="openTplModal('${ev.key}')" class="ch-badge ${hasTpl?'':'unset'}" style="max-width:160px;">
+          ${hasTpl ? '✏ Custom message' : '+ Add template'}
+        </button>
+      </td>
+      <td>
+        ${evChId||hasTpl ? `<button onclick="clearEventOverrides('${ev.key}')" class="icon-btn danger" title="Clear overrides"><svg class='w-3.5 h-3.5' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'/></svg></button>` : ''}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function setEventEnabled(evKey, val) {
+  if (!logConfig['event.' + evKey]) logConfig['event.' + evKey] = {};
+  logConfig['event.' + evKey].enabled = val;
+}
+
+function clearEventOverrides(evKey) {
+  if (logConfig['event.' + evKey]) {
+    logConfig['event.' + evKey].channelId = null;
+    logConfig['event.' + evKey].template  = null;
+  }
+  renderEventTable(activeCat);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CHANNEL MODAL
+// ═══════════════════════════════════════════════════════════════════════════════
+function openChanModal(type, key) {
+  _chanTarget = { type, key };
+  const label = type === 'category'
+    ? `Category: ${CATEGORIES.find(c=>c.key===key)?.label || key}`
+    : `Event: ${Object.values(CAT_EVENTS).flat().find(e=>e.key===key)?.label || key}`;
+  document.getElementById('chanModalDesc').textContent = `Set the output channel for — ${label}`;
+
+  const currentId = type === 'category'
+    ? (logConfig.LogChannels||{})[key]
+    : (logConfig['event.'+key]||{}).channelId;
+  document.getElementById('chanModalSelect').value = currentId || '';
+
+  const m = document.getElementById('chanModal');
+  m.style.display = 'flex'; setTimeout(()=>m.style.opacity='1',10);
+}
+
+function closeChanModal() {
+  const m = document.getElementById('chanModal');
+  m.style.opacity='0'; setTimeout(()=>m.style.display='none',180);
+  _chanTarget = null;
+}
+
+function saveChanModal() {
+  if (!_chanTarget) return;
+  const chId = document.getElementById('chanModalSelect').value;
+  const { type, key } = _chanTarget;
+  if (type === 'category') {
+    if (!logConfig.LogChannels) logConfig.LogChannels = {};
+    if (chId) logConfig.LogChannels[key] = chId;
+    else delete logConfig.LogChannels[key];
+    renderCatCards();
+    updateStatus();
+  } else {
+    if (!logConfig['event.'+key]) logConfig['event.'+key] = {};
+    logConfig['event.'+key].channelId = chId || null;
+    renderEventTable(activeCat);
+  }
+  closeChanModal();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TEMPLATE MODAL
+// ═══════════════════════════════════════════════════════════════════════════════
+function openTplModal(evKey) {
+  _tplTarget = evKey;
+  _logMsgType = 'text';
+  _logRawMode = false;
+  const evDef = Object.values(CAT_EVENTS).flat().find(e=>e.key===evKey);
+  document.getElementById('tplModalDesc').textContent =
+    `Custom text message for "${evDef?.label || evKey}". Leave blank to use the default embed.`;
+
+  const cfg = logConfig['event.'+evKey] || {};
+  // Parse existing template
+  const savedTpl = cfg.template;
+  if (savedTpl) {
+    if (typeof savedTpl === 'string') {
+      // Legacy string format
+      document.getElementById('logTextInput').value = savedTpl;
+      setLogMsgType('text');
+    } else {
+      // New object format
+      logParseTemplate(savedTpl);
+    }
+  } else {
+    document.getElementById('logTextInput').value = '';
+    setLogMsgType('text');
+    // Reset embed fields
+    document.getElementById('logEmbedTitle').value = '';
+    document.getElementById('logEmbedDesc').value = '';
+    document.getElementById('logEmbedColor').value = '#FF3333';
+    document.getElementById('logEmbedAuthor').value = '';
+    document.getElementById('logEmbedAuthorIcon').value = '';
+    document.getElementById('logEmbedThumb').value = '';
+    document.getElementById('logEmbedImage').value = '';
+    document.getElementById('logEmbedFooter').value = '';
+    document.getElementById('logEmbedFooterIcon').value = '';
+    document.getElementById('logEmbedTimestamp').checked = false;
+  }
+
+  // Render variable chips for this event
+  const evVarGroups = evDef?.vars || [];
+  const relevantVars = {};
+  Object.entries(ALL_VARS).forEach(([k,v]) => {
+    const prefix = k.split('.')[0];
+    if (evVarGroups.includes(prefix) || evVarGroups.includes(k)) relevantVars[k] = v;
+  });
+  relevantVars['timestamp'] = 'Timestamp';
+
+  const wrap = document.getElementById('tplVarsWrap');
+  wrap.innerHTML = Object.entries(relevantVars).map(([k,v]) =>
+    `<span class="var-chip" title="${escapeHtml(v)}" onclick="insertVar('{${k}}')">{${escapeHtml(k)}}</span>`
+  ).join('');
+
+  // Also add vars to embed panel
+  const embWrap = document.getElementById('logEmbedVarsWrap');
+  embWrap.innerHTML = Object.entries(relevantVars).map(([k,v]) =>
+    `<span class="var-chip" title="${escapeHtml(v)}" onclick="logInsertEmbedVar('{${k}}')">{${escapeHtml(k)}}</span>`
+  ).join('');
+
+  // Reset preview
+  document.getElementById('logRawEditor').classList.add('hidden');
+  logUpdatePreview();
+
+  const m = document.getElementById('tplModal');
+  m.style.display = 'flex'; setTimeout(()=>m.style.opacity='1',10);
+}
+
+function closeTplModal() {
+  const m = document.getElementById('tplModal');
+  m.style.opacity='0'; setTimeout(()=>m.style.display='none',180);
+  _tplTarget = null;
+}
+
+function clearTemplate() {
+  setLogMsgType('text');
+  document.getElementById('logTextInput').value = '';
+  document.getElementById('logEmbedTitle').value = '';
+  document.getElementById('logEmbedDesc').value = '';
+  document.getElementById('logEmbedColor').value = '#FF3333';
+  document.getElementById('logEmbedAuthor').value = '';
+  document.getElementById('logEmbedAuthorIcon').value = '';
+  document.getElementById('logEmbedThumb').value = '';
+  document.getElementById('logEmbedImage').value = '';
+  document.getElementById('logEmbedFooter').value = '';
+  document.getElementById('logEmbedFooterIcon').value = '';
+  document.getElementById('logEmbedTimestamp').checked = false;
+  document.getElementById('logRawInput').value = '';
+  logUpdatePreview();
+}
+
+function logInsertEmbedVar(variable) {
+  const ta = document.getElementById('logEmbedDesc');
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const before = ta.value.slice(0, start);
+  const after  = ta.value.slice(end);
+  ta.value = before + variable + after;
+  ta.focus();
+  ta.setSelectionRange(start + variable.length, start + variable.length);
+  logUpdatePreview();
+}
+
+function insertVar(variable) {
+  const ta = document.getElementById('logTextInput');
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const before = ta.value.slice(0, start);
+  const after  = ta.value.slice(end);
+  ta.value = before + variable + after;
+  ta.focus();
+  ta.setSelectionRange(start + variable.length, start + variable.length);
+  logUpdatePreview();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// EMBED EDITOR
+// ═══════════════════════════════════════════════════════════════════════════════
+let _logMsgType = 'text';
+let _logRawMode = false;
+
+function setLogMsgType(type) {
+  _logMsgType = type;
+  document.querySelectorAll('.msg-type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
+  document.getElementById('log-panel-text').classList.toggle('hidden', type !== 'text');
+  document.getElementById('log-panel-embed').classList.toggle('hidden', type !== 'embed');
+}
+
+function logSwitchEmbedTab(tab) {
+  document.querySelectorAll('#logEmbedTabs .etab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.log-embed-tab').forEach(p => p.classList.add('hidden'));
+  document.getElementById('log-tab-' + tab).classList.remove('hidden');
+}
+
+function logTogglePreviewRaw() {
+  _logRawMode = !_logRawMode;
+  const rawEditor = document.getElementById('logRawEditor');
+  const preview = document.getElementById('logPrevContent').parentElement.parentElement;
+  if (_logRawMode) {
+    rawEditor.classList.remove('hidden');
+    preview.classList.add('hidden');
+  } else {
+    rawEditor.classList.add('hidden');
+    preview.classList.remove('hidden');
+    logUpdatePreview();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TEMPLATE PARSING & PREVIEW
+// ═══════════════════════════════════════════════════════════════════════════════
+function logBuildTemplate() {
+  if (_logMsgType === 'text') {
+    return { type: 'text', content: document.getElementById('logTextInput').value };
+  }
+  // Build embed object
+  const embed = {
+    type: 'embed',
+    embeds: [{
+      title: document.getElementById('logEmbedTitle').value || undefined,
+      description: document.getElementById('logEmbedDesc').value || undefined,
+      color: parseInt(document.getElementById('logEmbedColor').value.replace('#', ''), 16),
+      author: document.getElementById('logEmbedAuthor').value ? {
+        name: document.getElementById('logEmbedAuthor').value,
+        icon_url: document.getElementById('logEmbedAuthorIcon').value || undefined
+      } : undefined,
+      thumbnail: document.getElementById('logEmbedThumb').value ? {
+        url: document.getElementById('logEmbedThumb').value
+      } : undefined,
+      image: document.getElementById('logEmbedImage').value ? {
+        url: document.getElementById('logEmbedImage').value
+      } : undefined,
+      footer: document.getElementById('logEmbedFooter').value ? {
+        text: document.getElementById('logEmbedFooter').value,
+        icon_url: document.getElementById('logEmbedFooterIcon').value || undefined
+      } : undefined,
+      timestamp: document.getElementById('logEmbedTimestamp').checked ? new Date().toISOString() : undefined,
+    }]
+  };
+  // Clean undefineds
+  embed.embeds[0] = Object.fromEntries(
+    Object.entries(embed.embeds[0]).filter(([_, v]) => v !== undefined)
+  );
+  return embed;
+}
+
+function logParseTemplate(json) {
+  if (!json) return;
+  if (json.type === 'text' || !json.embeds) {
+    setLogMsgType('text');
+    document.getElementById('logTextInput').value = json.content || '';
+  } else {
+    setLogMsgType('embed');
+    const e = json.embeds[0] || {};
+    document.getElementById('logEmbedTitle').value = e.title || '';
+    document.getElementById('logEmbedDesc').value = e.description || '';
+    document.getElementById('logEmbedColor').value = e.color ? '#' + e.color.toString(16).padStart(6, '0') : '#FF3333';
+    document.getElementById('logEmbedAuthor').value = e.author?.name || '';
+    document.getElementById('logEmbedAuthorIcon').value = e.author?.icon_url || '';
+    document.getElementById('logEmbedThumb').value = e.thumbnail?.url || '';
+    document.getElementById('logEmbedImage').value = e.image?.url || '';
+    document.getElementById('logEmbedFooter').value = e.footer?.text || '';
+    document.getElementById('logEmbedFooterIcon').value = e.footer?.icon_url || '';
+    document.getElementById('logEmbedTimestamp').checked = !!e.timestamp;
+  }
+}
+
+function logUpdatePreview() {
+  if (_logRawMode) return;
+  const tpl = logBuildTemplate();
+  const cont = document.getElementById('logPrevContent');
+  const emb = document.getElementById('logPrevEmbed');
+  if (!tpl) {
+    cont.innerHTML = '';
+    emb.innerHTML = '';
+    return;
+  }
+  if (tpl.type === 'text') {
+    cont.innerHTML = escapeHtml(tpl.content || 'Your message...').replace(/\n/g, '<br>');
+    emb.innerHTML = '';
+  } else {
+    cont.innerHTML = '';
+    const e = tpl.embeds[0] || {};
+    const color = e.color ? '#' + e.color.toString(16).padStart(6, '0') : '#FF3333';
+    emb.innerHTML = `
+      <div class="dsc-embed" style="--c:${color};border-left-color:${color}">
+        ${e.author ? `<div class="dsc-embed-author">${e.author.icon_url ? `<img src="${escapeHtml(e.author.icon_url)}">` : ''}${escapeHtml(e.author.name)}</div>` : ''}
+        ${e.title ? `<div class="dsc-embed-title">${escapeHtml(e.title)}</div>` : ''}
+        ${e.description ? `<div class="dsc-embed-desc">${escapeHtml(e.description).replace(/\n/g, '<br>')}</div>` : ''}
+        ${e.thumbnail ? `<img class="dsc-embed-thumbnail" src="${escapeHtml(e.thumbnail.url)}">` : ''}
+        ${e.image ? `<img class="dsc-embed-image" src="${escapeHtml(e.image.url)}">` : ''}
+        ${e.footer ? `<div class="dsc-embed-footer">${e.footer.icon_url ? `<img src="${escapeHtml(e.footer.icon_url)}">` : ''}${escapeHtml(e.footer.text)}</div>` : ''}
+        ${e.timestamp ? `<div class="dsc-embed-footer" style="margin-top:4px">${new Date().toLocaleString()}</div>` : ''}
+      </div>`;
+  }
+}
+
+// Update saveTemplate to use new structure
+function saveTplModal() {
+  if (!_tplTarget) return;
+  let tpl;
+  if (_logRawMode) {
+    try {
+      tpl = JSON.parse(document.getElementById('logRawInput').value);
+    } catch {
+      toast('Invalid JSON', true);
+      return;
+    }
+  } else {
+    tpl = logBuildTemplate();
+    if (tpl.type === 'text' && !tpl.content) tpl = null;
+    else if (tpl.type === 'embed' && !tpl.embeds[0].title && !tpl.embeds[0].description) tpl = null;
+  }
+  if (!logConfig['event.'+_tplTarget]) logConfig['event.'+_tplTarget] = {};
+  logConfig['event.'+_tplTarget].template = tpl;
+  renderEventTable(activeCat);
+  closeTplModal();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', load);
+</script>
+</body>
+</html>

@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IP Verification System</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tailwind.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#080811;color:#fff;margin:0;padding:0;min-height:100vh}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:10px}
+.page-wrap{display:flex;min-height:100vh}
+.main{flex:1;padding:20px 16px;min-width:0}
+@media(min-width:768px){.main{padding:28px 24px}}
+@media(min-width:1024px){.main{padding:36px 32px}}
+#toast{position:fixed;top:12px;right:12px;left:12px;padding:11px 16px;border-radius:12px;transform:translateY(-200px);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:9999;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+@media(min-width:480px){#toast{left:auto;min-width:220px;transform:translateX(300px)}#toast.show{transform:translateX(0)}}
+#toast.show{transform:translateY(0)}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.page-header-left{display:flex;align-items:center;gap:12px}
+.page-icon{width:44px;height:44px;border-radius:12px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.page-icon svg{width:20px;height:20px;color:#FF3333}
+.page-header h1{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0 0 3px}
+@media(min-width:640px){.page-header h1{font-size:26px}}
+.page-header p{font-size:12px;color:#6b7280;margin:0}
+.tabs-bar{overflow-x:auto;scrollbar-width:none;border-bottom:1px solid rgba(255,255,255,.06);margin:0 -16px 20px;padding:0 16px}
+.tabs-bar::-webkit-scrollbar{display:none}
+@media(min-width:768px){.tabs-bar{margin:0 0 24px;padding:0}}
+.tabs-inner{display:flex;white-space:nowrap;min-width:max-content}
+.tab-btn{position:relative;padding:10px 14px;font-size:12px;font-weight:700;color:#6b7280;background:none;border:none;cursor:pointer;transition:color .2s;font-family:inherit;white-space:nowrap}
+@media(min-width:480px){.tab-btn{padding:12px 18px;font-size:13px}}
+.tab-btn::after{content:'';position:absolute;bottom:-1px;left:0;width:0;height:2px;background:#FF3333;transition:width .3s;border-radius:2px}
+.tab-btn.active::after{width:100%}
+.tab-btn.active,.tab-btn:hover{color:#fff}
+.tab-view{display:none}
+.tab-view.tab-active{animation:fadeUp .22s ease forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.card{background:#111120;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:20px;margin-bottom:16px}
+@media(min-width:640px){.card{padding:22px 24px}}
+.card-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;margin:0 0 16px;color:#fff}
+.card-title svg{width:15px;height:15px;color:#FF3333;flex-shrink:0}
+.card-sub{font-size:11px;color:#4b5563;margin:-12px 0 14px}
+.grid-2{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:1024px){.grid-2{grid-template-columns:1fr 1fr}}
+.grid-3{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:900px){.grid-3{grid-template-columns:1fr 1fr 1fr}}
+.stack{display:flex;flex-direction:column;gap:14px}
+.stack-sm{display:flex;flex-direction:column;gap:10px}
+.field-label{display:block;font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.field-hint{font-size:10px;color:#374151;margin-top:4px;line-height:1.5}
+.inp{width:100%;background:#0c0c1a;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 13px;font-size:13px;color:#fff;outline:none;transition:border-color .2s,box-shadow .2s;font-family:inherit;min-height:42px;-webkit-appearance:none}
+.inp::placeholder{color:#374151}
+.inp:focus{border-color:#FF3333;box-shadow:0 0 0 3px rgba(255,51,51,.12)}
+textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
+.tog-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:10px}
+.tog-info h3{font-weight:700;font-size:13px;margin:0 0 2px}
+.tog-info p{font-size:11px;color:#6b7280;margin:0}
+.tog-switch{position:relative;display:inline-block;width:42px;flex-shrink:0}
+.tog-cb{position:absolute;left:2px;top:2px;z-index:10;width:18px;height:18px;border-radius:50%;background:#fff;appearance:none;cursor:pointer;border:none;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.tog-cb:checked{transform:translateX(18px)}
+.tog-cb:checked+.tog-track{background:#FF3333;box-shadow:0 0 12px rgba(255,51,51,.3)}
+.tog-track{display:block;width:42px;height:22px;border-radius:999px;background:#1e1e36;cursor:pointer;transition:background .3s;border:1px solid rgba(255,255,255,.08)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 18px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;transition:all .15s;border:none;font-family:inherit;min-height:42px;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-primary{background:#FF3333;color:#0b0b14;box-shadow:0 4px 20px rgba(255,51,51,.2)}
+.btn-primary:hover:not(:disabled){background:#CC2222}
+.btn-ghost{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.1)}
+.btn-ghost:hover:not(:disabled){background:rgba(255,255,255,.1)}
+.btn-danger{background:rgba(239,68,68,.08);color:#f87171;border:1px solid rgba(239,68,68,.18)}
+.btn-danger:hover:not(:disabled){background:rgba(239,68,68,.15)}
+.btn svg{width:15px;height:15px;flex-shrink:0}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
+@media(min-width:640px){.stats-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1024px){.stats-grid{grid-template-columns:repeat(6,1fr)}}
+.stat-card{background:#111120;border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:16px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat-card.green::before{background:linear-gradient(90deg,#FF3333,#CC2222)}
+.stat-card.red::before{background:linear-gradient(90deg,#f87171,#ef4444)}
+.stat-card.orange::before{background:linear-gradient(90deg,#fb923c,#f97316)}
+.stat-card.yellow::before{background:linear-gradient(90deg,#facc15,#eab308)}
+.stat-card.blue::before{background:linear-gradient(90deg,#60a5fa,#3b82f6)}
+.stat-card.purple::before{background:linear-gradient(90deg,#a78bfa,#8b5cf6)}
+.stat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#4b5563;margin-bottom:6px}
+.stat-value{font-size:28px;font-weight:800;color:#fff;line-height:1;margin-bottom:2px}
+.stat-sub{font-size:10px;color:#4b5563}
+.feature-box{display:flex;align-items:flex-start;gap:10px;padding:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:10px}
+.feature-box svg{width:16px;height:16px;color:#FF3333;flex-shrink:0;margin-top:1px}
+.feature-box p{font-size:12px;color:#9ca3af;margin:0;line-height:1.5}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(min-width:640px){.action-grid{grid-template-columns:repeat(5,1fr)}}
+.action-card{position:relative;cursor:pointer}
+.action-card input[type=radio]{position:absolute;opacity:0;width:0;height:0}
+.action-card-inner{padding:12px 10px;border-radius:10px;border:1.5px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);text-align:center;transition:all .15s;cursor:pointer}
+.action-card-inner:hover{border-color:rgba(255,255,255,.15)}
+.action-card input:checked+.action-card-inner{border-color:#FF3333;background:rgba(255,51,51,.07);box-shadow:0 0 0 3px rgba(255,51,51,.1)}
+.action-icon{margin-bottom:6px;display:flex;align-items:center;justify-content:center}
+.action-label{font-size:11px;font-weight:700;color:#e5e7eb}
+.action-desc{font-size:10px;color:#4b5563;margin-top:2px;line-height:1.3}
+.btn-style-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.btn-style-card{position:relative;cursor:pointer}
+.btn-style-card input[type=radio]{position:absolute;opacity:0;width:0;height:0}
+.btn-style-inner{padding:10px 8px;border-radius:10px;border:1.5px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);text-align:center;transition:all .15s;cursor:pointer}
+.btn-style-card input:checked+.btn-style-inner{border-color:#FF3333;background:rgba(255,51,51,.07)}
+.discord-btn{display:inline-block;padding:5px 14px;border-radius:4px;font-size:12px;font-weight:700;cursor:pointer;border:none;margin-bottom:6px}
+.discord-btn.s1{background:#5865F2;color:#fff}
+.discord-btn.s2{background:#4f545c;color:#fff}
+.discord-btn.s3{background:#57f287;color:#000}
+.discord-btn.s4{background:#ed4245;color:#fff}
+.discord-preview{background:#313338;border-radius:10px;overflow:hidden;border:1px solid #1e1f22}
+.dp-header{height:44px;background:#2b2d31;border-bottom:1px solid #1f2023;display:flex;align-items:center;padding:0 14px;gap:8px}
+.dp-body{padding:14px}
+.dp-msg{display:flex;gap:10px}
+.dp-avatar{width:36px;height:36px;border-radius:50%;background:#FF3333;flex-shrink:0;overflow:hidden}
+.dp-content{flex:1;min-width:0}
+.dp-bot-tag{background:#5865F2;font-size:9px;color:#fff;padding:1px 4px;border-radius:3px;font-weight:700}
+.dp-embed{background:#2b2d31;border-radius:6px;overflow:hidden;margin-top:8px;border-left:4px solid #6C53FF;padding:10px 12px}
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;font-size:12px;border-collapse:collapse;min-width:700px}
+.tbl th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#4b5563;padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.05)}
+.tbl td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.04);color:#9ca3af;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.02)}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700}
+.badge-pass{background:rgba(255,51,51,.1);color:#FF3333;border:1px solid rgba(255,51,51,.2)}
+.badge-vpn{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.badge-alt{background:rgba(251,146,60,.1);color:#fb923c;border:1px solid rgba(251,146,60,.2)}
+.badge-flag{background:rgba(234,179,8,.1);color:#facc15;border:1px solid rgba(234,179,8,.2)}
+.badge-country{background:rgba(96,165,250,.1);color:#60a5fa;border:1px solid rgba(96,165,250,.2)}
+.badge-ipban{background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2)}
+.risk-bar{height:4px;border-radius:2px;background:#1e1e36;width:50px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:5px}
+.risk-fill{height:100%;border-radius:2px}
+.pag{display:flex;align-items:center;gap:6px;justify-content:center;padding:14px 0}
+.pag-btn{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#9ca3af;cursor:pointer;font-size:12px;font-weight:700;transition:all .15s}
+.pag-btn:hover{background:rgba(255,255,255,.1)}
+.pag-btn.active{background:#FF3333;color:#0b0b14;border-color:#FF3333}
+.pag-btn:disabled{opacity:.3;cursor:not-allowed}
+.empty-state{text-align:center;padding:40px 20px;color:#374151}
+.empty-state svg{width:36px;height:36px;margin:0 auto 10px;display:block;opacity:.3}
+.seg-group{display:flex;gap:6px;flex-wrap:wrap}
+.seg-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);color:#6b7280;transition:all .15s;font-family:inherit}
+.seg-btn:hover{border-color:rgba(255,255,255,.15);color:#fff}
+.seg-btn.active{border-color:#FF3333;background:rgba(255,51,51,.1);color:#FF3333}
+.country-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px 3px 8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;font-size:11px;font-weight:700;color:#fff}
+.country-tag button{background:none;border:none;color:#6b7280;cursor:pointer;padding:0;line-height:1;font-size:13px}
+.country-tag button:hover{color:#f87171}
+#country-tags{display:flex;flex-wrap:wrap;gap:6px;min-height:28px;padding:6px 0}
+.rzr-wrap{position:relative;width:100%;display:block}
+.rzr-wrap-parent.select-wrap::after,.rzr-wrap-parent::after{display:none!important;content:none!important}
+.rzr-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);background:#0d0d1c;color:#fff;cursor:pointer;font-size:14px;font-family:inherit;min-height:44px;width:100%;transition:border-color .15s,box-shadow .15s;user-select:none;box-sizing:border-box}
+.rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
+.rzr-trigger.is-open{border-color:rgba(255,51,51,.6);box-shadow:0 0 0 3px rgba(255,51,51,.1)}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
+.rzr-label.is-ph{color:#6b7280}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+.rzr-panel{position:fixed;z-index:999999;background:rgba(11,11,20,.98);backdrop-filter:blur(16px);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;box-shadow:0 24px 60px rgba(0,0,0,.7);overflow:hidden;animation:rzrIn .16s ease}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
+.rzr-search-inp{display:block;width:100%;background:#06060f;border:1px solid rgba(255,255,255,.09);border-radius:7px;padding:6px 11px;color:#fff;font-size:13px;font-family:inherit;outline:none;box-sizing:border-box;transition:border-color .15s}
+.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-list{max-height:220px;overflow-y:auto;padding:5px}
+.rzr-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 11px;border-radius:8px;cursor:pointer;font-size:13px;color:#9ca3af;transition:background .1s,color .1s}
+.rzr-item:hover{background:rgba(255,255,255,.055);color:#fff}
+.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item.is-sel .rzr-item-chk{opacity:1}
+.rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<div id="toast">
+  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+  <span id="toastMessage">Saved</span>
+</div>
+
+<div class="page-wrap">
+  <aside id="razor-sidebar"></aside>
+  <main class="main">
+
+    <div class="page-header">
+      <div class="page-header-left">
+        <div class="page-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div>
+          <h1>IP Verification System</h1>
+          <p>One-time link verification with IP intelligence, alt detection &amp; country control</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-ghost" onclick="exportCsv()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Export
+        </button>
+        <button class="btn btn-ghost" onclick="sendMessage()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+          Send Panel
+        </button>
+        <button class="btn btn-primary" onclick="saveConfig()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Save
+        </button>
+      </div>
+    </div>
+
+    <div class="tabs-bar">
+      <div class="tabs-inner">
+        <button onclick="switchTab('overview')"  id="tab-overview"  class="tab-btn active">Overview</button>
+        <button onclick="switchTab('config')"    id="tab-config"    class="tab-btn">Configuration</button>
+        <button onclick="switchTab('security')"  id="tab-security"  class="tab-btn">Security</button>
+        <button onclick="switchTab('actions')"   id="tab-actions"   class="tab-btn">Actions</button>
+        <button onclick="switchTab('advanced')"  id="tab-advanced"  class="tab-btn">Advanced</button>
+        <button onclick="switchTab('records')"   id="tab-records"   class="tab-btn">Records</button>
+      </div>
+    </div>
+
+    <!-- ═══ OVERVIEW ═══ -->
+    <div id="view-overview" class="tab-view" style="display:block">
+      <div class="stats-grid">
+        <div class="stat-card green"><p class="stat-label">Total</p><p class="stat-value" id="stat-total">—</p><p class="stat-sub">All attempts</p></div>
+        <div class="stat-card green"><p class="stat-label">Passed</p><p class="stat-value" id="stat-passed">—</p><p class="stat-sub">Clean</p></div>
+        <div class="stat-card red"><p class="stat-label">VPN Blocked</p><p class="stat-value" id="stat-vpn">—</p><p class="stat-sub">VPN / Proxy / Tor</p></div>
+        <div class="stat-card orange"><p class="stat-label">Alt Blocked</p><p class="stat-value" id="stat-alt">—</p><p class="stat-sub">Duplicate IPs</p></div>
+        <div class="stat-card blue"><p class="stat-label">Country</p><p class="stat-value" id="stat-country">—</p><p class="stat-sub">Geo-blocked</p></div>
+        <div class="stat-card yellow"><p class="stat-label">Flagged</p><p class="stat-value" id="stat-flagged">—</p><p class="stat-sub">High risk score</p></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <p class="card-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            How it works
+          </p>
+          <div class="stack-sm">
+            <div class="feature-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg><p>User clicks <strong style="color:#fff">Verify</strong> in Discord → bot generates a <strong style="color:#fff">one-time URL</strong> with configurable expiry.</p></div>
+            <div class="feature-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/></svg><p>IP is checked against VPN / proxy / country databases. <strong style="color:#fff">Country allowlist/blocklist</strong> lets you geo-restrict your server.</p></div>
+            <div class="feature-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg><p>Alt detection cross-references IPs. <strong style="color:#fff">IP ban threshold</strong> auto-blocks IPs with repeated violations.</p></div>
+            <div class="feature-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg><p>Separate <strong style="color:#fff">fail</strong> and <strong style="color:#fff">flagged</strong> actions. Webhooks fire on pass/fail to any HTTP endpoint.</p></div>
+          </div>
+        </div>
+        <div class="card">
+          <p class="card-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            Panel Preview
+          </p>
+          <div class="discord-preview">
+            <div class="dp-header">
+              <svg width="14" height="14" fill="none" stroke="#9ca3af" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+              <span style="font-size:12px;font-weight:700;color:#fff">verification</span>
+            </div>
+            <div class="dp-body">
+              <div class="dp-msg">
+                <div class="dp-avatar"><img src="https://cdn.discordapp.com/embed/avatars/0.png" style="width:100%;height:100%;object-fit:cover"></div>
+                <div class="dp-content">
+                  <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+                    <span style="font-size:13px;font-weight:600;color:#fff">Roco</span>
+                    <span class="dp-bot-tag">BOT</span>
+                    <span style="font-size:10px;color:#6b7280">Today at 4:20 PM</span>
+                  </div>
+                  <div class="dp-embed" id="previewEmbed" style="border-left-color:#6C53FF">
+                    <p id="previewMessage" style="font-size:12px;color:#dbdee1;margin:0 0 8px;line-height:1.5">Click the button below to verify!</p>
+                    <button id="previewButton" class="discord-btn s3">Verify</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:10px;color:#374151;text-align:center;margin-top:8px">Updates live as you edit</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CONFIGURATION ═══ -->
+    <div id="view-config" class="tab-view">
+      <div class="grid-2" style="align-items:start">
+        <div class="stack">
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              Basic Setup
+            </p>
+            <div class="stack-sm">
+              <div><label class="field-label">Verification Channel</label><select id="channel" class="inp"></select></div>
+              <div><label class="field-label">Verified Role</label><select id="role" class="inp"></select></div>
+              <div><label class="field-label">Unverified Role <span style="color:#374151;font-size:9px">(removed on verify)</span></label><select id="unverifiedRole" class="inp"></select></div>
+              <div><label class="field-label">Additional Roles on Verify <span style="color:#374151;font-size:9px">(comma-separated IDs)</span></label><input type="text" id="additionalRoles" class="inp" placeholder="e.g. 123456789, 987654321"><p class="field-hint">Extra roles assigned alongside the main verified role.</p></div>
+              <div><label class="field-label">Log Channel <span style="color:#374151;font-size:9px">(optional)</span></label><select id="logChannel" class="inp"></select></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+              Panel Message
+            </p>
+            <div class="stack-sm">
+              <div><label class="field-label">Message Content</label><textarea id="messageContent" class="inp" rows="3" oninput="updatePreview()" placeholder="Click the button below to verify!"></textarea></div>
+              <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;align-items:end">
+                <div><label class="field-label">Embed Colour</label><input type="color" id="embedColor" value="#6C53FF" oninput="updatePreview()" style="width:100%;height:42px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:#0c0c1a;cursor:pointer;padding:4px"></div>
+                <div><label class="field-label">Footer</label><input type="text" id="footer" class="inp" placeholder="Optional" oninput="updatePreview()"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg>
+              Verify Button
+            </p>
+            <div class="stack-sm">
+              <div><label class="field-label">Button Label</label><input type="text" id="buttonLabel" class="inp" placeholder="Verify" maxlength="80" oninput="updatePreview()"></div>
+              <div>
+                <label class="field-label">Button Style</label>
+                <div class="btn-style-grid">
+                  <label class="btn-style-card"><input type="radio" name="buttonStyle" value="1"><div class="btn-style-inner"><button class="discord-btn s1" tabindex="-1">Blurple</button></div></label>
+                  <label class="btn-style-card"><input type="radio" name="buttonStyle" value="2"><div class="btn-style-inner"><button class="discord-btn s2" tabindex="-1">Grey</button></div></label>
+                  <label class="btn-style-card"><input type="radio" name="buttonStyle" value="3"><div class="btn-style-inner"><button class="discord-btn s3" tabindex="-1">Green</button></div></label>
+                  <label class="btn-style-card"><input type="radio" name="buttonStyle" value="4"><div class="btn-style-inner"><button class="discord-btn s4" tabindex="-1">Red</button></div></label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-3 3v-3z"/></svg>
+              Gate Page Messages
+            </p>
+            <p class="card-sub">Shown to the user on the browser verification page</p>
+            <div class="stack-sm">
+              <div><label class="field-label">Success Message <span style="color:#374151;font-size:9px">(shown after passing)</span></label><input type="text" id="gateSuccessMessage" class="inp" placeholder="You've been verified! You can close this tab."></div>
+              <div><label class="field-label">Fail Message <span style="color:#374151;font-size:9px">(shown after failing)</span></label><input type="text" id="gateFailMessage" class="inp" placeholder="Verification failed. Please contact a moderator."></div>
+            </div>
+          </div>
+
+          <div class="card" style="background:rgba(239,68,68,.04);border-color:rgba(239,68,68,.15)">
+            <p class="card-title" style="color:#f87171">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              Danger Zone
+            </p>
+            <p style="font-size:11px;color:#4b5563;margin:-12px 0 14px">Permanently removes all verification config for this server.</p>
+            <button class="btn btn-danger" onclick="deleteConfig()" style="width:100%">Delete Configuration</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SECURITY ═══ -->
+    <div id="view-security" class="tab-view">
+      <div class="grid-2" style="align-items:start">
+        <div class="stack">
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/></svg>
+              VPN &amp; Proxy Detection
+            </p>
+            <p class="card-sub">Block users verifying through anonymising services</p>
+            <div class="stack-sm">
+              <div class="tog-row"><div class="tog-info"><h3>Block VPNs</h3><p>Deny known VPN exit nodes</p></div><label class="tog-switch"><input type="checkbox" id="blockVpn" class="tog-cb"><span class="tog-track"></span></label></div>
+              <div class="tog-row"><div class="tog-info"><h3>Block Proxies</h3><p>Deny open proxies and SOCKS/HTTP relays</p></div><label class="tog-switch"><input type="checkbox" id="blockProxy" class="tog-cb"><span class="tog-track"></span></label></div>
+              <div class="tog-row"><div class="tog-info"><h3>Block Tor Exit Nodes</h3><p>Deny the Tor anonymity network</p></div><label class="tog-switch"><input type="checkbox" id="blockTor" class="tog-cb"><span class="tog-track"></span></label></div>
+              <div class="tog-row"><div class="tog-info"><h3>Block Hosting / Datacentre IPs</h3><p>Deny cloud VPS and bot farms</p></div><label class="tog-switch"><input type="checkbox" id="blockHosting" class="tog-cb"><span class="tog-track"></span></label></div>
+              <div>
+                <label class="field-label">Risk Score Threshold (0–100)</label>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <input type="range" id="vpnRiskSlider" min="0" max="100" value="70" oninput="document.getElementById('vpnRiskVal').textContent=this.value;document.getElementById('vpnRiskThreshold').value=this.value" style="flex:1;accent-color:#FF3333">
+                  <span id="vpnRiskVal" style="font-size:13px;font-weight:700;color:#FF3333;min-width:28px">70</span>
+                  <input type="hidden" id="vpnRiskThreshold" value="70">
+                </div>
+                <p class="field-hint">Score ≥ this = <strong style="color:#facc15">FLAGGED</strong> (not hard-blocked). 70 recommended. Use Fail Actions tab to decide what FLAGGED does.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              Alt Account Detection
+            </p>
+            <div class="stack-sm">
+              <div class="tog-row"><div class="tog-info"><h3>Block Alt Accounts</h3><p>Deny if this IP was used by a different Discord account</p></div><label class="tog-switch"><input type="checkbox" id="blockAlts" class="tog-cb"><span class="tog-track"></span></label></div>
+              <div>
+                <label class="field-label">IP Ban Threshold</label>
+                <input type="number" id="ipBanThreshold" class="inp" value="0" min="0" max="100" style="max-width:120px">
+                <p class="field-hint">Auto-block an IP after this many failed attempts. 0 = disabled.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/></svg>
+              Country Control
+            </p>
+            <p class="card-sub">Geo-restrict who can verify in your server</p>
+            <div class="stack-sm">
+              <div>
+                <label class="field-label">Mode</label>
+                <div class="seg-group">
+                  <button class="seg-btn active" id="cm-off"       onclick="setCountryMode('off')">Off</button>
+                  <button class="seg-btn"         id="cm-allowlist" onclick="setCountryMode('allowlist')">Allowlist</button>
+                  <button class="seg-btn"         id="cm-blocklist" onclick="setCountryMode('blocklist')">Blocklist</button>
+                </div>
+                <input type="hidden" id="countryMode" value="off">
+              </div>
+              <div id="country-config" style="display:none">
+                <label class="field-label">Countries <span id="country-mode-label" style="color:#FF3333">(allow)</span></label>
+                <div style="display:flex;gap:8px;margin-bottom:8px">
+                  <input type="text" id="countryInput" class="inp" placeholder="e.g. US, GB, DE" style="flex:1" maxlength="3" onkeydown="if(event.key==='Enter'){event.preventDefault();addCountry()}">
+                  <button class="btn btn-ghost" onclick="addCountry()" style="min-height:42px;padding:8px 14px">Add</button>
+                </div>
+                <div id="country-tags"></div>
+                <input type="hidden" id="countryList" value="">
+                <p class="field-hint" id="country-mode-hint">Only these countries can verify.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Account Age
+            </p>
+            <div class="stack-sm">
+              <div class="tog-row"><div class="tog-info"><h3>Require Minimum Age</h3><p>Block new Discord accounts</p></div><label class="tog-switch"><input type="checkbox" id="requireAccountAge" class="tog-cb"><span class="tog-track"></span></label></div>
+              <div><label class="field-label">Minimum Age (days)</label><input type="number" id="minAccountAgeDays" class="inp" value="7" min="1" max="365" style="max-width:120px"></div>
+            </div>
+          </div>
+
+          <div class="card" style="background:rgba(255,51,51,.03);border-color:rgba(255,51,51,.1)">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              Encryption
+            </p>
+            <div class="stack-sm" style="margin-top:-4px">
+              <div class="feature-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><p><strong style="color:#fff">AES-256-GCM</strong> — IPs &amp; user IDs encrypted at rest.</p></div>
+              <div class="feature-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><p><strong style="color:#fff">HMAC-SHA256 blind indexes</strong> — IP lookups without storing plaintext.</p></div>
+              <div class="feature-box"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><p>Tokens stored as <strong style="color:#fff">SHA-256 hashes</strong> — raw token never persisted.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ACTIONS ═══ -->
+    <div id="view-actions" class="tab-view">
+      <div class="grid-2" style="align-items:start">
+        <div class="stack">
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+              Hard Block Action
+            </p>
+            <p class="card-sub">Fires when VPN, proxy, alt, country, or IP-ban check fails</p>
+            <div class="action-grid" style="margin-bottom:12px">
+              <label class="action-card"><input type="radio" name="failAction" value="none" id="fa-none" checked><div class="action-card-inner"><div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div><div class="action-label">None</div><div class="action-desc">No action</div></div></label>
+              <label class="action-card"><input type="radio" name="failAction" value="kick" id="fa-kick"><div class="action-card-inner"><div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div><div class="action-label">Kick</div><div class="action-desc">Remove</div></div></label>
+              <label class="action-card"><input type="radio" name="failAction" value="ban" id="fa-ban"><div class="action-card-inner"><div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div><div class="action-label">Ban</div><div class="action-desc">Permanent</div></div></label>
+              <label class="action-card"><input type="radio" name="failAction" value="alert" id="fa-alert"><div class="action-card-inner"><div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><div class="action-label">Alert</div><div class="action-desc">Log only</div></div></label>
+              <label class="action-card"><input type="radio" name="failAction" value="log" id="fa-log"><div class="action-card-inner"><div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="action-label">Log</div><div class="action-desc">Silent log</div></div></label>
+            </div>
+            <div><label class="field-label">DM to user on hard block <span style="color:#374151;font-size:9px">(optional)</span></label><textarea id="failMessage" class="inp" rows="2" placeholder="Your verification failed. Contact a moderator if this is an error."></textarea></div>
+          </div>
+
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              Flagged Action
+            </p>
+            <p class="card-sub">Fires when risk score meets threshold but no hard block triggers</p>
+            <div class="action-grid" style="margin-bottom:12px">
+              <label class="action-card"><input type="radio" name="flaggedAction" value="none" id="fla-none"><div class="action-card-inner"><div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div><div class="action-label">None</div><div class="action-desc">Ignore</div></div></label>
+              <label class="action-card"><input type="radio" name="flaggedAction" value="kick" id="fla-kick"><div class="action-card-inner"><div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div><div class="action-label">Kick</div><div class="action-desc">Remove</div></div></label>
+              <label class="action-card"><input type="radio" name="flaggedAction" value="ban" id="fla-ban"><div class="action-card-inner"><div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div><div class="action-label">Ban</div><div class="action-desc">Permanent</div></div></label>
+              <label class="action-card"><input type="radio" name="flaggedAction" value="alert" id="fla-alert" checked><div class="action-card-inner"><div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><div class="action-label">Alert</div><div class="action-desc">Log only</div></div></label>
+              <label class="action-card"><input type="radio" name="flaggedAction" value="log" id="fla-log"><div class="action-card-inner"><div class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="action-label">Log</div><div class="action-desc">Silent log</div></div></label>
+            </div>
+            <div><label class="field-label">DM to user when flagged <span style="color:#374151;font-size:9px">(optional)</span></label><textarea id="flaggedMessage" class="inp" rows="2" placeholder="Your connection was flagged as suspicious. A moderator has been notified."></textarea></div>
+          </div>
+        </div>
+
+        <!-- Hidden input keeps requireConsent=true in the save payload -->
+        <input type="hidden" id="requireConsent" value="true">
+        <div class="stack">
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+              Log Embed — Pass
+            </p>
+            <p class="card-sub">Embed sent to your log channel when a user passes verification. Supports variables.</p>
+            <div class="stack-sm">
+              <div class="grid-2">
+                <div>
+                  <label class="field-label">Embed Title</label>
+                  <input type="text" id="logPassTitle" class="inp" placeholder="✅ Verification Passed">
+                </div>
+                <div>
+                  <label class="field-label">Embed Color</label>
+                  <input type="color" id="logPassColor" class="inp" value="#FF3333" style="height:42px;padding:4px 8px;cursor:pointer">
+                </div>
+              </div>
+              <div>
+                <label class="field-label">Embed Description</label>
+                <textarea id="logPassDesc" class="inp" rows="3" placeholder="{user} passed verification.&#10;Country: {country} | Risk: {risk} | IP: {ip_masked}"></textarea>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;padding-top:2px">
+                <span class="field-label" style="width:100%;margin-bottom:0">Variables</span>
+                <code onclick="insertVar('logPassDesc','{user}')" style="cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-size:11px;font-family:monospace;color:#a5b4fc">{user}</code>
+                <code onclick="insertVar('logPassDesc','{user_id}')" style="cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-size:11px;font-family:monospace;color:#a5b4fc">{user_id}</code>
+                <code onclick="insertVar('logPassDesc','{username}')" style="cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-size:11px;font-family:monospace;color:#a5b4fc">{username}</code>
+                <code onclick="insertVar('logPassDesc','{country}')" style="cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-size:11px;font-family:monospace;color:#a5b4fc">{country}</code>
+                <code onclick="insertVar('logPassDesc','{risk}')" style="cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-size:11px;font-family:monospace;color:#a5b4fc">{risk}</code>
+                <code onclick="insertVar('logPassDesc','{ip_masked}')" style="cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-size:11px;font-family:monospace;color:#a5b4fc">{ip_masked}</code>
+
+                <code onclick="insertVar('logPassDesc','{timestamp}')" style="cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-size:11px;font-family:monospace;color:#a5b4fc">{timestamp}</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              Log Embed — Fail / Flagged
+            </p>
+            <p class="card-sub">Embed sent when a user is blocked or flagged. Same variables available.</p>
+            <div class="stack-sm">
+              <div class="grid-2">
+                <div>
+                  <label class="field-label">Embed Title</label>
+                  <input type="text" id="logFailTitle" class="inp" placeholder="⚠️ Verification Failed">
+                </div>
+                <div>
+                  <label class="field-label">Embed Color</label>
+                  <input type="color" id="logFailColor" class="inp" value="#ef4444" style="height:42px;padding:4px 8px;cursor:pointer">
+                </div>
+              </div>
+              <div>
+                <label class="field-label">Embed Description</label>
+                <textarea id="logFailDesc" class="inp" rows="3" placeholder="{user} failed verification.&#10;Reason: {reasons} | Country: {country} | Risk: {risk}"></textarea>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;padding-top:2px">
+                <span class="field-label" style="width:100%;margin-bottom:0">Extra Variables</span>
+                <code onclick="insertVar('logFailDesc','{reasons}')" style="cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-size:11px;font-family:monospace;color:#fca5a5">{reasons}</code>
+                <code onclick="insertVar('logFailDesc','{action}')" style="cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-size:11px;font-family:monospace;color:#fca5a5">{action}</code>
+                <code onclick="insertVar('logFailDesc','{user}')" style="cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-size:11px;font-family:monospace;color:#a5b4fc">{user}</code>
+                <code onclick="insertVar('logFailDesc','{user_id}')" style="cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-size:11px;font-family:monospace;color:#a5b4fc">{user_id}</code>
+                <code onclick="insertVar('logFailDesc','{country}')" style="cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-size:11px;font-family:monospace;color:#a5b4fc">{country}</code>
+                <code onclick="insertVar('logFailDesc','{risk}')" style="cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:2px 8px;font-size:11px;font-family:monospace;color:#a5b4fc">{risk}</code>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ADVANCED ═══ -->
+    <div id="view-advanced" class="tab-view">
+      <div class="grid-2" style="align-items:start">
+        <div class="stack">
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Token Settings
+            </p>
+            <div class="stack-sm">
+              <div>
+                <label class="field-label">Link Expiry</label>
+                <div class="seg-group">
+                  <button class="seg-btn" id="ttl-5"  onclick="setTtl(5)">5 min</button>
+                  <button class="seg-btn active" id="ttl-10" onclick="setTtl(10)">10 min</button>
+                  <button class="seg-btn" id="ttl-15" onclick="setTtl(15)">15 min</button>
+                  <button class="seg-btn" id="ttl-30" onclick="setTtl(30)">30 min</button>
+                </div>
+                <input type="hidden" id="tokenTtlMinutes" value="10">
+                <p class="field-hint">How long the verify link stays valid after the bot sends it.</p>
+              </div>
+              <div>
+                <label class="field-label">Max Attempts Per IP</label>
+                <input type="number" id="maxAttemptsPerIp" class="inp" value="0" min="0" max="999" style="max-width:120px">
+                <p class="field-hint">Maximum total verifications allowed from one IP in this server. 0 = unlimited.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Re-verification
+            </p>
+            <div class="stack-sm">
+              <div class="tog-row"><div class="tog-info"><h3>Force Periodic Re-verification</h3><p>Members must re-verify after a set number of days</p></div><label class="tog-switch"><input type="checkbox" id="requireReverify" class="tog-cb"><span class="tog-track"></span></label></div>
+              <div>
+                <label class="field-label">Re-verify Interval (days)</label>
+                <input type="number" id="reverifyDays" class="inp" value="30" min="1" max="365" style="max-width:120px">
+                <p class="field-hint">Members verified longer than this ago will be prompted to re-verify.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="card">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              Webhook Notifications
+            </p>
+            <p class="card-sub">POST JSON to any HTTP/HTTPS endpoint on verify events</p>
+            <div class="stack-sm">
+              <div>
+                <label class="field-label">Webhook URL</label>
+                <input type="url" id="webhookUrl" class="inp" placeholder="https://your-server.com/webhook">
+                <p class="field-hint">Receives a JSON payload with userId, guildId, action, flagReasons, country, riskScore.</p>
+              </div>
+              <div class="tog-row"><div class="tog-info"><h3>Fire on Pass</h3><p>Send webhook when user passes verification</p></div><label class="tog-switch"><input type="checkbox" id="webhookOnPass" class="tog-cb" checked><span class="tog-track"></span></label></div>
+              <div class="tog-row"><div class="tog-info"><h3>Fire on Fail / Flag</h3><p>Send webhook when user is blocked or flagged</p></div><label class="tog-switch"><input type="checkbox" id="webhookOnFail" class="tog-cb" checked><span class="tog-track"></span></label></div>
+            </div>
+          </div>
+
+          <div class="card" style="background:rgba(255,51,51,.03);border-color:rgba(255,51,51,.1)">
+            <p class="card-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+              Webhook Payload Example
+            </p>
+            <pre style="background:#0c0c1a;border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:12px;font-size:11px;color:#9ca3af;overflow-x:auto;margin:0;line-height:1.6">{
+  "event": "verify_pass",
+  "guildId": "123456789",
+  "userId": "987654321",
+  "action": "PASSED",
+  "flagReasons": [],
+  "country": "GB",
+  "riskScore": 12,
+  "isVpn": false,
+  "timestamp": "2025-01-01T00:00:00Z"
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ RECORDS ═══ -->
+    <div id="view-records" class="tab-view">
+      <div class="card" style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <p class="card-title" style="margin:0">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            Verification Records
+            <span id="recordTotal" style="margin-left:4px;padding:2px 8px;border-radius:6px;font-size:10px;background:rgba(255,255,255,.06);color:#6b7280;font-weight:600">0</span>
+          </p>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input type="text" id="searchUserId" class="inp" style="max-width:180px;min-height:36px;font-size:12px" placeholder="Search User ID…" onkeydown="if(event.key==='Enter')loadRecords(1)">
+            <select id="filterAction" class="inp" style="max-width:180px;min-height:36px;font-size:12px" onchange="loadRecords(1)">
+              <option value="">All Actions</option>
+              <option value="PASSED">Passed</option>
+              <option value="BLOCKED_VPN">VPN Blocked</option>
+              <option value="BLOCKED_ALT">Alt Blocked</option>
+              <option value="BLOCKED_COUNTRY">Country Blocked</option>
+              <option value="FLAGGED">Flagged</option>
+              <option value="MANUAL_APPROVE">Manual Approved</option>
+            </select>
+            <button class="btn btn-ghost" style="min-height:36px;padding:6px 12px;font-size:12px" onclick="loadRecords(currentPage)">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Refresh
+            </button>
+            <button class="btn btn-ghost" style="min-height:36px;padding:6px 12px;font-size:12px" onclick="exportCsv()">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              CSV
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr>
+              <th>User ID</th><th>IP (Masked)</th><th>Country</th><th>Threats</th><th>Risk</th><th>Action</th><th>Attempts</th><th>Last Seen</th><th></th>
+            </tr></thead>
+            <tbody id="recordsBody">
+              <tr><td colspan="9"><div class="empty-state"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg><p style="font-size:12px;margin:0">No records yet.</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="pagination" class="pag" style="display:none"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="/sidebar.js" nonce="<%= nonce %>"></script>
+<script nonce="<%= nonce %>">
+'use strict';
+const guildId = location.pathname.split('/')[2];
+const _csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+async function apiFetch(url, opts = {}) {
+  opts.headers = { 'Content-Type': 'application/json', 'X-CSRF-Token': _csrf, ...(opts.headers || {}) };
+  return fetch(url, opts);
+}
+let currentPage = 1;
+const TABS = ['overview','config','security','actions','advanced','records'];
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  TABS.forEach(t => {
+    const view = document.getElementById(`view-${t}`);
+    const btn  = document.getElementById(`tab-${t}`);
+    if (!view || !btn) return;
+    const active = t === tab;
+    view.style.display = active ? 'block' : 'none';
+    if (active) { view.classList.remove('tab-active'); void view.offsetWidth; view.classList.add('tab-active'); }
+    else view.classList.remove('tab-active');
+    btn.classList.toggle('active', active);
+  });
+  if (tab === 'overview') loadStats();
+  if (tab === 'records')  loadRecords(1);
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function insertVar(fieldId, variable) {
+  const el = document.getElementById(fieldId);
+  if (!el) return;
+  const s = el.selectionStart ?? el.value.length;
+  const e = el.selectionEnd   ?? el.value.length;
+  el.value = el.value.substring(0, s) + variable + el.value.substring(e);
+  el.focus();
+  el.selectionStart = el.selectionEnd = s + variable.length;
+}
+
+function toast(msg, type = 'ok') {
+  const el = document.getElementById('toast');
+  document.getElementById('toastMessage').textContent = msg;
+  const bg = { ok:'linear-gradient(135deg,#2e1a1a,#0d1a0d)', err:'linear-gradient(135deg,#2e1a1a,#1a0d0d)', warn:'linear-gradient(135deg,#2e251a,#1a150d)' };
+  el.style.background = bg[type] || bg.ok;
+  el.style.border = `1px solid ${type==='err'?'#f8717133':type==='warn'?'#fb923c33':'#ff333333'}`;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3200);
+}
+
+// ── Loaders ───────────────────────────────────────────────────────────────────
+async function loadChannels() {
+  const res  = await fetch(`/api/guild/${guildId}/channels`);
+  const data = await res.json();
+  const channels = data.channels || data || [];
+  ['channel','logChannel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = `<option value="">— Select a channel —</option>`;
+    channels.filter(c => c.type === 0).forEach(c => el.innerHTML += `<option value="${c.id}">#${c.name}</option>`);
+  });
+}
+
+async function loadRoles() {
+  const res   = await fetch(`/api/guild/${guildId}/roles`);
+  const roles = await res.json();
+  ['role','unverifiedRole'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = `<option value="">— Select a role —</option>`;
+    (Array.isArray(roles) ? roles : roles.roles || []).forEach(r => {
+      if (r.id === guildId) return;
+      el.innerHTML += `<option value="${r.id}">${r.name}</option>`;
+    });
+  });
+}
+
+async function loadConfig() {
+  const res = await fetch(`/api/guild/${guildId}/ipverify`);
+  const d   = await res.json();
+
+  setVal('channel', d.Channel || '');
+  setVal('role', d.Role || '');
+  setVal('unverifiedRole', d.unverifiedRole || '');
+  setVal('additionalRoles', d.additionalRoles || '');
+  setVal('logChannel', d.logChannel || '');
+  setVal('messageContent', d.MessageContent || '');
+  setVal('embedColor', d.Color || '#6C53FF');
+  setVal('footer', d.Footer || '');
+  setVal('buttonLabel', d.buttonLabel || 'Verify');
+  setVal('gateSuccessMessage', d.gateSuccessMessage || '');
+  setVal('gateFailMessage', d.gateFailMessage || '');
+  setVal('failMessage', d.failMessage || '');
+  setVal('flaggedMessage', d.flaggedMessage || '');
+  setVal('consentText', d.consentText || '');
+  setVal('minAccountAgeDays', d.minAccountAgeDays ?? 7);
+  setVal('ipBanThreshold', d.ipBanThreshold ?? 0);
+  setVal('maxAttemptsPerIp', d.maxAttemptsPerIp ?? 0);
+  setVal('reverifyDays', d.reverifyDays ?? 30);
+  setVal('webhookUrl', d.webhookUrl || '');
+
+  // Fail/flagged action radios
+  ['none','kick','ban','alert','log'].forEach(v => {
+    const fa = document.getElementById(`fa-${v}`); if (fa) fa.checked = v === (d.failAction || 'none');
+    const fl = document.getElementById(`fla-${v}`); if (fl) fl.checked = v === (d.flaggedAction || 'alert');
+  });
+
+  // Button style
+  const bs = d.buttonStyle || 3;
+  document.querySelectorAll('[name="buttonStyle"]').forEach(r => r.checked = parseInt(r.value) === bs);
+
+  // Toggles
+  setCheck('blockVpn', d.blockVpn); setCheck('blockProxy', d.blockProxy);
+  setCheck('blockTor', d.blockTor); setCheck('blockHosting', d.blockHosting);
+  setCheck('blockAlts', d.blockAlts);
+  setCheck('requireAccountAge', d.requireAccountAge);
+  setCheck('requireReverify', d.requireReverify);
+  setCheck('webhookOnPass', d.webhookOnPass !== false);
+  setCheck('webhookOnFail', d.webhookOnFail !== false);
+  // requireConsent is always true — it's a hidden input, not a checkbox
+
+  const risk = d.vpnRiskThreshold ?? 70;
+  setVal('vpnRiskThreshold', risk); setVal('vpnRiskSlider', risk);
+  document.getElementById('vpnRiskVal').textContent = risk;
+
+  // Country
+  setCountryMode(d.countryMode || 'off');
+  if (d.countryList) {
+    d.countryList.split(',').filter(Boolean).forEach(c => addCountryTag(c.trim()));
+  }
+
+  // TTL
+  setTtl(d.tokenTtlMinutes || 10);
+
+  setVal('logPassTitle', d.logPassTitle || '');
+  setVal('logPassDesc',  d.logPassDesc  || '');
+  setVal('logPassColor', d.logPassColor || '#ff3333');
+  setVal('logFailTitle', d.logFailTitle || '');
+  setVal('logFailDesc',  d.logFailDesc  || '');
+  setVal('logFailColor', d.logFailColor || '#ef4444');
+
+  updatePreview();
+}
+
+async function saveConfig() {
+  const failAction    = ['none','kick','ban','alert','log'].find(v => document.getElementById(`fa-${v}`)?.checked)    || 'none';
+  const flaggedAction = ['none','kick','ban','alert','log'].find(v => document.getElementById(`fla-${v}`)?.checked)   || 'alert';
+  const buttonStyle   = parseInt(document.querySelector('[name="buttonStyle"]:checked')?.value || '3');
+
+  const body = {
+    Channel: getVal('channel'), Role: getVal('role'),
+    unverifiedRole: getVal('unverifiedRole'), additionalRoles: getVal('additionalRoles'),
+    logChannel: getVal('logChannel'),
+    MessageContent: getVal('messageContent'), Color: getVal('embedColor'), Footer: getVal('footer'),
+    buttonLabel: getVal('buttonLabel'), buttonStyle,
+    gateSuccessMessage: getVal('gateSuccessMessage'), gateFailMessage: getVal('gateFailMessage'),
+    failAction, failMessage: getVal('failMessage'),
+    flaggedAction, flaggedMessage: getVal('flaggedMessage'),
+    blockVpn: getCheck('blockVpn'), blockProxy: getCheck('blockProxy'),
+    blockTor: getCheck('blockTor'), blockHosting: getCheck('blockHosting'),
+    vpnRiskThreshold: parseInt(getVal('vpnRiskThreshold')) || 70,
+    blockAlts: getCheck('blockAlts'), ipBanThreshold: parseInt(getVal('ipBanThreshold')) || 0,
+    requireAccountAge: getCheck('requireAccountAge'), minAccountAgeDays: parseInt(getVal('minAccountAgeDays')) || 7,
+    countryMode: getVal('countryMode'), countryList: getVal('countryList'),
+    tokenTtlMinutes: parseInt(getVal('tokenTtlMinutes')) || 10,
+    maxAttemptsPerIp: parseInt(getVal('maxAttemptsPerIp')) || 0,
+    requireReverify: getCheck('requireReverify'), reverifyDays: parseInt(getVal('reverifyDays')) || 30,
+    webhookUrl: getVal('webhookUrl'), webhookOnPass: getCheck('webhookOnPass'), webhookOnFail: getCheck('webhookOnFail'),
+    requireConsent: true, consentText: '',
+    logPassTitle: getVal('logPassTitle'), logPassDesc: getVal('logPassDesc'), logPassColor: getVal('logPassColor'),
+    logFailTitle: getVal('logFailTitle'), logFailDesc: getVal('logFailDesc'), logFailColor: getVal('logFailColor'),
+  };
+
+  try {
+    const res  = await apiFetch(`/api/guild/${guildId}/ipverify`, { method:'POST', body:JSON.stringify(body) });
+    const data = await res.json();
+    res.ok ? toast('Configuration saved') : toast(data.error || 'Save failed', 'err');
+  } catch { toast('Save failed', 'err'); }
+}
+
+async function deleteConfig() {
+  if (!confirm('Delete all verification config? This cannot be undone.')) return;
+  const res = await apiFetch(`/api/guild/${guildId}/ipverify`, { method:'DELETE' });
+  res.ok ? toast('Configuration deleted') : toast('Delete failed', 'err');
+}
+
+async function sendMessage() {
+  const res  = await apiFetch(`/api/guild/${guildId}/ipverify/send`, { method:'POST' });
+  const data = await res.json();
+  res.ok ? toast('Panel sent!') : toast(data.error || 'Send failed', 'err');
+}
+
+async function exportCsv() {
+  window.location.href = `/api/guild/${guildId}/ipverify/export`;
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const res  = await fetch(`/api/guild/${guildId}/ipverify/stats`);
+    const data = await res.json();
+    setText('stat-total',   data.total        ?? '—');
+    setText('stat-passed',  data.passed       ?? '—');
+    setText('stat-vpn',     data.blockedVpn   ?? '—');
+    setText('stat-alt',     data.blockedAlt   ?? '—');
+    setText('stat-country', data.blockedCountry ?? '—');
+    setText('stat-flagged', data.flagged      ?? '—');
+  } catch {}
+}
+
+// ── Records ───────────────────────────────────────────────────────────────────
+async function loadRecords(page = 1) {
+  currentPage = page;
+  const action = document.getElementById('filterAction')?.value || '';
+  const search = document.getElementById('searchUserId')?.value.trim() || '';
+  try {
+    const params = new URLSearchParams({ page, limit: 20, ...(action ? { action } : {}), ...(search ? { search } : {}) });
+    const res    = await fetch(`/api/guild/${guildId}/ipverify/records?${params}`);
+    const data   = await res.json();
+    setText('recordTotal', data.total ?? 0);
+    renderRecords(data.records || []);
+    renderPagination(data.page, data.pages);
+  } catch { toast('Failed to load records', 'err'); }
+}
+
+function renderRecords(records) {
+  const tbody = document.getElementById('recordsBody');
+  if (!records.length) {
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg><p style="font-size:12px;margin:0">No records found.</p></div></td></tr>`;
+    return;
+  }
+  const badges = {
+    PASSED:          `<span class="badge badge-pass">✓ Passed</span>`,
+    BLOCKED_VPN:     `<span class="badge badge-vpn">⊘ VPN</span>`,
+    BLOCKED_ALT:     `<span class="badge badge-alt">⚠ Alt</span>`,
+    BLOCKED_COUNTRY: `<span class="badge badge-country">🌍 Country</span>`,
+    BLOCKED_IP_BAN:  `<span class="badge badge-ipban">🔒 IP Ban</span>`,
+    FLAGGED:         `<span class="badge badge-flag">⚑ Flagged</span>`,
+    MANUAL_APPROVE:  `<span class="badge badge-pass">✓ Manual</span>`,
+    MANUAL_BAN:      `<span class="badge badge-vpn">⊘ M.Ban</span>`,
+  };
+  tbody.innerHTML = records.map(r => {
+    const threats = [r.isVpn&&'VPN',r.isProxy&&'Proxy',r.isTor&&'Tor',r.isHosting&&'Host'].filter(Boolean)
+      .map(t=>`<span class="badge badge-vpn" style="font-size:9px">${t}</span>`).join(' ') || '<span style="color:#374151;font-size:11px">Clean</span>';
+    const risk  = r.riskScore != null
+      ? `<span style="font-size:12px;font-weight:700;color:${r.riskScore>=70?'#f87171':r.riskScore>=40?'#facc15':'#FF3333'}">${r.riskScore}</span><div class="risk-bar"><div class="risk-fill" style="width:${r.riskScore}%;background:${r.riskScore>=70?'#f87171':r.riskScore>=40?'#facc15':'#FF3333'}"></div></div>`
+      : '—';
+    const loc   = r.countryCode || '—';   // city hidden — too invasive
+    const seen  = r.lastSeen ? new Date(r.lastSeen).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}) : '—';
+    return `<tr>
+      <td class="mono">${r.userId}</td>
+      <td class="mono" style="font-size:11px">${r.displayIp}</td>
+      <td style="font-size:11px">${loc}</td>
+      <td>${threats}</td>
+      <td style="white-space:nowrap">${risk}</td>
+      <td>${badges[r.latestAction]||`<span class="badge">${r.latestAction}</span>`}</td>
+      <td style="font-size:11px;color:#6b7280">${r.totalAttempts || 1}</td>
+      <td style="font-size:11px">${seen}</td>
+      <td><div style="display:flex;gap:4px">
+        <button class="btn btn-ghost" style="min-height:28px;padding:4px 8px;font-size:11px" onclick="approveRecord('${r.id}')" title="Manual Approve">✅</button>
+        <button class="btn btn-danger" style="min-height:28px;padding:4px 8px;font-size:11px" onclick="deleteRecord('${r.id}')" title="Delete (GDPR)">🗑</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderPagination(page, pages) {
+  const pag = document.getElementById('pagination');
+  if (!pages || pages <= 1) { pag.style.display = 'none'; return; }
+  pag.style.display = 'flex';
+  let h = `<button class="pag-btn" onclick="loadRecords(${page-1})" ${page<=1?'disabled':''}>‹</button>`;
+  for (let i = 1; i <= pages; i++) {
+    if (i===1||i===pages||(i>=page-1&&i<=page+1)) h += `<button class="pag-btn ${i===page?'active':''}" onclick="loadRecords(${i})">${i}</button>`;
+    else if (i===page-2||i===page+2) h += `<span style="color:#374151;padding:0 2px">…</span>`;
+  }
+  h += `<button class="pag-btn" onclick="loadRecords(${page+1})" ${page>=pages?'disabled':''}>›</button>`;
+  pag.innerHTML = h;
+}
+
+async function approveRecord(id) {
+  if (!confirm('Manually approve this user? They will receive the verified role.')) return;
+  const res = await apiFetch(`/api/guild/${guildId}/ipverify/records/${id}/action`, { method:'POST', body: JSON.stringify({ action: 'MANUAL_APPROVE' }) });
+  res.ok ? (toast('User approved & role assigned'), loadRecords(currentPage)) : toast('Action failed', 'err');
+}
+
+async function deleteRecord(id) {
+  if (!confirm('Delete this record? (GDPR erasure — cannot be undone)')) return;
+  const res = await apiFetch(`/api/guild/${guildId}/ipverify/records/${id}`, { method:'DELETE' });
+  res.ok ? (toast('Record deleted'), loadRecords(currentPage)) : toast('Delete failed', 'err');
+}
+
+// ── Country control ───────────────────────────────────────────────────────────
+function setCountryMode(mode) {
+  document.getElementById('countryMode').value = mode;
+  ['off','allowlist','blocklist'].forEach(m => {
+    document.getElementById(`cm-${m}`)?.classList.toggle('active', m === mode);
+  });
+  const cfg  = document.getElementById('country-config');
+  const lbl  = document.getElementById('country-mode-label');
+  const hint = document.getElementById('country-mode-hint');
+  if (mode === 'off') { cfg.style.display = 'none'; return; }
+  cfg.style.display = 'block';
+  if (mode === 'allowlist') {
+    lbl.textContent  = '(allow only)'; lbl.style.color = '#FF3333';
+    hint.textContent = 'Only these countries can verify. Everyone else is blocked.';
+  } else {
+    lbl.textContent  = '(block these)'; lbl.style.color = '#f87171';
+    hint.textContent = 'Users from these countries cannot verify.';
+  }
+}
+
+let _countryTags = [];
+function addCountry() {
+  const inp = document.getElementById('countryInput');
+  const raw = inp.value.trim().toUpperCase();
+  if (!/^[A-Z]{2}$/.test(raw)) { toast('Enter a valid 2-letter country code (e.g. US, GB)', 'warn'); return; }
+  addCountryTag(raw);
+  inp.value = '';
+}
+function addCountryTag(code) {
+  if (_countryTags.includes(code)) return;
+  _countryTags.push(code);
+  renderCountryTags();
+}
+function removeCountryTag(code) {
+  _countryTags = _countryTags.filter(c => c !== code);
+  renderCountryTags();
+}
+function renderCountryTags() {
+  const el = document.getElementById('country-tags');
+  el.innerHTML = _countryTags.map(c =>
+    `<span class="country-tag">${c}<button onclick="removeCountryTag('${c}')" title="Remove">×</button></span>`
+  ).join('');
+  document.getElementById('countryList').value = _countryTags.join(',');
+}
+
+// ── TTL selector ──────────────────────────────────────────────────────────────
+function setTtl(mins) {
+  document.getElementById('tokenTtlMinutes').value = mins;
+  [5,10,15,30].forEach(m => document.getElementById(`ttl-${m}`)?.classList.toggle('active', m === mins));
+}
+
+// ── Preview ───────────────────────────────────────────────────────────────────
+function updatePreview() {
+  const msg    = document.getElementById('messageContent')?.value || '';
+  const color  = document.getElementById('embedColor')?.value     || '#6C53FF';
+  const label  = document.getElementById('buttonLabel')?.value    || 'Verify';
+  const style  = parseInt(document.querySelector('[name="buttonStyle"]:checked')?.value || '3');
+  const styleMap = { 1:'s1', 2:'s2', 3:'s3', 4:'s4' };
+
+  const pmsg = document.getElementById('previewMessage');
+  const pemb = document.getElementById('previewEmbed');
+  const pbtn = document.getElementById('previewButton');
+  if (pmsg)  pmsg.textContent              = msg || 'Click the button below to verify!';
+  if (pemb)  pemb.style.borderLeftColor    = color;
+  if (pbtn) { pbtn.textContent = label || 'Verify'; pbtn.className = `discord-btn ${styleMap[style]||'s3'}`; }
+}
+
+// Listen for button style changes
+document.querySelectorAll('[name="buttonStyle"]').forEach(r => r.addEventListener('change', updatePreview));
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function setVal(id,v)   { const el=document.getElementById(id); if(!el) return; el.value=v??''; el.dispatchEvent(new Event('change',{bubbles:true})); }
+function setCheck(id,v) { const el=document.getElementById(id); if(el) el.checked=!!v; }
+function setText(id,v)  { const el=document.getElementById(id); if(el) el.textContent=v??'—'; }
+function getVal(id)     { return document.getElementById(id)?.value||''; }
+function getCheck(id)   { return !!document.getElementById(id)?.checked; }
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+(async () => {
+  await Promise.all([loadChannels(), loadRoles()]);
+  await loadConfig();
+  loadStats();
+  TABS.forEach((t,i) => {
+    const v = document.getElementById(`view-${t}`);
+    const b = document.getElementById(`tab-${t}`);
+    if (v) { v.style.display = i===0?'block':'none'; v.classList.toggle('tab-active',i===0); }
+    if (b) b.classList.toggle('active', i===0);
+  });
+})();
+</script>
+
+<!-- Razor Custom Select -->
+<script nonce="<%= nonce %>">
+(function(){
+'use strict';
+var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet();var openWrap=null;
+function cleanText(t){t=String(t||'');var d=document.createElement('div');d.innerHTML=t;return(d.textContent||d.innerText||'').trim();}
+function optText(opt){return cleanText(opt.text||opt.textContent||opt.label||'');}
+function positionPanel(wrap){var r=wrap._t.getBoundingClientRect();var p=wrap._p;var panelH=p.offsetHeight||240;var spaceBelow=window.innerHeight-r.bottom;var spaceAbove=r.top;var width=Math.max(r.width,160);p.style.width=width+'px';p.style.left=r.left+'px';p.style.right='auto';if(spaceBelow>=panelH||spaceBelow>=spaceAbove){p.style.top=(r.bottom+4)+'px';p.style.bottom='auto';}else{p.style.bottom=(window.innerHeight-r.top+4)+'px';p.style.top='auto';}}
+document.addEventListener('mousedown',function(e){if(!openWrap)return;if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);},true);
+window.addEventListener('scroll',function(){if(openWrap)positionPanel(openWrap);},true);
+window.addEventListener('resize',function(){if(openWrap)positionPanel(openWrap);});
+function open_(wrap){if(openWrap&&openWrap!==wrap)close_(openWrap);openWrap=wrap;buildList(wrap,'');wrap._si.value='';wrap._sw.style.display='';document.body.appendChild(wrap._p);wrap._p.style.display='block';wrap._t.classList.add('is-open');wrap._t.setAttribute('aria-expanded','true');requestAnimationFrame(function(){positionPanel(wrap);});setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);}
+function close_(wrap){if(!wrap)return;if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);wrap._p.style.display='none';wrap._t.classList.remove('is-open');wrap._t.setAttribute('aria-expanded','false');if(openWrap===wrap)openWrap=null;}
+function buildList(wrap,q){var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();var opts=Array.from(sel.options).filter(function(o){var t=optText(o);return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);});if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}list.innerHTML='';opts.forEach(function(opt){var it=document.createElement('div');it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');it.dataset.v=opt.value;var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';it.appendChild(tx);it.appendChild(ck);it.addEventListener('mousedown',function(e){e.preventDefault();e.stopPropagation();sel.value=opt.value;updateLabel(wrap);close_(wrap);sel.dispatchEvent(new Event('change',{bubbles:true}));});list.appendChild(it);});}
+function updateLabel(wrap){var sel=wrap._s,lbl=wrap._lb;var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;var text=opt?optText(opt):'';if(text){lbl.textContent=text;lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));}else{lbl.textContent='Select\u2026';lbl.classList.add('is-ph');}wrap._last=sel.value;}
+function wrapSelect(sel){if(wrapped.has(sel))return;if(sel.hasAttribute('data-rzr-skip'))return;if(sel.size&&sel.size>1)return;wrapped.add(sel);if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';var sib=sel.nextElementSibling;if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';var t=document.createElement('div');t.className='rzr-trigger';t.setAttribute('tabindex','0');t.setAttribute('role','combobox');t.setAttribute('aria-haspopup','listbox');t.setAttribute('aria-expanded','false');var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;t.appendChild(lb);t.appendChild(cv);var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';var sw=document.createElement('div');sw.className='rzr-panel-search';var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;sw.appendChild(si);var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');p.appendChild(sw);p.appendChild(l);var w=document.createElement('div');w.className='rzr-wrap';w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;w.appendChild(t);w.appendChild(p);sel.parentNode.insertBefore(w,sel);w.appendChild(sel);si.addEventListener('input',function(){buildList(w,si.value);});si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});t.addEventListener('click',function(e){e.stopPropagation();openWrap===w?close_(w):open_(w);});t.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}if(e.key==='Escape')close_(w);});var mo=new MutationObserver(function(){updateLabel(w);if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}});mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});var pid=setInterval(function(){if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}if(sel.value!==w._last)updateLabel(w);},150);updateLabel(w);}
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType!==1)return;if(n.tagName==='SELECT')wrapSelect(n);else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);});});}).observe(document.body,{childList:true,subtree:true});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);else initAll();
+})();
+</script>
+
+</body>
+</html>

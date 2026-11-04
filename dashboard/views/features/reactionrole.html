@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reaction Roles</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <script>
+    function escapeHtml(s) {
+      if (s == null) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+    const tailwind = window.tailwind || {};
+    window.tailwind = window.tailwind || {};
+    tailwind.config = {
+      theme: { extend: {
+        fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+        colors: { razor: '#FF3333', razorDark: '#CC2222' }
+      }}
+    };
+  </script>
+  <style>
+    *,:before,:after{box-sizing:border-box}
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:10px}
+    ::-webkit-scrollbar-thumb:hover{background:#FF3333}
+
+    .input-field{
+      width:100%;background:#0d0d1c;
+      border:1.5px solid rgba(255,255,255,0.09);
+      border-radius:10px;padding:10px 14px;
+      font-size:14px;color:#fff;outline:none;
+      font-family:inherit;
+      transition:border-color .15s,box-shadow .15s;
+    }
+    .input-field:focus{border-color:rgba(255,51,51,0.5);box-shadow:0 0 0 3px rgba(255,51,51,0.08)}
+    .input-field::placeholder{color:#374151}
+
+    .lbl{display:block;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+
+    .card{background:#12122a;border:1px solid rgba(255,255,255,0.06);border-radius:16px}
+
+    .rr-item{
+      background:#0d0d1c;border:1px solid rgba(255,255,255,0.07);
+      border-radius:14px;padding:16px 18px;
+      display:flex;align-items:center;gap:14px;
+      transition:border-color .2s,transform .2s,box-shadow .2s;
+    }
+    .rr-item:hover{border-color:rgba(255,51,51,0.25);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.4)}
+    .rr-item .del-btn{opacity:0;transition:opacity .15s}
+    .rr-item:hover .del-btn{opacity:1}
+
+    .emoji-box{
+      width:52px;height:52px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:12px;display:flex;align-items:center;justify-content:center;
+      font-size:26px;flex-shrink:0;overflow:hidden;
+    }
+    .emoji-box img{width:32px;height:32px;object-fit:contain}
+
+    /* Custom select */
+    .rzr-wrap{position:relative;width:100%}
+    .rzr-trigger{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:8px;padding:10px 14px;
+      border-radius:10px;border:1.5px solid rgba(255,255,255,0.09);
+      background:#0d0d1c;color:#fff;cursor:pointer;
+      font-size:14px;font-family:inherit;min-height:44px;width:100%;
+      transition:border-color .15s,box-shadow .15s;user-select:none;
+    }
+    .rzr-trigger:hover{border-color:rgba(255,255,255,0.18)}
+    .rzr-trigger.open{border-color:rgba(255,51,51,0.5);box-shadow:0 0 0 3px rgba(255,51,51,0.08)}
+    .rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+    .rzr-label.ph{color:#374151}
+    .rzr-chev{color:#6b7280;transition:transform .2s,color .2s;flex-shrink:0}
+    .rzr-trigger.open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+    .rzr-panel{
+      position:fixed;z-index:99999;
+      background:rgba(9,9,20,.97);backdrop-filter:blur(20px);
+      border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;
+      box-shadow:0 20px 50px rgba(0,0,0,.8);overflow:hidden;
+      animation:dropIn .14s ease;
+    }
+    @keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+    .rzr-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.06)}
+    .rzr-search input{
+      width:100%;background:#06060f;border:1px solid rgba(255,255,255,.08);
+      border-radius:7px;padding:7px 11px;color:#fff;font-size:13px;
+      font-family:inherit;outline:none;
+    }
+    .rzr-search input:focus{border-color:rgba(255,51,51,.4)}
+    .rzr-search input::placeholder{color:#374151}
+    .rzr-list{max-height:220px;overflow-y:auto;padding:5px}
+    .rzr-opt{
+      display:flex;align-items:center;gap:8px;
+      padding:8px 11px;border-radius:8px;cursor:pointer;
+      font-size:13px;color:#9ca3af;transition:background .1s,color .1s;
+    }
+    .rzr-opt:hover{background:rgba(255,255,255,.05);color:#fff}
+    .rzr-opt.sel{background:rgba(255,51,51,.12);color:#FF3333;font-weight:600}
+    .rzr-opt .chk{font-size:11px;color:#FF3333;opacity:0;margin-left:auto;flex-shrink:0}
+    .rzr-opt.sel .chk{opacity:1}
+    .rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
+
+    /* Emoji picker */
+    .emoji-input-row{display:flex;align-items:center;gap:8px}
+    .emoji-preview-btn{
+      width:44px;height:44px;border-radius:10px;flex-shrink:0;
+      background:#0d0d1c;border:1.5px solid rgba(255,255,255,0.09);
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;font-size:22px;transition:border-color .15s,box-shadow .15s;
+      user-select:none;
+    }
+    .emoji-preview-btn:hover{border-color:rgba(255,51,51,0.5)}
+    .emoji-preview-btn.ep-open{border-color:rgba(255,51,51,0.5);box-shadow:0 0 0 3px rgba(255,51,51,0.08)}
+    .emoji-input-field{
+      flex:1;background:#0d0d1c;
+      border:1.5px solid rgba(255,255,255,0.09);
+      border-radius:10px;padding:10px 12px;
+      font-size:14px;color:#fff;outline:none;
+      font-family:inherit;transition:border-color .15s,box-shadow .15s;
+    }
+    .emoji-input-field:focus{border-color:rgba(255,51,51,0.5);box-shadow:0 0 0 3px rgba(255,51,51,0.08)}
+    .emoji-input-field::placeholder{color:#374151}
+    .emoji-panel{
+      position:fixed;z-index:999999;
+      background:rgba(9,9,20,0.97);backdrop-filter:blur(20px);
+      border:1.5px solid rgba(255,255,255,0.1);border-radius:14px;
+      box-shadow:0 20px 50px rgba(0,0,0,.8);
+      width:316px;overflow:hidden;
+      animation:dropIn .14s ease;
+    }
+    .ep-header{padding:10px 10px 8px;border-bottom:1px solid rgba(255,255,255,.06)}
+    .ep-search{
+      width:100%;background:#06060f;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:8px;padding:8px 12px;
+      color:#fff;font-size:13px;font-family:inherit;outline:none;
+    }
+    .ep-search:focus{border-color:rgba(255,51,51,.4)}
+    .ep-search::placeholder{color:#374151}
+    .ep-cats{display:flex;gap:2px;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
+    .ep-cat{
+      width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+      border-radius:6px;cursor:pointer;font-size:16px;transition:background .1s;
+    }
+    .ep-cat:hover{background:rgba(255,255,255,.08)}
+    .ep-cat.active{background:rgba(255,51,51,.2)}
+    .ep-grid{
+      display:grid;grid-template-columns:repeat(8,1fr);
+      gap:2px;padding:8px;max-height:200px;overflow-y:auto;
+    }
+    .ep-emoji{
+      width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+      border-radius:7px;cursor:pointer;font-size:20px;line-height:1;
+      transition:background .1s,transform .1s;
+    }
+    .ep-emoji:hover{background:rgba(255,255,255,.1);transform:scale(1.15)}
+    .ep-emoji.sel{background:rgba(255,51,51,.2)}
+    .ep-empty{padding:24px;text-align:center;color:#374151;font-size:13px}
+    /* Field error highlight */
+    .field-error .input-field,
+    .field-error .rzr-trigger,
+    .field-error .emoji-input-field,
+    .field-error .emoji-preview-btn,
+    .input-field.field-error {
+      border-color:rgba(248,113,113,0.6)!important;
+      box-shadow:0 0 0 3px rgba(248,113,113,0.1)!important;
+    }
+
+    #toast{
+      position:fixed;top:20px;right:20px;z-index:999999;
+      padding:12px 20px;border-radius:10px;
+      font-size:14px;font-weight:600;color:#fff;
+      transform:translateX(120%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+      pointer-events:none;
+    }
+    #toast.show{transform:none}
+    #toast.success{background:#DC2626;box-shadow:0 4px 20px rgba(220,38,38,.4)}
+    #toast.error{background:#dc2626;box-shadow:0 4px 20px rgba(220,38,38,.4)}
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body class="bg-[#0b0b14] text-white min-h-screen" style="font-family:'Plus Jakarta Sans',sans-serif">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<div id="toast"></div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+
+  <main class="flex-1 p-6 md:p-8 overflow-x-hidden">
+
+    <!-- Header -->
+    <div class="flex items-start justify-between gap-4 mb-8">
+      <div>
+        <div class="flex items-center gap-3 mb-1">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(255,51,51,0.12)">
+            <svg class="w-5 h-5" fill="none" stroke="#FF3333" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <h1 class="text-2xl font-bold tracking-tight">Reaction Roles</h1>
+        </div>
+        <p class="text-gray-500 text-sm" style="margin-left:52px">Let members self-assign roles by reacting to a message.</p>
+      </div>
+      <div id="activePill" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#6b7280;white-space:nowrap">
+        <span class="w-1.5 h-1.5 rounded-full" style="background:#6b7280"></span>
+        <span id="activeLabel">0 Active</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Create Panel -->
+      <div class="lg:col-span-4">
+        <div class="card p-6 sticky top-6">
+          <div class="flex items-center gap-2 mb-6">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:rgba(255,51,51,0.12)">
+              <svg class="w-4 h-4" fill="none" stroke="#FF3333" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+              </svg>
+            </div>
+            <span class="font-bold text-base">Create New</span>
+          </div>
+
+          <div class="space-y-5">
+
+            <div>
+              <label class="lbl">Channel</label>
+              <div class="rzr-wrap" id="channelWrap">
+                <div class="rzr-trigger" id="channelTrigger" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="rzr-label ph" id="channelLabel">Select channel...</span>
+                  <span class="rzr-chev"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+                <select id="channelSelect" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0"></select>
+              </div>
+            </div>
+
+            <div>
+              <label class="lbl">Message ID</label>
+              <input type="text" id="messageId" class="input-field font-mono" placeholder="123456789012345678">
+              <p class="flex items-center gap-1 mt-2" style="font-size:11px;color:#4b5563">
+                <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
+                Right-click message &rsaquo; Copy Message ID (Dev Mode)
+              </p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="lbl">Emoji</label>
+                <div id="emojiFieldWrap">
+                  <div class="emoji-input-row">
+                    <button type="button" class="emoji-preview-btn" id="emojiPickerBtn" title="Pick emoji" onclick="toggleEmojiPicker(event)">
+                      <span id="emojiPreviewIcon">😀</span>
+                    </button>
+                    <input type="text" id="emojiInput" class="emoji-input-field" placeholder="Paste or pick emoji" autocomplete="off" spellcheck="false" oninput="onEmojiInputChange()">
+                  </div>
+                </div>
+                <p style="font-size:10px;color:#374151;margin-top:4px">Paste emoji or &lt;:name:id&gt;</p>
+              </div>
+              <div>
+                <label class="lbl">Role</label>
+                <div class="rzr-wrap" id="roleWrap">
+                  <div class="rzr-trigger" id="roleTrigger" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="rzr-label ph" id="roleLabel">Select role...</span>
+                    <span class="rzr-chev"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+                  </div>
+                  <select id="roleSelect" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0"></select>
+                </div>
+              </div>
+            </div>
+
+            <button id="submitBtn" onclick="createReactionRole()" class="w-full flex items-center justify-center gap-2 font-bold py-3 rounded-xl transition-all active:scale-95 mt-2" style="background:#FF3333;color:#000;font-size:14px">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              Add Reaction Role
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Active List -->
+      <div class="lg:col-span-8">
+        <div class="card flex flex-col" style="min-height:520px">
+          <div class="flex items-center justify-between px-6 py-4" style="border-bottom:1px solid rgba(255,255,255,0.06)">
+            <span class="font-bold text-base">Active Configurations</span>
+            <button onclick="loadReactionRoles()" title="Refresh" class="p-1.5 rounded-lg transition-colors" style="color:#6b7280" onmouseover="this.style.color='#fff';this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.color='#6b7280';this.style.background='transparent'">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </button>
+          </div>
+          <div id="rrList" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4 content-start flex-1">
+            <div class="col-span-full flex flex-col items-center justify-center gap-3 py-20" style="color:#374151">
+              <svg class="w-12 h-12 opacity-30" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <p class="text-sm font-medium opacity-50">Loading reaction roles...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="/sidebar.js"></script>
+<script>
+'use strict';
+var guildId = location.pathname.split('/')[2];
+var allRRs = [];
+var allChannels = [];
+var allRoles = [];
+var selects = {};
+
+// Toast
+var _toastTimer = null;
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show ' + (type || 'success');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function(){ el.className = ''; }, 3200);
+}
+
+// Custom select builder
+function buildSelect(id, items, placeholder) {
+  var trigger = document.getElementById(id + 'Trigger');
+  var label   = document.getElementById(id + 'Label');
+  var native  = document.getElementById(id + 'Select');
+  var panel   = null;
+  var isOpen  = false;
+
+  function getVal() { return native.value; }
+  function setVal(v) {
+    native.value = v;
+    var item = items.find(function(i){ return (i.id||i.value) === v; });
+    if (item) {
+      label.textContent = item.label || item.name || v;
+      label.classList.remove('ph');
+    } else {
+      label.textContent = placeholder;
+      label.classList.add('ph');
+    }
+  }
+
+  function openPanel() {
+    if (isOpen) return;
+    isOpen = true;
+    trigger.classList.add('open');
+    trigger.setAttribute('aria-expanded','true');
+
+    panel = document.createElement('div');
+    panel.className = 'rzr-panel';
+
+    var sw = document.createElement('div'); sw.className = 'rzr-search';
+    var si = document.createElement('input'); si.type='text'; si.placeholder='Search\u2026'; si.autocomplete='off';
+    sw.appendChild(si);
+
+    var list = document.createElement('div'); list.className = 'rzr-list';
+    panel.appendChild(sw); panel.appendChild(list);
+    document.body.appendChild(panel);
+
+    function renderOpts(q) {
+      var lq = (q||'').toLowerCase();
+      var filtered = items.filter(function(i){
+        var t = (i.label||i.name||i.value||'').toLowerCase();
+        return !lq || t.indexOf(lq) > -1;
+      });
+      if (!filtered.length) { list.innerHTML = '<div class="rzr-empty">No results</div>'; return; }
+      list.innerHTML = '';
+      filtered.forEach(function(item) {
+        var v = item.id || item.value;
+        var row = document.createElement('div');
+        row.className = 'rzr-opt' + (getVal()===v ? ' sel' : '');
+        if (item.color) {
+          var dot = document.createElement('span');
+          dot.style.cssText = 'width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#'+item.color.toString(16).padStart(6,'0');
+          row.appendChild(dot);
+        }
+        var txt = document.createElement('span');
+        txt.style.cssText = 'flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis';
+        txt.textContent = item.label || item.name || v;
+        var chk = document.createElement('span'); chk.className='chk'; chk.textContent='\u2713';
+        row.appendChild(txt); row.appendChild(chk);
+        row.addEventListener('mousedown', function(e){
+          e.preventDefault();
+          setVal(v);
+          closePanel();
+          native.dispatchEvent(new Event('change',{bubbles:true}));
+          var wrap = document.getElementById(id+'Wrap');
+          if (wrap) wrap.classList.remove('field-error');
+        });
+        list.appendChild(row);
+      });
+    }
+
+    renderOpts('');
+    si.addEventListener('input', function(){ renderOpts(si.value); });
+    si.addEventListener('keydown', function(e){ if(e.key==='Escape') closePanel(); });
+
+    var r = trigger.getBoundingClientRect();
+    var w = Math.max(r.width, 180);
+    panel.style.cssText = 'width:'+w+'px;left:'+r.left+'px;top:'+(r.bottom+4)+'px';
+    requestAnimationFrame(function(){
+      var ph = panel.offsetHeight;
+      if (window.innerHeight - r.bottom < ph && r.top > ph) {
+        panel.style.top = 'auto';
+        panel.style.bottom = (window.innerHeight - r.top + 4) + 'px';
+      }
+      si.focus();
+    });
+  }
+
+  function closePanel() {
+    if (!isOpen) return;
+    isOpen = false;
+    trigger.classList.remove('open');
+    trigger.setAttribute('aria-expanded','false');
+    if (panel && panel.parentNode) panel.parentNode.removeChild(panel);
+    panel = null;
+  }
+
+  trigger.addEventListener('click', function(){ isOpen ? closePanel() : openPanel(); });
+  trigger.addEventListener('keydown', function(e){
+    if (e.key==='Enter'||e.key===' '){ e.preventDefault(); isOpen?closePanel():openPanel(); }
+    if (e.key==='Escape') closePanel();
+  });
+  document.addEventListener('mousedown', function(e){
+    if (isOpen && panel && !panel.contains(e.target) && !trigger.contains(e.target)) closePanel();
+  }, true);
+
+  selects[id] = { getVal: getVal, setVal: setVal };
+  label.textContent = placeholder;
+  label.classList.add('ph');
+}
+
+// Render emoji safely — custom Discord emojis use their CDN URL, standard ones render inline
+function renderEmoji(raw) {
+  if (!raw) return '?';
+  var m = raw.match(/^<a?:([^:]+):(\d+)>$/);
+  if (m) {
+    var ext = raw.startsWith('<a:') ? 'gif' : 'png';
+    return '<img src="https://cdn.discordapp.com/emojis/'+m[2]+'.'+ext+'?size=64" alt="'+escapeHtml(m[1])+'" width="32" height="32" style="object-fit:contain">';
+  }
+  return '<span style="font-size:26px;line-height:1">'+escapeHtml(raw)+'</span>';
+}
+
+// Init
+function init() {
+  Promise.all([loadChannels(), loadRoles()]).then(function(){ loadReactionRoles(); });
+}
+
+async function loadChannels() {
+  try {
+    var res = await fetch('/api/guild/'+guildId+'/channels');
+    var data = await res.json();
+    allChannels = (Array.isArray(data) ? data : (data.channels||[])).map(function(c){
+      return { id: c.id, label: '#'+(c.name||c.id) };
+    });
+    buildSelect('channel', allChannels, 'Select channel...');
+  } catch(e) { console.error(e); }
+}
+
+async function loadRoles() {
+  try {
+    var res = await fetch('/api/guild/'+guildId+'/roles');
+    allRoles = await res.json();
+    var items = allRoles.filter(function(r){ return r.name!=='@everyone' && !r.managed; })
+      .map(function(r){ return { id: r.id, label: r.name, color: r.color||0 }; });
+    buildSelect('role', items, 'Select role...');
+  } catch(e) { console.error(e); }
+}
+
+async function loadReactionRoles() {
+  try {
+    var res = await fetch('/api/guild/'+guildId+'/reactionrole?t='+Date.now());
+    allRRs = await res.json();
+    renderList();
+  } catch(e) {
+    document.getElementById('rrList').innerHTML =
+      '<div class="col-span-full flex items-center justify-center py-20 gap-2" style="color:#f87171;font-size:14px;font-weight:600">' +
+      '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>' +
+      'Failed to load reaction roles</div>';
+  }
+}
+
+function renderList() {
+  var container = document.getElementById('rrList');
+  var pill = document.getElementById('activePill');
+  var dot = pill.querySelector('span');
+  document.getElementById('activeLabel').textContent = allRRs.length + ' Active';
+
+  if (allRRs.length > 0) {
+    pill.style.background = 'rgba(255,51,51,0.1)';
+    pill.style.borderColor = 'rgba(255,51,51,0.25)';
+    pill.style.color = '#FF3333';
+    dot.style.background = '#FF3333';
+  } else {
+    pill.style.background = 'rgba(255,255,255,0.04)';
+    pill.style.borderColor = 'rgba(255,255,255,0.08)';
+    pill.style.color = '#6b7280';
+    dot.style.background = '#6b7280';
+  }
+
+  if (!allRRs.length) {
+    container.innerHTML =
+      '<div class="col-span-full flex flex-col items-center justify-center gap-3 py-20" style="color:#374151">' +
+        '<svg class="w-12 h-12 opacity-30" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+        '<p class="text-sm font-semibold opacity-60">No reaction roles configured</p>' +
+        '<p class="text-xs opacity-40">Use the form on the left to add one.</p>' +
+      '</div>';
+    return;
+  }
+
+  container.innerHTML = allRRs.map(function(rr) {
+    var role    = allRoles.find(function(r){ return r.id===rr.Role; });
+    var channel = allChannels.find(function(c){ return c.id===rr.Channel; });
+    var roleName    = role    ? escapeHtml(role.name)        : 'Unknown Role';
+    var channelName = channel ? escapeHtml(channel.label)    : '#unknown';
+    var roleColor   = role && role.color ? '#'+role.color.toString(16).padStart(6,'0') : '#6b7280';
+    var eid = escapeHtml(rr._id);
+
+    return (
+      '<div class="rr-item group">' +
+        '<div class="emoji-box">'+renderEmoji(rr.Emoji)+'</div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">' +
+            '<span style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:'+roleColor+';box-shadow:0 0 8px '+roleColor+'"></span>' +
+            '<span style="font-weight:700;font-size:14px;color:'+roleColor+';overflow:hidden;white-space:nowrap;text-overflow:ellipsis">'+roleName+'</span>' +
+          '</div>' +
+          '<div style="font-size:12px;color:#6b7280;font-family:monospace">' +
+            '<div>'+channelName+'</div>' +
+            '<div style="opacity:.5;font-size:10px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">ID: '+escapeHtml(rr.Message||rr._id)+'</div>' +
+          '</div>' +
+        '</div>' +
+        '<button class="del-btn p-2 rounded-lg" style="color:#4b5563;transition:color .15s,background .15s" '+
+          'onmouseover="this.style.color=\'#f87171\';this.style.background=\'rgba(248,113,113,0.1)\'" '+
+          'onmouseout="this.style.color=\'#4b5563\';this.style.background=\'transparent\'" '+
+          'onclick="deleteRR(\''+eid+'\')" title="Remove">' +
+          '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>' +
+        '</button>' +
+      '</div>'
+    );
+  }).join('');
+}
+
+async function createReactionRole() {
+  var channelId = selects.channel ? selects.channel.getVal() : document.getElementById('channelSelect').value;
+  var messageId = document.getElementById('messageId').value.trim();
+  var emoji     = document.getElementById('emojiInput').value.trim();
+  var roleId    = selects.role    ? selects.role.getVal()    : document.getElementById('roleSelect').value;
+  var btn       = document.getElementById('submitBtn');
+
+  // Clear previous error states
+  ['channelWrap','messageId','emojiFieldWrap','roleWrap'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove('field-error');
+  });
+
+  var hasError = false;
+  if (!channelId) { document.getElementById('channelWrap').classList.add('field-error'); hasError = true; }
+  if (!messageId) { document.getElementById('messageId').classList.add('field-error'); hasError = true; }
+  if (!emoji)     { document.getElementById('emojiFieldWrap').classList.add('field-error'); hasError = true; }
+  if (!roleId)    { document.getElementById('roleWrap').classList.add('field-error'); hasError = true; }
+
+  if (hasError) {
+    toast('Please fill in all fields.', 'error');
+    return;
+  }
+
+  btn.disabled = true; btn.style.opacity = '.6';
+  try {
+    var res = await fetch('/api/guild/'+guildId+'/reactionrole', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ channelId: channelId, messageId: messageId, emoji: emoji, roleId: roleId })
+    });
+    var data = await res.json();
+    if (res.ok) {
+      toast('Reaction role added!');
+      document.getElementById('messageId').value = '';
+      document.getElementById('emojiInput').value = '';
+      document.getElementById('emojiPreviewIcon').textContent = '😀';
+      loadReactionRoles();
+    } else {
+      toast(data.error || 'Failed to create.', 'error');
+    }
+  } catch(e) {
+    toast('Connection error — please try again.', 'error');
+  }
+  btn.disabled = false; btn.style.opacity = '1';
+}
+
+async function deleteRR(id) {
+  if (!confirm('Remove this reaction role?')) return;
+  try {
+    var res = await fetch('/api/guild/'+guildId+'/reactionrole/'+id, { method: 'DELETE' });
+    if (res.ok) { toast('Deleted.'); loadReactionRoles(); }
+    else { var d = await res.json(); toast(d.error||'Delete failed.', 'error'); }
+  } catch(e) { toast('Connection error.', 'error'); }
+}
+
+// ── Emoji Picker ─────────────────────────────────────────────────────────────
+var EMOJI_CATS = [
+  { icon:'😀', label:'Smileys', emojis:['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🥸','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕'] },
+  { icon:'👋', label:'People', emojis:['👋','🤚','🖐️','✋','🖖','👌','🤌','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','👍','👎','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🙏','✍️','💪','🦵','🦶','👂','🦻','👃','🫀','🫁','🧠','🦷','🦴','👀','👁️','👅','👄','💋','🫦'] },
+  { icon:'🐶', label:'Animals', emojis:['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐻‍❄️','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🙈','🙉','🙊','🐔','🐧','🐦','🐤','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🪱','🐛','🦋','🐌','🐞','🐜','🪲','🦟','🦗','🪳','🕷️','🦂','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐','🦞','🦀','🐡','🐟','🐠','🐬','🦈','🐳','🐋','🦭','🐊','🐅','🐆','🦓','🦍','🦧','🦣','🐘','🦛','🦏','🐪','🐫','🦒','🦘','🦬','🐃','🐂','🐄','🐎','🐖','🐏','🐑','🦙','🐐','🦌','🐕','🐩','🦮','🐕‍🦺','🐈','🐈‍⬛','🐓','🦃','🦤','🦚','🦜','🦩','🦢','🦆','🐇','🦝','🦨','🦡','🦫','🦦','🦥','🐁','🐀','🐿️','🦔'] },
+  { icon:'🌱', label:'Nature', emojis:['🌵','🎄','🌲','🌳','🌴','🪵','🌱','🌿','☘️','🍀','🎍','🪴','🎋','🍃','🍂','🍁','🍄','🌾','💐','🌷','🌹','🥀','🌺','🌸','🌼','🌻','🌞','🌝','🌛','🌜','🌚','🌕','🌖','🌗','🌘','🌑','🌒','🌓','🌔','🌙','🌟','⭐','🌠','🌌','☁️','⛅','🌤️','🔥','🌈','❄️','⛄','🌊','💧','💦','☔','⚡','🌪️','🌫️','🌬️'] },
+  { icon:'🍕', label:'Food', emojis:['🍎','🍊','🍋','🍇','🍓','🫐','🍈','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥬','🥒','🌶️','🫑','🧄','🧅','🥔','🌽','🍠','🥐','🥯','🍞','🥖','🥨','🧀','🥚','🍳','🧈','🥞','🧇','🥓','🥩','🍗','🍖','🌭','🍔','🍟','🍕','🫓','🥪','🥙','🧆','🌮','🌯','🫔','🥗','🥘','🫕','🍝','🍜','🍲','🍛','🍣','🍱','🥟','🦪','🍤','🍙','🍚','🍘','🍥','🥮','🍢','🧁','🍰','🎂','🍮','🍭','🍬','🍫','🍿','🍩','🍪','🌰','🥜','🍯','🧃','🥤','🧋','☕','🍵','🫖','🍺','🍻','🥂','🍷','🫗','🥃','🍸','🍹','🧉','🍾','🧊'] },
+  { icon:'⚽', label:'Sports', emojis:['⚽','🏀','🏈','⚾','🥎','🎾','🏐','🏉','🥏','🎱','🏓','🏸','🏒','🏑','🥍','🏏','🪃','🥅','⛳','🪁','🏹','🎣','🤿','🥊','🥋','🎽','🛹','🛼','🛷','⛸️','🥌','🎿','⛷️','🏂','🪂','🏋️','🤼','🤸','⛹️','🤺','🏇','🧘','🏄','🏊','🚣','🧗','🚵','🚴','🏆','🥇','🥈','🥉','🏅','🎖️','🎗️','🎫','🎟️','🎪','🤹','🎭','🩰','🎨','🎬','🎤','🎧','🎼','🎵','🎶','🥁','🪘','🎷','🎺','🪗','🎸','🪕','🎻','🎹','🪩','🎲','♟️','🎯','🎳','🪅','🎮','🕹️'] },
+  { icon:'🚗', label:'Travel', emojis:['🚗','🚕','🚙','🚌','🚎','🏎️','🚓','🚑','🚒','🚐','🛻','🚚','🚛','🚜','🏍️','🛵','🚲','🛴','🛹','🛼','🚏','🛣️','🛤️','🛢️','⛽','🚨','🚦','🛑','🚧','⚓','🛟','⛵','🚤','🛥️','🛳️','⛴️','🚢','✈️','🛩️','🛫','🛬','🪂','💺','🚁','🚟','🚠','🚡','🛰️','🚀','🛸','🚂','🚃','🚄','🚅','🚆','🚇','🚈','🚉','🚊','🚝','🚞','🚋','🚌','🚍','🚎','🚐','🚑','🚒','🗺️','🧭','🏔️','⛰️','🌋','🏕️','🏖️','🏗️','🏘️','🏙️','🏚️','🏛️','🏜️','🏝️','🏞️','🏟️','🏠','🏡','🏢','🏣','🏤','🏥','🏦','🏨','🏩','🏪','🏫','🏬','🏭','🏯','🏰','💒','🗼','🗽','🗾','🎌','🏳️'] },
+  { icon:'💡', label:'Objects', emojis:['⌚','📱','💻','⌨️','🖥️','🖨️','🖱️','🖲️','🕹️','🗜️','💽','💾','💿','📀','📼','📷','📸','📹','🎥','📽️','🎞️','📞','☎️','📟','📠','📺','📻','🧭','⏱️','⏲️','⏰','🕰️','⌛','⏳','📡','🔋','🪫','🔌','💡','🔦','🕯️','🪔','🧱','🪞','🧲','🔧','🪛','🔩','⚙️','🗜️','🔗','⛓️','🪝','🧰','🪤','🪣','🔑','🗝️','🔐','🔒','🔓','🔨','🪓','⛏️','⚒️','🛠️','🗡️','⚔️','🛡️','🪚','🔫','🪃','🏹','🪤','🪜','🧪','🧫','🧬','🔭','🔬','🩺','🩻','💊','💉','🩹','🩼','🩺','🧲','🔮','📿','💈','⚗️','🪄'] },
+  { icon:'❤️', label:'Symbols', emojis:['❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❤️‍🔥','❤️‍🩹','💕','💞','💓','💗','💖','💘','💝','💟','☮️','✝️','☪️','🕉️','✡️','🔯','🕎','☯️','☦️','🛐','⛎','♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓','🆔','⚛️','🉑','☢️','☣️','📴','📳','🈶','🈚','🈸','🈺','🈷️','✴️','🆚','💮','🉐','㊙️','㊗️','🈴','🈵','🈹','🈲','🅰️','🅱️','🆎','🆑','🅾️','🆘','❌','⭕','🛑','⛔','📛','🚫','💯','💢','♨️','🔞','❗','❕','❓','❔','‼️','⁉️','🔅','🔆','〽️','⚠️','🚸','🔱','⚜️','🔰','♻️','✅','🈯','💹','❇️','✳️','🌐','💠','Ⓜ️','🌀','💤','🏧','🚾','♿','🅿️','🛗','🈳','🈂️','🛂','🛃','🛄','🛅'] }
+];
+
+var _epOpen = false;
+var _epPanel = null;
+var _epCatIdx = 0;
+
+function onEmojiInputChange() {
+  var val = document.getElementById('emojiInput').value.trim();
+  updateEmojiPreview(val);
+  document.getElementById('emojiFieldWrap').classList.remove('field-error');
+}
+
+function updateEmojiPreview(val) {
+  var icon = document.getElementById('emojiPreviewIcon');
+  if (!val) { icon.textContent = '😀'; return; }
+  // Custom Discord emoji
+  var m = val.match(/^<a?:[^:]+:(\d+)>$/);
+  if (m) {
+    icon.innerHTML = '<img src="https://cdn.discordapp.com/emojis/'+m[1]+'.png?size=32" width="24" height="24" style="object-fit:contain">';
+    return;
+  }
+  icon.textContent = val.replace(/<[^>]+>/g,'').substring(0,2) || '😀';
+}
+
+function toggleEmojiPicker(e) {
+  e.stopPropagation();
+  if (_epOpen) { closeEmojiPicker(); return; }
+  openEmojiPicker();
+}
+
+function openEmojiPicker() {
+  if (_epOpen) return;
+  _epOpen = true;
+  document.getElementById('emojiPickerBtn').classList.add('ep-open');
+
+  _epPanel = document.createElement('div');
+  _epPanel.className = 'emoji-panel';
+  _epPanel.innerHTML =
+    '<div class="ep-header"><input class="ep-search" type="text" placeholder="Search emoji…" autocomplete="off" id="epSearch"></div>' +
+    '<div class="ep-cats" id="epCats"></div>' +
+    '<div class="ep-grid" id="epGrid"></div>';
+  document.body.appendChild(_epPanel);
+
+  // Build category tabs
+  var catsEl = _epPanel.querySelector('#epCats');
+  EMOJI_CATS.forEach(function(cat, idx) {
+    var btn = document.createElement('div');
+    btn.className = 'ep-cat' + (idx === _epCatIdx ? ' active' : '');
+    btn.textContent = cat.icon;
+    btn.title = cat.label;
+    btn.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      _epCatIdx = idx;
+      catsEl.querySelectorAll('.ep-cat').forEach(function(b,i){ b.classList.toggle('active', i===idx); });
+      renderEmojiGrid(cat.emojis);
+    });
+    catsEl.appendChild(btn);
+  });
+
+  renderEmojiGrid(EMOJI_CATS[_epCatIdx].emojis);
+
+  var searchEl = _epPanel.querySelector('#epSearch');
+  searchEl.addEventListener('input', function() {
+    var q = searchEl.value.toLowerCase();
+    if (!q) { renderEmojiGrid(EMOJI_CATS[_epCatIdx].emojis); return; }
+    var all = EMOJI_CATS.reduce(function(acc, cat) { return acc.concat(cat.emojis); }, []);
+    renderEmojiGrid(all.filter(function(em) { return em.toLowerCase().indexOf(q) > -1; }));
+  });
+  searchEl.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeEmojiPicker(); });
+
+  // Position
+  var ref = document.getElementById('emojiPickerBtn').getBoundingClientRect();
+  _epPanel.style.left = ref.left + 'px';
+  _epPanel.style.top = (ref.bottom + 6) + 'px';
+  requestAnimationFrame(function() {
+    var ph = _epPanel.offsetHeight;
+    if (window.innerHeight - ref.bottom < ph && ref.top > ph) {
+      _epPanel.style.top = 'auto';
+      _epPanel.style.bottom = (window.innerHeight - ref.top + 6) + 'px';
+    }
+    if (ref.left + 316 > window.innerWidth) {
+      _epPanel.style.left = Math.max(8, window.innerWidth - 324) + 'px';
+    }
+    searchEl.focus();
+  });
+}
+
+function renderEmojiGrid(emojis) {
+  var grid = _epPanel.querySelector('#epGrid');
+  var current = document.getElementById('emojiInput').value.trim();
+  if (!emojis.length) { grid.innerHTML = '<div class="ep-empty">No emoji found</div>'; return; }
+  grid.innerHTML = '';
+  emojis.forEach(function(em) {
+    var btn = document.createElement('div');
+    btn.className = 'ep-emoji' + (em === current ? ' sel' : '');
+    btn.textContent = em;
+    btn.title = em;
+    btn.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      document.getElementById('emojiInput').value = em;
+      updateEmojiPreview(em);
+      document.getElementById('emojiFieldWrap').classList.remove('field-error');
+      closeEmojiPicker();
+    });
+    grid.appendChild(btn);
+  });
+}
+
+function closeEmojiPicker() {
+  if (!_epOpen) return;
+  _epOpen = false;
+  document.getElementById('emojiPickerBtn').classList.remove('ep-open');
+  if (_epPanel && _epPanel.parentNode) _epPanel.parentNode.removeChild(_epPanel);
+  _epPanel = null;
+}
+
+document.addEventListener('mousedown', function(e) {
+  if (_epOpen && _epPanel && !_epPanel.contains(e.target) && e.target.id !== 'emojiPickerBtn' && !document.getElementById('emojiPickerBtn').contains(e.target)) {
+    closeEmojiPicker();
+  }
+}, true);
+
+// Clear field-error on interaction
+document.addEventListener('DOMContentLoaded', function() {
+  var msgId = document.getElementById('messageId');
+  if (msgId) msgId.addEventListener('input', function() { msgId.classList.remove('field-error'); });
+});
+
+init();
+</script>
+
+</body>
+</html>

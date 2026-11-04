@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Notifications — Roco</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tailwind.css">
+<style>
+:root{
+  --yt:#FF0000;--yt-soft:rgba(255,0,0,.12);--yt-border:rgba(255,0,0,.25);--yt-glow:rgba(255,0,0,.18);
+  --tw:#9147FF;--tw-soft:rgba(145,70,255,.12);--tw-border:rgba(145,70,255,.25);--tw-glow:rgba(145,70,255,.18);
+  --bg:#0b0b14;--bg-card:#13131f;--bg-card2:#0d0d1c;--border:rgba(255,255,255,.07);
+  --text:#e8e8f5;--muted:#6b7280;
+}
+*,*::before,*::after{box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;margin:0;}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#2d2d3d;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#FF3333}
+
+/* Layout */
+.layout{display:flex;min-height:100vh;}
+.main-wrap{flex:1;display:flex;justify-content:center;}
+.main-content{width:100%;max-width:1100px;padding:2.5rem 2.5rem 5rem;}
+
+/* Toast */
+#toast{position:fixed;top:1.25rem;right:1.25rem;padding:.8rem 1.4rem;border-radius:.75rem;transform:translateX(500px);transition:transform .3s cubic-bezier(.34,1.56,.64,1);z-index:9999;color:#fff;font-weight:700;font-size:.82rem;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,.6);min-width:200px;display:flex;align-items:center;gap:.5rem;}
+
+/* Page header */
+.page-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;}
+.page-title-group{display:flex;align-items:center;gap:1rem;}
+.page-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.25);}
+.page-title{font-size:1.55rem;font-weight:800;letter-spacing:-.02em;margin:0;}
+.page-subtitle{font-size:.8rem;color:var(--muted);margin:.2rem 0 0;}
+
+/* Platform tabs */
+.tabs-bar{display:flex;gap:.25rem;padding:.3rem;border-radius:.75rem;background:rgba(0,0,0,.3);width:fit-content;}
+.tab-btn{padding:.45rem 1.1rem;border-radius:.55rem;font-size:.82rem;font-weight:700;cursor:pointer;border:1px solid transparent;color:var(--muted);background:transparent;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:.45rem;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.yt-active{background:var(--yt-soft);border-color:var(--yt-border);color:#fff;}
+.tab-btn.tw-active{background:var(--tw-soft);border-color:var(--tw-border);color:#fff;}
+
+/* Stats bar */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:2rem;}
+@media(max-width:700px){.stats-bar{grid-template-columns:1fr 1fr;}}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:.9rem;padding:1rem 1.1rem;}
+.stat-label{font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem;}
+.stat-value{font-size:1.1rem;font-weight:800;color:var(--text);}
+.stat-sub{font-size:.72rem;color:var(--muted);margin-top:.15rem;display:flex;align-items:center;gap:.4rem;}
+.progress-track{height:4px;background:rgba(255,255,255,.05);border-radius:9999px;overflow:hidden;margin-top:.6rem;}
+.progress-fill{height:100%;border-radius:9999px;transition:width .6s ease;}
+
+/* Main grid */
+.main-grid{display:grid;grid-template-columns:360px 1fr;gap:1.25rem;align-items:start;}
+@media(max-width:900px){.main-grid{grid-template-columns:1fr;}}
+
+/* Form panel */
+.form-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:1rem;overflow:hidden;position:sticky;top:1.5rem;}
+.form-header{padding:1.2rem 1.4rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.65rem;}
+.form-header-icon{width:32px;height:32px;border-radius:.6rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.form-header-icon.yt{background:var(--yt-soft);border:1px solid var(--yt-border);}
+.form-header-icon.tw{background:var(--tw-soft);border:1px solid var(--tw-border);}
+.form-body{padding:1.2rem 1.4rem;display:flex;flex-direction:column;gap:1rem;}
+.field-label{display:block;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem;}
+.field-label span{font-size:.68rem;font-weight:400;color:#4b5563;text-transform:none;margin-left:.3rem;}
+input[type=text],textarea,select{width:100%;background:var(--bg-card2);border:1px solid rgba(255,255,255,.1);border-radius:.6rem;padding:.55rem .9rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s;}
+input[type=text]:focus,textarea:focus,select:focus{border-color:rgba(255,51,51,.5);box-shadow:0 0 0 3px rgba(255,51,51,.1);}
+.tw-focus input[type=text]:focus,.tw-focus textarea:focus,.tw-focus select:focus{border-color:rgba(145,70,255,.5);box-shadow:0 0 0 3px rgba(145,70,255,.1);}
+textarea{resize:vertical;min-height:80px;}
+.tag-hint{font-size:.67rem;color:#4b5563;margin-top:.3rem;}
+.tag-pill{display:inline-block;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:.3rem;padding:.05rem .4rem;font-family:'JetBrains Mono',monospace;font-size:.67rem;color:#9ca3af;}
+
+/* Toggle row */
+.tog-row{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.7rem .9rem;background:rgba(0,0,0,.2);border-radius:.6rem;border:1px solid var(--border);}
+.tog-row-label h4{font-size:.82rem;font-weight:600;color:var(--text);margin:0;}
+.tog-row-label p{font-size:.7rem;color:var(--muted);margin:.1rem 0 0;}
+.tog-wrap{display:inline-block;position:relative;width:40px;height:22px;flex-shrink:0;}
+.tog-cb{opacity:0;width:0;height:0;position:absolute;}
+.tog-track{position:absolute;cursor:pointer;background:#1e1e38;border-radius:9999px;top:0;left:0;right:0;bottom:0;transition:background .22s;border:1px solid rgba(255,255,255,.08);}
+.tog-track::before{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#5a5a80;transition:transform .22s,background .22s;}
+.tog-cb:checked+.tog-track{background:#FF3333;border-color:#FF3333;}
+.tog-cb:checked+.tog-track::before{transform:translateX(18px);background:#fff;}
+.tw-tog .tog-cb:checked+.tog-track{background:#9147FF;border-color:#9147FF;}
+
+/* Submit btn */
+.submit-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem;border-radius:.7rem;font-size:.875rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .15s;}
+.submit-btn:active{transform:scale(.98);}
+.submit-btn.yt{background:#FF3333;color:#fff;box-shadow:0 4px 18px rgba(255,51,51,.25);}
+.submit-btn.yt:hover{background:#ff1a1a;}
+.submit-btn.tw{background:#9147FF;color:#fff;box-shadow:0 4px 18px rgba(145,70,255,.25);}
+.submit-btn.tw:hover{background:#7c36e0;}
+
+/* List panel */
+.list-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:1rem;overflow:hidden;}
+.list-header{padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.list-header h2{font-size:.95rem;font-weight:700;margin:0;}
+.refresh-btn{padding:.35rem .6rem;border-radius:.5rem;background:transparent;border:1px solid transparent;color:var(--muted);cursor:pointer;transition:all .15s;display:flex;}
+.refresh-btn:hover{background:rgba(255,255,255,.06);color:var(--text);border-color:var(--border);}
+
+/* Alert cards grid */
+.alerts-grid{padding:1.1rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.85rem;}
+.alert-card{background:var(--bg-card2);border:1px solid var(--border);border-radius:.85rem;padding:1rem;display:flex;flex-direction:column;gap:.75rem;transition:all .2s;position:relative;overflow:hidden;}
+.alert-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;border-radius:1rem 1rem 0 0;}
+.alert-card.yt::before{background:linear-gradient(90deg,var(--yt),transparent);}
+.alert-card.tw::before{background:linear-gradient(90deg,var(--tw),transparent);}
+.alert-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.13);}
+.alert-card.yt:hover{border-color:var(--yt-border);box-shadow:0 8px 24px -4px var(--yt-glow);}
+.alert-card.tw:hover{border-color:var(--tw-border);box-shadow:0 8px 24px -4px var(--tw-glow);}
+
+/* Card internals */
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;}
+.card-icon{width:34px;height:34px;border-radius:.6rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.card-icon.yt{background:var(--yt-soft);border:1px solid var(--yt-border);}
+.card-icon.tw{background:var(--tw-soft);border:1px solid var(--tw-border);}
+.card-title-wrap{flex:1;min-width:0;}
+.card-name{font-size:.875rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;text-decoration:none;transition:color .15s;}
+.alert-card.yt .card-name:hover{color:#ff5555;}
+.alert-card.tw .card-name:hover{color:#b07fff;}
+.card-slot{font-size:.65rem;font-family:'JetBrains Mono',monospace;color:var(--muted);}
+.card-actions{display:flex;gap:.25rem;flex-shrink:0;opacity:0;transition:opacity .15s;}
+.alert-card:hover .card-actions{opacity:1;}
+.card-btn{width:28px;height:28px;border-radius:.45rem;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;color:var(--muted);}
+.card-btn:hover.test{background:rgba(251,191,36,.1);color:#fbbf24;}
+.card-btn:hover.del{background:rgba(239,68,68,.1);color:#f87171;}
+.card-meta{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;}
+.meta-item{background:rgba(255,255,255,.03);border-radius:.5rem;padding:.45rem .6rem;}
+.meta-item-label{font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem;}
+.meta-item-value{font-size:.78rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'JetBrains Mono',monospace;}
+.card-badges{display:flex;gap:.35rem;flex-wrap:wrap;}
+.badge{font-size:.65rem;font-weight:700;padding:.2rem .55rem;border-radius:9999px;border:1px solid;display:inline-flex;align-items:center;gap:.3rem;}
+.badge.yt-upload{background:var(--yt-soft);color:#ff6b6b;border-color:var(--yt-border);}
+.badge.yt-live{background:rgba(255,100,0,.1);color:#ff8c42;border-color:rgba(255,100,0,.25);}
+.badge.tw-live{background:var(--tw-soft);color:#b07fff;border-color:var(--tw-border);}
+.badge.tw-end{background:rgba(107,114,128,.1);color:#9ca3af;border-color:rgba(107,114,128,.2);}
+.card-message{border-top:1px solid var(--border);padding-top:.65rem;font-size:.72rem;color:var(--muted);font-style:italic;line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-overflow:hidden;}
+
+/* Empty state */
+.empty-state{padding:3.5rem 1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted);}
+.empty-state svg{margin-bottom:1rem;opacity:.25;}
+.empty-state p{font-size:.82rem;font-weight:600;margin:0;}
+.empty-state small{font-size:.72rem;margin:.3rem 0 0;display:block;}
+
+/* Twitter notice */
+.twitter-notice{margin-top:1.25rem;background:var(--bg-card);border:1px solid var(--border);border-radius:1rem;padding:1rem 1.2rem;display:flex;align-items:flex-start;gap:.9rem;}
+.twitter-notice-icon{width:36px;height:36px;border-radius:.65rem;background:rgba(107,114,128,.1);border:1px solid rgba(107,114,128,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.05rem;}
+
+/* Upgrade banner */
+.upgrade-banner{background:linear-gradient(135deg,rgba(255,51,51,.08),rgba(145,70,255,.06));border:1px solid rgba(255,51,51,.2);border-radius:.85rem;padding:.85rem 1.1rem;display:flex;align-items:center;gap:.85rem;margin-bottom:1rem;}
+.upgrade-banner p{font-size:.78rem;color:#e8e8f5;margin:0;flex:1;}
+.upgrade-banner a{font-size:.75rem;font-weight:700;color:#fff;background:#FF3333;padding:.3rem .75rem;border-radius:.45rem;text-decoration:none;white-space:nowrap;flex-shrink:0;}
+.upgrade-banner a:hover{background:#ff1a1a;}
+
+/* Razor */
+.rzr-wrap{position:relative;width:100%;display:block;}
+.rzr-wrap-parent.select-wrap::after,.rzr-wrap-parent::after{display:none!important;content:none!important;}
+.rzr-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 13px;border-radius:9px;border:1.5px solid rgba(255,255,255,0.1);background:var(--bg-card2);color:#fff;cursor:pointer;font-size:14px;font-family:inherit;min-height:42px;width:100%;transition:border-color .15s,box-shadow .15s;user-select:none;box-sizing:border-box;}
+.rzr-trigger:hover{border-color:rgba(255,255,255,0.2);}
+.rzr-trigger.is-open{border-color:rgba(255,51,51,.55);box-shadow:0 0 0 3px rgba(255,51,51,.1);}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4;}
+.rzr-label.is-ph{color:#6b7280;}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s;}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333;}
+.rzr-panel{position:fixed;z-index:999999;background:rgba(11,11,20,.98);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;box-shadow:0 24px 60px rgba(0,0,0,.7);overflow:hidden;animation:rzrIn .16s ease;}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07);}
+.rzr-search-inp{display:block;width:100%;background:#06060f;border:1px solid rgba(255,255,255,.09);border-radius:7px;padding:6px 11px;color:#fff;font-size:13px;font-family:inherit;outline:none;box-sizing:border-box;transition:border-color .15s;}
+.rzr-search-inp:focus{border-color:rgba(255,51,51,.45);}
+.rzr-search-inp::placeholder{color:#374151;}
+.rzr-list{max-height:220px;overflow-y:auto;padding:5px;}
+.rzr-list::-webkit-scrollbar{width:4px;}
+.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:6px;}
+.rzr-list::-webkit-scrollbar-thumb:hover{background:#FF3333;}
+.rzr-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 11px;border-radius:8px;cursor:pointer;font-size:13px;color:#9ca3af;transition:background .1s,color .1s;}
+.rzr-item:hover{background:rgba(255,255,255,.055);color:#fff;}
+.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600;}
+.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0;}
+.rzr-item.is-sel .rzr-item-chk{opacity:1;}
+.rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px;}
+</style>
+
+<link rel="stylesheet" href="/loading.css">
+<style>
+  @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+  @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+  @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+  @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+</style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<div id="toast"></div>
+
+<div class="layout">
+  <aside id="razor-sidebar"></aside>
+  <div class="main-wrap">
+    <div class="main-content">
+
+      <!-- Header -->
+      <header class="page-header">
+        <div class="page-title-group">
+          <div class="page-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff5555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </div>
+          <div>
+            <h1 class="page-title">Social Notifications</h1>
+            <p class="page-subtitle">Real-time alerts for YouTube uploads, live streams, and Twitch streams.</p>
+          </div>
+        </div>
+
+        <!-- Platform tabs -->
+        <div class="tabs-bar">
+          <button onclick="switchPlatform('youtube')" id="tab-youtube" class="tab-btn yt-active">
+            <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+            YouTube
+          </button>
+          <button onclick="switchPlatform('twitch')" id="tab-twitch" class="tab-btn">
+            <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>
+            Twitch
+          </button>
+        </div>
+      </header>
+
+      <!-- Stats bar -->
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-label">YouTube Slots</div>
+          <div class="stat-value" id="yt-slot-text">—</div>
+          <div class="progress-track"><div id="yt-slot-bar" class="progress-fill" style="width:0%;background:#FF3333;"></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Twitch Slots</div>
+          <div class="stat-value" id="tw-slot-text">—</div>
+          <div class="progress-track"><div id="tw-slot-bar" class="progress-fill" style="width:0%;background:#9147FF;"></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Poll Rate</div>
+          <div class="stat-value" style="display:flex;align-items:center;gap:.35rem;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>30s</div>
+          <div class="stat-sub" style="color:#6b7280;">Checks every 30 seconds</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Plan</div>
+          <div class="stat-value" id="tier-name" style="font-size:.95rem;">—</div>
+          <div class="stat-sub" id="tier-sub" style="color:#6b7280;">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Upgrade banner (hidden by default, shown when near limit) -->
+      <div id="upgrade-banner" class="upgrade-banner" style="display:none;">
+        <svg width="18" height="18" fill="none" stroke="#FF3333" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <p id="upgrade-banner-text"></p>
+        <a href="/premium">Upgrade</a>
+      </div>
+
+      <!-- Main grid -->
+      <div class="main-grid">
+
+        <!-- Form panel -->
+        <div class="form-panel">
+
+          <!-- YouTube form -->
+          <div id="form-youtube">
+            <div class="form-header">
+              <div class="form-header-icon yt">
+                <svg width="15" height="15" fill="#ff5555" viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+              </div>
+              <div>
+                <h2 style="font-size:.9rem;font-weight:700;margin:0;">Add YouTube Alert</h2>
+                <p style="font-size:.72rem;color:var(--muted);margin:.1rem 0 0;">Notifies for uploads and live streams.</p>
+              </div>
+            </div>
+            <div class="form-body">
+              <div>
+                <label class="field-label">Notification Channel</label>
+                <select id="yt-channelSelect"><option value="">Select a channel...</option></select>
+              </div>
+              <div>
+                <label class="field-label">YouTube Channel URL</label>
+                <input type="text" id="yt-url" placeholder="https://youtube.com/@ChannelName">
+              </div>
+              <div>
+                <label class="field-label">Alert Message</label>
+                <textarea id="yt-message" placeholder="@everyone {channel} just uploaded! Check it out: {link}"></textarea>
+                <p class="tag-hint">Tags: <span class="tag-pill">{channel}</span> <span class="tag-pill">{link}</span></p>
+              </div>
+              <div>
+                <label class="field-label">Ping Role <span>(optional)</span></label>
+                <select id="yt-roleSelect"><option value="">No role ping</option></select>
+              </div>
+              <div class="tog-row">
+                <div class="tog-row-label">
+                  <h4>Notify on uploads</h4>
+                  <p>Regular video uploads</p>
+                </div>
+                <label class="tog-wrap"><input type="checkbox" id="yt-notifyUploads" class="tog-cb" checked><span class="tog-track"></span></label>
+              </div>
+              <div class="tog-row">
+                <div class="tog-row-label">
+                  <h4>Notify on live streams</h4>
+                  <p>When the channel goes live</p>
+                </div>
+                <label class="tog-wrap"><input type="checkbox" id="yt-notifyStreams" class="tog-cb" checked><span class="tog-track"></span></label>
+              </div>
+              <button onclick="createYouTube()" class="submit-btn yt">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                Add YouTube Alert
+              </button>
+            </div>
+          </div>
+
+          <!-- Twitch form -->
+          <div id="form-twitch" class="hidden tw-focus">
+            <div class="form-header">
+              <div class="form-header-icon tw">
+                <svg width="15" height="15" fill="#9147FF" viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>
+              </div>
+              <div>
+                <h2 style="font-size:.9rem;font-weight:700;margin:0;">Add Twitch Alert</h2>
+                <p style="font-size:.72rem;color:var(--muted);margin:.1rem 0 0;">Notifies when a streamer goes live.</p>
+              </div>
+            </div>
+            <div class="form-body">
+              <div>
+                <label class="field-label">Notification Channel</label>
+                <select id="tw-channelSelect"><option value="">Select a channel...</option></select>
+              </div>
+              <div>
+                <label class="field-label">Twitch URL</label>
+                <input type="text" id="tw-url" placeholder="https://twitch.tv/streamer">
+              </div>
+              <div>
+                <label class="field-label">Alert Message</label>
+                <textarea id="tw-message" placeholder="{streamer} is now LIVE! Watch: {link}"></textarea>
+                <p class="tag-hint">Tags: <span class="tag-pill">{streamer}</span> <span class="tag-pill">{link}</span></p>
+              </div>
+              <div>
+                <label class="field-label">Ping Role <span>(optional)</span></label>
+                <select id="tw-roleSelect"><option value="">No role ping</option></select>
+              </div>
+              <div class="tog-row">
+                <div class="tog-row-label">
+                  <h4>Stream ended notification</h4>
+                  <p>Post when the stream goes offline</p>
+                </div>
+                <label class="tog-wrap tw-tog"><input type="checkbox" id="tw-notifyEnd" class="tog-cb"><span class="tog-track"></span></label>
+              </div>
+              <button onclick="createTwitch()" class="submit-btn tw">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                Add Twitch Alert
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- List panel -->
+        <div class="list-panel">
+          <div class="list-header">
+            <h2 id="list-title">Active YouTube Alerts</h2>
+            <button class="refresh-btn" onclick="loadAll()" title="Refresh">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </button>
+          </div>
+          <div id="alerts-grid" class="alerts-grid">
+            <div class="empty-state" style="grid-column:1/-1;">
+              <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+              <p>Loading alerts...</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Twitter notice -->
+      <div class="twitter-notice">
+        <div class="twitter-notice-icon">
+          <svg width="15" height="15" fill="#6b7280" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </div>
+        <div>
+          <p style="font-size:.82rem;font-weight:600;color:#9ca3af;margin:0;">Twitter / X Notifications — Discontinued</p>
+          <p style="font-size:.72rem;color:var(--muted);margin:.3rem 0 0;line-height:1.55;">Twitter/X notifications have been removed. The Twitter API's free tier no longer provides reliable access for bot polling at scale. Existing Twitter configs have been cleared. YouTube and Twitch notifications are unaffected.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="/sidebar.js" nonce="<%= nonce %>"></script>
+
+<script nonce="<%= nonce %>">
+function escapeHtml(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+
+const guildId = location.pathname.split('/')[2];
+let activePlatform = 'youtube';
+let ytSetups = [], twSetups = [];
+let guildChannels = [], guildRoles = [];
+let limits = { youtubeFeeds: 1, twitchFeeds: 1, tier: 'free', tierName: 'Free', isPremium: false };
+
+/* ── Toast ──────────────────────────────────────────────────── */
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.innerHTML = type === 'error'
+    ? `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg><span>${escapeHtml(message)}</span>`
+    : `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span>${escapeHtml(message)}</span>`;
+  toast.style.background = type === 'error' ? '#dc2626' : '#16a34a';
+  toast.style.transform = 'translateX(0)';
+  setTimeout(() => { toast.style.transform = 'translateX(500px)'; }, 3200);
+}
+
+/* ── Platform switch ────────────────────────────────────────── */
+function switchPlatform(p) {
+  activePlatform = p;
+  document.getElementById('form-youtube').classList.toggle('hidden', p !== 'youtube');
+  document.getElementById('form-twitch').classList.toggle('hidden', p !== 'twitch');
+  const ytTab = document.getElementById('tab-youtube');
+  const twTab = document.getElementById('tab-twitch');
+  ytTab.className = 'tab-btn' + (p === 'youtube' ? ' yt-active' : '');
+  twTab.className = 'tab-btn' + (p === 'twitch' ? ' tw-active' : '');
+  document.getElementById('list-title').textContent = p === 'youtube' ? 'Active YouTube Alerts' : 'Active Twitch Alerts';
+  renderAlerts();
+}
+
+/* ── Load data ──────────────────────────────────────────────── */
+async function loadChannels() {
+  try {
+    const res = await fetch(`/api/guild/${guildId}/channels`);
+    const data = await res.json();
+    guildChannels = (Array.isArray(data) ? data : data.channels) || [];
+    ['yt-channelSelect','tw-channelSelect'].forEach(id => {
+      const sel = document.getElementById(id);
+      sel.innerHTML = '<option value="">Select a channel...</option>';
+      guildChannels.forEach(ch => { sel.innerHTML += `<option value="${escapeHtml(ch.id)}">#${escapeHtml(ch.name)}</option>`; });
+    });
+  } catch(e) { console.error('channels:', e); }
+}
+
+async function loadRoles() {
+  try {
+    const res = await fetch(`/api/guild/${guildId}/roles`);
+    const data = await res.json();
+    guildRoles = (Array.isArray(data) ? data : data.roles) || [];
+    ['yt-roleSelect','tw-roleSelect'].forEach(id => {
+      const sel = document.getElementById(id);
+      sel.innerHTML = '<option value="">No role ping</option>';
+      guildRoles.filter(r => !r.managed && r.id !== guildId).forEach(r => {
+        sel.innerHTML += `<option value="${escapeHtml(r.id)}">@${escapeHtml(r.name)}</option>`;
+      });
+    });
+  } catch(e) { console.error('roles:', e); }
+}
+
+async function loadLimits() {
+  try {
+    const res = await fetch(`/api/guild/${guildId}/social/limits`);
+    if (res.ok) {
+      limits = await res.json();
+      updateTierDisplay();
+    }
+  } catch(e) { console.error('limits:', e); }
+}
+
+async function loadAll() {
+  try {
+    const [ytRes, twRes] = await Promise.all([
+      fetch(`/api/guild/${guildId}/social/youtube`),
+      fetch(`/api/guild/${guildId}/social/twitch`),
+    ]);
+    ytSetups = ytRes.ok ? await ytRes.json() : [];
+    twSetups = twRes.ok ? await twRes.json() : [];
+    updateStats();
+    renderAlerts();
+  } catch(e) {
+    document.getElementById('alerts-grid').innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><p style="color:#f87171;">Failed to load data. Please refresh.</p></div>';
+  }
+}
+
+/* ── Stats & tier display ───────────────────────────────────── */
+function updateStats() {
+  const ytMax = limits.youtubeFeeds, twMax = limits.twitchFeeds;
+  const ytCount = ytSetups.length, twCount = twSetups.length;
+
+  document.getElementById('yt-slot-text').textContent = `${ytCount} / ${ytMax}`;
+  document.getElementById('tw-slot-text').textContent = `${twCount} / ${twMax}`;
+  document.getElementById('yt-slot-bar').style.width = ytMax ? `${Math.min((ytCount/ytMax)*100,100)}%` : '0%';
+  document.getElementById('tw-slot-bar').style.width = twMax ? `${Math.min((twCount/twMax)*100,100)}%` : '0%';
+
+  // Upgrade banner: show when at 80%+ of limit on current platform
+  const plCount = activePlatform === 'youtube' ? ytCount : twCount;
+  const plMax   = activePlatform === 'youtube' ? ytMax : twMax;
+  const banner  = document.getElementById('upgrade-banner');
+  const bannerText = document.getElementById('upgrade-banner-text');
+  if (plCount >= plMax && limits.tier !== 'elite') {
+    bannerText.textContent = `You've used all ${plMax} ${activePlatform === 'youtube' ? 'YouTube' : 'Twitch'} slots on ${limits.tierName}. Upgrade for more.`;
+    banner.style.display = 'flex';
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
+function updateTierDisplay() {
+  const tierEl = document.getElementById('tier-name');
+  const tierSub = document.getElementById('tier-sub');
+  tierEl.textContent = limits.tierName;
+  tierSub.textContent = limits.isPremium ? `${limits.youtubeFeeds} YT · ${limits.twitchFeeds} Twitch slots` : 'Free — 1 slot each';
+  if (limits.tier === 'elite') tierEl.style.color = '#f59e0b';
+  else if (limits.tier === 'pro') tierEl.style.color = '#a855f7';
+  else if (limits.tier === 'basic') tierEl.style.color = '#3b82f6';
+  else tierEl.style.color = 'var(--text)';
+}
+
+/* ── Render alerts ──────────────────────────────────────────── */
+function renderAlerts() {
+  const grid = document.getElementById('alerts-grid');
+  const setups = activePlatform === 'youtube' ? ytSetups : twSetups;
+  updateStats();
+
+  if (!setups.length) {
+    const platColor = activePlatform === 'youtube' ? '#FF3333' : '#9147FF';
+    const icon = activePlatform === 'youtube'
+      ? `<svg width="40" height="40" fill="${platColor}" opacity=".2" viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>`
+      : `<svg width="40" height="40" fill="${platColor}" opacity=".2" viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>`;
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">${icon}<p>No alerts configured</p><small>Use the form on the left to add one.</small></div>`;
+    return;
+  }
+
+  grid.innerHTML = setups.map((s, i) => activePlatform === 'youtube' ? renderYTCard(s, i) : renderTWCard(s, i)).join('');
+}
+
+function renderYTCard(s, i) {
+  const chName = escapeHtml(guildChannels.find(c => c.id === s.Channel)?.name || s.Channel);
+  const roleName = s.PingRole ? escapeHtml(guildRoles.find(r => r.id === s.PingRole)?.name || s.PingRole) : null;
+  const ytUrl = escapeHtml(s.YouTubeChannel || '');
+  const label = ytUrl.includes('/@') ? '@' + ytUrl.split('/@')[1].split(/[?/]/)[0]
+              : ytUrl.includes('/channel/') ? ytUrl.split('/channel/')[1].slice(0,14) + '…'
+              : ytUrl.slice(0,22) || 'Unknown';
+  const id = escapeHtml(s._id);
+
+  return `<div class="alert-card yt">
+    <div class="card-top">
+      <div class="card-icon yt"><svg width="14" height="14" fill="#ff5555" viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></div>
+      <div class="card-title-wrap">
+        <a href="${ytUrl}" target="_blank" rel="noopener" class="card-name">${escapeHtml(label)}</a>
+        <span class="card-slot">Setup #${s.SetupNumber || (i+1)}</span>
+      </div>
+      <div class="card-actions">
+        <button class="card-btn test" onclick="testAlert('youtube','${id}')" title="Send test">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+        <button class="card-btn del" onclick="deleteSetup('youtube','${id}')" title="Delete">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="card-meta">
+      <div class="meta-item"><div class="meta-item-label">Channel</div><div class="meta-item-value">#${chName}</div></div>
+      <div class="meta-item"><div class="meta-item-label">Role Ping</div><div class="meta-item-value">${roleName ? '@' + roleName : '—'}</div></div>
+    </div>
+    <div class="card-badges">
+      ${s.NotifyUploads !== false ? '<span class="badge yt-upload"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Uploads</span>' : ''}
+      ${s.NotifyStreams !== false ? '<span class="badge yt-live"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c0-5.523 4.477-10 10-10s10 4.477 10 10"/><path d="M6 12a6 6 0 0 1 6-6 6 6 0 0 1 6 6"/><circle cx="12" cy="12" r="2"/></svg> Live</span>' : ''}
+    </div>
+    <div class="card-message">"${escapeHtml(s.Message)}"</div>
+  </div>`;
+}
+
+function renderTWCard(s, i) {
+  const chName = escapeHtml(guildChannels.find(c => c.id === s.Channel)?.name || s.Channel);
+  const roleName = s.PingRole ? escapeHtml(guildRoles.find(r => r.id === s.PingRole)?.name || s.PingRole) : null;
+  const streamer = escapeHtml((s.Streamer || '').replace(/https?:\/\/(www\.)?twitch\.tv\//,'').split('/')[0]);
+  const id = escapeHtml(s._id);
+
+  return `<div class="alert-card tw">
+    <div class="card-top">
+      <div class="card-icon tw"><svg width="14" height="14" fill="#9147FF" viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg></div>
+      <div class="card-title-wrap">
+        <a href="${escapeHtml(s.Streamer)}" target="_blank" rel="noopener" class="card-name">${streamer}</a>
+        <span class="card-slot">Setup #${s.SetupNumber || (i+1)}</span>
+      </div>
+      <div class="card-actions">
+        <button class="card-btn test" onclick="testAlert('twitch','${id}')" title="Send test">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+        <button class="card-btn del" onclick="deleteSetup('twitch','${id}')" title="Delete">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="card-meta">
+      <div class="meta-item"><div class="meta-item-label">Channel</div><div class="meta-item-value">#${chName}</div></div>
+      <div class="meta-item"><div class="meta-item-label">Role Ping</div><div class="meta-item-value">${roleName ? '@' + roleName : '—'}</div></div>
+    </div>
+    <div class="card-badges">
+      <span class="badge tw-live"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c0-5.523 4.477-10 10-10s10 4.477 10 10"/><path d="M6 12a6 6 0 0 1 6-6 6 6 0 0 1 6 6"/><circle cx="12" cy="12" r="2"/></svg> Live alerts</span>
+      ${s.NotifyStreamEnd ? '<span class="badge tw-end"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg> Stream ended</span>' : ''}
+    </div>
+    <div class="card-message">"${escapeHtml(s.Message)}"</div>
+  </div>`;
+}
+
+/* ── CRUD ───────────────────────────────────────────────────── */
+async function createYouTube() {
+  const channelId     = document.getElementById('yt-channelSelect').value;
+  const youtubeUrl    = document.getElementById('yt-url').value.trim();
+  const message       = document.getElementById('yt-message').value.trim();
+  const pingRole      = document.getElementById('yt-roleSelect').value || null;
+  const notifyUploads = document.getElementById('yt-notifyUploads').checked;
+  const notifyStreams  = document.getElementById('yt-notifyStreams').checked;
+
+  if (!channelId || !youtubeUrl || !message) return showToast('Please fill all required fields.', 'error');
+  if (ytSetups.length >= limits.youtubeFeeds) return showToast(`Limit reached. Upgrade for more YouTube slots.`, 'error');
+
+  try {
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
+    const res = await fetch(`/api/guild/${guildId}/social/youtube`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...(csrf ? {'x-csrf-token': csrf} : {}) },
+      body: JSON.stringify({ channelId, youtubeUrl, message, pingRole, notifyUploads, notifyStreams }),
+    });
+    const data = await res.json();
+    if (!res.ok) return showToast(data.error || 'Failed to create alert.', 'error');
+    showToast('YouTube alert added!');
+    document.getElementById('yt-url').value = '';
+    document.getElementById('yt-message').value = '';
+    await loadAll();
+  } catch(e) { showToast('Server error. Please try again.', 'error'); }
+}
+
+async function createTwitch() {
+  const channelId   = document.getElementById('tw-channelSelect').value;
+  const streamerUrl = document.getElementById('tw-url').value.trim();
+  const message     = document.getElementById('tw-message').value.trim();
+  const pingRole    = document.getElementById('tw-roleSelect').value || null;
+  const notifyEnd   = document.getElementById('tw-notifyEnd').checked;
+
+  if (!channelId || !streamerUrl || !message) return showToast('Please fill all required fields.', 'error');
+  if (!streamerUrl.includes('twitch.tv/')) return showToast('Please enter a valid Twitch URL.', 'error');
+  if (twSetups.length >= limits.twitchFeeds) return showToast(`Limit reached. Upgrade for more Twitch slots.`, 'error');
+
+  try {
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
+    const res = await fetch(`/api/guild/${guildId}/social/twitch`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...(csrf ? {'x-csrf-token': csrf} : {}) },
+      body: JSON.stringify({ channelId, streamerUrl, message, pingRole, notifyStreamEnd: notifyEnd }),
+    });
+    const data = await res.json();
+    if (!res.ok) return showToast(data.error || 'Failed to create alert.', 'error');
+    showToast('Twitch alert added!');
+    document.getElementById('tw-url').value = '';
+    document.getElementById('tw-message').value = '';
+    await loadAll();
+  } catch(e) { showToast('Server error. Please try again.', 'error'); }
+}
+
+async function deleteSetup(platform, id) {
+  if (!confirm('Delete this alert?')) return;
+  try {
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
+    const res = await fetch(`/api/guild/${guildId}/social/${platform}/${id}`, {
+      method: 'DELETE',
+      headers: csrf ? {'x-csrf-token': csrf} : {},
+    });
+    if (!res.ok) { const d = await res.json(); return showToast(d.error || 'Delete failed.', 'error'); }
+    showToast('Alert deleted.');
+    await loadAll();
+  } catch(e) { showToast('Server error.', 'error'); }
+}
+
+async function testAlert(platform, id) {
+  try {
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
+    const res = await fetch(`/api/guild/${guildId}/social/${platform}/${id}/test`, {
+      method: 'POST',
+      headers: csrf ? {'x-csrf-token': csrf} : {},
+    });
+    const data = await res.json();
+    if (!res.ok) return showToast(data.error || 'Test failed.', 'error');
+    showToast('Test notification sent!');
+  } catch(e) { showToast('Server error.', 'error'); }
+}
+
+/* ── Init ───────────────────────────────────────────────────── */
+async function init() {
+  await Promise.all([loadChannels(), loadRoles(), loadLimits()]);
+  await loadAll();
+}
+init();
+</script>
+
+<!-- Razor Custom Select JS -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet();var openWrap=null;
+function cleanText(t){t=String(t||'');var d=document.createElement('div');d.innerHTML=t;return(d.textContent||d.innerText||'').trim();}
+function optText(opt){return cleanText(opt.text||opt.textContent||opt.label||'');}
+function positionPanel(wrap){var r=wrap._t.getBoundingClientRect();var p=wrap._p;var panelH=p.offsetHeight||240;var spaceBelow=window.innerHeight-r.bottom;var spaceAbove=r.top;var width=Math.max(r.width,160);p.style.width=width+'px';p.style.left=r.left+'px';p.style.right='auto';if(spaceBelow>=panelH||spaceBelow>=spaceAbove){p.style.top=(r.bottom+4)+'px';p.style.bottom='auto';}else{p.style.bottom=(window.innerHeight-r.top+4)+'px';p.style.top='auto';}}
+document.addEventListener('mousedown',function(e){if(!openWrap)return;if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);},true);
+window.addEventListener('scroll',function(){if(openWrap)positionPanel(openWrap);},true);
+window.addEventListener('resize',function(){if(openWrap)positionPanel(openWrap);});
+function open_(wrap){if(openWrap&&openWrap!==wrap)close_(openWrap);openWrap=wrap;buildList(wrap,'');wrap._si.value='';wrap._sw.style.display='';document.body.appendChild(wrap._p);wrap._p.style.display='block';wrap._t.classList.add('is-open');wrap._t.setAttribute('aria-expanded','true');requestAnimationFrame(function(){positionPanel(wrap);});setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);}
+function close_(wrap){if(!wrap)return;if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);wrap._p.style.display='none';wrap._t.classList.remove('is-open');wrap._t.setAttribute('aria-expanded','false');if(openWrap===wrap)openWrap=null;}
+function buildList(wrap,q){var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();var opts=Array.from(sel.options).filter(function(o){var t=optText(o);return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);});if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}list.innerHTML='';opts.forEach(function(opt){var it=document.createElement('div');it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');it.dataset.v=opt.value;var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';it.appendChild(tx);it.appendChild(ck);it.addEventListener('mousedown',function(e){e.preventDefault();e.stopPropagation();sel.value=opt.value;updateLabel(wrap);close_(wrap);sel.dispatchEvent(new Event('change',{bubbles:true}));});list.appendChild(it);});}
+function updateLabel(wrap){var sel=wrap._s,lbl=wrap._lb;var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;var text=opt?optText(opt):'';if(text){lbl.textContent=text;lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));}else{lbl.textContent='Select\u2026';lbl.classList.add('is-ph');}wrap._last=sel.value;}
+function wrapSelect(sel){if(wrapped.has(sel))return;if(sel.hasAttribute('data-rzr-skip'))return;if(sel.size&&sel.size>1)return;wrapped.add(sel);if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';var t=document.createElement('div');t.className='rzr-trigger';t.setAttribute('tabindex','0');t.setAttribute('role','combobox');t.setAttribute('aria-haspopup','listbox');t.setAttribute('aria-expanded','false');var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;t.appendChild(lb);t.appendChild(cv);var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';var sw=document.createElement('div');sw.className='rzr-panel-search';var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;sw.appendChild(si);var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');p.appendChild(sw);p.appendChild(l);var w=document.createElement('div');w.className='rzr-wrap';w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;w.appendChild(t);w.appendChild(p);sel.parentNode.insertBefore(w,sel);w.appendChild(sel);si.addEventListener('input',function(){buildList(w,si.value);});si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});t.addEventListener('click',function(e){e.stopPropagation();openWrap===w?close_(w):open_(w);});t.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}if(e.key==='Escape')close_(w);});var mo=new MutationObserver(function(){updateLabel(w);if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}});mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});var pid=setInterval(function(){if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}if(sel.value!==w._last)updateLabel(w);},150);updateLabel(w);}
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType!==1)return;if(n.tagName==='SELECT')wrapSelect(n);else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);});});}).observe(document.body,{childList:true,subtree:true});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);
+else initAll();
+})();
+</script>
+</body>
+</html>

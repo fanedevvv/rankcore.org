@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moderation Logs</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tailwind.css">
+<style>
+* { box-sizing: border-box; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0b0b14; }
+::-webkit-scrollbar-thumb { background: #2d2d3d; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #FF3333; }
+
+#toast {
+  position: fixed; top: 1rem; right: 1rem; z-index: 100;
+  padding: .8rem 1.4rem; border-radius: .75rem; font-weight: 600; font-size: .875rem;
+  color: white; transform: translateX(440px); transition: transform .3s ease; pointer-events: none;
+}
+
+.card {
+  background: #13131f; border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 1rem; padding: 1.5rem;
+}
+
+.badge {
+  display: inline-flex; align-items: center; gap: .3rem;
+  padding: .2rem .65rem; border-radius: .4rem; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em;
+}
+.badge-low      { background: rgba(99,214,122,.12);  border: 1px solid rgba(99,214,122,.25);  color: #63d67a; }
+.badge-medium   { background: rgba(251,191,36,.12);  border: 1px solid rgba(251,191,36,.25);  color: #fbbf24; }
+.badge-high     { background: rgba(249,115,22,.12);  border: 1px solid rgba(249,115,22,.25);  color: #f97316; }
+.badge-critical { background: rgba(239,68,68,.12);   border: 1px solid rgba(239,68,68,.25);   color: #ef4444; }
+.badge-active   { background: rgba(255,51,51,.10);  border: 1px solid rgba(255,51,51,.25);  color: #FF3333; }
+.badge-inactive { background: rgba(107,114,128,.10); border: 1px solid rgba(107,114,128,.25); color: #9ca3af; }
+
+.warn-row {
+  background: #0e0e1a; border: 1px solid rgba(255,255,255,0.05);
+  border-radius: .75rem; padding: 1rem 1.25rem;
+  display: flex; align-items: flex-start; gap: 1rem;
+  transition: border-color .15s;
+}
+.warn-row:hover { border-color: rgba(255,51,51,.15); }
+
+.avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #1e1e30; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: .75rem; font-weight: 700; color: #FF3333;
+}
+
+input, select {
+  background: #0e0e1a; border: 1px solid rgba(255,255,255,0.08);
+  border-radius: .6rem; padding: .6rem 1rem; color: white; font-family: inherit;
+  font-size: .875rem; outline: none; transition: border-color .15s;
+}
+input:focus, select:focus { border-color: #FF3333; }
+input::placeholder { color: #4b5563; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .55rem 1.1rem; border-radius: .6rem; font-weight: 600; font-size: .875rem;
+  cursor: pointer; transition: all .15s; border: none; outline: none;
+}
+.btn-primary { background: #FF3333; color: #050c07; }
+.btn-primary:hover { background: #CC2222; }
+.btn-ghost { background: transparent; color: #9ca3af; border: 1px solid rgba(255,255,255,0.08); }
+.btn-ghost:hover { background: rgba(255,255,255,0.04); color: white; }
+.btn-danger { background: rgba(239,68,68,.1); color: #ef4444; border: 1px solid rgba(239,68,68,.2); }
+.btn-danger:hover { background: rgba(239,68,68,.2); }
+
+.empty-state {
+  text-align: center; padding: 3rem 1rem; color: #4b5563;
+}
+
+.tabs { display: flex; gap: .5rem; margin-bottom: 1.5rem; }
+.tab {
+  padding: .5rem 1.1rem; border-radius: .6rem; font-weight: 600; font-size: .85rem;
+  cursor: pointer; border: 1px solid transparent; color: #6b7280; transition: all .15s;
+}
+.tab.active { background: rgba(255,51,51,.1); border-color: rgba(255,51,51,.3); color: #FF3333; }
+.tab:not(.active):hover { background: rgba(255,255,255,.04); color: #9ca3af; }
+
+.pagination { display: flex; align-items: center; gap: .5rem; justify-content: center; margin-top: 1.25rem; }
+.page-btn { width: 32px; height: 32px; border-radius: .5rem; display: flex; align-items: center; justify-content: center; font-size: .8rem; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: #9ca3af; transition: all .15s; }
+.page-btn:hover, .page-btn.active { background: rgba(255,51,51,.1); border-color: rgba(255,51,51,.3); color: #FF3333; }
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body class="bg-[#0b0b14] text-white min-h-screen flex">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<aside id="razor-sidebar"></aside>
+<div id="toast"></div>
+
+<div class="ml-64 flex-1 p-8">
+
+  <!-- Header -->
+  <div class="mb-8 flex items-start justify-between">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold">Moderation Logs</h1>
+        <p class="text-sm text-gray-400 mt-0.5">View and manage member warnings and infraction history.</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <div id="totalBadge" class="badge badge-active" style="display:none">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="totalCount">0</span> records
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & filters -->
+  <div class="card mb-6">
+    <div class="flex flex-wrap gap-3 items-center">
+      <div class="relative flex-1 min-w-48">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" class="absolute left-3 top-1/2 -translate-y-1/2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input id="searchInput" type="text" placeholder="Search by user ID or username…" class="w-full pl-9" oninput="debounceSearch()">
+      </div>
+      <select id="severityFilter" onchange="loadLogs()" class="min-w-36">
+        <option value="">All severities</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="critical">Critical</option>
+      </select>
+      <select id="statusFilter" onchange="loadLogs()" class="min-w-36">
+        <option value="">All statuses</option>
+        <option value="active">Active only</option>
+        <option value="inactive">Pardoned only</option>
+      </select>
+      <button class="btn btn-ghost" onclick="clearFilters()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="grid grid-cols-4 gap-4 mb-6" id="statsRow">
+    <div class="card text-center">
+      <p class="text-2xl font-bold text-white" id="stat-total">—</p>
+      <p class="text-xs text-gray-400 mt-1">Total Warnings</p>
+    </div>
+    <div class="card text-center">
+      <p class="text-2xl font-bold text-red-400" id="stat-critical">—</p>
+      <p class="text-xs text-gray-400 mt-1">Critical</p>
+    </div>
+    <div class="card text-center">
+      <p class="text-2xl font-bold text-orange-400" id="stat-high">—</p>
+      <p class="text-xs text-gray-400 mt-1">High</p>
+    </div>
+    <div class="card text-center">
+      <p class="text-2xl font-bold text-[#FF3333]" id="stat-active">—</p>
+      <p class="text-xs text-gray-400 mt-1">Active</p>
+    </div>
+  </div>
+
+  <!-- Log list -->
+  <div class="card">
+    <div id="logList">
+      <div class="empty-state">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5" class="mx-auto mb-3">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <p class="text-sm">Loading logs…</p>
+      </div>
+    </div>
+    <div id="pagination" class="pagination"></div>
+  </div>
+</div>
+
+<script src="/sidebar.js"></script>
+<script>
+const guildId = location.pathname.split('/')[2];
+let allLogs = [];
+let page = 1;
+const PER_PAGE = 15;
+let searchTimer;
+
+function showToast(msg, ok = true) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = ok ? '#FF3333' : '#ef4444';
+  t.style.color = ok ? '#050c07' : 'white';
+  t.style.transform = 'translateX(0)';
+  setTimeout(() => t.style.transform = 'translateX(440px)', 3000);
+}
+
+function debounceSearch() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { page = 1; renderLogs(); }, 250);
+}
+
+function clearFilters() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('severityFilter').value = '';
+  document.getElementById('statusFilter').value = '';
+  page = 1;
+  renderLogs();
+}
+
+async function loadLogs() {
+  try {
+    const r = await fetch(`/api/guild/${guildId}/modlogs`);
+    allLogs = await r.json();
+    updateStats();
+    page = 1;
+    renderLogs();
+  } catch { showToast('Failed to load logs', false); }
+}
+
+function updateStats() {
+  const flat = allLogs.flatMap(u => u.Content || []);
+  document.getElementById('stat-total').textContent    = flat.length;
+  document.getElementById('stat-critical').textContent = flat.filter(w => w.Severity === 'critical').length;
+  document.getElementById('stat-high').textContent     = flat.filter(w => w.Severity === 'high').length;
+  document.getElementById('stat-active').textContent   = flat.filter(w => w.Active).length;
+  const tb = document.getElementById('totalBadge');
+  tb.style.display = 'inline-flex';
+  document.getElementById('totalCount').textContent = allLogs.length;
+}
+
+function filtered() {
+  const q    = document.getElementById('searchInput').value.toLowerCase().trim();
+  const sev  = document.getElementById('severityFilter').value;
+  const stat = document.getElementById('statusFilter').value;
+
+  return allLogs
+    .map(u => {
+      let warns = u.Content || [];
+      if (sev)  warns = warns.filter(w => w.Severity === sev);
+      if (stat === 'active')   warns = warns.filter(w =>  w.Active);
+      if (stat === 'inactive') warns = warns.filter(w => !w.Active);
+      return { ...u, Content: warns };
+    })
+    .filter(u => {
+      if (!u.Content.length) return false;
+      if (!q) return true;
+      return (u.UserID || '').includes(q) || (u.UserTag || '').toLowerCase().includes(q);
+    });
+}
+
+function renderLogs() {
+  const data  = filtered();
+  const total = data.length;
+  const pages = Math.ceil(total / PER_PAGE);
+  const slice = data.slice((page-1)*PER_PAGE, page*PER_PAGE);
+
+  const el = document.getElementById('logList');
+
+  if (!slice.length) {
+    el.innerHTML = `<div class="empty-state">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="1.5" class="mx-auto mb-3">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <p class="text-sm">No warnings match your filters.</p>
+    </div>`;
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+
+  el.innerHTML = slice.map(u => {
+    const tag      = escapeHtml(u.UserTag || u.UserID || 'Unknown');
+    const initials = tag.slice(0,2).toUpperCase();
+    const warns    = u.Content || [];
+
+    const warnItems = warns.map(w => `
+      <div class="warn-row mt-2">
+        <div class="flex-1 min-w-0">
+          <div class="flex flex-wrap items-center gap-2 mb-1">
+            <span class="badge badge-${w.Severity || 'low'}">${w.Severity || 'low'}</span>
+            <span class="badge ${w.Active ? 'badge-active' : 'badge-inactive'}">${w.Active ? 'Active' : 'Pardoned'}</span>
+            ${w.CaseNumber ? `<span class="text-xs text-gray-500 font-mono">#${escapeHtml(w.CaseNumber)}</span>` : ''}
+          </div>
+          <p class="text-sm text-gray-200 truncate">${escapeHtml(w.Reason || 'No reason provided')}</p>
+          <p class="text-xs text-gray-500 mt-1">
+            By <span class="text-gray-400">${escapeHtml(w.ExecuterTag || w.ExecuterId || '?')}</span>
+            &bull; ${w.Timestamp ? new Date(w.Timestamp).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : 'Unknown date'}
+          </p>
+        </div>
+        ${w.Active ? `<button class="btn btn-danger btn-sm" style="padding:.3rem .7rem;font-size:.75rem" onclick="pardonWarn('${escapeHtml(u.UserID)}','${escapeHtml(w.CaseNumber||'')}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Pardon
+        </button>` : ''}
+      </div>`).join('');
+
+    return `<div class="mb-5">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="avatar">${initials}</div>
+        <div>
+          <p class="font-semibold text-sm">${tag}</p>
+          <p class="text-xs text-gray-500 font-mono">${escapeHtml(u.UserID || '')}</p>
+        </div>
+        <span class="ml-auto badge badge-${warns.length > 5 ? 'critical' : warns.length > 2 ? 'high' : 'low'}">
+          ${warns.length} warn${warns.length !== 1 ? 's' : ''}
+        </span>
+      </div>
+      ${warnItems}
+    </div>`;
+  }).join('<hr class="border-white/5 my-4">');
+
+  // Pagination
+  const pg = document.getElementById('pagination');
+  if (pages <= 1) { pg.innerHTML = ''; return; }
+  let html = '';
+  if (page > 1) html += `<button class="page-btn" onclick="goPage(${page-1})">&#8249;</button>`;
+  for (let i = 1; i <= pages; i++) {
+    if (i === 1 || i === pages || Math.abs(i - page) <= 1)
+      html += `<button class="page-btn ${i===page?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    else if (Math.abs(i - page) === 2)
+      html += `<span class="text-gray-600 px-1 text-sm">…</span>`;
+  }
+  if (page < pages) html += `<button class="page-btn" onclick="goPage(${page+1})">&#8250;</button>`;
+  pg.innerHTML = html;
+}
+
+function goPage(n) { page = n; renderLogs(); window.scrollTo(0,0); }
+
+async function pardonWarn(userId, caseNumber) {
+  if (!caseNumber || !confirm('Mark this warning as pardoned?')) return;
+  try {
+    const r = await fetch(`/api/guild/${guildId}/modlogs/${userId}/pardon`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || '' },
+      body: JSON.stringify({ caseNumber }),
+    });
+    if (!r.ok) throw new Error();
+    showToast('Warning pardoned');
+    loadLogs();
+  } catch { showToast('Failed to pardon warning', false); }
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+loadLogs();
+</script>
+
+</body>
+</html>

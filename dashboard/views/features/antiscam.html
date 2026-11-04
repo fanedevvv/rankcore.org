@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anti-Scam System</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tailwind.css">
+<style>
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,51,51,0.3); border-radius: 99px; }
+
+  .toggle-wrap { position: relative; display: inline-flex; align-items: center; width: 44px; height: 24px; }
+  .toggle-wrap input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: #2a2a3e; border-radius: 99px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.08); }
+  .slider:before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 2px; background: #555; border-radius: 50%; transition: 0.3s; }
+  input:checked + .slider { background: rgba(255,51,51,0.25); border-color: #FF3333; }
+  input:checked + .slider:before { transform: translateX(18px); background: #FF3333; }
+
+  .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; }
+  .card-header { padding: 20px 24px 0; }
+  .card-body { padding: 20px 24px 24px; }
+
+  .tab-btn { padding: 8px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+  .tab-btn.active { background: rgba(255,51,51,0.15); color: #FF3333; }
+  .tab-btn:hover:not(.active) { background: rgba(255,255,255,0.05); color: #ccc; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .detection-row { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); transition: 0.2s; }
+  .detection-row:hover { border-color: rgba(255,51,51,0.15); background: rgba(255,51,51,0.03); }
+  .detection-row .det-settings { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); }
+  .detection-row.expanded .det-settings { display: grid; }
+
+  select, input[type=text], input[type=number], input[type=url] {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    color: white;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+    padding: 8px 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  select:focus, input:focus { border-color: rgba(255,51,51,0.5); }
+  select option { background: #1a1a2e; }
+
+  .btn-primary { background: #FF3333; color: #0a0a12; font-weight: 700; border-radius: 10px; padding: 10px 20px; font-size: 13px; cursor: pointer; transition: 0.2s; border: none; }
+  .btn-primary:hover { background: #ff5555; transform: translateY(-1px); }
+  .btn-ghost { background: rgba(255,255,255,0.06); color: #ccc; font-weight: 600; border-radius: 10px; padding: 8px 16px; font-size: 13px; cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,255,255,0.08); }
+  .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+  .btn-danger { background: rgba(255,60,60,0.15); color: #ff4444; font-weight: 600; border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,60,60,0.2); }
+  .btn-danger:hover { background: rgba(255,60,60,0.25); }
+  .btn-sm { padding: 4px 10px; font-size: 11px; }
+
+  #toast { position: fixed; top: 20px; right: 20px; z-index: 999; padding: 14px 20px; border-radius: 12px; font-weight: 600; font-size: 14px; transform: translateX(420px); transition: 0.35s cubic-bezier(.4,0,.2,1); max-width: 320px; display: flex; align-items: center; gap: 10px; border: 1px solid; }
+  #toast.show { transform: translateX(0); }
+  #toast.success { background: rgba(255,51,51,0.15); border-color: rgba(255,51,51,0.4); color: #FF3333; }
+  #toast.error { background: rgba(255,60,60,0.15); border-color: rgba(255,60,60,0.4); color: #ff6060; }
+
+  .badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; }
+  .badge-green { background: rgba(255,51,51,0.15); color: #FF3333; }
+  .badge-yellow { background: rgba(255,200,60,0.15); color: #ffc83c; }
+  .badge-red { background: rgba(255,60,60,0.15); color: #ff6060; }
+  .badge-gray { background: rgba(255,255,255,0.08); color: #888; }
+
+  .log-row { padding: 12px 16px; border-radius: 10px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+  .log-row + .log-row { margin-top: 8px; }
+
+  .section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #FF3333; margin-bottom: 12px; }
+  .divider { border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 20px 0; }
+
+  .tag-item { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 8px; background: rgba(255,51,51,0.1); border: 1px solid rgba(255,51,51,0.2); font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+  .tag-item .remove { cursor: pointer; color: #ff6666; font-weight: 700; font-size: 14px; line-height: 1; }
+  .tag-item .remove:hover { color: #ff0000; }
+
+  .warn-step-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+  .warn-step-row + .warn-step-row { margin-top: 8px; }
+
+  .heat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .heat-item { padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); text-align: center; }
+  .heat-item label { font-size: 11px; color: #888; display: block; margin-bottom: 6px; }
+  .heat-item input { text-align: center; padding: 6px; font-size: 14px; font-weight: 600; width: 80px; margin: 0 auto; display: block; }
+</style>
+<style>
+.rzr-wrap{position:relative;width:100%;display:block}
+.rzr-wrap-parent.select-wrap::after,
+.rzr-wrap-parent::after{display:none!important;content:none!important}
+.rzr-trigger{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:10px 14px;
+  border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);
+  background:#0d0d1c;color:#fff;
+  cursor:pointer;font-size:14px;font-family:inherit;
+  min-height:44px;width:100%;
+  transition:border-color .15s,box-shadow .15s;
+  user-select:none;box-sizing:border-box;
+}
+.rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
+.rzr-trigger.is-open{
+  border-color:rgba(255,51,51,.6);
+  box-shadow:0 0 0 3px rgba(255,51,51,.1);
+}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
+.rzr-label.is-ph{color:#6b7280}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+.rzr-panel{
+  position:fixed;z-index:999999;
+  background:rgba(11,11,20,.98);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  overflow:hidden;
+  animation:rzrIn .16s ease;
+}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
+.rzr-search-inp{
+  display:block;width:100%;
+  background:#06060f;border:1px solid rgba(255,255,255,.09);
+  border-radius:7px;padding:6px 11px;
+  color:#fff;font-size:13px;font-family:inherit;
+  outline:none;box-sizing:border-box;transition:border-color .15s;
+}
+.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-search-inp::placeholder{color:#374151}
+.rzr-list{max-height:220px;overflow-y:auto;padding:5px}
+.rzr-list::-webkit-scrollbar{width:4px}
+.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:6px}
+.rzr-list::-webkit-scrollbar-thumb:hover{background:#FF3333}
+.rzr-item{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:6px;padding:8px 11px;border-radius:8px;
+  cursor:pointer;font-size:13px;color:#9ca3af;
+  transition:background .1s,color .1s;
+}
+.rzr-item:hover{background:rgba(255,255,255,.055);color:#fff}
+.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600}
+.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item.is-sel .rzr-item-chk{opacity:1}
+.rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
+</style>
+<style>
+@keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+@keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+@keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+@keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+</style>
+<link rel="stylesheet" href="/loading.css">
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body class="bg-[#0b0b14] text-white font-sans" style="font-family:'Space Grotesk',sans-serif">
+
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+(function(){
+  var l=document.getElementById('nx-loader');
+  function h(){if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(h,80);});
+  else setTimeout(h,80);
+  setTimeout(h,1500);
+})();
+</script>
+
+<div id="toast"><span id="toastMsg"></span></div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+
+  <main class="flex-1 p-6 lg:p-8 max-w-5xl mx-auto w-full">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-bold flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="display:inline-block;width:1em;height:1em;fill:currentColor"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0z"/></svg>
+          Anti-Scam Protection
+        </h1>
+        <p class="text-gray-400 text-sm">Detect phishing, fake Nitro, scam links, suspicious content, and new-account abuse.</p>
+      </div>
+      <button onclick="saveConfig()" class="btn-primary flex items-center gap-2 shadow-lg shadow-razor/20">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save Changes
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex gap-2 mb-6 flex-wrap">
+      <div class="tab-btn active" data-tab="detection">Detection</div>
+      <div class="tab-btn" data-tab="heat">Heat System</div>
+      <div class="tab-btn" data-tab="escalation">Escalation</div>
+      <div class="tab-btn" data-tab="custom">Custom Rules</div>
+      <div class="tab-btn" data-tab="exemptions">Exemptions</div>
+      <div class="tab-btn" data-tab="logs">Logs</div>
+    </div>
+
+    <!-- ═══ TAB: Detection ═══════════════════════════════ -->
+    <div id="tab-detection" class="tab-panel active">
+
+      <!-- Master Toggle -->
+      <div class="card mb-4">
+        <div class="card-body flex items-center justify-between">
+          <div>
+            <h3 class="font-bold text-lg">Enable Anti-Scam</h3>
+            <p class="text-xs text-gray-400">When enabled, all active detection types below will scan messages.</p>
+          </div>
+          <label class="toggle-wrap">
+            <input type="checkbox" id="enabled">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Global Settings -->
+      <div class="card mb-4">
+        <div class="card-header"><h3 class="font-bold">Global Settings</h3></div>
+        <div class="card-body">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="text-xs text-gray-400 font-semibold mb-1 block">Log Channel</label>
+              <select id="logChannel"><option value="">Disabled</option></select>
+            </div>
+            <div>
+              <label class="text-xs text-gray-400 font-semibold mb-1 block">Default Action</label>
+              <select id="globalAction">
+                <option value="delete">Delete</option>
+                <option value="warn">Warn</option>
+                <option value="mute">Mute</option>
+                <option value="kick">Kick</option>
+                <option value="ban">Ban</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-gray-400 font-semibold mb-1 block">Mute Duration (min)</label>
+              <input type="number" id="globalMuteMinutes" value="10" min="1" max="1440">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detection Types -->
+      <div class="card mb-4">
+        <div class="card-header"><h3 class="font-bold">Detection Types</h3></div>
+        <div class="card-body space-y-3">
+
+          <div class="detection-row" data-key="detectPhishing">
+            <label class="toggle-wrap flex-shrink-0">
+              <input type="checkbox" class="det-toggle">
+              <span class="slider"></span>
+            </label>
+            <div class="flex-1 min-w-0">
+              <div class="font-semibold">Phishing Links</div>
+              <div class="text-xs text-gray-400">Known scam URLs, fake login pages, credential harvesters</div>
+            </div>
+            <button class="btn-ghost btn-sm det-expand" onclick="toggleDet(this)">Settings</button>
+            <div class="det-settings grid grid-cols-3 gap-3 w-full">
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">Action</label>
+                <select class="det-action">
+                  <option value="">Inherit</option>
+                  <option value="delete">Delete</option>
+                  <option value="warn">Warn</option>
+                  <option value="mute">Mute</option>
+                  <option value="kick">Kick</option>
+                  <option value="ban">Ban</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">Mute (min)</label>
+                <input type="number" class="det-mute" min="1" max="1440" value="10">
+              </div>
+            </div>
+          </div>
+
+          <div class="detection-row" data-key="detectFakeNitro">
+            <label class="toggle-wrap flex-shrink-0">
+              <input type="checkbox" class="det-toggle">
+              <span class="slider"></span>
+            </label>
+            <div class="flex-1 min-w-0">
+              <div class="font-semibold">Fake Nitro / Gift Scams</div>
+              <div class="text-xs text-gray-400">Fake Discord gift, Nitro, and boost scams</div>
+            </div>
+            <button class="btn-ghost btn-sm det-expand" onclick="toggleDet(this)">Settings</button>
+            <div class="det-settings grid grid-cols-3 gap-3 w-full">
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">Action</label>
+                <select class="det-action">
+                  <option value="">Inherit</option>
+                  <option value="delete">Delete</option>
+                  <option value="warn">Warn</option>
+                  <option value="mute">Mute</option>
+                  <option value="kick">Kick</option>
+                  <option value="ban">Ban</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">Mute (min)</label>
+                <input type="number" class="det-mute" min="1" max="1440" value="10">
+              </div>
+            </div>
+          </div>
+
+          <div class="detection-row" data-key="detectSuspiciousContent">
+            <label class="toggle-wrap flex-shrink-0">
+              <input type="checkbox" class="det-toggle">
+              <span class="slider"></span>
+            </label>
+            <div class="flex-1 min-w-0">
+              <div class="font-semibold">Suspicious Content</div>
+              <div class="text-xs text-gray-400">"Free Nitro", "You won!", prize scams, phishing language patterns</div>
+            </div>
+            <button class="btn-ghost btn-sm det-expand" onclick="toggleDet(this)">Settings</button>
+            <div class="det-settings grid grid-cols-3 gap-3 w-full">
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">Action</label>
+                <select class="det-action">
+                  <option value="">Inherit</option>
+                  <option value="delete">Delete</option>
+                  <option value="warn">Warn</option>
+                  <option value="mute">Mute</option>
+                  <option value="kick">Kick</option>
+                  <option value="ban">Ban</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">Mute (min)</label>
+                <input type="number" class="det-mute" min="1" max="1440" value="10">
+              </div>
+            </div>
+          </div>
+
+          <div class="detection-row" data-key="detectNewAccounts">
+            <label class="toggle-wrap flex-shrink-0">
+              <input type="checkbox" class="det-toggle">
+              <span class="slider"></span>
+            </label>
+            <div class="flex-1 min-w-0">
+              <div class="font-semibold">New Account Protection</div>
+              <div class="text-xs text-gray-400">Flag messages with links from accounts younger than N days</div>
+            </div>
+            <button class="btn-ghost btn-sm det-expand" onclick="toggleDet(this)">Settings</button>
+            <div class="det-settings grid grid-cols-4 gap-3 w-full">
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">Max Age (days)</label>
+                <input type="number" id="newAccountDays" min="1" max="365" value="7">
+              </div>
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">Action</label>
+                <select class="det-action">
+                  <option value="">Inherit</option>
+                  <option value="delete">Delete</option>
+                  <option value="warn">Warn</option>
+                  <option value="mute">Mute</option>
+                  <option value="kick">Kick</option>
+                  <option value="ban">Ban</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">Mute (min)</label>
+                <input type="number" class="det-mute" min="1" max="1440" value="10">
+              </div>
+            </div>
+          </div>
+
+          <div class="detection-row" data-key="detectSuspiciousUsernames">
+            <label class="toggle-wrap flex-shrink-0">
+              <input type="checkbox" class="det-toggle">
+              <span class="slider"></span>
+            </label>
+            <div class="flex-1 min-w-0">
+              <div class="font-semibold">Suspicious Usernames</div>
+              <div class="text-xs text-gray-400">Detect AI-generated/fake usernames and no-avatar accounts on join</div>
+            </div>
+            <button class="btn-ghost btn-sm det-expand" onclick="toggleDet(this)">Settings</button>
+            <div class="det-settings grid grid-cols-3 gap-3 w-full">
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">Action</label>
+                <select class="det-action">
+                  <option value="">Inherit</option>
+                  <option value="delete">Delete</option>
+                  <option value="warn">Warn</option>
+                  <option value="mute">Mute</option>
+                  <option value="kick">Kick</option>
+                  <option value="ban">Ban</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-gray-400 block mb-1">Mute (min)</label>
+                <input type="number" class="det-mute" min="1" max="1440" value="10">
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══ TAB: Heat System ══════════════════════════════ -->
+    <div id="tab-heat" class="tab-panel">
+
+      <div class="card mb-4">
+        <div class="card-header"><h3 class="font-bold">Probation & Heat System</h3></div>
+        <div class="card-body">
+          <p class="text-sm text-gray-400 mb-4">Users accumulate heat for suspicious behavior. When heat reaches the threshold, the system escalates. Heat decays over time.</p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div>
+              <label class="text-xs text-gray-400 font-semibold mb-1 block">Heat Threshold</label>
+              <input type="number" id="heatThreshold" min="1" max="100" value="10">
+              <p class="text-xs text-gray-500 mt-1">Heat needed to trigger punishment</p>
+            </div>
+            <div>
+              <label class="text-xs text-gray-400 font-semibold mb-1 block">Heat Decay (minutes)</label>
+              <input type="number" id="heatDecayMinutes" min="1" max="1440" value="60">
+              <p class="text-xs text-gray-500 mt-1">Time before heat resets</p>
+            </div>
+          </div>
+
+          <div class="section-title">Heat Values per Signal</div>
+          <div class="heat-grid">
+            <div class="heat-item">
+              <label>No Avatar</label>
+              <input type="number" class="hv" data-key="noAvatar" min="0" max="50" value="3">
+            </div>
+            <div class="heat-item">
+              <label>Weird Username</label>
+              <input type="number" class="hv" data-key="weirdName" min="0" max="50" value="5">
+            </div>
+            <div class="heat-item">
+              <label>Phishing Link</label>
+              <input type="number" class="hv" data-key="phishingLink" min="0" max="50" value="10">
+            </div>
+            <div class="heat-item">
+              <label>Suspicious Content</label>
+              <input type="number" class="hv" data-key="suspiciousContent" min="0" max="50" value="7">
+            </div>
+            <div class="heat-item">
+              <label>Repeated Offence</label>
+              <input type="number" class="hv" data-key="repeatedOffence" min="0" max="50" value="4">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══ TAB: Escalation ═══════════════════════════════ -->
+    <div id="tab-escalation" class="tab-panel">
+
+      <div class="card mb-4">
+        <div class="card-header"><h3 class="font-bold">Warn Escalation Ladder</h3></div>
+        <div class="card-body">
+          <p class="text-sm text-gray-400 mb-4">As a user accumulates warnings, progressively harsher actions are taken. Each row defines what happens at or above that warning count.</p>
+          <div id="warnStepsList" class="space-y-2"></div>
+          <button onclick="addWarnStep()" class="btn-ghost mt-3 text-sm">+ Add Step</button>
+          <hr class="divider">
+          <div class="text-xs text-gray-500">Warnings are tracked per user across all detection events. The highest step met or exceeded is applied.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══ TAB: Custom Rules ══════════════════════════════ -->
+    <div id="tab-custom" class="tab-panel">
+
+      <div class="card mb-4">
+        <div class="card-header"><h3 class="font-bold">Custom Blocked Domains</h3></div>
+        <div class="card-body">
+          <p class="text-sm text-gray-400 mb-4">Add custom domains to block (e.g., <code>example-scam.com</code>). Supports up to 50 domains.</p>
+          <div class="flex gap-3 mb-3">
+            <input type="text" id="customDomainInput" placeholder="e.g. free-nitro-scam.xyz" class="flex-1">
+            <button onclick="addCustomDomain()" class="btn-ghost">Add</button>
+          </div>
+          <div id="customDomainsList" class="flex flex-wrap gap-2"></div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header"><h3 class="font-bold">Custom Regex Patterns</h3></div>
+        <div class="card-body">
+          <p class="text-sm text-gray-400 mb-4">Add custom regex patterns to match scam content. Supports up to 50 patterns.</p>
+          <div class="flex gap-3 mb-3">
+            <input type="text" id="customPatternInput" placeholder="e.g. (free|claim).*(nitro|boost)" class="flex-1 font-mono">
+            <button onclick="addCustomPattern()" class="btn-ghost">Add</button>
+          </div>
+          <div id="customPatternsList" class="flex flex-wrap gap-2"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══ TAB: Exemptions ═══════════════════════════════ -->
+    <div id="tab-exemptions" class="tab-panel">
+
+      <div class="card mb-6">
+        <div class="card-header"><h3 class="font-bold">Whitelisted Users</h3></div>
+        <div class="card-body">
+          <p class="text-sm text-gray-400 mb-4">Users in this list will bypass all Anti-Scam checks.</p>
+          <div class="flex gap-3 mb-3">
+            <input type="text" id="whitelistInput" placeholder="User ID" class="flex-1 font-mono">
+            <button onclick="addWhitelist()" class="btn-ghost">Add</button>
+          </div>
+          <div id="whitelistList" class="flex flex-wrap gap-2"></div>
+        </div>
+      </div>
+
+      <div class="card mb-6">
+        <div class="card-header"><h3 class="font-bold">Ignored Roles</h3></div>
+        <div class="card-body">
+          <p class="text-sm text-gray-400 mb-4">Members with any of these roles will not be scanned.</p>
+          <div class="flex gap-3 mb-3">
+            <select id="ignoredRoleSelect"><option value="">Select a role...</option></select>
+            <button onclick="addIgnoredRole()" class="btn-ghost">Add</button>
+          </div>
+          <div id="ignoredRolesList" class="flex flex-wrap gap-2"></div>
+        </div>
+      </div>
+
+      <div class="card mb-6">
+        <div class="card-header"><h3 class="font-bold">Ignored Channels</h3></div>
+        <div class="card-body">
+          <p class="text-sm text-gray-400 mb-4">Messages in these channels will not be scanned for scam content.</p>
+          <div class="flex gap-3 mb-3">
+            <select id="ignoredChannelSelect"><option value="">Select a channel...</option></select>
+            <button onclick="addIgnoredChannel()" class="btn-ghost">Add</button>
+          </div>
+          <div id="ignoredChannelsList" class="flex flex-wrap gap-2"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══ TAB: Logs ════════════════════════════════════ -->
+    <div id="tab-logs" class="tab-panel">
+
+      <div class="card mb-4">
+        <div class="card-header flex items-center justify-between">
+          <h3 class="font-bold">Punishment Log</h3>
+          <button onclick="clearLogs()" class="btn-danger btn-sm">Clear All</button>
+        </div>
+        <div class="card-body" id="logsContainer">
+          <div class="text-center text-gray-500 py-8">Loading logs...</div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<script>
+const guildId = location.pathname.split("/")[2];
+let config = {};
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.className = 'show ' + (type || 'success');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Tab switching
+document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// Toggle detection settings expand
+function toggleDet(btn) {
+  const row = btn.closest('.detection-row');
+  row.classList.toggle('expanded');
+  btn.textContent = row.classList.contains('expanded') ? 'Close' : 'Settings';
+}
+
+// Esc helpers
+function v(id) { return document.getElementById(id)?.value ?? ''; }
+function vb(id) { return document.getElementById(id)?.checked ?? false; }
+function vi(id) { return parseInt(v(id)) || 0; }
+function setv(id, val) { const el = document.getElementById(id); if (el) el.value = String(val ?? ''); }
+function setb(id, val) { const el = document.getElementById(id); if (el) el.checked = !!val; }
+
+function collectStep() {
+  const steps = [];
+  document.querySelectorAll('.warn-step-row').forEach(row => {
+    steps.push({
+      count: parseInt(row.querySelector('.ws-count')?.value) || 1,
+      action: row.querySelector('.ws-action')?.value || 'warn',
+      note: row.querySelector('.ws-note')?.value || '',
+    });
+  });
+  return steps;
+}
+
+function renderWarnSteps(steps) {
+  const el = document.getElementById('warnStepsList');
+  el.innerHTML = steps.map((s, i) => `
+    <div class="warn-step-row">
+      <span style="color:#888;font-size:12px;font-weight:600;min-width:24px;">#${i+1}</span>
+      <div style="flex:0 0 80px;">
+        <label class="text-xs text-gray-400 block">At ≥ N warns</label>
+        <input type="number" class="ws-count" value="${s.count}" min="1" max="100" style="width:70px;">
+      </div>
+      <div style="flex:0 0 120px;">
+        <label class="text-xs text-gray-400 block">Action</label>
+        <select class="ws-action">
+          <option value="warn" ${s.action==='warn'?'selected':''}>Warn</option>
+          <option value="mute" ${s.action==='mute'?'selected':''}>Mute</option>
+          <option value="kick" ${s.action==='kick'?'selected':''}>Kick</option>
+          <option value="ban" ${s.action==='ban'?'selected':''}>Ban</option>
+        </select>
+      </div>
+      <div style="flex:1;">
+        <label class="text-xs text-gray-400 block">Note (optional)</label>
+        <input type="text" class="ws-note" value="${s.note || ''}" placeholder="e.g. First offence" style="font-size:12px;">
+      </div>
+      <button onclick="this.closest('.warn-step-row').remove()" class="btn-danger btn-sm" style="margin-top:14px;">×</button>
+    </div>
+  `).join('');
+}
+
+function addWarnStep() {
+  const steps = collectStep();
+  const lastCount = steps.length > 0 ? steps[steps.length - 1].count + 2 : 1;
+  steps.push({ count: lastCount, action: 'warn', note: '' });
+  renderWarnSteps(steps);
+}
+
+// Custom domains
+function renderCustomDomains(domains) {
+  const el = document.getElementById('customDomainsList');
+  el.innerHTML = domains.map(d => `
+    <span class="tag-item">${escapeHtml(d)} <span class="remove" onclick="removeDomain('${escapeHtml(d)}')">×</span></span>
+  `).join('');
+}
+
+function addCustomDomain() {
+  const inp = document.getElementById('customDomainInput');
+  const domain = inp.value.trim().toLowerCase().replace(/^https?:\/\//, '');
+  if (!domain) return;
+  const domains = config.customDomains || [];
+  if (!domains.includes(domain)) domains.push(domain);
+  config.customDomains = domains;
+  renderCustomDomains(domains);
+  inp.value = '';
+}
+
+function removeDomain(d) {
+  config.customDomains = (config.customDomains || []).filter(x => x !== d);
+  renderCustomDomains(config.customDomains);
+}
+
+// Custom patterns
+function renderCustomPatterns(patterns) {
+  const el = document.getElementById('customPatternsList');
+  el.innerHTML = patterns.map(p => `
+    <span class="tag-item">${escapeHtml(p)} <span class="remove" onclick="removePattern('${escapeHtml(p)}')">×</span></span>
+  `).join('');
+}
+
+function addCustomPattern() {
+  const inp = document.getElementById('customPatternInput');
+  const pattern = inp.value.trim();
+  if (!pattern) return;
+  const patterns = config.customPatterns || [];
+  if (!patterns.includes(pattern)) patterns.push(pattern);
+  config.customPatterns = patterns;
+  renderCustomPatterns(patterns);
+  inp.value = '';
+}
+
+function removePattern(p) {
+  config.customPatterns = (config.customPatterns || []).filter(x => x !== p);
+  renderCustomPatterns(config.customPatterns);
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function collectDetection(key) {
+  const row = document.querySelector(`.detection-row[data-key="${key}"]`);
+  if (!row) return {};
+  return {
+    enabled: row.querySelector('.det-toggle')?.checked ?? true,
+    action: row.querySelector('.det-action')?.value || '',
+    muteMinutes: parseInt(row.querySelector('.det-mute')?.value) || 10,
+  };
+}
+
+// ─── Load Config ────────────────────────────────────────
+async function init() {
+  const r = await fetch(`/api/guild/${guildId}/antiscam`);
+  config = await r.json();
+
+  // Master toggle
+  setb('enabled', config.enabled);
+  setv('logChannel', config.logChannelId || '');
+  setv('globalAction', config.globalAction || 'delete');
+  setv('globalMuteMinutes', config.globalMuteMinutes || 10);
+
+  // Detection toggles
+  ['detectPhishing', 'detectFakeNitro', 'detectSuspiciousContent',
+   'detectNewAccounts', 'detectSuspiciousUsernames'].forEach(key => {
+    const dc = config[key] || {};
+    const row = document.querySelector(`.detection-row[data-key="${key}"]`);
+    if (!row) return;
+    const cb = row.querySelector('.det-toggle');
+    if (cb) cb.checked = dc.enabled !== false;
+    const act = row.querySelector('.det-action');
+    if (act) act.value = dc.action || '';
+    const mute = row.querySelector('.det-mute');
+    if (mute) mute.value = dc.muteMinutes || 10;
+  });
+
+  // New account days
+  setv('newAccountDays', config.newAccountDays || 7);
+
+  // Heat
+  setv('heatThreshold', config.heatThreshold || 10);
+  setv('heatDecayMinutes', config.heatDecayMinutes || 60);
+  document.querySelectorAll('.hv').forEach(inp => {
+    const hv = config.heatValues || {};
+    inp.value = hv[inp.dataset.key] ?? inp.defaultValue;
+  });
+
+  // Warn steps
+  renderWarnSteps(config.warnSteps || []);
+
+  // Custom domains / patterns
+  renderCustomDomains(config.customDomains || []);
+  renderCustomPatterns(config.customPatterns || []);
+
+  // Exemptions
+  renderTagList('whitelistList', config.whitelist || [], id => removeWhitelist(id));
+  renderTagList('ignoredRolesList', config.ignoredRoles || [], id => removeIgnoredRole(id));
+  renderTagList('ignoredChannelsList', config.ignoredChannels || [], id => removeIgnoredChannel(id));
+
+  // Logs
+  loadLogs();
+}
+
+function renderTagList(elId, items, removeFn) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  if (!items.length) {
+    el.innerHTML = '<span class="text-gray-500 text-sm">None</span>';
+    return;
+  }
+  el.innerHTML = items.map(id => `
+    <span class="tag-item">${escapeHtml(id)} <span class="remove" onclick="(${removeFn.toString()})('${escapeHtml(id)}')">×</span></span>
+  `).join('');
+}
+
+// ─── Save Config ───────────────────────────────────────
+async function saveConfig() {
+  const body = {
+    enabled: vb('enabled'),
+    logChannelId: v('logChannel') || null,
+    globalAction: v('globalAction'),
+    globalMuteMinutes: vi('globalMuteMinutes'),
+    detectPhishing: collectDetection('detectPhishing'),
+    detectFakeNitro: collectDetection('detectFakeNitro'),
+    detectSuspiciousContent: collectDetection('detectSuspiciousContent'),
+    detectNewAccounts: collectDetection('detectNewAccounts'),
+    detectSuspiciousUsernames: collectDetection('detectSuspiciousUsernames'),
+    newAccountDays: vi('newAccountDays'),
+    heatThreshold: vi('heatThreshold'),
+    heatDecayMinutes: vi('heatDecayMinutes'),
+    heatValues: {},
+    customDomains: config.customDomains || [],
+    customPatterns: config.customPatterns || [],
+    warnSteps: collectStep(),
+  };
+
+  document.querySelectorAll('.hv').forEach(inp => {
+    body.heatValues[inp.dataset.key] = parseInt(inp.value) || 0;
+  });
+
+  const r = await fetch(`/api/guild/${guildId}/antiscam/config`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (r.ok) showToast('Configuration saved successfully');
+  else showToast('Failed to save configuration', 'error');
+}
+
+// ─── Whitelist ──────────────────────────────────────────
+async function addWhitelist() {
+  const id = v('whitelistInput');
+  if (!id) return;
+  const r = await fetch(`/api/guild/${guildId}/antiscam/whitelist`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId: id }),
+  });
+  if (r.ok) {
+    showToast(`User ${id} added`);
+    document.getElementById('whitelistInput').value = '';
+    refreshExemptions();
+  } else showToast('Failed to add user', 'error');
+}
+
+async function removeWhitelist(id) {
+  const r = await fetch(`/api/guild/${guildId}/antiscam/whitelist/${id}`, { method: 'DELETE' });
+  if (r.ok) refreshExemptions();
+  else showToast('Failed to remove user', 'error');
+}
+
+// ─── Ignored Roles ──────────────────────────────────────
+async function addIgnoredRole() {
+  const id = v('ignoredRoleSelect');
+  if (!id) return;
+  const r = await fetch(`/api/guild/${guildId}/antiscam/ignored-roles`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ roleId: id }),
+  });
+  if (r.ok) { showToast('Role added'); refreshExemptions(); }
+  else showToast('Failed to add role', 'error');
+}
+
+async function removeIgnoredRole(id) {
+  const r = await fetch(`/api/guild/${guildId}/antiscam/ignored-roles/${id}`, { method: 'DELETE' });
+  if (r.ok) refreshExemptions();
+  else showToast('Failed to remove role', 'error');
+}
+
+// ─── Ignored Channels ───────────────────────────────────
+async function addIgnoredChannel() {
+  const id = v('ignoredChannelSelect');
+  if (!id) return;
+  const r = await fetch(`/api/guild/${guildId}/antiscam/ignored-channels`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ channelId: id }),
+  });
+  if (r.ok) { showToast('Channel added'); refreshExemptions(); }
+  else showToast('Failed to add channel', 'error');
+}
+
+async function removeIgnoredChannel(id) {
+  const r = await fetch(`/api/guild/${guildId}/antiscam/ignored-channels/${id}`, { method: 'DELETE' });
+  if (r.ok) refreshExemptions();
+  else showToast('Failed to remove channel', 'error');
+}
+
+async function refreshExemptions() {
+  const r = await fetch(`/api/guild/${guildId}/antiscam`);
+  config = await r.json();
+  renderTagList('whitelistList', config.whitelist || [], id => removeWhitelist(id));
+  renderTagList('ignoredRolesList', config.ignoredRoles || [], id => removeIgnoredRole(id));
+  renderTagList('ignoredChannelsList', config.ignoredChannels || [], id => removeIgnoredChannel(id));
+}
+
+// ─── Logs ───────────────────────────────────────────────
+async function loadLogs() {
+  const el = document.getElementById('logsContainer');
+  try {
+    const r = await fetch(`/api/guild/${guildId}/antiscam/logs`);
+    const logs = await r.json();
+    if (!logs.length) {
+      el.innerHTML = '<div class="text-center text-gray-500 py-8">No punishment logs yet.</div>';
+      return;
+    }
+    el.innerHTML = logs.map(log => `
+      <div class="log-row">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <span class="font-semibold">${escapeHtml(log.userTag || log.userId || 'Unknown')}</span>
+            <span class="text-gray-400 text-sm ml-2">${escapeHtml(log.type || '')}</span>
+          </div>
+          <span class="badge ${log.actionTaken?.includes('Ban') ? 'badge-red' : log.actionTaken?.includes('Kick') ? 'badge-yellow' : 'badge-gray'}">${escapeHtml(log.actionTaken || '')}</span>
+        </div>
+        <div class="text-xs text-gray-500 mt-1">${escapeHtml(log.detail || '')}</div>
+        ${log.timestamp ? `<div class="text-xs text-gray-600 mt-1">${new Date(log.timestamp).toLocaleString()}</div>` : ''}
+      </div>
+    `).join('');
+  } catch {
+    el.innerHTML = '<div class="text-center text-gray-500 py-8">Failed to load logs.</div>';
+  }
+}
+
+async function clearLogs() {
+  const r = await fetch(`/api/guild/${guildId}/antiscam/logs`, { method: 'DELETE' });
+  if (r.ok) { showToast('Logs cleared'); loadLogs(); }
+  else showToast('Failed to clear logs', 'error');
+}
+
+// Start
+init();
+
+// Load channels
+// The channels API returns { channels, _categories } — not a bare array
+const channelList = data => (Array.isArray(data) ? data : data.channels) || [];
+
+fetch(`/api/guild/${guildId}/channels`).then(r => r.json()).then(data => {
+  const sel = document.getElementById('logChannel');
+  sel.innerHTML = '<option value="">Disabled</option>' + channelList(data).map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+  sel.value = (typeof config !== 'undefined' && config && config.logChannelId) || '';
+});
+
+// Load roles for ignored role select
+fetch(`/api/guild/${guildId}/roles`).then(r => r.json()).then(data => {
+  const sel = document.getElementById('ignoredRoleSelect');
+  sel.innerHTML = '<option value="">Select a role...</option>' + data.map(r => `<option value="${r.id}">${escapeHtml(r.name)}</option>`).join('');
+});
+
+// Load channels for ignored channel select
+fetch(`/api/guild/${guildId}/channels`).then(r => r.json()).then(data => {
+  const sel = document.getElementById('ignoredChannelSelect');
+  sel.innerHTML = '<option value="">Select a channel...</option>' + channelList(data).map(c => `<option value="${c.id}">#${escapeHtml(c.name)}</option>`).join('');
+});
+</script>
+
+<script src="/sidebar.js"></script>
+<!-- Razor Custom Select JS -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet();
+var openWrap=null;
+function cleanText(t){t=String(t||'');var d=document.createElement('div');d.innerHTML=t;return (d.textContent||d.innerText||'').trim();}
+function optText(opt){return cleanText(opt.text||opt.textContent||opt.label||'');}
+function positionPanel(wrap){var r=wrap._t.getBoundingClientRect();var p=wrap._p;var panelH=p.offsetHeight||240;var spaceBelow=window.innerHeight-r.bottom;var spaceAbove=r.top;var width=Math.max(r.width,160);p.style.width=width+'px';p.style.left=r.left+'px';p.style.right='auto';if(spaceBelow>=panelH||spaceBelow>=spaceAbove){p.style.top=(r.bottom+4)+'px';p.style.bottom='auto';}else{p.style.bottom=(window.innerHeight-r.top+4)+'px';p.style.top='auto';}}
+document.addEventListener('mousedown',function(e){if(!openWrap)return;if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);},true);
+window.addEventListener('scroll',function(){if(openWrap)positionPanel(openWrap);},true);
+window.addEventListener('resize',function(){if(openWrap)positionPanel(openWrap);});
+function open_(wrap){if(openWrap&&openWrap!==wrap)close_(openWrap);openWrap=wrap;buildList(wrap,'');wrap._si.value='';wrap._sw.style.display='';document.body.appendChild(wrap._p);wrap._p.style.display='block';wrap._t.classList.add('is-open');wrap._t.setAttribute('aria-expanded','true');requestAnimationFrame(function(){positionPanel(wrap);});setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);}
+function close_(wrap){if(!wrap)return;if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);wrap._p.style.display='none';wrap._t.classList.remove('is-open');wrap._t.setAttribute('aria-expanded','false');if(openWrap===wrap)openWrap=null;}
+function buildList(wrap,q){var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();var opts=Array.from(sel.options).filter(function(o){var t=optText(o);return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);});if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}list.innerHTML='';opts.forEach(function(opt){var it=document.createElement('div');it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');it.dataset.v=opt.value;var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='\u2713';it.appendChild(tx);it.appendChild(ck);it.addEventListener('mousedown',function(e){e.preventDefault();e.stopPropagation();sel.value=opt.value;updateLabel(wrap);close_(wrap);sel.dispatchEvent(new Event('change',{bubbles:true}));});list.appendChild(it);});}
+function updateLabel(wrap){var sel=wrap._s,lbl=wrap._lb;var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;var text=opt?optText(opt):'';if(text){lbl.textContent=text;lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));}else{lbl.textContent='Select\u2026';lbl.classList.add('is-ph');}wrap._last=sel.value;}
+function wrapSelect(sel){if(wrapped.has(sel))return;if(sel.hasAttribute('data-rzr-skip'))return;if(sel.size&&sel.size>1)return;wrapped.add(sel);if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';var sib=sel.nextElementSibling;if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';var t=document.createElement('div');t.className='rzr-trigger';t.setAttribute('tabindex','0');t.setAttribute('role','combobox');t.setAttribute('aria-haspopup','listbox');t.setAttribute('aria-expanded','false');var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;t.appendChild(lb);t.appendChild(cv);var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';var sw=document.createElement('div');sw.className='rzr-panel-search';var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;sw.appendChild(si);var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');p.appendChild(sw);p.appendChild(l);var w=document.createElement('div');w.className='rzr-wrap';w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;w.appendChild(t);w.appendChild(p);sel.parentNode.insertBefore(w,sel);w.appendChild(sel);si.addEventListener('input',function(){buildList(w,si.value);});si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});t.addEventListener('click',function(e){e.stopPropagation();openWrap===w?close_(w):open_(w);});t.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}if(e.key==='Escape')close_(w);});var mo=new MutationObserver(function(){updateLabel(w);if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}});mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});var pid=setInterval(function(){if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}if(sel.value!==w._last)updateLabel(w);},150);updateLabel(w);}
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType!==1)return;if(n.tagName==='SELECT')wrapSelect(n);else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);});});}).observe(document.body,{childList:true,subtree:true});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);else initAll();
+})();
+</script>
+
+</body>
+</html>

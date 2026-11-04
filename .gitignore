@@ -1,0 +1,23 @@
+node_modules/
+.env
+
+# config / secrets
+config.js
+
+# bot runtime / temp
+registeredCommands.json
+testnode.js
+
+# logs / data
+data/
+logs/backups/
+src/backups/
+logs/
+logs/
+
+# encryption key backups
+.key-backups/
+
+# npm / tool caches
+.cache/
+.npm/

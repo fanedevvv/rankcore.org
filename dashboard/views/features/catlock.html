@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CatLock — Roco</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/tailwind.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --orange: #F4A261;
+  --gold:   #E76F51;
+  --dark:   #130E05;
+  --card:   #1E1508;
+  --border: rgba(244,162,97,0.18);
+  --muted:  #7A6040;
+}
+
+body {
+  background: var(--dark);
+  color: #F5ECD7;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  min-height: 100vh;
+}
+
+body::before, body::after {
+  content: ''; position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0;
+}
+body::before { width: 500px; height: 500px; background: rgba(244,162,97,0.06); top: -100px; right: -100px; animation: blobFloat 8s ease-in-out infinite; }
+body::after  { width: 400px; height: 400px; background: rgba(231,111,81,0.07); bottom: -80px; left: -80px; animation: blobFloat 10s ease-in-out infinite reverse; }
+@keyframes blobFloat { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(30px,20px) scale(1.05)} }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: rgba(244,162,97,0.3); border-radius: 99px; }
+
+.layout { display: flex; min-height: 100vh; }
+.main { flex: 1; padding: 2rem 2.5rem; position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+@media(max-width:768px){ .main { padding: 1.25rem 1rem; } }
+
+#toast { position:fixed;top:1.25rem;right:1.25rem;z-index:9999;padding:.7rem 1.1rem;border-radius:.75rem;font-size:.8rem;font-weight:600;display:flex;align-items:center;gap:.5rem;transform:translateX(440px);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);pointer-events:none; }
+#toast.show { transform: translateX(0); }
+#toast.success { background:#1e1205;border:1px solid rgba(244,162,97,0.35);color:var(--orange); }
+#toast.error   { background:#200f0f;border:1px solid rgba(255,71,87,0.35);color:#f87171; }
+
+.page-hd { margin-bottom: 1.75rem; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.page-title { font-size: 1.75rem; font-weight: 800; letter-spacing: -.025em; display: flex; align-items: center; gap: .75rem; }
+.page-sub { font-size: .8rem; color: var(--muted); margin-top: .25rem; }
+
+.card { background: rgba(30,21,8,0.85); border: 1px solid var(--border); border-radius: 1.25rem; padding: 1.5rem; backdrop-filter: blur(12px); margin-bottom: 1rem; }
+.card-title { font-size: .9375rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: .5rem; }
+
+.input-label { font-size: .75rem; font-weight: 600; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; display: block; margin-bottom: .4rem; }
+input[type=text] { width:100%;background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:.625rem;padding:.65rem .875rem;font-size:.875rem;color:#F5ECD7;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s; }
+input[type=text]:focus { border-color: rgba(244,162,97,0.5); box-shadow: 0 0 0 3px rgba(244,162,97,0.1); }
+
+/* Toggle */
+.tog-row { display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.7rem .9rem;background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:.65rem;margin-bottom:.4rem; }
+.tog-label { font-size:.875rem;font-weight:600;color:#F5ECD7; }
+.tog-desc { font-size:.72rem;color:var(--muted);margin-top:.1rem; }
+.tog-wrap { position:relative;width:44px;height:24px;flex-shrink:0;margin-left:auto; }
+.tog-cb { opacity:0;width:0;height:0;position:absolute; }
+.tog-track { position:absolute;cursor:pointer;background:rgba(255,255,255,0.06);border-radius:9999px;top:0;left:0;right:0;bottom:0;transition:background .25s;border:1px solid var(--border); }
+.tog-track::before { content:"";position:absolute;left:2px;top:2px;width:20px;height:20px;border-radius:50%;background:#5a4020;transition:transform .25s,background .25s; }
+.tog-cb:checked + .tog-track { background: rgba(244,162,97,0.3); }
+.tog-cb:checked + .tog-track::before { transform: translateX(20px); background: var(--orange); }
+
+.ephemeral-note { display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .65rem;background:rgba(244,162,97,0.1);border:1px solid rgba(244,162,97,0.2);border-radius:99px;font-size:.68rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.06em; }
+
+/* Buttons */
+.btn-primary { display:inline-flex;align-items:center;gap:.45rem;background:linear-gradient(135deg,var(--orange),var(--gold));color:#fff;font-weight:700;font-size:.875rem;padding:.65rem 1.25rem;border-radius:.75rem;border:none;cursor:pointer;transition:all .2s;font-family:inherit; }
+.btn-primary:hover { transform:translateY(-1px);box-shadow:0 8px 28px rgba(244,162,97,0.35); }
+.btn-ghost { display:inline-flex;align-items:center;gap:.45rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:.75rem;color:#aaa;font-weight:600;font-size:.875rem;padding:.65rem 1.25rem;cursor:pointer;transition:all .15s;font-family:inherit; }
+.btn-ghost:hover { background:rgba(255,255,255,0.09);color:#F5ECD7; }
+.btn-danger { display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.25);border-radius:.625rem;color:#f87171;font-weight:600;font-size:.78rem;padding:.4rem .875rem;cursor:pointer;transition:all .15s;font-family:inherit; }
+.btn-danger:hover { background:rgba(255,71,87,0.2); }
+
+/* User rows */
+.user-row { display:flex;align-items:center;gap:.875rem;padding:.875rem 1rem;background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:.75rem;margin-bottom:.5rem;animation:slideIn .18s ease; }
+@keyframes slideIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
+.user-avatar { width:2.5rem;height:2.5rem;border-radius:50%;background:rgba(244,162,97,0.15);border:2px solid rgba(244,162,97,0.25);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;overflow:hidden; }
+.user-avatar img { width:100%;height:100%;object-fit:cover; }
+.user-info { flex:1;min-width:0; }
+.user-name { font-weight:700;font-size:.9375rem; }
+.user-id { font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);margin-top:.1rem; }
+
+.empty-cat { text-align:center;padding:3rem 2rem;color:var(--muted); }
+.empty-cat .emoji { font-size:3rem;margin-bottom:.75rem;animation:bounce 2s ease-in-out infinite; }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+.modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem;opacity:0;pointer-events:none;transition:opacity .22s; }
+.modal-overlay.open { opacity:1;pointer-events:all; }
+.modal { background:#1e1508;border:1px solid rgba(244,162,97,0.25);border-radius:1.5rem;width:100%;max-width:440px;padding:1.75rem; }
+.modal-title { font-size:1rem;font-weight:800;margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem; }
+.modal-footer { display:flex;gap:.625rem;margin-top:1.25rem; }
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<div id="toast"></div>
+<div class="layout">
+  <aside id="razor-sidebar"></aside>
+  <main class="main">
+
+    <div class="page-hd">
+      <div>
+        <div class="page-title">🐱 Cat Lock</div>
+        <div class="page-sub">Pawlock users to speak only in cat mode~ · Commands are now ephemeral</div>
+      </div>
+      <button class="btn-primary" onclick="openAddModal()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        Cat-Lock User
+      </button>
+    </div>
+
+    <!-- Settings -->
+    <div class="card">
+      <div class="card-title">⚙️ Cat Lock Settings</div>
+
+      <!-- #19 ephemeral toggle -->
+      <div class="tog-row" style="border-color:rgba(244,162,97,0.25);background:rgba(244,162,97,0.04);">
+        <div>
+          <div class="tog-label">Ephemeral responses <span class="ephemeral-note">New</span></div>
+          <div class="tog-desc">Lock/unlock confirmations are only visible to the command user — keeps channels clean</div>
+        </div>
+        <label class="tog-wrap"><input type="checkbox" class="tog-cb" id="settingEphemeral" checked><div class="tog-track"></div></label>
+      </div>
+
+      <div class="tog-row">
+        <div><div class="tog-label">Delete non-cat messages</div><div class="tog-desc">Auto-remove messages from locked users that aren't in cat-speak</div></div>
+        <label class="tog-wrap"><input type="checkbox" class="tog-cb" id="settingDelete"><div class="tog-track"></div></label>
+      </div>
+
+      <div class="tog-row">
+        <div><div class="tog-label">DM user on lock</div><div class="tog-desc">Notify the user privately when cat-locked</div></div>
+        <label class="tog-wrap"><input type="checkbox" class="tog-cb" id="settingNotify" checked><div class="tog-track"></div></label>
+      </div>
+
+      <div style="margin-top:1rem;">
+        <button class="btn-primary" onclick="saveSettings()">Save Settings</button>
+      </div>
+    </div>
+
+    <!-- Active cats -->
+    <div class="card">
+      <div class="card-title">😺 Active Cats <span id="lockCount" style="font-size:.75rem;color:var(--muted);font-weight:600;margin-left:.35rem;">0 locked</span></div>
+      <div id="userList">
+        <div class="empty-cat">
+          <div class="emoji">😿</div>
+          <div style="font-weight:700;margin-bottom:.35rem;">No cats locked yet</div>
+          <div style="font-size:.8rem;">Click <strong>Cat-Lock User</strong> to add someone</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Add modal -->
+<div id="addModal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">🐱 Cat-Lock a User</div>
+
+    <div style="margin-bottom:1rem;">
+      <label class="input-label">Discord User ID</label>
+      <input type="text" id="modalUserIdInput" placeholder="e.g. 123456789012345678" maxlength="20" inputmode="numeric" autocomplete="off" onkeydown="if(event.key==='Enter')addCat()"/>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:.35rem;">Settings → Advanced → Enable Dev Mode → right-click user → Copy ID</div>
+    </div>
+
+    <div style="margin-bottom:1rem;">
+      <label class="input-label">Reason (optional)</label>
+      <input type="text" id="modalReason" placeholder="e.g. Asked for it nyaa~" maxlength="100"/>
+    </div>
+
+    <div style="background:rgba(244,162,97,0.06);border:1px solid rgba(244,162,97,0.15);border-radius:.625rem;padding:.625rem .875rem;font-size:.78rem;color:var(--orange);display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      Confirmation will be ephemeral (private) if that setting is enabled.
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal()" style="flex:1;">Cancel</button>
+      <button class="btn-primary" onclick="addCat()" style="flex:2;">🐱 Cat-Lock!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const guildId = window.location.pathname.split('/')[2];
+
+function showToast(msg,type='success'){const t=document.getElementById('toast');t.className='';t.classList.add(type,'show');t.innerHTML=(type==='success'?'✅':'❌')+' '+msg;setTimeout(()=>t.classList.remove('show'),3200);}
+function openAddModal(){document.getElementById('addModal').classList.add('open');}
+function closeModal(){document.getElementById('addModal').classList.remove('open');}
+
+function addCat(){
+  const userId=document.getElementById('modalUserIdInput').value.trim();
+  if(!userId||!/^\d{17,20}$/.test(userId)){showToast('Invalid user ID','error');return;}
+  const reason=document.getElementById('modalReason').value.trim();
+  const ephemeral=document.getElementById('settingEphemeral').checked;
+  fetch(`/api/guild/${guildId}/catlock`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId,reason,ephemeral})})
+    .then(r=>r.json()).then(res=>{
+      if(res.success!==false){showToast('User cat-locked! 🐱');closeModal();loadUsers();}
+      else{showToast(res.message||'Failed','error');}
+    }).catch(()=>showToast('Network error','error'));
+}
+
+function removeCat(userId){
+  if(!confirm('Remove cat lock?'))return;
+  const ephemeral=document.getElementById('settingEphemeral').checked;
+  fetch(`/api/guild/${guildId}/catlock/${userId}`,{method:'DELETE'})
+    .then(r=>r.json()).then(()=>{showToast('Cat freed! 😺');loadUsers();})
+    .catch(()=>showToast('Failed','error'));
+}
+
+function loadUsers(){
+  fetch(`/api/guild/${guildId}/catlock`).then(r=>r.json()).then(data=>{
+    const users=Array.isArray(data)?data:(data.users||[]);
+    document.getElementById('lockCount').textContent=users.length+' locked';
+    const container=document.getElementById('userList');
+    if(!users.length){container.innerHTML='<div class="empty-cat"><div class="emoji">😿</div><div style="font-weight:700;margin-bottom:.35rem;">No cats locked yet</div><div style="font-size:.8rem;">Click <strong>Cat-Lock User</strong> to add someone</div></div>';return;}
+    container.innerHTML=users.map(u=>`<div class="user-row"><div class="user-avatar">${u.avatar?`<img src="${u.avatar}">`:'🐾'}</div><div class="user-info"><div class="user-name">${u.username||'Unknown'}</div><div class="user-id">${u.userId}</div>${u.reason?`<div style="font-size:.72rem;color:var(--muted);margin-top:.1rem;">${u.reason}</div>`:''}</div><button class="btn-danger" onclick="removeCat('${u.userId}')">🔓 Free</button></div>`).join('');
+  }).catch(()=>{});
+}
+
+// These settings are not implemented in the bot yet — show them as read-only
+function saveSettings(){ showToast('These settings are coming soon', 'error'); }
+document.querySelectorAll('[id^="setting"]').forEach(el => { el.disabled = true; el.closest('label, .setting-row, div')?.style.setProperty('opacity', '.55'); });
+document.querySelectorAll('button[onclick="saveSettings()"]').forEach(b => { b.textContent = 'Coming soon'; b.disabled = true; b.style.opacity = '.55'; b.style.cursor = 'not-allowed'; });
+
+loadUsers();
+if(typeof loadSidebar==='function')loadSidebar();
+</script>
+
+<script src="/sidebar.js"></script>
+</body>
+</html>

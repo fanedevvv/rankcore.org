@@ -1,0 +1,68 @@
+/* ═══════════════════════════════════════════════════════════════════
+   ROCO DASHBOARD — mobile layer
+   Loaded last on every page. Only phone/tablet rules; desktop untouched.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Decorative glows/blobs wider than the screen must not widen the page
+   (mobile browsers grow the layout viewport to fit them, which pushes all
+   content off the right edge). */
+html, body { max-width: 100%; overflow-x: clip; }
+
+@media (max-width: 1023px) {
+  /* Leave room for the fixed ☰ sidebar button so it never covers titles */
+  body:has(#razor-mobile-btn) { padding-top: 64px !important; }
+
+  /* Global Permissions centres content by offsetting the sidebar width —
+     on phones the sidebar is off-canvas, so drop the offset */
+  .page-center::before { display: none; }
+  .page-center { padding-top: 80px; padding-left: 16px; padding-right: 16px; }
+
+  /* Hub pages: the bottom tab bar was never populated (literal "[tabs]");
+     navigation lives in the ☰ sidebar */
+  .hub-tabs { display: none !important; }
+  html.hub-mode body { padding-bottom: 0; }
+}
+
+@media (max-width: 640px) {
+  /* Page headers: title + action buttons → buttons wrap under the title */
+  .flex.justify-between,
+  .flex.items-start.justify-between,
+  .flex.items-center.justify-between { flex-wrap: wrap; row-gap: .75rem; }
+  .flex.gap-2, .flex.gap-3, .flex.gap-4 { flex-wrap: wrap; }
+
+  /* Let flex/grid children shrink instead of forcing the page wider.
+     :where() has zero specificity, so it only replaces the browser default
+     (min-width:auto) and never overrides a min-width set on purpose. */
+  :where(body *) { min-width: 0; }
+
+  /* Media and embeds never exceed the screen */
+  img, video, iframe, canvas, svg { max-width: 100%; }
+  pre, code { white-space: pre-wrap; word-break: break-word; }
+  /* Wide tables / scroll strips scroll sideways inside themselves;
+     contain:inline-size stops their content width from widening the page */
+  table { display: block; max-width: 100%; overflow-x: auto; contain: inline-size; }
+  .overflow-x-auto { contain: inline-size; }
+
+  /* Horizontal tab/filter strips scroll sideways — their items keep full size */
+  .nav-inner, .tab-nav-inner, .filter-pills, .tabs-bar, .tabs-scroll, .tab-nav {
+    overflow-x: auto; scrollbar-width: none; contain: inline-size;
+  }
+  .nav-inner > *, .tab-nav-inner > *, .filter-pills > *, .tabs-bar > *,
+  .tabs-scroll > *, .tab-nav > *, .overflow-x-auto > * { flex-shrink: 0; min-width: auto; }
+  /* A row wrapped inside a strip (e.g. .tabs-bar > .tabs-inner) is as wide as its tabs,
+     so the strip scrolls instead of squeezing the tabs on top of each other */
+  .tabs-bar > .tabs-inner, .tab-nav > .tab-nav-inner { min-width: max-content; }
+  .tabs-inner > *, .tab-nav-inner > * { flex-shrink: 0; }
+  /* Soft fade on the right edge hints that more tabs are a swipe away */
+  .tabs-bar { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+
+  /* Long words / IDs / URLs wrap instead of overflowing */
+  h1, h2, h3, p, label { overflow-wrap: break-word; }
+
+  /* 404 page: the big number scales with the screen */
+  .num-404 { font-size: clamp(64px, 24vw, 100px); }
+
+  /* Inputs: full width and 16px font so iOS doesn't zoom on focus */
+  input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),
+  select, textarea { max-width: 100%; font-size: 16px; }
+}

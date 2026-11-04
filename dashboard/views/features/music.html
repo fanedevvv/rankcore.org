@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Music — Roco</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/tailwind.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#6C53FF;--brand-dim:rgba(108,83,255,0.15);--brand-border:rgba(108,83,255,0.25);
+  --razor:#FF3333;--bg:#080810;--bg2:#0d0d1a;--bg3:#121220;--bg4:#181828;
+  --border:rgba(255,255,255,0.07);--border-hover:rgba(255,255,255,0.13);
+  --text:#eef0f8;--text-dim:#9090b0;--text-muted:#5a5a7a;
+  --red:#f87171;--red-bg:rgba(248,113,113,0.08);
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:rgba(108,83,255,0.25);border-radius:99px}
+.layout{display:flex;min-height:100vh}
+.main{flex:1;padding:2.5rem 2.75rem;max-width:1300px;margin:0 auto}
+@media(max-width:768px){.main{padding:1.5rem 1.25rem}}
+
+#toast{position:fixed;top:1.25rem;right:1.25rem;z-index:9999;padding:.75rem 1.25rem;border-radius:.875rem;font-size:.8125rem;font-weight:600;display:flex;align-items:center;gap:.5rem;box-shadow:0 20px 60px rgba(0,0,0,0.5);transform:translateX(120%);transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
+#toast.show{transform:translateX(0)}
+#toast.success{background:#0f2018;border:1px solid rgba(255,51,51,0.3);color:var(--razor)}
+#toast.error{background:#200f0f;border:1px solid rgba(248,113,113,0.3);color:var(--red)}
+
+.page-hd{margin-bottom:2rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.page-title{font-size:1.75rem;font-weight:800;letter-spacing:-.025em;display:flex;align-items:center;gap:.75rem}
+.page-icon{width:2.5rem;height:2.5rem;border-radius:.75rem;background:var(--brand-dim);border:1px solid var(--brand-border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.page-sub{color:var(--text-muted);font-size:.8125rem;margin-top:.35rem;margin-left:3.375rem}
+
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:1.25rem;padding:1.5rem;margin-bottom:1rem}
+.card:hover{border-color:var(--border-hover)}
+.card-title{font-size:.9375rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;color:var(--text)}
+
+label{display:block;font-size:.72rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.375rem}
+input[type=text],input[type=number],select{width:100%;padding:.65rem .875rem;border-radius:.625rem;border:1px solid var(--border);background:var(--bg4);color:var(--text);font-family:inherit;font-size:.875rem;outline:none;transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus{border-color:rgba(108,83,255,0.4);box-shadow:0 0 0 3px var(--brand-dim)}
+select option{background:var(--bg4)}
+.field{margin-bottom:1rem}
+
+.tog-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.7rem .9rem;background:rgba(0,0,0,.18);border:1px solid var(--border);border-radius:.65rem;margin-bottom:.4rem}
+.tog-label{font-size:.875rem;font-weight:600}
+.tog-desc{font-size:.72rem;color:var(--text-muted);margin-top:.1rem}
+.tog-wrap{position:relative;width:44px;height:24px;flex-shrink:0;margin-left:auto}
+.tog-cb{opacity:0;width:0;height:0;position:absolute}
+.tog-track{position:absolute;cursor:pointer;background:rgba(255,255,255,0.06);border-radius:9999px;inset:0;transition:background .25s;border:1px solid var(--border)}
+.tog-track::before{content:"";position:absolute;left:2px;top:2px;width:20px;height:20px;border-radius:50%;background:#4a4a6a;transition:transform .25s,background .25s}
+.tog-cb:checked+.tog-track{background:rgba(108,83,255,0.3)}
+.tog-cb:checked+.tog-track::before{transform:translateX(20px);background:#a899ff}
+
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.625rem 1.25rem;border-radius:.75rem;font-size:.8125rem;font-weight:700;cursor:pointer;transition:all .2s;border:none;font-family:inherit}
+.btn-primary{background:var(--razor);color:#000}.btn-primary:hover{background:#6dff85;transform:translateY(-1px)}
+.btn-ghost{background:rgba(255,255,255,.05);color:var(--text-dim);border:1px solid var(--border)}.btn-ghost:hover{background:rgba(255,255,255,.09);color:var(--text)}
+.btn-sm{padding:.4rem .875rem;font-size:.75rem;border-radius:.5rem}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+@media(max-width:768px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* Now playing */
+.np-card{background:linear-gradient(135deg,rgba(108,83,255,0.12),rgba(255,51,51,0.06));border:1px solid rgba(108,83,255,0.2);border-radius:1.25rem;padding:1.5rem;margin-bottom:1rem;position:relative;overflow:hidden}
+.np-card::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(ellipse,rgba(108,83,255,0.1) 0%,transparent 70%);pointer-events:none}
+.np-status{display:inline-flex;align-items:center;gap:.4rem;padding:.2rem .65rem;border-radius:99px;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;background:rgba(255,51,51,0.1);border:1px solid rgba(255,51,51,0.2);color:var(--razor);margin-bottom:.875rem}
+.np-status.idle{background:rgba(90,90,122,0.15);border-color:var(--border);color:var(--text-muted)}
+.np-title{font-size:1.125rem;font-weight:800;letter-spacing:-.015em;margin-bottom:.25rem}
+.np-artist{font-size:.8rem;color:var(--text-dim);margin-bottom:1rem}
+.np-progress-track{height:5px;background:rgba(255,255,255,0.07);border-radius:99px;margin-bottom:.4rem;cursor:pointer}
+.np-progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--brand),var(--razor));width:35%;transition:width .5s}
+.np-time{display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-bottom:1rem}
+.np-controls{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.ctrl-btn{width:2.5rem;height:2.5rem;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s;flex-shrink:0}
+.ctrl-btn:hover{background:rgba(108,83,255,0.2);border-color:var(--brand-border)}
+.ctrl-btn.play{width:3rem;height:3rem;background:var(--brand);border-color:var(--brand)}
+.ctrl-btn.play:hover{background:#8472ff}
+.ctrl-btn svg{width:16px;height:16px}
+.ctrl-btn.play svg{width:18px;height:18px}
+.vol-wrap{display:flex;align-items:center;gap:.5rem;margin-left:auto}
+.vol-wrap input{width:80px;accent-color:var(--brand)}
+
+/* Queue */
+.q-item{display:flex;align-items:center;gap:.75rem;padding:.75rem .875rem;background:rgba(0,0,0,.15);border:1px solid var(--border);border-radius:.75rem;margin-bottom:.375rem;transition:border-color .15s}
+.q-item:hover{border-color:var(--border-hover)}
+.q-num{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);width:1.25rem;text-align:center;flex-shrink:0}
+.q-info{flex:1;min-width:0}
+.q-track{font-weight:600;font-size:.875rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q-meta{font-size:.72rem;color:var(--text-muted);margin-top:.1rem}
+.q-dur{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);flex-shrink:0}
+
+/* stat mini */
+.stat-mini{background:var(--bg4);border:1px solid var(--border);border-radius:.875rem;padding:1rem;text-align:center}
+.stat-val{font-size:1.625rem;font-weight:800;letter-spacing:-.02em;font-family:'JetBrains Mono',monospace}
+.stat-lbl{font-size:.68rem;color:var(--text-muted);margin-top:.2rem;text-transform:uppercase;letter-spacing:.06em}
+
+.sep{height:1px;background:var(--border);margin:1.25rem 0}
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+<body>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+<div id="toast"></div>
+<div class="layout">
+  <aside id="razor-sidebar"></aside>
+  <main class="main">
+
+    <div class="page-hd">
+      <div>
+        <div class="page-title">
+          <div class="page-icon">
+            <svg width="18" height="18" fill="none" stroke="#a899ff" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M9 18a3 3 0 01-3 3 3 3 0 01-3-3 3 3 0 013-3 3 3 0 013 3zm12-2a3 3 0 01-3 3 3 3 0 01-3-3 3 3 0 013-3 3 3 0 013 3z"/></svg>
+          </div>
+          Music
+        </div>
+        <div class="page-sub">Live player · Queue · Settings — simplified and clean</div>
+      </div>
+    </div>
+
+    <!-- Now Playing -->
+    <div class="np-card">
+      <div class="np-status idle" id="npStatus">● Idle</div>
+      <div class="np-title" id="npTitle">Nothing Playing</div>
+      <div class="np-artist" id="npArtist">Play a song using /play in a voice channel</div>
+
+      <div class="np-progress-track">
+        <div class="np-progress-fill" id="npProgress" style="width:0%"></div>
+      </div>
+      <div class="np-time">
+        <span id="npCurrent">0:00</span>
+        <span id="npTotal">0:00</span>
+      </div>
+
+      <div class="np-controls">
+        <div class="ctrl-btn" onclick="sendCmd('shuffle')" title="Shuffle">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+        </div>
+        <div class="ctrl-btn" onclick="sendCmd('previous')" title="Previous">
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 20L9 12l10-8v16M5 19V5"/></svg>
+        </div>
+        <div class="ctrl-btn play" onclick="togglePlay()" id="playBtn" title="Play/Pause">
+          <svg fill="currentColor" viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <div class="ctrl-btn" onclick="sendCmd('skip')" title="Skip">
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 4l10 8-10 8V4M19 5v14"/></svg>
+        </div>
+        <div class="ctrl-btn" onclick="cycleRepeat()" id="repeatBtn" title="Repeat">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4M3 11V9a4 4 0 014-4h14M7 22l-4-4 4-4M21 13v2a4 4 0 01-4 4H3"/></svg>
+        </div>
+        <div class="vol-wrap">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>
+          <input type="range" id="volSlider" min="0" max="100" value="80" oninput="setVolume(this.value)"/>
+          <span id="volVal" style="font-size:.72rem;font-family:'JetBrains Mono',monospace;color:var(--text-muted);width:2rem;">80%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="grid3" style="margin-bottom:1rem;">
+      <div class="stat-mini"><div class="stat-val" style="color:var(--brand);" id="statQueue">0</div><div class="stat-lbl">In Queue</div></div>
+      <div class="stat-mini"><div class="stat-val" style="color:var(--razor);" id="statListeners">0</div><div class="stat-lbl">Listeners</div></div>
+      <div class="stat-mini"><div class="stat-val" style="color:#f59e0b;" id="statPlayed">0</div><div class="stat-lbl">Played Today</div></div>
+    </div>
+
+    <div class="grid2">
+
+      <!-- Queue -->
+      <div class="card">
+        <div class="card-title">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h8"/></svg>
+          Queue
+          <button class="btn btn-ghost btn-sm" style="margin-left:auto;" onclick="clearQueue()">Clear</button>
+        </div>
+
+        <!-- Add to queue -->
+        <div style="display:flex;gap:.5rem;margin-bottom:.875rem;">
+          <input type="text" id="searchInput" placeholder="Search or paste YouTube URL…" style="flex:1;" onkeydown="if(event.key==='Enter')addToQueue()"/>
+          <button class="btn btn-primary btn-sm" onclick="addToQueue()">Add</button>
+        </div>
+
+        <div id="queueList">
+          <div style="text-align:center;color:var(--text-muted);padding:2rem;font-size:.8rem;">Queue is empty — add songs above or use /play</div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="card">
+        <div class="card-title">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+          Music Settings
+          <span style="margin-left:auto;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);border:1px solid rgba(255,255,255,.1);border-radius:99px;padding:.15rem .55rem;">Coming soon</span>
+        </div>
+
+        <div class="field">
+          <label>Default Volume</label>
+          <input type="number" id="settingVolume" value="80" min="0" max="100" placeholder="80"/>
+        </div>
+
+        <div class="field">
+          <label>DJ Role (can control music)</label>
+          <select id="settingDjRole"><option value="">Anyone in VC</option></select>
+        </div>
+
+        <div class="field">
+          <label>Max Queue Length</label>
+          <input type="number" id="settingMaxQueue" value="50" min="1" max="500"/>
+        </div>
+
+        <div class="field">
+          <label>Max Song Duration (minutes, 0 = unlimited)</label>
+          <input type="number" id="settingMaxDuration" value="0" min="0" max="360"/>
+        </div>
+
+        <div class="sep"></div>
+
+        <div class="tog-row">
+          <div><div class="tog-label">Auto-disconnect when VC empty</div><div class="tog-desc">Leave voice when all listeners leave</div></div>
+          <label class="tog-wrap"><input type="checkbox" class="tog-cb" id="settingAutoLeave" checked><div class="tog-track"></div></label>
+        </div>
+        <div class="tog-row">
+          <div><div class="tog-label">Allow DJ-only commands</div><div class="tog-desc">Restrict skip/stop/queue-clear to DJ role</div></div>
+          <label class="tog-wrap"><input type="checkbox" class="tog-cb" id="settingDjOnly"><div class="tog-track"></div></label>
+        </div>
+        <div class="tog-row">
+          <div><div class="tog-label">Vote-skip</div><div class="tog-desc">Require 50% of listeners to vote to skip</div></div>
+          <label class="tog-wrap"><input type="checkbox" class="tog-cb" id="settingVoteSkip"><div class="tog-track"></div></label>
+        </div>
+
+        <div style="margin-top:1rem;">
+          <button class="btn btn-primary" onclick="saveSettings()" style="width:100%;justify-content:center;">Save Settings</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="/sidebar.js"></script>
+<script>
+const guildId = window.location.pathname.split('/')[2];
+const API = `/api/guild/${guildId}/music`;
+let state = null;
+
+function showToast(msg,type='success'){const t=document.getElementById('toast');t.className='';t.classList.add(type,'show');t.textContent=(type==='success'?'✅ ':'❌ ')+msg;setTimeout(()=>t.classList.remove('show'),3200);}
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Durations from the API are in milliseconds
+function formatDur(ms){const t=Math.floor((ms||0)/1000);const h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(s).padStart(2,'0');}
+
+async function post(path, body){
+  const r = await fetch(`${API}${path}`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body||{})});
+  const data = await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+const control = action => post('/control', {action});
+
+async function togglePlay(){
+  try { await control('pause'); refresh(); } catch(e){ showToast(e.message,'error'); }
+}
+
+async function sendCmd(cmd){
+  const labels = {skip:'Skipped', previous:'Restarted', shuffle:'Queue shuffled'};
+  try { await control(cmd); showToast(labels[cmd] || 'Done'); refresh(); } catch(e){ showToast(e.message,'error'); }
+}
+
+async function cycleRepeat(){
+  try {
+    await control('loop');
+    await refresh();
+    const names = {none:'Repeat off', track:'Repeating this song', queue:'Repeating the queue'};
+    showToast(names[state?.loop] || 'Repeat changed');
+  } catch(e){ showToast(e.message,'error'); }
+}
+
+let volTimer = null;
+function setVolume(v){
+  document.getElementById('volVal').textContent=v+'%';
+  clearTimeout(volTimer);
+  volTimer = setTimeout(() => post('/volume',{volume:parseInt(v)}).catch(e=>showToast(e.message,'error')), 250);
+}
+
+async function addToQueue(){
+  const input = document.getElementById('searchInput');
+  const query = input.value.trim();
+  if(!query){showToast('Enter a song name or URL','error');return;}
+  try {
+    const res = await post('/play',{query});
+    showToast(res.queued > 1 ? `Added ${res.queued} songs to the queue` : 'Added to queue!');
+    input.value='';
+    refresh();
+  } catch(e){ showToast(e.message,'error'); }
+}
+
+async function clearQueue(){
+  if(!confirm('Clear the queue?'))return;
+  try { await control('clearQueue'); showToast('Queue cleared'); refresh(); } catch(e){ showToast(e.message,'error'); }
+}
+
+function renderQueue(queue){
+  document.getElementById('statQueue').textContent=queue.length;
+  const container=document.getElementById('queueList');
+  if(!queue.length){container.innerHTML='<div style="text-align:center;color:var(--text-muted);padding:2rem;font-size:.8rem;">Queue is empty — add songs above or use /play</div>';return;}
+  container.innerHTML=queue.map((track,i)=>`
+    <div class="q-item">
+      <div class="q-num">${i+1}</div>
+      <div class="q-info">
+        <div class="q-track">${esc(track.title||'Unknown')}</div>
+        <div class="q-meta">${esc(track.author||'')}</div>
+      </div>
+      <div class="q-dur">${formatDur(track.duration)}</div>
+    </div>`).join('');
+}
+
+function renderNowPlaying(d){
+  const status=document.getElementById('npStatus');
+  const icon=document.getElementById('playIcon');
+  if(d.track){
+    status.className='np-status';
+    status.textContent=d.paused?'❚❚ Paused':'♫ Playing';
+    document.getElementById('npTitle').textContent=d.track.title||'Unknown';
+    document.getElementById('npArtist').textContent=d.track.author||'';
+    const pct=d.track.duration?Math.min(100,d.position/d.track.duration*100):0;
+    document.getElementById('npProgress').style.width=pct+'%';
+    document.getElementById('npCurrent').textContent=formatDur(d.position);
+    document.getElementById('npTotal').textContent=formatDur(d.track.duration);
+  } else {
+    status.className='np-status idle';
+    status.textContent='● Idle';
+    document.getElementById('npTitle').textContent='Nothing Playing';
+    document.getElementById('npArtist').textContent='Play a song using /play in a voice channel';
+    document.getElementById('npProgress').style.width='0%';
+    document.getElementById('npCurrent').textContent='0:00';
+    document.getElementById('npTotal').textContent='0:00';
+  }
+  const playing = d.track && !d.paused;
+  icon.innerHTML=playing?'<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>':'<path d="M8 5v14l11-7z"/>';
+  document.getElementById('repeatBtn').style.color = d.loop && d.loop!=='none' ? 'var(--razor)' : 'currentColor';
+  const slider=document.getElementById('volSlider');
+  if(document.activeElement!==slider && typeof d.volume==='number'){slider.value=Math.min(100,d.volume);document.getElementById('volVal').textContent=d.volume+'%';}
+}
+
+async function refresh(){
+  try {
+    const r = await fetch(API);
+    const d = await r.json();
+    if(!r.ok) return;
+    state = d;
+    renderNowPlaying(d);
+    renderQueue(d.queue||[]);
+  } catch {}
+}
+
+// Music settings below are not implemented in the bot yet — keep them read-only
+function saveSettings(){showToast('These music settings are coming soon','error');}
+document.querySelectorAll('[id^="setting"]').forEach(el=>{el.disabled=true;el.style.opacity='.5';});
+
+refresh();
+setInterval(refresh,5000);
+if(typeof loadSidebar==='function')loadSidebar();
+</script>
+
+</body>
+</html>

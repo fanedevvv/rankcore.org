@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verification System</title>
+
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=gg+sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/tailwind.css">
+<script>
+window.tailwind = window.tailwind || {};
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+        discord: ['"gg sans"', 'sans-serif']
+      },
+colors: {
+    razor: "#FF3333",         // main green highlight
+    discordBg: "#2a1f1f",     // dark green background instead of grey
+    discordDark: "#221818",   // darker green for panels
+    discordHover: "#302323"   // slightly lighter green for hover
+}
+
+    }
+  }
+}
+</script>
+
+<style>
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0b0b14; }
+::-webkit-scrollbar-thumb { background: #2d2d3d; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #6C53FF; }
+
+/* Toggle Switch */
+.toggle-checkbox:checked { transform: translateX(100%); }
+.toggle-checkbox:checked + .toggle-label { background-color: #6C53FF; }
+.toggle-label { width: 44px; height: 24px; border-radius: 9999px; background-color: #2b2b40; border: 1px solid rgba(255,255,255,.1); }
+.toggle-checkbox { left: 2px; top: 2px; transition: transform .25s ease; }
+
+/* Toast */
+#toast { position: fixed; top: 1rem; right: 1rem; padding: 1rem 1.5rem; border-radius: .75rem; transform: translateX(400px); transition: transform .3s ease; z-index: 50; color: white; }
+
+/* Discord preview styling */
+.font-discord { font-family: 'gg sans', sans-serif; }
+</style>
+
+<style>
+/* ═══════════════ Razor Custom Select ═══════════════ */
+.rzr-wrap{position:relative;width:100%;display:block}
+/* hide ::after chevrons on select-wrap parents */
+.rzr-wrap-parent.select-wrap::after,
+.rzr-wrap-parent::after{display:none!important;content:none!important}
+.rzr-trigger{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;padding:10px 14px;
+  border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);
+  background:#0d0d1c;color:#fff;
+  cursor:pointer;font-size:14px;font-family:inherit;
+  min-height:44px;width:100%;
+  transition:border-color .15s,box-shadow .15s;
+  user-select:none;box-sizing:border-box;
+}
+.rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
+.rzr-trigger.is-open{
+  border-color:rgba(255,51,51,.6);
+  box-shadow:0 0 0 3px rgba(255,51,51,.1);
+}
+.rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
+.rzr-label.is-ph{color:#6b7280}
+.rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+/* panel is appended to body — these rules still apply via the class */
+.rzr-panel{
+  position:fixed;z-index:999999;
+  background:rgba(11,11,20,.98);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  overflow:hidden;
+  animation:rzrIn .16s ease;
+}
+@keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
+.rzr-search-inp{
+  display:block;width:100%;
+  background:#06060f;border:1px solid rgba(255,255,255,.09);
+  border-radius:7px;padding:6px 11px;
+  color:#fff;font-size:13px;font-family:inherit;
+  outline:none;box-sizing:border-box;transition:border-color .15s;
+}
+.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-search-inp::placeholder{color:#374151}
+.rzr-list{max-height:220px;overflow-y:auto;padding:5px}
+.rzr-list::-webkit-scrollbar{width:4px}
+.rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:6px}
+.rzr-list::-webkit-scrollbar-thumb:hover{background:#FF3333}
+.rzr-item{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:6px;padding:8px 11px;border-radius:8px;
+  cursor:pointer;font-size:13px;color:#9ca3af;
+  transition:background .1s,color .1s;
+}
+.rzr-item:hover{background:rgba(255,255,255,.055);color:#fff}
+.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600}
+.rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item.is-sel .rzr-item-chk{opacity:1}
+.rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
+/* ═══════════════ End Razor Custom Select ═══════════════ */
+</style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body class="bg-[#0b0b14] text-white font-sans">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}
+    setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<div id="toast"><span id="toastMessage"></span></div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+
+  <main class="flex-1 flex justify-center p-8">
+    <div class="w-full max-w-3xl space-y-8">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-bold flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="display:inline-block;width:1em;height:1em;vertical-align:-0.125em;fill:currentColor;" aria-hidden="true"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.2 0z"/></svg> Verification System</h1>
+        <div class="flex gap-3">
+          <button onclick="saveConfig()" class="bg-razor hover:bg-razor/90 px-6 py-2 rounded-xl font-bold shadow-lg shadow-razor/20 transition-all">Save</button>
+          <button onclick="sendMessage()" class="bg-red-500 hover:bg-red-600 px-6 py-2 rounded-xl font-bold transition-colors">Send Message</button>
+        </div>
+      </div>
+
+      <!-- Config Card -->
+      <div class="bg-[#1a1a2e] rounded-2xl p-6 border border-white/5 space-y-4">
+
+        <div>
+          <label class="text-xs uppercase text-gray-400 font-bold mb-2 block">Channel</label>
+          <select id="channel" class="w-full bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-razor">
+            <option>Select a channel</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-xs uppercase text-gray-400 font-bold mb-2 block">Verified Role</label>
+          <select id="role" class="w-full bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-razor">
+            <option>Select a role</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-xs uppercase text-gray-400 font-bold mb-2 block">Unverified Role</label>
+          <select id="unverifiedRole" class="w-full bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-razor">
+            <option>Select a role</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-xs uppercase text-gray-400 font-bold mb-2 block">Message Content</label>
+          <textarea id="messageContent" class="w-full bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 text-sm text-white"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs uppercase text-gray-400 font-bold mb-2 block">Button Label</label>
+            <input type="text" id="buttonLabel" placeholder="Verify ✓" class="w-full bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 text-sm text-white">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live Preview -->
+<!-- Live Preview -->
+<div>
+  <h3 class="text-lg font-bold mb-2">Live Preview</h3>
+  <div class="bg-[#313338] rounded-xl overflow-hidden shadow-2xl border border-[#1e1f22] font-discord text-sm">
+    <div class="h-12 bg-[#2b2d31] border-b border-[#1f2023] flex items-center px-4 shadow-sm">
+      <div class="w-6 h-6 text-gray-400 mr-2">#</div>
+      <span id="previewChannelName" class="font-bold text-white text-sm">verification</span>
+    </div>
+
+    <div class="p-4">
+      <div class="flex gap-4">
+        <!-- Bot avatar -->
+        <div class="w-10 h-10 rounded-full bg-razor flex-shrink-0 overflow-hidden">
+          <img src="https://cdn.discordapp.com/embed/avatars/0.png" class="w-full h-full object-cover">
+        </div>
+
+        <!-- Message content -->
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-white font-medium hover:underline cursor-pointer">Roco</span>
+            <span class="bg-[#5865F2] text-[10px] text-white px-1.5 rounded-[3px] py-[1px] flex items-center gap-1 h-[15px] leading-none uppercase font-bold">
+              Bot
+              <svg class="w-3 h-3 inline" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M7.4 11.5L6 13l-4-4 4-4 1.4 1.5-2.6 2.5 2.6 2.5zM8.6 11.5l2.6-2.5-2.6-2.5L10 5l4 4-4 4-1.4-1.5z"/>
+              </svg>
+            </span>
+            <span class="text-xs text-gray-400 ml-1">Today at 4:20 PM</span>
+          </div>
+
+          <div id="previewMessage" class="text-gray-300 text-[15px] whitespace-pre-wrap leading-[1.375rem] mb-2">
+            Preview will appear here...
+          </div>
+
+          <button id="previewButton" class="bg-razor hover:bg-razor/90 px-3 py-1.5 rounded-md text-white font-medium transition-all">
+            Verify ✓
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="text-center text-xs text-gray-600 mt-2">Preview updates automatically as you type.</p>
+</div>
+
+
+<script src="/sidebar.js" nonce="<%= nonce %>"></script>
+
+<script nonce="<%= nonce %>">
+
+const guildId = location.pathname.split("/")[2];
+const els = {
+  channel: document.getElementById("channel"),
+  role: document.getElementById("role"),
+  unverifiedRole: document.getElementById("unverifiedRole"),
+  messageContent: document.getElementById("messageContent"),
+  buttonLabel: document.getElementById("buttonLabel"),
+  previewChannelName: document.getElementById("previewChannelName"),
+  previewMessage: document.getElementById("previewMessage"),
+  previewButton: document.getElementById("previewButton")
+};
+
+function toast(msg, error=false) {
+  const t = document.getElementById("toast");
+  document.getElementById("toastMessage").innerText = msg;
+  t.style.background = error ? "#e74c3c" : "#6C53FF";
+  t.style.transform = "translateX(0)";
+  setTimeout(() => t.style.transform = "translateX(400px)", 3000);
+}
+
+// Populate channels and roles
+async function loadChannels() {
+  const res = await fetch(`/api/guild/${guildId}/channels`);
+  const data = await res.json();
+  rzrPopulateChannels(els.channel, data, null, 'Select a channel');
+}
+async function loadRoles() {
+  const res = await fetch(`/api/guild/${guildId}/roles`);
+  const roles = await res.json();
+  [els.role, els.unverifiedRole].forEach(sel => {
+    sel.innerHTML = `<option value="">Select a role</option>`;
+    for (const r of roles) {
+      if(r.id===guildId) continue;
+      const opt = document.createElement("option");
+      opt.value = r.id; opt.textContent = r.name;
+      sel.appendChild(opt);
+    }
+  });
+}
+
+// Load config
+async function loadConfig() {
+  await loadChannels();
+  await loadRoles();
+  const res = await fetch(`/api/guild/${guildId}/verify`);
+  const d = await res.json();
+  els.channel.value = d.Channel || "";
+  els.role.value = d.Role || "";
+  els.unverifiedRole.value = d.unverifiedRole || "";
+  els.messageContent.value = d.MessageContent || "Click the button below to verify!";
+  els.buttonLabel.value = d.ButtonLabel || "Verify ✓";
+  updatePreview();
+}
+
+// Update Preview
+function updatePreview() {
+  els.previewChannelName.textContent = els.channel.selectedOptions[0]?.text.replace("#","") || "verification";
+  els.previewMessage.textContent = els.messageContent.value || "Click the button below to verify!";
+  els.previewButton.textContent = els.buttonLabel.value || "Verify ✓";
+}
+
+// Save
+async function saveConfig() {
+  const res = await fetch(`/api/guild/${guildId}/verify`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      Channel: els.channel.value,
+      Role: els.role.value,
+      unverifiedRole: els.unverifiedRole.value,
+      MessageContent: els.messageContent.value,
+      ButtonLabel: els.buttonLabel.value
+    })
+  });
+  toast(res.ok ? "Saved successfully" : "Failed to save", !res.ok);
+}
+
+// Send message
+async function sendMessage() {
+  const res = await fetch(`/api/guild/${guildId}/verify/send`, { method: "POST" });
+  if(res.ok) toast("Verification message sent");
+  else res.json().then(d => toast(d.error || "Failed to send", true));
+}
+
+// Add listeners
+[els.channel, els.messageContent, els.buttonLabel].forEach(el => el.addEventListener("input", updatePreview));
+
+loadConfig();
+</script>
+<!-- Razor Custom Select JS -->
+<script>
+(function(){
+'use strict';
+var CHEV='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+var wrapped=new WeakSet();
+var openWrap=null;
+
+/* strip any html tags from option text just in case */
+function cleanText(t){
+  t=String(t||'');
+  var d=document.createElement('div');
+  d.innerHTML=t;
+  return (d.textContent||d.innerText||'').trim();
+}
+
+/* get clean option text */
+function optText(opt){
+  return cleanText(opt.text||opt.textContent||opt.label||'');
+}
+
+/* position panel relative to trigger using fixed coords */
+function positionPanel(wrap){
+  var r=wrap._t.getBoundingClientRect();
+  var p=wrap._p;
+  var panelH=p.offsetHeight||240;
+  var spaceBelow=window.innerHeight-r.bottom;
+  var spaceAbove=r.top;
+  var width=Math.max(r.width,160);
+  p.style.width=width+'px';
+  p.style.left=r.left+'px';
+  p.style.right='auto';
+  if(spaceBelow>=panelH||spaceBelow>=spaceAbove){
+    p.style.top=(r.bottom+4)+'px';
+    p.style.bottom='auto';
+  } else {
+    p.style.bottom=(window.innerHeight-r.top+4)+'px';
+    p.style.top='auto';
+  }
+}
+
+/* close on outside click */
+document.addEventListener('mousedown',function(e){
+  if(!openWrap)return;
+  if(!openWrap._p.contains(e.target)&&!openWrap._t.contains(e.target))close_(openWrap);
+},true);
+
+/* close on scroll anywhere (reposition) */
+window.addEventListener('scroll',function(){
+  if(openWrap)positionPanel(openWrap);
+},true);
+window.addEventListener('resize',function(){
+  if(openWrap)positionPanel(openWrap);
+});
+
+function open_(wrap){
+  if(openWrap&&openWrap!==wrap)close_(openWrap);
+  openWrap=wrap;
+  buildList(wrap,'');
+  wrap._si.value='';
+  /* always show search */
+  wrap._sw.style.display='';
+  document.body.appendChild(wrap._p);
+  wrap._p.style.display='block';
+  wrap._t.classList.add('is-open');
+  wrap._t.setAttribute('aria-expanded','true');
+  /* position after display:block so offsetHeight is known */
+  requestAnimationFrame(function(){positionPanel(wrap);});
+  setTimeout(function(){if(openWrap===wrap)wrap._si.focus();},30);
+}
+
+function close_(wrap){
+  if(!wrap)return;
+  if(wrap._p.parentNode)wrap._p.parentNode.removeChild(wrap._p);
+  wrap._p.style.display='none';
+  wrap._t.classList.remove('is-open');
+  wrap._t.setAttribute('aria-expanded','false');
+  if(openWrap===wrap)openWrap=null;
+}
+
+function buildList(wrap,q){
+  var sel=wrap._s,list=wrap._l,qlo=(q||'').toLowerCase();
+  var opts=Array.from(sel.options).filter(function(o){
+    var t=optText(o);
+    return t&&(!qlo||t.toLowerCase().indexOf(qlo)>-1);
+  });
+  if(!opts.length){list.innerHTML='<div class="rzr-empty">No options found</div>';return;}
+  list.innerHTML='';
+  opts.forEach(function(opt){
+    var it=document.createElement('div');
+    it.className='rzr-item'+(opt.value===sel.value?' is-sel':'');
+    it.dataset.v=opt.value;
+    var tx=document.createElement('span');tx.className='rzr-item-text';tx.textContent=optText(opt);
+    var ck=document.createElement('span');ck.className='rzr-item-chk';ck.textContent='✓';
+    it.appendChild(tx);it.appendChild(ck);
+    it.addEventListener('mousedown',function(e){
+      e.preventDefault();e.stopPropagation();
+      sel.value=opt.value;
+      updateLabel(wrap);
+      close_(wrap);
+      sel.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+    list.appendChild(it);
+  });
+}
+
+function updateLabel(wrap){
+  var sel=wrap._s,lbl=wrap._lb;
+  var idx=sel.selectedIndex,opt=idx>=0?sel.options[idx]:null;
+  var text=opt?optText(opt):'';
+  if(text){
+    lbl.textContent=text;
+    /* treat index-0 empty-value options as placeholders */
+    lbl.classList.toggle('is-ph',idx===0&&(!opt.value||opt.value===''));
+  } else {
+    lbl.textContent='Select\u2026';
+    lbl.classList.add('is-ph');
+  }
+  wrap._last=sel.value;
+}
+
+function wrapSelect(sel){
+  if(wrapped.has(sel))return;
+  if(sel.hasAttribute('data-rzr-skip'))return;
+  if(sel.size&&sel.size>1)return;
+  wrapped.add(sel);
+
+  /* mark parent to suppress ::after chevrons */
+  if(sel.parentElement)sel.parentElement.classList.add('rzr-wrap-parent');
+
+  /* hide native */
+  sel.style.cssText='position:absolute!important;opacity:0!important;pointer-events:none!important;width:0!important;height:0!important;overflow:hidden!important;top:0!important;left:0!important;z-index:-1!important;border:none!important;padding:0!important;margin:0!important;';
+
+  /* hide sibling fake-chevron divs */
+  var sib=sel.nextElementSibling;
+  if(sib&&sib.classList&&(sib.classList.contains('pointer-events-none')||sib.classList.contains('select-arrow')))sib.style.display='none';
+
+  /* trigger */
+  var t=document.createElement('div');
+  t.className='rzr-trigger';
+  t.setAttribute('tabindex','0');
+  t.setAttribute('role','combobox');
+  t.setAttribute('aria-haspopup','listbox');
+  t.setAttribute('aria-expanded','false');
+  var lb=document.createElement('span');lb.className='rzr-label is-ph';lb.textContent='Select\u2026';
+  var cv=document.createElement('span');cv.className='rzr-chev';cv.innerHTML=CHEV;
+  t.appendChild(lb);t.appendChild(cv);
+
+  /* panel — will be moved to body on open */
+  var p=document.createElement('div');p.className='rzr-panel';p.style.display='none';
+  var sw=document.createElement('div');sw.className='rzr-panel-search';
+  var si=document.createElement('input');si.className='rzr-search-inp';si.type='text';si.placeholder='Search\u2026';si.autocomplete='off';si.spellcheck=false;
+  sw.appendChild(si);
+  var l=document.createElement('div');l.className='rzr-list';l.setAttribute('role','listbox');
+  p.appendChild(sw);p.appendChild(l);
+
+  /* outer wrap */
+  var w=document.createElement('div');w.className='rzr-wrap';
+  w._s=sel;w._t=t;w._p=p;w._sw=sw;w._si=si;w._lb=lb;w._l=l;w._last=sel.value;
+
+  w.appendChild(t);
+  /* panel stays in wrap until open — moved to body on open() */
+  w.appendChild(p);
+  sel.parentNode.insertBefore(w,sel);
+  w.appendChild(sel);
+
+  /* search */
+  si.addEventListener('input',function(){buildList(w,si.value);});
+  si.addEventListener('keydown',function(e){if(e.key==='Escape'){close_(w);t.focus();}});
+
+  /* trigger events */
+  t.addEventListener('click',function(e){
+    e.stopPropagation();
+    openWrap===w?close_(w):open_(w);
+  });
+  t.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();openWrap===w?close_(w):open_(w);}
+    if(e.key==='Escape')close_(w);
+  });
+
+  /* watch option changes (async population: channels, roles) */
+  var mo=new MutationObserver(function(){
+    updateLabel(w);
+    if(openWrap===w){buildList(w,si.value);requestAnimationFrame(function(){positionPanel(w);});}
+  });
+  mo.observe(sel,{childList:true,subtree:true,characterData:true,attributes:true});
+
+  /* poll for programmatic .value changes */
+  var pid=setInterval(function(){
+    if(!document.contains(sel)){clearInterval(pid);mo.disconnect();if(openWrap===w)close_(w);return;}
+    if(sel.value!==w._last)updateLabel(w);
+  },150);
+
+  updateLabel(w);
+}
+
+function initAll(){document.querySelectorAll('select').forEach(wrapSelect);}
+
+new MutationObserver(function(ms){
+  ms.forEach(function(m){
+    m.addedNodes.forEach(function(n){
+      if(n.nodeType!==1)return;
+      if(n.tagName==='SELECT')wrapSelect(n);
+      else if(n.querySelectorAll)n.querySelectorAll('select').forEach(wrapSelect);
+    });
+  });
+}).observe(document.body,{childList:true,subtree:true});
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initAll);
+else initAll();
+})();
+</script>
+<!-- End Razor Custom Select JS -->
+
+
+</body>
+</html>

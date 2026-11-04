@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AFK System</title>
+  
+  <link rel="icon" type="image/png" href="/logo.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/tailwind.css">
+  <script>
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+    const tailwind = window.tailwind || {}; tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { 
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'] 
+          },
+colors: { 
+    razor: "#FF3333",       // main green highlight
+    razorDark: "#CC2222"    // darker green accent
+}
+
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #6C53FF; }
+  </style>
+
+  <link rel="stylesheet" href="/loading.css">
+  <style>
+    @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
+    @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
+  </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+</head>
+
+<body class="bg-[#0b0b14] text-white">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
+</div>
+<script>
+  (function(){
+    function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);} setTimeout(hide, 1500);
+  })();
+</script>
+<script src="/loading.js" defer></script>
+
+
+<div id="toast" class="fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-x-[400px] transition-transform duration-300 z-50">
+  <span id="toastMessage"></span>
+</div>
+
+<div class="flex min-h-screen">
+  <aside id="razor-sidebar"></aside>
+
+  <main class="flex-1 p-8">
+    
+    <div class="mb-8 flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight mb-1 flex items-center gap-3">
+          <svg class="w-8 h-8 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          AFK System
+        </h1>
+        <p class="text-gray-400 text-sm ml-11">Allow users to set an AFK status in your server.</p>
+      </div>
+      
+      <div id="statusBadge" class="flex items-center gap-2 px-3 py-1 bg-gray-500/10 border border-gray-500/20 rounded-full transition-colors">
+        <div id="statusDot" class="w-2 h-2 bg-gray-500 rounded-full"></div>
+        <span id="statusText" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Inactive</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <div class="lg:col-span-5 space-y-6">
+        <div class="bg-[#1a1a2e] rounded-2xl p-6 border border-white/5 shadow-xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 p-6 opacity-5">
+            <svg class="w-32 h-32 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          </div>
+
+          <h2 class="text-lg font-bold text-white mb-6 relative z-10">Enable AFK</h2>
+          
+          <div class="space-y-4 relative z-10">
+            <div class="flex items-center justify-between p-4 bg-[#14142b] rounded-xl border border-white/5">
+              <div>
+                <div class="font-semibold text-white">AFK System</div>
+                <div class="text-sm text-gray-400 mt-1">Allow users to set AFK status</div>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="afkEnabled" class="sr-only peer" onchange="toggleAfk()">
+                <div class="w-11 h-6 bg-[#1e1e32] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-razor"></div>
+              </label>
+            </div>
+
+            <button onclick="saveSettings()" id="saveBtn" class="w-full group relative flex items-center justify-center gap-2 bg-razor hover:bg-razor/90 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-razor/20 active:scale-95">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              Save Settings
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-[#1a1a2e] rounded-2xl border border-white/5 overflow-hidden">
+            <div class="p-4 border-b border-white/5 bg-red-500/5">
+                <h3 class="text-sm font-bold text-red-400 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    Danger Zone
+                </h3>
+            </div>
+            <div class="p-5">
+                <p class="text-xs text-gray-400 mb-4">Disabling the system will not remove existing AFK statuses, but users won't be able to set new ones.</p>
+                <button onclick="disableSystem()" class="w-full py-2 bg-transparent hover:bg-red-500/10 text-red-400 border border-red-500/30 rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2">
+                    Disable System
+                </button>
+            </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 space-y-6">
+        <div class="bg-[#1a1a2e] rounded-2xl p-6 border border-white/5 shadow-xl">
+          <h2 class="text-lg font-bold text-white mb-4">How it works</h2>
+          <div class="space-y-4">
+            <div class="flex items-start gap-3 p-3 bg-[#14142b] rounded-lg">
+              <div class="w-8 h-8 rounded-lg bg-razor/10 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <div>
+                <div class="font-semibold text-white text-sm">Set AFK Status</div>
+                <div class="text-gray-400 text-xs mt-1">Users can use <code class="bg-[#0d0d1c] px-1.5 py-0.5 rounded text-gray-300">/afk set [reason]</code> to go AFK</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 p-3 bg-[#14142b] rounded-lg">
+              <div class="w-8 h-8 rounded-lg bg-razor/10 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              </div>
+              <div>
+                <div class="font-semibold text-white text-sm">Nickname Change</div>
+                <div class="text-gray-400 text-xs mt-1">Bot automatically changes nickname to <code class="bg-[#0d0d1c] px-1.5 py-0.5 rounded text-gray-300">[AFK] Username</code></div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 p-3 bg-[#14142b] rounded-lg">
+              <div class="w-8 h-8 rounded-lg bg-razor/10 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+              </div>
+              <div>
+                <div class="font-semibold text-white text-sm">Auto Remove</div>
+                <div class="text-gray-400 text-xs mt-1">AFK is automatically removed when user sends a message</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 p-3 bg-[#14142b] rounded-lg">
+              <div class="w-8 h-8 rounded-lg bg-razor/10 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
+              </div>
+              <div>
+                <div class="font-semibold text-white text-sm">Mention Notification</div>
+                <div class="text-gray-400 text-xs mt-1">When mentioning an AFK user, a notice shows their reason and duration</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 p-3 bg-[#14142b] rounded-lg">
+              <div class="w-8 h-8 rounded-lg bg-razor/10 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <div>
+                <div class="font-semibold text-white text-sm">Global AFK</div>
+                <div class="text-gray-400 text-xs mt-1">Users can use <code class="bg-[#0d0d1c] px-1.5 py-0.5 rounded text-gray-300">--global</code> flag to set AFK in all servers</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-[#1a1a2e] rounded-2xl p-6 border border-white/5 shadow-xl">
+          <h2 class="text-lg font-bold text-white mb-4">Preview</h2>
+          <div class="bg-[#14142b] rounded-xl p-4 border border-white/5">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-full bg-razor/20 flex items-center justify-center">
+                <svg class="w-5 h-5 text-razor" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              </div>
+              <div>
+                <div class="text-white font-semibold text-sm">[AFK] Username</div>
+                <div class="text-gray-500 text-xs">Now</div>
+              </div>
+            </div>
+            <div class="text-gray-400 text-sm">
+              <span class="text-orange-400">Reason</span> — Be right back
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+const guildId = window.location.pathname.split('/')[2];
+let currentEnabled = false;
+
+async function loadSettings() {
+  try {
+    const res = await fetch(`/api/guild/${guildId}/afk`);
+    const data = await res.json();
+    currentEnabled = data.afkEnabled || false;
+    document.getElementById('afkEnabled').checked = currentEnabled;
+    updateStatus(currentEnabled);
+  } catch (err) {
+    console.error('Failed to load settings:', err);
+    showToast('Failed to load settings', true);
+  }
+}
+
+function updateStatus(enabled) {
+  const dot = document.getElementById('statusDot');
+  const text = document.getElementById('statusText');
+  const badge = document.getElementById('statusBadge');
+  
+  if (enabled) {
+    dot.className = 'w-2 h-2 bg-green-500 rounded-full';
+    text.textContent = 'Active';
+    text.className = 'text-xs font-bold text-green-500 uppercase tracking-wider';
+    badge.className = 'flex items-center gap-2 px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full transition-colors';
+  } else {
+    dot.className = 'w-2 h-2 bg-gray-500 rounded-full';
+    text.textContent = 'Inactive';
+    text.className = 'text-xs font-bold text-gray-500 uppercase tracking-wider';
+    badge.className = 'flex items-center gap-2 px-3 py-1 bg-gray-500/10 border border-gray-500/20 rounded-full transition-colors';
+  }
+}
+
+function toggleAfk() {
+  const enabled = document.getElementById('afkEnabled').checked;
+  updateStatus(enabled);
+}
+
+async function saveSettings() {
+  const btn = document.getElementById('saveBtn');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Saving...';
+  btn.disabled = true;
+  btn.classList.add('opacity-50');
+
+  try {
+    const res = await fetch(`/api/guild/${guildId}/afk`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        afkEnabled: document.getElementById('afkEnabled').checked
+      })
+    });
+    
+    if (res.ok) {
+      currentEnabled = document.getElementById('afkEnabled').checked;
+      showToast('Settings saved successfully!');
+      updateStatus(currentEnabled);
+    } else {
+      showToast('Failed to save settings', true);
+    }
+  } catch (err) {
+    console.error('Save error:', err);
+    showToast('Failed to save settings', true);
+  } finally {
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+    btn.classList.remove('opacity-50');
+  }
+}
+
+async function disableSystem() {
+  if (!confirm('Are you sure you want to disable the AFK system?')) return;
+  
+  document.getElementById('afkEnabled').checked = false;
+  await saveSettings();
+}
+
+function showToast(msg, isError = false) {
+  const toast = document.getElementById('toast');
+  const toastMsg = document.getElementById('toastMessage');
+  toastMsg.textContent = msg;
+  toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 z-50 ${isError ? 'bg-red-500/20 border border-red-500/50 text-red-400' : 'bg-green-500/20 border border-green-500/50 text-green-400'}`;
+  toast.style.transform = 'translateX(0)';
+  setTimeout(() => { toast.style.transform = 'translateX(400px)'; }, 3000);
+}
+
+loadSettings();
+</script>
+<script src="/sidebar.js"></script>
+</body>
+</html>
