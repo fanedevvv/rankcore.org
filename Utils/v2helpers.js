@@ -55,7 +55,7 @@ function helpRow(clientId, opts = {}) {
     new ButtonBuilder()
       .setLabel("Support")
       .setStyle(ButtonStyle.Link)
-      .setEmoji(parseEmoji("<:n_utils:1555544669545431062>"))
+      .setEmoji(parseEmoji("<:n_utils:1567796996830658573>"))
       .setURL(SUPPORT_URL),
   );
   if (opts.invite !== false) {
@@ -63,7 +63,7 @@ function helpRow(clientId, opts = {}) {
       new ButtonBuilder()
         .setLabel("Invite RankCore")
         .setStyle(ButtonStyle.Link)
-        .setEmoji(parseEmoji("<:n_add:1555544335036973106>"))
+        .setEmoji(parseEmoji("<:n_add:1567796983408754731>"))
         .setURL(INVITE_URL(clientId)),
     );
   }
@@ -144,7 +144,7 @@ function configContainer(title, statusText, configText, actionRows = [], opts = 
   const container = new ContainerBuilder().setAccentColor(accent);
 
   container.addTextDisplayComponents(
-    new TextDisplayBuilder().setContent(`## <:n_utils:1555544669545431062>  ${title}`)
+    new TextDisplayBuilder().setContent(`## <:n_utils:1567796996830658573>  ${title}`)
   );
   container.addSeparatorComponents(divider(true));
 
@@ -176,7 +176,7 @@ function configContainer(title, statusText, configText, actionRows = [], opts = 
 
 /**
  * Build a moderation action container (ban, kick, warn, etc.)
- * @param {string} icon       - Emoji icon e.g. "<:ban:1555544356352430202>"
+ * @param {string} icon       - Emoji icon e.g. "<:ban:1567796952538554458>"
  * @param {string} action     - Action name e.g. "Ban Executed"
  * @param {string} target     - Target display string
  * @param {string} reason     - Reason string
@@ -264,9 +264,9 @@ const v2Reply = {
 
 function statusLine(enabled, label = "System") {
   if (enabled) {
-    return `<:LEgreen:1555544256356159600> **${label}** — \`ENABLED\``;
+    return `<:LEgreen:1567796933307666515> **${label}** — \`ENABLED\``;
   }
-  return `<:LEred:1555544262123323422> **${label}** — \`DISABLED\``;
+  return `<:LEred:1567796934545121280> **${label}** — \`DISABLED\``;
 }
 
 function configLine(label, value) {

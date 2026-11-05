@@ -48,7 +48,7 @@ module.exports = {
     function buildPicker() {
       const container = new ContainerBuilder().setAccentColor(0xE91E63)
         .addTextDisplayComponents(
-          new TextDisplayBuilder().setContent(`## <:minigames:1555544500179439707> Truth or Dare`),
+          new TextDisplayBuilder().setContent(`## <:minigames:1567796978929238076> Truth or Dare`),
           new TextDisplayBuilder().setContent(
             (targetLine ? `${targetLine}\n\n` : "") +
             `Pick your poison!`
@@ -113,7 +113,7 @@ module.exports = {
       if (!collected.size) {
         const expired = new ContainerBuilder().setAccentColor(0x95A5A6)
           .addTextDisplayComponents(
-            new TextDisplayBuilder().setContent(`## <:minigames:1555544500179439707> Truth or Dare\n*Nobody picked in time! Too scared? 😏*`)
+            new TextDisplayBuilder().setContent(`## <:minigames:1567796978929238076> Truth or Dare\n*Nobody picked in time! Too scared? 😏*`)
           );
         await interaction.editReply({ components: [expired] });
       }

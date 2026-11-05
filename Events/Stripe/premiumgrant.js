@@ -5,7 +5,7 @@ const { PRICE_PLANS } = require('../../dashboard/webhooks/Stripe');
 const { getTier } = require('../../Utils/premiumTiers');
 
 function resolvePlan(priceId) {
-    return PRICE_PLANS[priceId] ?? { name: 'RankCore Basic', tier: 'basic', durationDays: 30, emoji: '<:boost:1555544362455146576>' };
+    return PRICE_PLANS[priceId] ?? { name: 'RankCore Basic', tier: 'basic', durationDays: 30, emoji: '<:boost:1567796953599836280>' };
 }
 
 async function grantUserPremium({ discordUserId, priceId, subscriptionId }) {
@@ -110,7 +110,7 @@ module.exports = {
                 }
 
                 const tierCfg    = getTier(plan.tier);
-                const actionVerb = type === 'renew' ? '<:n_add:1555544335036973106> Renewed' : type === 'upgrade' ? '<:arrow:1555544351118196810> Upgraded' : '<:boost:1555544362455146576> Activated';
+                const actionVerb = type === 'renew' ? '<:n_add:1567796983408754731> Renewed' : type === 'upgrade' ? '<:arrow:1567796951527850055> Upgraded' : '<:boost:1567796953599836280> Activated';
                 const color      = TIER_COLORS[plan.tier] ?? 0xf5a623;
 
                 const embed = new EmbedBuilder()
@@ -124,8 +124,8 @@ module.exports = {
                             : `Welcome to **${plan.name}**! ${plan.emoji} Your perks are now active.`
                     )
                     .addFields(
-                        { name: '<:files:1555544445565407352> Plan',    value: `${plan.emoji} ${plan.name} (${plan.label ?? ''})`, inline: true },
-                        { name: '<:calendar:1555544372953616426> Expires', value: `<t:${Math.floor(expiresAt / 1000)}:D>`,            inline: true },
+                        { name: '<:files:1567796970964394044> Plan',    value: `${plan.emoji} ${plan.name} (${plan.label ?? ''})`, inline: true },
+                        { name: '<:calendar:1567796954640158770> Expires', value: `<t:${Math.floor(expiresAt / 1000)}:D>`,            inline: true },
                         ...(discordGuildId
                             ? [{ name: '🏰 Server Premium', value: `Your server has also been upgraded to **${plan.name}**`, inline: false }]
                             : []),
@@ -151,7 +151,7 @@ module.exports = {
                 }
 
                 const embed = new EmbedBuilder()
-                    .setTitle('<:crossy:1555544390221562048> RankCore Premium Expired')
+                    .setTitle('<:crossy:1567796959648030831> RankCore Premium Expired')
                     .setColor(0xe74c3c)
                     .setDescription(
                         'Your **RankCore Premium** subscription has ended and your perks have been removed.\n\n' +
@@ -171,9 +171,9 @@ module.exports = {
 
 function getPerksList(tier) {
     const perks = {
-        basic: '<a:tickyy:1555544712687915008> Anti-Nuke & Anti-Raid\n<a:tickyy:1555544712687915008> Advanced Automod\n<a:tickyy:1555544712687915008> 24/7 Music\n<a:tickyy:1555544712687915008> 15 Autoresponders\n<a:tickyy:1555544712687915008> YouTube & Twitch Notifications (×3)\n<a:tickyy:1555544712687915008> Welcome Card Images',
-        pro:   '<a:tickyy:1555544712687915008> Everything in Basic\n<a:tickyy:1555544712687915008> Music Filters\n<a:tickyy:1555544712687915008> AI Chatbot\n<a:tickyy:1555544712687915008> Image Generation\n<a:tickyy:1555544712687915008> VirusTotal Scanner\n<a:tickyy:1555544712687915008> Mass Ban\n<a:tickyy:1555544712687915008> 50 Custom Commands\n<a:tickyy:1555544712687915008> YouTube & Twitch Notifs (×10)',
-        elite: '<a:tickyy:1555544712687915008> Everything in Pro\n<a:tickyy:1555544712687915008> **Custom Branding** (your bot\'s name, avatar & colours)\n<a:tickyy:1555544712687915008> Unlimited Commands & Autoresponders\n<a:tickyy:1555544712687915008> Unlimited Backups & Playlists\n<a:tickyy:1555544712687915008> Priority Support',
+        basic: '<a:tickyy:1567797045253644368> Anti-Nuke & Anti-Raid\n<a:tickyy:1567797045253644368> Advanced Automod\n<a:tickyy:1567797045253644368> 24/7 Music\n<a:tickyy:1567797045253644368> 15 Autoresponders\n<a:tickyy:1567797045253644368> YouTube & Twitch Notifications (×3)\n<a:tickyy:1567797045253644368> Welcome Card Images',
+        pro:   '<a:tickyy:1567797045253644368> Everything in Basic\n<a:tickyy:1567797045253644368> Music Filters\n<a:tickyy:1567797045253644368> AI Chatbot\n<a:tickyy:1567797045253644368> Image Generation\n<a:tickyy:1567797045253644368> VirusTotal Scanner\n<a:tickyy:1567797045253644368> Mass Ban\n<a:tickyy:1567797045253644368> 50 Custom Commands\n<a:tickyy:1567797045253644368> YouTube & Twitch Notifs (×10)',
+        elite: '<a:tickyy:1567797045253644368> Everything in Pro\n<a:tickyy:1567797045253644368> **Custom Branding** (your bot\'s name, avatar & colours)\n<a:tickyy:1567797045253644368> Unlimited Commands & Autoresponders\n<a:tickyy:1567797045253644368> Unlimited Backups & Playlists\n<a:tickyy:1567797045253644368> Priority Support',
     };
     return perks[tier] ?? 'Premium features';
 }

@@ -15,13 +15,13 @@ const COOLDOWN_SECONDS = 15;
 const cooldowns = new Map();
 
 const securityTips = [
-    "<:restrict:1555544549105999962> Limit roles with 'Administrator' or 'Manage Server' to trusted individuals.",
-    "<:restrict:1555544549105999962> NEVER grant 'Manage Roles' to unvetted users or public bots.",
-    "<:restrict:1555544549105999962> Ensure your bot's role is lower than the roles it manages.",
-    "<:error:1555544434601369620> Use 'None' overwrites carefully; they revert to parent permissions.",
-    "<:1430986244921495654:1555544239792980044> Enable 2FA for all moderator/admin accounts.",
-    "<:1430986225493479485:1555544207652032633> Be cautious with invite links from unverified users.",
-    "<:n_utils:1555544669545431062> Apply permissions to categories first, then use 'None' on channels to inherit."
+    "<:restrict:1567797003638022166> Limit roles with 'Administrator' or 'Manage Server' to trusted individuals.",
+    "<:restrict:1567797003638022166> NEVER grant 'Manage Roles' to unvetted users or public bots.",
+    "<:restrict:1567797003638022166> Ensure your bot's role is lower than the roles it manages.",
+    "<:error:1567796968758050868> Use 'None' overwrites carefully; they revert to parent permissions.",
+    "<:1430986244921495654:1567796929587576852> Enable 2FA for all moderator/admin accounts.",
+    "<:1430986225493479485:1567796921681055824> Be cautious with invite links from unverified users.",
+    "<:n_utils:1567796996830658573> Apply permissions to categories first, then use 'None' on channels to inherit."
 ];
 
 module.exports = {
@@ -65,14 +65,14 @@ module.exports = {
 
         const securityTip = securityTips[Math.floor(Math.random() * securityTips.length)];
         const confirmEmbed = new EmbedBuilder()
-            .setTitle(`<:files:1555544445565407352> Duplicate Category: ${category.name}`)
+            .setTitle(`<:files:1567796970964394044> Duplicate Category: ${category.name}`)
             .setDescription(`Do you want to duplicate this category's structure and permissions? **No child channels will be duplicated.**`)
             .setFooter({ text: securityTip })
             .setColor("Blue");
 
         const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId("confirm_dupe").setLabel("Confirm").setEmoji(parseEmoji('<a:tickyy:1555544712687915008>')).setStyle(ButtonStyle.Success),
-            new ButtonBuilder().setCustomId("cancel_dupe").setLabel("Cancel").setEmoji(parseEmoji('<:restrict:1555544549105999962>')).setStyle(ButtonStyle.Danger)
+            new ButtonBuilder().setCustomId("confirm_dupe").setLabel("Confirm").setEmoji(parseEmoji('<a:tickyy:1567797045253644368>')).setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setCustomId("cancel_dupe").setLabel("Cancel").setEmoji(parseEmoji('<:restrict:1567797003638022166>')).setStyle(ButtonStyle.Danger)
         );
 
         await interaction.reply({ embeds: [confirmEmbed], components: [row], ephemeral: true });
@@ -132,13 +132,13 @@ module.exports = {
             if (reason === "success") {
                 // If success, attempt to get the newly created channel object (requires fetching it or making sure it was passed via collector state, 
                 // but since it's defined inside 'collect' scope, we'll simplify the message here)
-                await interaction.editReply({ content: `<a:tickyy:1555544712687915008> Category duplicated successfully! A new category named **${category.name} - copy** was created.`, embeds: [], components: [] }).catch(console.error);
+                await interaction.editReply({ content: `<a:tickyy:1567797045253644368> Category duplicated successfully! A new category named **${category.name} - copy** was created.`, embeds: [], components: [] }).catch(console.error);
             } else if (reason === "canceled") {
-                await interaction.editReply({ content: `<:restrict:1555544549105999962> Category duplication canceled.`, embeds: [], components: [] }).catch(console.error);
+                await interaction.editReply({ content: `<:restrict:1567797003638022166> Category duplication canceled.`, embeds: [], components: [] }).catch(console.error);
             } else if (reason === "error") {
-                await interaction.editReply({ content: `<:crossy:1555544390221562048> An unexpected error occurred while duplicating the category.`, embeds: [], components: [] }).catch(console.error);
+                await interaction.editReply({ content: `<:crossy:1567796959648030831> An unexpected error occurred while duplicating the category.`, embeds: [], components: [] }).catch(console.error);
             } else {
-                 await interaction.editReply({ content: `<:crossy:1555544390221562048> Failed to duplicate category. Confirmation timed out.`, embeds: [], components: [] }).catch(console.error);
+                 await interaction.editReply({ content: `<:crossy:1567796959648030831> Failed to duplicate category. Confirmation timed out.`, embeds: [], components: [] }).catch(console.error);
             }
         });
     }

@@ -9,7 +9,7 @@ module.exports = {
 
     try {
       const embed = new EmbedBuilder()
-        .setTitle("<:minigames:1555544500179439707> | Your dice have been rolled...")
+        .setTitle("<:minigames:1567796978929238076> | Your dice have been rolled...")
         .setColor(color)
         .setDescription(`Your number is **${roll}**!`);
 
@@ -17,7 +17,7 @@ module.exports = {
     } catch (err) {
       console.log(err);
       return interaction.reply({
-        embeds: [new EmbedBuilder().setColor("Red").setDescription("<:ban:1555544356352430202> | Something went wrong...")],
+        embeds: [new EmbedBuilder().setColor("Red").setDescription("<:ban:1567796952538554458> | Something went wrong...")],
         flags: MessageFlags.Ephemeral,
       });
     }

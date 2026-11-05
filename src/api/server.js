@@ -619,7 +619,7 @@ module.exports = (client) => {
 
         try {
             const user = await client.users.fetch(process.env.OWNER_ID);
-            await user.send(`<:error:1555544434601369620> Bot \`${botId}\` was detected as malicious and blocked.`);
+            await user.send(`<:error:1567796968758050868> Bot \`${botId}\` was detected as malicious and blocked.`);
             res.json({ success: true, message: 'Notification sent.' });
         } catch (err) {
             console.error('[/api/notify-bot-blocked]', err);

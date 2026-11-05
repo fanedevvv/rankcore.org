@@ -38,7 +38,7 @@ module.exports = {
             !interaction.member.permissions.has(PermissionFlagsBits.ManageMessages)
         ) {
             return interaction.reply({
-                content: `${client.emoji?.error ?? '<:crossy:1555544390221562048>'} | You need **Manage Messages** to cat-lock other users.`,
+                content: `${client.emoji?.error ?? '<:crossy:1567796959648030831>'} | You need **Manage Messages** to cat-lock other users.`,
                 flags: MessageFlags.Ephemeral,
             });
         }
@@ -49,7 +49,7 @@ module.exports = {
                 const existing = await catSchema.findOne({ Guild: guild.id, User: targetUser.id }).lean();
                 if (existing) {
                     return interaction.reply({
-                        content: `${client.emoji?.error ?? '<:crossy:1555544390221562048>'} | ${targetUser.username} is already a cat! 🐱`,
+                        content: `${client.emoji?.error ?? '<:crossy:1567796959648030831>'} | ${targetUser.username} is already a cat! 🐱`,
                         flags: MessageFlags.Ephemeral,
                     });
                 }
@@ -58,7 +58,7 @@ module.exports = {
                 const uwuData = await uwuSchema.findOne({ Guild: guild.id, User: targetUser.id }).lean();
                 if (uwuData) {
                     return interaction.reply({
-                        content: `${client.emoji?.error ?? '<:crossy:1555544390221562048>'} | ${targetUser.username} is already UwULocked! Remove their UwULock first before applying CatLock. UwU`,
+                        content: `${client.emoji?.error ?? '<:crossy:1567796959648030831>'} | ${targetUser.username} is already UwULocked! Remove their UwULock first before applying CatLock. UwU`,
                         flags: MessageFlags.Ephemeral,
                     });
                 }
@@ -86,7 +86,7 @@ module.exports = {
                 const existing = await catSchema.findOne({ Guild: guild.id, User: targetUser.id }).lean();
                 if (!existing) {
                     return interaction.reply({
-                        content: `${client.emoji?.error ?? '<:crossy:1555544390221562048>'} | ${targetUser.username} is not currently CatLocked.`,
+                        content: `${client.emoji?.error ?? '<:crossy:1567796959648030831>'} | ${targetUser.username} is not currently CatLocked.`,
                         flags: MessageFlags.Ephemeral,
                     });
                 }
@@ -98,7 +98,7 @@ module.exports = {
                         new EmbedBuilder()
                             .setColor(0x57F287)
                             .setDescription(
-                                `${client.emoji?.tick ?? '<a:tickyy:1555544712687915008>'} **${targetUser.username}** has been freed from CatLock. They are human again!`
+                                `${client.emoji?.tick ?? '<a:tickyy:1567797045253644368>'} **${targetUser.username}** has been freed from CatLock. They are human again!`
                             ),
                     ],
                     flags: MessageFlags.Ephemeral,

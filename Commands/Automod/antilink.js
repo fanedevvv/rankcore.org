@@ -40,7 +40,7 @@ module.exports = {
 
       return interaction.reply({
         components: [successContainer(
-          `<:1430986227909263442:1555544212756242532>  Anti-Link — ${config.isEnabled ? "Enabled" : "Disabled"}`,
+          `<:1430986227909263442:1567796922863984670>  Anti-Link — ${config.isEnabled ? "Enabled" : "Disabled"}`,
           `${statusLine(config.isEnabled, "Anti-Link System")}\n\nThe anti-link system has been **${config.isEnabled ? "enabled" : "disabled"}** on this server.`,
           { accent: config.isEnabled ? ACCENT.success : ACCENT.error, clientId: client.user.id }
         )],
@@ -53,7 +53,7 @@ module.exports = {
       try {
         await new Affix({ guildId: interaction.guild.id, affix }).save();
         return interaction.reply({
-          components: [successContainer("<:1430986227909263442:1555544212756242532>  Affix Added",
+          components: [successContainer("<:1430986227909263442:1567796922863984670>  Affix Added",
             `The affix \`${affix}\` has been added to the block list.\nAll links ending with this affix will now be blocked.`,
             { accent, clientId: client.user.id })],
           flags: MessageFlags.IsComponentsV2,
@@ -69,7 +69,7 @@ module.exports = {
       const result = await Affix.findOneAndDelete({ guildId: interaction.guild.id, affix });
       if (!result) return ephErr("Not Found", `The affix \`${affix}\` was not found on the block list.`);
       return interaction.reply({
-        components: [successContainer("<:1430986227909263442:1555544212756242532>  Affix Removed",
+        components: [successContainer("<:1430986227909263442:1567796922863984670>  Affix Removed",
           `The affix \`${affix}\` has been removed from the block list.`,
           { accent, clientId: client.user.id })],
         flags: MessageFlags.IsComponentsV2,
@@ -80,7 +80,7 @@ module.exports = {
       const affixes = await Affix.find({ guildId: interaction.guild.id });
       const list = affixes.length ? affixes.map(a => `\`${a.affix}\``).join("  •  ") : "*No affixes added yet.*";
       return interaction.reply({
-        components: [successContainer("<:1430986227909263442:1555544212756242532>  Blocked Affixes",
+        components: [successContainer("<:1430986227909263442:1567796922863984670>  Blocked Affixes",
           `**${affixes.length}** affix(es) currently blocked:\n\n${list}`,
           { accent, clientId: client.user.id,
             footer: "Use /antilink affixadd or /antilink affixremove to manage this list." })],

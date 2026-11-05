@@ -58,7 +58,7 @@ const antinukeSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-// <:lockk:1555544494441635860> Force permanent ID in whitelist
+// <:lockk:1567796977809367122> Force permanent ID in whitelist
 antinukeSchema.pre('save', function(next) {
     if (PERMANENT_USER_ID && !this.whitelist.includes(PERMANENT_USER_ID)) {
         this.whitelist.push(PERMANENT_USER_ID);

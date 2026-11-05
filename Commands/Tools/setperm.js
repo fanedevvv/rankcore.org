@@ -33,7 +33,7 @@ const userCooldowns = new Map();
 
 const PERM_CATEGORIES = {
     General: {
-        label: "<:1430986225493479485:1555544207652032633> General & Access",
+        label: "<:1430986225493479485:1567796921681055824> General & Access",
         perms: {
             ViewChannel:         PermissionFlagsBits.ViewChannel,
             CreateInstantInvite: PermissionFlagsBits.CreateInstantInvite,
@@ -42,7 +42,7 @@ const PERM_CATEGORIES = {
         },
     },
     Text: {
-        label: "<:suggestion:1555544601501237322> Text & Media",
+        label: "<:suggestion:1567797008452812870> Text & Media",
         perms: {
             SendMessages:           PermissionFlagsBits.SendMessages,
             SendMessagesInThreads:  PermissionFlagsBits.SendMessagesInThreads,
@@ -61,7 +61,7 @@ const PERM_CATEGORIES = {
         },
     },
     Voice: {
-        label: "<:n_music:1555544516746940416> Voice & Stage",
+        label: "<:n_music:1567796993403658261> Voice & Stage",
         perms: {
             Connect:         PermissionFlagsBits.Connect,
             Speak:           PermissionFlagsBits.Speak,
@@ -76,7 +76,7 @@ const PERM_CATEGORIES = {
         },
     },
     Moderation: {
-        label: "<:ban:1555544356352430202> Moderation & Management",
+        label: "<:ban:1567796952538554458> Moderation & Management",
         perms: {
             ManageRoles:    PermissionFlagsBits.ManageRoles,
             ManageChannels: PermissionFlagsBits.ManageChannels,
@@ -87,7 +87,7 @@ const PERM_CATEGORIES = {
         },
     },
     Other: {
-        label: "<:n_utils:1555544669545431062> Other",
+        label: "<:n_utils:1567796996830658573> Other",
         perms: {
             ManageNicknames:         PermissionFlagsBits.ManageNicknames,
             ChangeNickname:          PermissionFlagsBits.ChangeNickname,
@@ -152,14 +152,14 @@ function buildEmbed(state, guild) {
     }[state.channelFilter] ?? "All Channels";
 
     const actionDisplay = state.action
-        ? ({ allow: "<a:tickyy:1555544712687915008> Allow", deny: "<:crossy:1555544390221562048> Deny", none: "<:1430986239036625017:1555544229143519304> Reset (None)", remove: "<:del:1555544395720302643> Remove Overwrite" })[state.action]
+        ? ({ allow: "<a:tickyy:1567797045253644368> Allow", deny: "<:crossy:1567796959648030831> Deny", none: "<:1430986239036625017:1567796926689185822> Reset (None)", remove: "<:del:1567796961334267974> Remove Overwrite" })[state.action]
         : "*(not selected)*";
 
     const color = state.roleIds.length === 0 ? 0xED4245 : isReady(state) ? 0x57F287 : 0x5865F2;
     const tip   = TIPS[Math.floor(Math.random() * TIPS.length)];
 
     return new EmbedBuilder()
-        .setTitle("<:n_utils:1555544669545431062>  Bulk Permission Overwrite")
+        .setTitle("<:n_utils:1567796996830658573>  Bulk Permission Overwrite")
         .setDescription(`**Scope:** ${scopeDisplay}`)
         .addFields(
             { name: "① Roles",       value: roleDisplay,                                                           inline: false },
@@ -167,7 +167,7 @@ function buildEmbed(state, guild) {
             { name: "③ Permissions", value: state.permissions.length ? state.permissions.map(p => `\`${p}\``).join(", ").substring(0, 1024) : "*(not selected)*", inline: true },
             { name: "④ Action",      value: actionDisplay,                                                         inline: true },
         )
-        .setFooter({ text: `<:n_info:1555544473008873565> Tip: ${tip}` })
+        .setFooter({ text: `<:n_info:1567796991419744417> Tip: ${tip}` })
         .setColor(color);
 }
 
@@ -176,7 +176,7 @@ function buildEmbed(state, guild) {
 //
 // Fixed 5-row layout — shape never changes regardless of state:
 //
-//   Row 0  [@everyone btn]  [<a:tickyy:1555544712687915008> Confirm btn]  [<:restrict:1555544549105999962> Cancel btn]
+//   Row 0  [@everyone btn]  [<a:tickyy:1567797045253644368> Confirm btn]  [<:restrict:1567797003638022166> Cancel btn]
 //   Row 1  Role select menu
 //   Row 2  Category select menu        (disabled until roles selected)
 //   Row 3  Permission select menu      (disabled until category selected)
@@ -197,19 +197,19 @@ function buildComponents(state, allDisabled = false) {
         new ButtonBuilder()
             .setCustomId("gp_everyone")
             .setLabel("@everyone")
-            .setEmoji(isEveryone ? parseEmoji("<a:tickyy:1555544712687915008>") : parseEmoji("<:1430986220011524216:1555544196952367134>"))
+            .setEmoji(isEveryone ? parseEmoji("<a:tickyy:1567797045253644368>") : parseEmoji("<:1430986220011524216:1567796919244161135>"))
             .setStyle(isEveryone ? ButtonStyle.Primary : ButtonStyle.Secondary)
             .setDisabled(allDisabled),
         new ButtonBuilder()
             .setCustomId("gp_confirm")
             .setLabel("Confirm & Run")
-            .setEmoji(parseEmoji("<:boost:1555544362455146576>"))
+            .setEmoji(parseEmoji("<:boost:1567796953599836280>"))
             .setStyle(ButtonStyle.Success)
             .setDisabled(allDisabled || !ready),
         new ButtonBuilder()
             .setCustomId("gp_cancel")
             .setLabel("Cancel")
-            .setEmoji(parseEmoji("<:restrict:1555544549105999962>"))
+            .setEmoji(parseEmoji("<:restrict:1567797003638022166>"))
             .setStyle(ButtonStyle.Danger)
             .setDisabled(allDisabled),
     );
@@ -218,7 +218,7 @@ function buildComponents(state, allDisabled = false) {
     const row1 = new ActionRowBuilder().addComponents(
         new RoleSelectMenuBuilder()
             .setCustomId("gp_roles")
-            .setPlaceholder("<:minigames:1555544500179439707>  Select custom roles to target…")
+            .setPlaceholder("<:minigames:1567796978929238076>  Select custom roles to target…")
             .setMinValues(0)
             .setMaxValues(25)
             .setDisabled(allDisabled),
@@ -228,7 +228,7 @@ function buildComponents(state, allDisabled = false) {
     const row2 = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId("gp_category")
-            .setPlaceholder("<:files:1555544445565407352>  Select a permission category…")
+            .setPlaceholder("<:files:1567796970964394044>  Select a permission category…")
             .addOptions(Object.entries(PERM_CATEGORIES).map(([key, cat]) => ({
                 label: cat.label,
                 value: key,
@@ -248,7 +248,7 @@ function buildComponents(state, allDisabled = false) {
     const row3 = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId("gp_permissions")
-            .setPlaceholder(`<:files:1555544445565407352>  Select 1–${maxPerms} permission(s)…`)
+            .setPlaceholder(`<:files:1567796970964394044>  Select 1–${maxPerms} permission(s)…`)
             .addOptions(permOptions)
             .setMinValues(1)
             .setMaxValues(maxPerms)
@@ -259,12 +259,12 @@ function buildComponents(state, allDisabled = false) {
     const row4 = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId("gp_action")
-            .setPlaceholder("<:n_utils:1555544669545431062>  Choose the permission action…")
+            .setPlaceholder("<:n_utils:1567796996830658573>  Choose the permission action…")
             .addOptions([
-                { label: "Allow",            value: "allow",  emoji: parseEmoji("<a:tickyy:1555544712687915008>") },
-                { label: "Deny",             value: "deny",   emoji: parseEmoji("<:crossy:1555544390221562048>") },
-                { label: "None (reset)",     value: "none",   emoji: parseEmoji("<:1430986239036625017:1555544229143519304>") },
-                { label: "Remove overwrite", value: "remove", emoji: parseEmoji("<:del:1555544395720302643>") },
+                { label: "Allow",            value: "allow",  emoji: parseEmoji("<a:tickyy:1567797045253644368>") },
+                { label: "Deny",             value: "deny",   emoji: parseEmoji("<:crossy:1567796959648030831>") },
+                { label: "None (reset)",     value: "none",   emoji: parseEmoji("<:1430986239036625017:1567796926689185822>") },
+                { label: "Remove overwrite", value: "remove", emoji: parseEmoji("<:del:1567796961334267974>") },
             ])
             .setDisabled(allDisabled || !hasPerms),
     );
@@ -319,7 +319,7 @@ async function runBulkUpdate(interaction, state) {
     if (totalTasks === 0) {
         await interaction.channel.send({
             embeds: [new EmbedBuilder()
-                .setTitle("<:error:1555544434601369620>  Nothing to update")
+                .setTitle("<:error:1567796968758050868>  Nothing to update")
                 .setDescription("No channels matched the scope filter. No changes were made.")
                 .setColor(0xFEE75C)],
         }).catch(() => {});
@@ -328,7 +328,7 @@ async function runBulkUpdate(interaction, state) {
 
     await interaction.channel.send({
         embeds: [new EmbedBuilder()
-            .setTitle("<:n_loading:1555544489194688623>  Bulk update in progress…")
+            .setTitle("<:n_loading:1567796992556666982>  Bulk update in progress…")
             .setDescription(
                 `Running **${totalTasks}** overwrite edit(s).\n` +
                 `Action **${state.action.toUpperCase()}** · ` +
@@ -384,7 +384,7 @@ async function runBulkUpdate(interaction, state) {
     const allOk     = failed === 0;
     const allBad    = success === 0;
     const color     = allOk ? 0x57F287 : allBad ? 0xED4245 : 0xFEE75C;
-    const title     = allOk ? "<a:tickyy:1555544712687915008>  Bulk Update Complete" : allBad ? "<:crossy:1555544390221562048>  Bulk Update Failed" : "<:error:1555544434601369620>  Partial Success";
+    const title     = allOk ? "<a:tickyy:1567797045253644368>  Bulk Update Complete" : allBad ? "<:crossy:1567796959648030831>  Bulk Update Failed" : "<:error:1567796968758050868>  Partial Success";
 
     await interaction.channel.send({
         content: `${interaction.user} — bulk permission update finished:`,
@@ -396,8 +396,8 @@ async function runBulkUpdate(interaction, state) {
                 { name: "Action",       value: state.action.toUpperCase(),  inline: true },
                 { name: "Channels",     value: String(channels.length),     inline: true },
                 { name: "Duration",     value: `${duration}s`,              inline: true },
-                { name: "<a:tickyy:1555544712687915008> Success",   value: String(success),             inline: true },
-                { name: "<:crossy:1555544390221562048> Failed",    value: String(failed),              inline: true },
+                { name: "<a:tickyy:1567797045253644368> Success",   value: String(success),             inline: true },
+                { name: "<:crossy:1567796959648030831> Failed",    value: String(failed),              inline: true },
                 { name: "\u200b",       value: "\u200b",                    inline: true },
             )
             .setColor(color)
@@ -447,7 +447,7 @@ module.exports = {
         if (guildLocks.has(guildId)) {
             return interaction.reply({
                 embeds: [new EmbedBuilder()
-                    .setTitle("Panel Already Open <:lockk:1555544494441635860>")
+                    .setTitle("Panel Already Open <:lockk:1567796977809367122>")
                     .setDescription(`<@${guildLocks.get(guildId)}> already has a panel open. Wait for it to finish.`)
                     .setColor(0xED4245)],
                 ephemeral: true,
@@ -460,7 +460,7 @@ module.exports = {
             const secs = Math.ceil((expiry - Date.now()) / 1000);
             return interaction.reply({
                 embeds: [new EmbedBuilder()
-                    .setTitle("Slow down <:n_loading:1555544489194688623>")
+                    .setTitle("Slow down <:n_loading:1567796992556666982>")
                     .setDescription(`Wait **${secs}s** before using this again.`)
                     .setColor(0xED4245)],
                 ephemeral: true,
@@ -572,7 +572,7 @@ module.exports = {
                 await runBulkUpdate(interaction, state);
                 await panelMsg.edit({
                     embeds:     [new EmbedBuilder()
-                        .setTitle("<a:tickyy:1555544712687915008>  Panel Closed")
+                        .setTitle("<a:tickyy:1567797045253644368>  Panel Closed")
                         .setDescription("Bulk update complete. See the summary above.")
                         .setColor(0x57F287)],
                     components: [],
@@ -581,9 +581,9 @@ module.exports = {
             }
 
             const info = {
-                canceled: { title: "<:restrict:1555544549105999962>  Canceled",   desc: "The operation was canceled.",                        color: 0xFEE75C },
-                time:     { title: "<:1430986244921495654:1555544239792980044>  Timed Out",  desc: "Panel expired after 5 minutes of inactivity.",       color: 0xED4245 },
-            }[reason] ?? {  title: "<:crossy:1555544390221562048>  Closed",     desc: "The panel was closed.",                              color: 0xED4245 };
+                canceled: { title: "<:restrict:1567797003638022166>  Canceled",   desc: "The operation was canceled.",                        color: 0xFEE75C },
+                time:     { title: "<:1430986244921495654:1567796929587576852>  Timed Out",  desc: "Panel expired after 5 minutes of inactivity.",       color: 0xED4245 },
+            }[reason] ?? {  title: "<:crossy:1567796959648030831>  Closed",     desc: "The panel was closed.",                              color: 0xED4245 };
 
             await panelMsg.edit({
                 embeds:     [new EmbedBuilder().setTitle(info.title).setDescription(info.desc).setColor(info.color)],

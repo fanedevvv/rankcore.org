@@ -206,7 +206,7 @@ module.exports = {
 
                 embed = new EmbedBuilder()
                     .setColor(client.config?.embedColor || "Random")
-                    .setTitle(`<:lockk:1555544494441635860> Generated Secret/Password`)
+                    .setTitle(`<:lockk:1567796977809367122> Generated Secret/Password`)
                     .setDescription(`\`\`\`${password.substring(0, 1024)}\`\`\``)
                     .setFooter({ text: `Length: ${length} | U: ${useUpper} | N: ${useNumbers} | S: ${useSpecial}` });
 
@@ -219,7 +219,7 @@ module.exports = {
 
                 embed = new EmbedBuilder()
                     .setColor(client.config?.embedColor || "Yellow")
-                    .setTitle("<:restrict:1555544549105999962> Generated API Key")
+                    .setTitle("<:restrict:1567797003638022166> Generated API Key")
                     .setDescription(`**Key:** \n\`\`\`${apiKey}\`\`\`\n*Length of Random Hex: ${keyLength} bytes*`)
                     .setFooter({ text: `Note: This key follows a common 'api_type_randomhex' format.` });
 
@@ -284,7 +284,7 @@ module.exports = {
 
         if (baseId === 'generate_binary_mode') {
             const input = decodedData; // The decoded data is the input string
-            const title = selectedValue === 'text_to_binary' ? "<:n_utils:1555544669545431062> Text to Binary Conversion" : "<:suggestion:1555544601501237322> Binary to Text Conversion";
+            const title = selectedValue === 'text_to_binary' ? "<:n_utils:1567796996830658573> Text to Binary Conversion" : "<:suggestion:1567797008452812870> Binary to Text Conversion";
             const output = selectedValue === 'text_to_binary' ? textToBinary(input) : binaryToText(input);
 
             embed = new EmbedBuilder()
@@ -306,7 +306,7 @@ module.exports = {
 
             embed = new EmbedBuilder()
                 .setColor(client.config?.embedColor || "Purple")
-                .setTitle(`${isEncode ? '<:lockk:1555544494441635860>' : '<:lockk:1555544494441635860>'} Simple Character-Shift ${isEncode ? 'Encoding' : 'Decoding'}`)
+                .setTitle(`${isEncode ? '<:lockk:1567796977809367122>' : '<:lockk:1567796977809367122>'} Simple Character-Shift ${isEncode ? 'Encoding' : 'Decoding'}`)
                 .addFields(
                     { name: "Shift Value", value: String(shift), inline: true },
                     { name: "Action", value: selectedValue.toUpperCase(), inline: true },
@@ -316,7 +316,7 @@ module.exports = {
         }
 
         // Edit the original reply to show the result and remove the menu
-        await selectInteraction.editReply({ embeds: [embed], content: '<a:tickyy:1555544712687915008> **Completed!**', components: [] });
+        await selectInteraction.editReply({ embeds: [embed], content: '<a:tickyy:1567797045253644368> **Completed!**', components: [] });
         return true; // Successfully handled
     }
 };

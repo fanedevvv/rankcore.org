@@ -31,7 +31,7 @@ const levelSetupSchema = new Schema({
   stackRoles: { type: Boolean, default: true },
 
   // Level-up message customisation
-  levelUpMessage:      { type: String, default: '<:boost:1555544362455146576> {user} just reached **Level {level}**!' },
+  levelUpMessage:      { type: String, default: '<:boost:1567796953599836280> {user} just reached **Level {level}**!' },
   embedColor:          { type: String, default: '#6C53FF' },
   embedTitle:          { type: String, default: 'Level Up!' },
   embedFooter:         { type: String, default: '' },

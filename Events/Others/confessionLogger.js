@@ -21,23 +21,23 @@ async function processQueue(channel){
 }
 
 const ACTION_META={
- 'CONFESSION POSTED':{color:'#57F287',emoji:'<a:tickyy:1555544712687915008>'},
- 'AUTO-APPROVED':{color:'#57F287',emoji:'<:n_bot:1555544367886770176>'},
- 'CONFESSION APPROVED':{color:'#57F287',emoji:'<a:tickyy:1555544712687915008>'},
- 'CONFESSION SUBMITTED FOR REVIEW':{color:'#FEE75C',emoji:'<:files:1555544445565407352>'},
- 'CONFESSION SUBMITTED':{color:'#FEE75C',emoji:'<:files:1555544445565407352>'},
- 'CONFESSION DENIED':{color:'#ED4245',emoji:'<:crossy:1555544390221562048>'},
- 'CONFESSION DELETED':{color:'#ED4245',emoji:'<:del:1555544395720302643>'},
- 'CONFESSION REPORTED':{color:'#EB459E',emoji:'<:restrict:1555544549105999962>'},
- 'USER ADDED TO BLACKLIST':{color:'#ED4245',emoji:'<:restrict:1555544549105999962>'},
- 'USER REMOVED FROM BLACKLIST':{color:'#57F287',emoji:'<a:tickyy:1555544712687915008>'},
- 'WORD FILTER TRIGGERED':{color:'#ED4245',emoji:'<:n_search:1555544554365788191>'},
- 'Configuration Update':{color:'#5865F2',emoji:'<:n_utils:1555544669545431062>'},
+ 'CONFESSION POSTED':{color:'#57F287',emoji:'<a:tickyy:1567797045253644368>'},
+ 'AUTO-APPROVED':{color:'#57F287',emoji:'<:n_bot:1567796985816154144>'},
+ 'CONFESSION APPROVED':{color:'#57F287',emoji:'<a:tickyy:1567797045253644368>'},
+ 'CONFESSION SUBMITTED FOR REVIEW':{color:'#FEE75C',emoji:'<:files:1567796970964394044>'},
+ 'CONFESSION SUBMITTED':{color:'#FEE75C',emoji:'<:files:1567796970964394044>'},
+ 'CONFESSION DENIED':{color:'#ED4245',emoji:'<:crossy:1567796959648030831>'},
+ 'CONFESSION DELETED':{color:'#ED4245',emoji:'<:del:1567796961334267974>'},
+ 'CONFESSION REPORTED':{color:'#EB459E',emoji:'<:restrict:1567797003638022166>'},
+ 'USER ADDED TO BLACKLIST':{color:'#ED4245',emoji:'<:restrict:1567797003638022166>'},
+ 'USER REMOVED FROM BLACKLIST':{color:'#57F287',emoji:'<a:tickyy:1567797045253644368>'},
+ 'WORD FILTER TRIGGERED':{color:'#ED4245',emoji:'<:n_search:1567796994792230953>'},
+ 'Configuration Update':{color:'#5865F2',emoji:'<:n_utils:1567796996830658573>'},
 };
 
 function getMeta(action){
  for(const key in ACTION_META)if(action.toUpperCase().includes(key))return ACTION_META[key];
- return{color:'#808080',emoji:'<:files:1555544445565407352>'};
+ return{color:'#808080',emoji:'<:files:1567796970964394044>'};
 }
 
 module.exports={

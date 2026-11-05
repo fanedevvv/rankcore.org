@@ -70,7 +70,7 @@ async function handleApplyButton(interaction, panelId) {
     // show a modal — send an ephemeral prompt to use the direct button instead.
     if (isDeferred) {
       return interaction.followUp({
-        content: `<:announcement:1555544345740967956> Please use the **Apply Now** button on the **${panel.name}** panel message to start the application form. Modals can't be opened from a dropdown.`,
+        content: `<:announcement:1567796950265241662> Please use the **Apply Now** button on the **${panel.name}** panel message to start the application form. Modals can't be opened from a dropdown.`,
         flags: MessageFlags.Ephemeral,
       });
     }

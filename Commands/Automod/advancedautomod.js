@@ -228,7 +228,7 @@ module.exports = {
       return interaction.reply({
         embeds: [new EmbedBuilder()
           .setTitle("AutoMod Status")
-          .setDescription(`AutoMod has been **${enabled ? "enabled <a:tickyy:1555544712687915008>" : "disabled <:crossy:1555544390221562048>"}**.`)
+          .setDescription(`AutoMod has been **${enabled ? "enabled <a:tickyy:1567797045253644368>" : "disabled <:crossy:1567796959648030831>"}**.`)
           .setColor(enabled ? "#53FF6C" : "#ff5353")
           .setFooter({ text: guildName, iconURL: guildIcon })],
         flags: MessageFlags.Ephemeral,
@@ -388,7 +388,7 @@ module.exports = {
         // Validate the pattern compiles
         try { new RegExp(pattern, "i"); } catch (e) {
           return interaction.reply({
-            content: `<:crossy:1555544390221562048> Invalid regex pattern: \`${e.message}\``,
+            content: `<:crossy:1567796959648030831> Invalid regex pattern: \`${e.message}\``,
             flags: MessageFlags.Ephemeral,
           });
         }
@@ -477,16 +477,16 @@ module.exports = {
         : "*None*";
 
       const embed = new EmbedBuilder()
-        .setTitle(`<:restrict:1555544549105999962> AutoMod Configuration — ${guildName}`)
+        .setTitle(`<:restrict:1567797003638022166> AutoMod Configuration — ${guildName}`)
         .setColor(cfg.status ? color : "#ff5353")
         .addFields(
-          { name: "Status",       value: cfg.status ? "<a:tickyy:1555544712687915008> Enabled" : "<:crossy:1555544390221562048> Disabled", inline: true },
-          { name: "Bot Spam",     value: cfg.detectBotSpam ? "<a:tickyy:1555544712687915008> On" : "<:crossy:1555544390221562048> Off",    inline: true },
+          { name: "Status",       value: cfg.status ? "<a:tickyy:1567797045253644368> Enabled" : "<:crossy:1567796959648030831> Disabled", inline: true },
+          { name: "Bot Spam",     value: cfg.detectBotSpam ? "<a:tickyy:1567797045253644368> On" : "<:crossy:1567796959648030831> Off",    inline: true },
           { name: "\u200b",       value: "\u200b", inline: true },
-          { name: "<:thunderr:1555544623735242883> Rate Limits",  value: rateText.slice(0, 1024) },
-          { name: "<:error:1555544434601369620> Warn Ladder",  value: warnText.slice(0, 1024) },
-          { name: "<:restrict:1555544549105999962> Banned Words", value: wordsText.slice(0, 1024) },
-          { name: "<:n_search:1555544554365788191> Regex Rules",  value: regexText.slice(0, 1024) },
+          { name: "<:thunderr:1567797012991189134> Rate Limits",  value: rateText.slice(0, 1024) },
+          { name: "<:error:1567796968758050868> Warn Ladder",  value: warnText.slice(0, 1024) },
+          { name: "<:restrict:1567797003638022166> Banned Words", value: wordsText.slice(0, 1024) },
+          { name: "<:n_search:1567796994792230953> Regex Rules",  value: regexText.slice(0, 1024) },
         )
         .setFooter({ text: guildName, iconURL: guildIcon })
         .setTimestamp();

@@ -5,7 +5,7 @@
  * A single command that plays a song AND shows an interactive button control
  * panel, so users never have to memorise subcommand names for basic operations.
  *
- * Buttons: <:n_music:1555544516746940416> Skip-back  <:n_music:1555544516746940416>/<:n_music:1555544516746940416> Pause/Resume  <:n_music:1555544516746940416> Skip  <:n_music:1555544516746940416> Stop  <:n_music:1555544516746940416> Shuffle  <:n_music:1555544516746940416> Loop
+ * Buttons: <:n_music:1567796993403658261> Skip-back  <:n_music:1567796993403658261>/<:n_music:1567796993403658261> Pause/Resume  <:n_music:1567796993403658261> Skip  <:n_music:1567796993403658261> Stop  <:n_music:1567796993403658261> Shuffle  <:n_music:1567796993403658261> Loop
  *
  * The full /music command still exists for advanced control (volume, forward,
  * backward, 24/7, etc.). This is the "quick access" layer on top.
@@ -23,7 +23,7 @@ function buildPanel(player, track, paused) {
   const bar = buildProgressBar(player);
   const embed = new EmbedBuilder()
     .setColor(0x6C53FF)
-    .setTitle('<:n_music:1555544516746940416> Now Playing')
+    .setTitle('<:n_music:1567796993403658261> Now Playing')
     .setDescription(`**[${track.title}](${track.uri})**\n${track.author ? `by ${track.author}` : ''}`)
     .addFields(
       { name: 'Progress', value: bar, inline: false },
@@ -35,16 +35,16 @@ function buildPanel(player, track, paused) {
     .setFooter({ text: `Requested by ${track.requester?.username ?? 'Unknown'}` });
 
   const row1 = new ActionRowBuilder().addComponents(
-    new ButtonBuilder().setCustomId('mp_replay').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(ButtonStyle.Secondary),
-    new ButtonBuilder().setCustomId('mp_pauseresume').setEmoji(paused ? parseEmoji('<:n_music:1555544516746940416>') : parseEmoji('<:n_music:1555544516746940416>')).setStyle(paused ? ButtonStyle.Success : ButtonStyle.Primary),
-    new ButtonBuilder().setCustomId('mp_skip').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(ButtonStyle.Secondary),
-    new ButtonBuilder().setCustomId('mp_stop').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(ButtonStyle.Danger),
+    new ButtonBuilder().setCustomId('mp_replay').setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId('mp_pauseresume').setEmoji(paused ? parseEmoji('<:n_music:1567796993403658261>') : parseEmoji('<:n_music:1567796993403658261>')).setStyle(paused ? ButtonStyle.Success : ButtonStyle.Primary),
+    new ButtonBuilder().setCustomId('mp_skip').setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId('mp_stop').setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(ButtonStyle.Danger),
   );
 
   const row2 = new ActionRowBuilder().addComponents(
-    new ButtonBuilder().setCustomId('mp_shuffle').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(ButtonStyle.Secondary).setLabel('Shuffle'),
-    new ButtonBuilder().setCustomId('mp_loop').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(ButtonStyle.Secondary).setLabel('Loop'),
-    new ButtonBuilder().setCustomId('mp_queue').setEmoji(parseEmoji('<:files:1555544445565407352>')).setStyle(ButtonStyle.Secondary).setLabel('Queue'),
+    new ButtonBuilder().setCustomId('mp_shuffle').setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(ButtonStyle.Secondary).setLabel('Shuffle'),
+    new ButtonBuilder().setCustomId('mp_loop').setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(ButtonStyle.Secondary).setLabel('Loop'),
+    new ButtonBuilder().setCustomId('mp_queue').setEmoji(parseEmoji('<:files:1567796970964394044>')).setStyle(ButtonStyle.Secondary).setLabel('Queue'),
     new ButtonBuilder().setCustomId('mp_vol_down').setLabel('Vol -').setStyle(ButtonStyle.Secondary),
     new ButtonBuilder().setCustomId('mp_vol_up').setLabel('Vol +').setStyle(ButtonStyle.Secondary),
   );
@@ -53,9 +53,9 @@ function buildPanel(player, track, paused) {
 }
 
 function loopLabel(track, queue) {
-  if (track)  return '<:n_music:1555544516746940416> Track';
-  if (queue)  return '<:n_music:1555544516746940416> Queue';
-  return '<:arrow:1555544351118196810> Off';
+  if (track)  return '<:n_music:1567796993403658261> Track';
+  if (queue)  return '<:n_music:1567796993403658261> Queue';
+  return '<:arrow:1567796951527850055> Off';
 }
 
 function buildProgressBar(player) {
@@ -80,7 +80,7 @@ function buildProgressBar(player) {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('play')
-    .setDescription('Play a song and open the music control panel. <:n_music:1555544516746940416>')
+    .setDescription('Play a song and open the music control panel. <:n_music:1567796993403658261>')
     .setDMPermission(false)
     .addStringOption(o => o
       .setName('song')
@@ -94,7 +94,7 @@ module.exports = {
     const vc      = member.voice?.channel;
 
     if (!vc) {
-      return interaction.reply({ content: '<:crossy:1555544390221562048> Join a voice channel first!', flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: '<:crossy:1567796959648030831> Join a voice channel first!', flags: MessageFlags.Ephemeral });
     }
 
     await interaction.deferReply();
@@ -114,16 +114,16 @@ module.exports = {
       const res = await client.manager.search(query, interaction.user);
 
       if (!res || res.loadType === 'LOAD_FAILED') {
-        return interaction.editReply({ content: '<:crossy:1555544390221562048> Failed to find that song. Try a different search or URL.' });
+        return interaction.editReply({ content: '<:crossy:1567796959648030831> Failed to find that song. Try a different search or URL.' });
       }
       if (res.loadType === 'NO_MATCHES') {
-        return interaction.editReply({ content: '<:crossy:1555544390221562048> No results found. Try a more specific search.' });
+        return interaction.editReply({ content: '<:crossy:1567796959648030831> No results found. Try a more specific search.' });
       }
 
       if (res.loadType === 'PLAYLIST_LOADED') {
         player.queue.add(res.tracks);
         await interaction.editReply({
-          content: `<a:tickyy:1555544712687915008> Added playlist **${res.playlist?.name}** (${res.tracks.length} tracks) to the queue.`,
+          content: `<a:tickyy:1567797045253644368> Added playlist **${res.playlist?.name}** (${res.tracks.length} tracks) to the queue.`,
         });
         if (!player.playing && !player.paused) player.play();
         return;
@@ -135,13 +135,13 @@ module.exports = {
 
     } catch (err) {
       console.error('[/play]', err);
-      return interaction.editReply({ content: '<:crossy:1555544390221562048> Something went wrong starting playback.' });
+      return interaction.editReply({ content: '<:crossy:1567796959648030831> Something went wrong starting playback.' });
     }
 
     // ── Show control panel ────────────────────────────────────────────────────
     const track  = player.queue.current ?? player.queue[0];
     if (!track) {
-      return interaction.editReply({ content: '<a:tickyy:1555544712687915008> Song queued!' });
+      return interaction.editReply({ content: '<a:tickyy:1567797045253644368> Song queued!' });
     }
 
     const { embed, rows } = buildPanel(player, track, player.paused);
@@ -183,7 +183,7 @@ module.exports = {
         }
         case 'mp_queue': {
           const qList = p.queue.slice(0, 10).map((t, i) => `**${i+1}.** ${t.title}`).join('\n') || 'Queue is empty.';
-          await btn.followUp({ embeds: [new EmbedBuilder().setColor(0x6C53FF).setTitle('<:files:1555544445565407352> Queue').setDescription(qList)], flags: MessageFlags.Ephemeral });
+          await btn.followUp({ embeds: [new EmbedBuilder().setColor(0x6C53FF).setTitle('<:files:1567796970964394044> Queue').setDescription(qList)], flags: MessageFlags.Ephemeral });
           return;
         }
       }

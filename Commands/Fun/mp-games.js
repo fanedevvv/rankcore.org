@@ -10,7 +10,7 @@ const { Connect4, RockPaperScissors, TicTacToe } = require("discord-gamecord");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("games-multiplayer")
-    .setDescription("Play a multi-player minigame within Discord. <:minigames:1555544500179439707>")
+    .setDescription("Play a multi-player minigame within Discord. <:minigames:1567796978929238076>")
     .addStringOption((option) =>
       option
         .setName("game")
@@ -90,9 +90,9 @@ module.exports = {
               color: client.config.embedColor,
             },
             emojis: {
-              board: "<:dot:1555544412300378243>",
-              player1: "<:LEred:1555544262123323422>",
-              player2: "<:error:1555544434601369620>",
+              board: "<:dot:1567796963624226826>",
+              player1: "<:LEred:1567796934545121280>",
+              player2: "<:error:1567796968758050868>",
             },
             mentionUser: true,
             timeoutTime: 60000,
@@ -130,9 +130,9 @@ module.exports = {
               scissors: "Scissors",
             },
             emojis: {
-              rock: "<:dot:1555544412300378243>",
-              paper: "<:announcement:1555544345740967956>",
-              scissors: "<:1430986239036625017:1555544229143519304>",
+              rock: "<:dot:1567796963624226826>",
+              paper: "<:announcement:1567796950265241662>",
+              scissors: "<:1430986239036625017:1567796926689185822>",
             },
             mentionUser: true,
             timeoutTime: 60000,
@@ -164,9 +164,9 @@ module.exports = {
               overTitle: "Game Over",
             },
             emojis: {
-              xButton: "<:crossy:1555544390221562048>",
-              oButton: "<:n_info:1555544473008873565>",
-              blankButton: "<:1430986239036625017:1555544229143519304>",
+              xButton: "<:crossy:1567796959648030831>",
+              oButton: "<:n_info:1567796991419744417>",
+              blankButton: "<:1430986239036625017:1567796926689185822>",
             },
             mentionUser: true,
             timeoutTime: 60000,

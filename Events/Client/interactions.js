@@ -147,7 +147,7 @@ async function handleSelectMenu(interaction, client) {
           case 'dm': {
             const content = action.content?.trim();
             await interaction.user.send({ content: content || 'You selected an option.' }).catch(() => {});
-            return interaction.reply({ content: '<:announcement:1555544345740967956> Check your DMs!', flags: 64 });
+            return interaction.reply({ content: '<:announcement:1567796950265241662> Check your DMs!', flags: 64 });
           }
           case 'role_add': case 'role_remove': case 'role_toggle': {
             const roleId = action.roleId;
@@ -159,14 +159,14 @@ async function handleSelectMenu(interaction, client) {
             if (action.type === 'role_add') {
               if (hasRole) return interaction.reply({ content: `You already have the **${role.name}** role.`, flags: 64 });
               await member.roles.add(roleId);
-              return interaction.reply({ content: `<a:tickyy:1555544712687915008> You've been given the **${role.name}** role!`, flags: ephemeral ? 64 : 0 });
+              return interaction.reply({ content: `<a:tickyy:1567797045253644368> You've been given the **${role.name}** role!`, flags: ephemeral ? 64 : 0 });
             } else if (action.type === 'role_remove') {
               if (!hasRole) return interaction.reply({ content: `You don't have the **${role.name}** role.`, flags: 64 });
               await member.roles.remove(roleId);
-              return interaction.reply({ content: `<a:tickyy:1555544712687915008> The **${role.name}** role has been removed.`, flags: ephemeral ? 64 : 0 });
+              return interaction.reply({ content: `<a:tickyy:1567797045253644368> The **${role.name}** role has been removed.`, flags: ephemeral ? 64 : 0 });
             } else { // toggle
-              if (hasRole) { await member.roles.remove(roleId); return interaction.reply({ content: `<:n_music:1555544516746940416> The **${role.name}** role has been removed.`, flags: ephemeral ? 64 : 0 }); }
-              else { await member.roles.add(roleId); return interaction.reply({ content: `<:n_music:1555544516746940416> You've been given the **${role.name}** role!`, flags: ephemeral ? 64 : 0 }); }
+              if (hasRole) { await member.roles.remove(roleId); return interaction.reply({ content: `<:n_music:1567796993403658261> The **${role.name}** role has been removed.`, flags: ephemeral ? 64 : 0 }); }
+              else { await member.roles.add(roleId); return interaction.reply({ content: `<:n_music:1567796993403658261> You've been given the **${role.name}** role!`, flags: ephemeral ? 64 : 0 }); }
             }
           }
         }

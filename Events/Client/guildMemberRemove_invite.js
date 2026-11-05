@@ -48,7 +48,7 @@ module.exports = {
         const log = member.guild.channels.cache.get(guildConfig.logChannelId);
         if (log) {
           const countMsg = guildConfig.countLeavesAsNegative ? ' (−1 invite)' : '';
-          const msg = `<:files:1555544445565407352> **${member.user.tag}** left — decrementing invites of <@${inviterId}>${countMsg}`;
+          const msg = `<:files:1567796970964394044> **${member.user.tag}** left — decrementing invites of <@${inviterId}>${countMsg}`;
           log.send({ content: msg }).catch(() => null);
         }
       }

@@ -38,11 +38,11 @@ function checkUserRateLimit(userId) {
     pruneWindow(w.day,    86_400_000);
 
     if (w.minute.length >= RATE_LIMITS.USER_MAX_PER_MINUTE)
-        return `<:1430986244921495654:1555544239792980044> You're sending messages too fast! Max **${RATE_LIMITS.USER_MAX_PER_MINUTE} messages per minute**.`;
+        return `<:1430986244921495654:1567796929587576852> You're sending messages too fast! Max **${RATE_LIMITS.USER_MAX_PER_MINUTE} messages per minute**.`;
     if (w.hour.length >= RATE_LIMITS.USER_MAX_PER_HOUR)
-        return `<:1430986244921495654:1555544239792980044> Hourly limit reached! Max **${RATE_LIMITS.USER_MAX_PER_HOUR} messages per hour**.`;
+        return `<:1430986244921495654:1567796929587576852> Hourly limit reached! Max **${RATE_LIMITS.USER_MAX_PER_HOUR} messages per hour**.`;
     if (w.day.length >= RATE_LIMITS.USER_MAX_PER_DAY)
-        return `<:1430986244921495654:1555544239792980044> Daily limit reached! Max **${RATE_LIMITS.USER_MAX_PER_DAY} messages per day**. Try again tomorrow.`;
+        return `<:1430986244921495654:1567796929587576852> Daily limit reached! Max **${RATE_LIMITS.USER_MAX_PER_DAY} messages per day**. Try again tomorrow.`;
 
     return null;
 }
@@ -67,9 +67,9 @@ function checkGuildRateLimit(guildId) {
     pruneWindow(w.hour,   3_600_000);
 
     if (w.minute.length >= RATE_LIMITS.GUILD_MAX_PER_MINUTE)
-        return `<:1430986225493479485:1555544207652032633> This server is very busy! Max **${RATE_LIMITS.GUILD_MAX_PER_MINUTE} AI requests per minute** server-wide. Try again shortly.`;
+        return `<:1430986225493479485:1567796921681055824> This server is very busy! Max **${RATE_LIMITS.GUILD_MAX_PER_MINUTE} AI requests per minute** server-wide. Try again shortly.`;
     if (w.hour.length >= RATE_LIMITS.GUILD_MAX_PER_HOUR)
-        return `<:1430986225493479485:1555544207652032633> Server hourly limit reached! Max **${RATE_LIMITS.GUILD_MAX_PER_HOUR} AI requests per hour** server-wide.`;
+        return `<:1430986225493479485:1567796921681055824> Server hourly limit reached! Max **${RATE_LIMITS.GUILD_MAX_PER_HOUR} AI requests per hour** server-wide.`;
 
     return null;
 }

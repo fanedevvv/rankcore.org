@@ -44,10 +44,10 @@ const {
             let systemStatus = '';
             let activeConfigs = '';
             if (setupCount === 0) {
-                systemStatus = `\`\`\`ansi\n\u001b[31m□ <:LEred:1555544262123323422> SYSTEM OFFLINE\n\u001b[31m├───> Features: NOT CONFIGURED\n\u001b[31m└───> Updates: Disabled\`\`\``;
+                systemStatus = `\`\`\`ansi\n\u001b[31m□ <:LEred:1567796934545121280> SYSTEM OFFLINE\n\u001b[31m├───> Features: NOT CONFIGURED\n\u001b[31m└───> Updates: Disabled\`\`\``;
                 activeConfigs = `\`\`\`yml\n"Setups": "None"\n"Slots Used": "0/5"\`\`\``;
             } else {
-                systemStatus = `\`\`\`ansi\n\u001b[32m□ <:LEgreen:1555544256356159600> ALL SYSTEMS ONLINE\n\u001b[32m├───> Features: FULLY AVAILABLE\n\u001b[32m└───> Updates: Real-time Enabled\`\`\``;
+                systemStatus = `\`\`\`ansi\n\u001b[32m□ <:LEgreen:1567796933307666515> ALL SYSTEMS ONLINE\n\u001b[32m├───> Features: FULLY AVAILABLE\n\u001b[32m└───> Updates: Real-time Enabled\`\`\``;
                 activeConfigs = `\`\`\`yml\n"Slots Used": "${setupCount}/5"\n`;
                 notifications.forEach((notif, index) => {
                     activeConfigs += `"Setup ${notif.SetupNumber}":\n  "channel": "${notif.Channel}"\n  "youtube-channel": "${notif.YouTubeChannel}"\n`;
@@ -213,7 +213,7 @@ const {
                                 embed.spliceFields(0, 2, 
                                     { 
                                         name: 'SYSTEM STATUS', 
-                                        value: `\`\`\`ansi\n\u001b[32m□ <:LEgreen:1555544256356159600> ALL SYSTEMS ONLINE\n\u001b[32m├───> Features: FULLY AVAILABLE\n\u001b[32m└───> Updates: Real-time Enabled\`\`\`` 
+                                        value: `\`\`\`ansi\n\u001b[32m□ <:LEgreen:1567796933307666515> ALL SYSTEMS ONLINE\n\u001b[32m├───> Features: FULLY AVAILABLE\n\u001b[32m└───> Updates: Real-time Enabled\`\`\`` 
                                     },
                                     { 
                                         name: 'Active Configurations', 
@@ -269,7 +269,7 @@ const {
                         embed.spliceFields(0, 2, 
                             { 
                                 name: 'SYSTEM STATUS', 
-                                value: `\`\`\`ansi\n\u001b[31m□ <:LEred:1555544262123323422> SYSTEM OFFLINE\n\u001b[31m├───> Features: NOT CONFIGURED\n\u001b[31m└───> Updates: Disabled\`\`\`` 
+                                value: `\`\`\`ansi\n\u001b[31m□ <:LEred:1567796934545121280> SYSTEM OFFLINE\n\u001b[31m├───> Features: NOT CONFIGURED\n\u001b[31m└───> Updates: Disabled\`\`\`` 
                             },
                             { 
                                 name: 'Active Configurations', 
@@ -304,7 +304,7 @@ const {
                             embed.spliceFields(0, 2, 
                                 { 
                                     name: 'SYSTEM STATUS', 
-                                    value: `\`\`\`ansi\n\u001b[31m□ <:LEred:1555544262123323422> SYSTEM OFFLINE\n\u001b[31m├───> Features: NOT CONFIGURED\n\u001b[31m└───> Updates: Disabled\`\`\`` 
+                                    value: `\`\`\`ansi\n\u001b[31m□ <:LEred:1567796934545121280> SYSTEM OFFLINE\n\u001b[31m├───> Features: NOT CONFIGURED\n\u001b[31m└───> Updates: Disabled\`\`\`` 
                                 },
                                 { 
                                     name: 'Active Configurations', 
@@ -322,7 +322,7 @@ const {
                             embed.spliceFields(0, 2, 
                                 { 
                                     name: 'SYSTEM STATUS', 
-                                    value: `\`\`\`ansi\n\u001b[32m□ <:LEgreen:1555544256356159600> ALL SYSTEMS ONLINE\n\u001b[32m├───> Features: FULLY AVAILABLE\n\u001b[32m└───> Updates: Real-time Enabled\`\`\`` 
+                                    value: `\`\`\`ansi\n\u001b[32m□ <:LEgreen:1567796933307666515> ALL SYSTEMS ONLINE\n\u001b[32m├───> Features: FULLY AVAILABLE\n\u001b[32m└───> Updates: Real-time Enabled\`\`\`` 
                                 },
                                 { 
                                     name: 'Active Configurations', 

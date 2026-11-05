@@ -15,7 +15,7 @@ module.exports = {
         const color = isNegativeAction ? 'Red' : 'Blue';
 
         const logEmbed = new EmbedBuilder()
-            .setTitle(`<:error:1555544434601369620> ${action} Log`)
+            .setTitle(`<:error:1567796968758050868> ${action} Log`)
             .setDescription(details)
             .setColor(color)
             .setTimestamp();

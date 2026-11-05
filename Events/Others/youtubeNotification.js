@@ -62,7 +62,7 @@ function buildVideoEmbed(video, customMessage) {
     .setAuthor({ name: video.channelTitle, iconURL: 'https://i.imgur.com/iKFGRiS.png' })
     .setTitle(video.title)
     .setURL(video.url)
-    .setDescription(`${customMessage}\n\n<:files:1555544445565407352> **New Upload!**\n${video.description ? `> ${video.description}` : ''}`)
+    .setDescription(`${customMessage}\n\n<:files:1567796970964394044> **New Upload!**\n${video.description ? `> ${video.description}` : ''}`)
     .setThumbnail(video.thumbnail)
     .addFields({ name: '▶ Watch Now', value: video.url, inline: false })
     .setTimestamp(video.publishedAt)

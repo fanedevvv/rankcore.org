@@ -23,15 +23,15 @@ module.exports = {
 
     const detStatus = (key) => {
       const d = data?.[key];
-      return d?.enabled === false ? "<:LEred:1555544262123323422>" : "<:LEgreen:1555544256356159600>";
+      return d?.enabled === false ? "<:LEred:1567796934545121280>" : "<:LEgreen:1567796933307666515>";
     };
 
     const buildPanel = (d) => {
       const enabled = !!d?.enabled;
       const hv = d?.heatValues || {};
-      const statusText = enabled ? "<:LEgreen:1555544256356159600>  **Anti-Scam** — `ENABLED`" : "<:LEred:1555544262123323422>  **Anti-Scam** — `DISABLED`";
+      const statusText = enabled ? "<:LEgreen:1567796933307666515>  **Anti-Scam** — `ENABLED`" : "<:LEred:1567796934545121280>  **Anti-Scam** — `DISABLED`";
       return new ContainerBuilder().setAccentColor(enabled ? ACCENT.error : accent)
-        .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:error:1555544434601369620>  Anti-Scam Configuration"))
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:error:1567796968758050868>  Anti-Scam Configuration"))
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(statusText))
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
@@ -51,7 +51,7 @@ module.exports = {
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
         .addActionRowComponents(
           new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId("as_toggle").setLabel(enabled ? "Disable" : "Enable").setStyle(enabled ? ButtonStyle.Danger : ButtonStyle.Success).setEmoji(enabled ? parseEmoji("<:LEred:1555544262123323422>") : parseEmoji("<:LEgreen:1555544256356159600>")),
+            new ButtonBuilder().setCustomId("as_toggle").setLabel(enabled ? "Disable" : "Enable").setStyle(enabled ? ButtonStyle.Danger : ButtonStyle.Success).setEmoji(enabled ? parseEmoji("<:LEred:1567796934545121280>") : parseEmoji("<:LEgreen:1567796933307666515>")),
           )
         )
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))

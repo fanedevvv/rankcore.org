@@ -116,7 +116,7 @@ module.exports = {
       try {
         const dmEmbed = new EmbedBuilder()
           .setColor(accent)
-          .setTitle('<:boost:1555544362455146576> You\'ve been promoted!')
+          .setTitle('<:boost:1567796953599836280> You\'ve been promoted!')
           .setDescription(
             promoMessage ??
             `Congratulations! You have been promoted in **${interaction.guild.name}**.\n\n` +
@@ -137,7 +137,7 @@ module.exports = {
       try {
         const annEmbed = new EmbedBuilder()
           .setColor(accent)
-          .setTitle('<:boost:1555544362455146576> Staff Promotion')
+          .setTitle('<:boost:1567796953599836280> Staff Promotion')
           .setDescription(
             promoMessage ??
             `Please congratulate ${target.toString()} on their promotion!\n\n` +
@@ -157,7 +157,7 @@ module.exports = {
       try {
         const logEmbed = new EmbedBuilder()
           .setColor(accent)
-          .setTitle('<:boost:1555544362455146576> Staff Promotion Log')
+          .setTitle('<:boost:1567796953599836280> Staff Promotion Log')
           .addFields(
             { name: 'Staff Member', value: `${target.toString()} (\`${target.user.tag}\`)`, inline: true },
             { name: 'Promoted By',  value: interaction.user.toString(), inline: true },
@@ -199,13 +199,13 @@ module.exports = {
       logChan && logChan.id !== annChan?.id
                  ? `**Logged in** — <#${logChan.id}>`      : null,
       errors.length
-        ? `\n<:error:1555544434601369620> ${errors.join('\n<:error:1555544434601369620> ')}`
+        ? `\n<:error:1567796968758050868> ${errors.join('\n<:error:1567796968758050868> ')}`
         : null,
     ].filter(Boolean).join('\n');
 
     return interaction.editReply({
       components: [modActionContainer(
-        '<:boost:1555544362455146576>', 'Staff Promotion',
+        '<:boost:1567796953599836280>', 'Staff Promotion',
         `${target.toString()} (${target.user.tag})`,
         reason,
         { accent, extra, clientId: client.user.id },

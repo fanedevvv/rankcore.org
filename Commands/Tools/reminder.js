@@ -193,8 +193,8 @@ module.exports = {
         const embed = new EmbedBuilder()
           .setColor(client.config.embedColor)
           .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
-          .setAuthor({ name: `<:announcement:1555544345740967956> Reminder System` })
-          .setFooter({ text: `<:announcement:1555544345740967956> Reminder Set` })
+          .setAuthor({ name: `<:announcement:1567796950265241662> Reminder System` })
+          .setFooter({ text: `<:announcement:1567796950265241662> Reminder Set` })
           .setTimestamp()
           .setTitle("> Reminder Set")
           .addFields({

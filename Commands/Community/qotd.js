@@ -222,7 +222,7 @@ async function postQOTD(doc, channel, guild, client) {
 
   const embed = new EmbedBuilder()
     .setColor(color)
-    .setTitle(`<:suggestion:1555544601501237322> ${embedTitle}`)
+    .setTitle(`<:suggestion:1567797008452812870> ${embedTitle}`)
     .setDescription(question.text)
     .setFooter({ text: doc.footerText || `${guild.name} • ${today}`, iconURL: guild.iconURL({ dynamic: true }) || undefined })
     .setTimestamp();

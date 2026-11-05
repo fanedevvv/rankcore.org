@@ -196,7 +196,7 @@ module.exports = {
       const cmd  = await CustomCommand.findOne({ Guild: guildId, Name: name });
       if (!cmd) {
         return interaction.reply({
-          content: `<:crossy:1555544390221562048> No custom command named \`${name}\` found.`,
+          content: `<:crossy:1567796959648030831> No custom command named \`${name}\` found.`,
           flags: MessageFlags.Ephemeral,
         });
       }
@@ -260,7 +260,7 @@ module.exports = {
       const name = interaction.options.getString('name').toLowerCase();
       const cmd  = await CustomCommand.findOne({ Guild: guildId, Name: name });
       if (!cmd) {
-        return interaction.reply({ content: `<:crossy:1555544390221562048> No custom command named \`${name}\` found.`, flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: `<:crossy:1567796959648030831> No custom command named \`${name}\` found.`, flags: MessageFlags.Ephemeral });
       }
 
       await interaction.reply({
@@ -283,7 +283,7 @@ module.exports = {
           await CustomCommand.deleteOne({ Guild: guildId, Name: name });
           try { await syncCommand(guildId, cmd, client, true); } catch { /* REST fail — swallow */ }
           await btn.update({
-            embeds: [new EmbedBuilder().setColor(0x22c55e).setDescription(`<a:tickyy:1555544712687915008> \`/${name}\` has been deleted.`)],
+            embeds: [new EmbedBuilder().setColor(0x22c55e).setDescription(`<a:tickyy:1567797045253644368> \`/${name}\` has been deleted.`)],
             components: [],
           });
         } else {
@@ -302,7 +302,7 @@ module.exports = {
       const name = interaction.options.getString('name').toLowerCase();
       const cmd  = await CustomCommand.findOne({ Guild: guildId, Name: name });
       if (!cmd) {
-        return interaction.reply({ content: `<:crossy:1555544390221562048> No custom command named \`${name}\` found.`, flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: `<:crossy:1567796959648030831> No custom command named \`${name}\` found.`, flags: MessageFlags.Ephemeral });
       }
 
       cmd.Enabled = !cmd.Enabled;
@@ -311,7 +311,7 @@ module.exports = {
       return interaction.reply({
         embeds: [new EmbedBuilder()
           .setColor(cmd.Enabled ? 0x22c55e : 0xf59e0b)
-          .setDescription(`${cmd.Enabled ? '<a:tickyy:1555544712687915008> Enabled' : '<:n_music:1555544516746940416> Disabled'} \`/${name}\`.`)],
+          .setDescription(`${cmd.Enabled ? '<a:tickyy:1567797045253644368> Enabled' : '<:n_music:1567796993403658261> Disabled'} \`/${name}\`.`)],
         flags: MessageFlags.Ephemeral,
       });
     }
@@ -330,7 +330,7 @@ module.exports = {
       const limit = getLimit(tier, 'customCommands');
 
       const lines = cmds.map(c =>
-        `${c.Enabled !== false ? '<:LEgreen:1555544256356159600>' : '<:LEred:1555544262123323422>'} \`/${c.Name}\` — ${c.Description || '*no description*'}`
+        `${c.Enabled !== false ? '<:LEgreen:1567796933307666515>' : '<:LEred:1567796934545121280>'} \`/${c.Name}\` — ${c.Description || '*no description*'}`
       );
 
       // Chunk if over 4096
@@ -344,9 +344,9 @@ module.exports = {
 
       const embeds = pages.map((p, i) => new EmbedBuilder()
         .setColor(client.config?.embedColor ?? 0x6C53FF)
-        .setTitle(i === 0 ? `<:files:1555544445565407352> Custom Commands (${cmds.length}/${limit})` : `<:files:1555544445565407352> Custom Commands (cont.)`)
+        .setTitle(i === 0 ? `<:files:1567796970964394044> Custom Commands (${cmds.length}/${limit})` : `<:files:1567796970964394044> Custom Commands (cont.)`)
         .setDescription(p)
-        .setFooter(i === 0 ? { text: `<:LEgreen:1555544256356159600> = enabled  <:LEred:1555544262123323422> = disabled  •  Tier: ${tier}` } : null)
+        .setFooter(i === 0 ? { text: `<:LEgreen:1567796933307666515> = enabled  <:LEred:1567796934545121280> = disabled  •  Tier: ${tier}` } : null)
       );
 
       return interaction.reply({ embeds, flags: MessageFlags.Ephemeral });
@@ -357,7 +357,7 @@ module.exports = {
       const name = interaction.options.getString('name').toLowerCase();
       const cmd  = await CustomCommand.findOne({ Guild: guildId, Name: name }).lean();
       if (!cmd) {
-        return interaction.reply({ content: `<:crossy:1555544390221562048> No custom command named \`${name}\` found.`, flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: `<:crossy:1567796959648030831> No custom command named \`${name}\` found.`, flags: MessageFlags.Ephemeral });
       }
 
       const embed = new EmbedBuilder()
@@ -365,7 +365,7 @@ module.exports = {
         .setTitle(`/${cmd.Name}`)
         .addFields(
           { name: 'Description',  value: cmd.Description || '*none*',             inline: true  },
-          { name: 'Status',       value: cmd.Enabled !== false ? '<:LEgreen:1555544256356159600> Enabled' : '<:LEred:1555544262123323422> Disabled', inline: true },
+          { name: 'Status',       value: cmd.Enabled !== false ? '<:LEgreen:1567796933307666515> Enabled' : '<:LEred:1567796934545121280> Disabled', inline: true },
           { name: 'Embed',        value: cmd.IsEmbed ? 'Yes' : 'No',              inline: true  },
           { name: 'Response',     value: (cmd.Response || '*empty*').slice(0, 512) },
           ...(cmd.PlainTextContent ? [{ name: 'Plain Text Prefix', value: cmd.PlainTextContent.slice(0, 200) }] : []),

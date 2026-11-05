@@ -14,7 +14,7 @@
 const TIERS = {
     free: {
         name: 'Free',
-        emoji: '<:lockk:1555544494441635860>',
+        emoji: '<:lockk:1567796977809367122>',
         color: 0x5c5c5c,
         price: { monthly: 0, yearly: 0 },
         limits: {
@@ -50,7 +50,7 @@ const TIERS = {
 
     basic: {
         name: 'RankCore Basic',
-        emoji: '<:boost:1555544362455146576>',
+        emoji: '<:boost:1567796953599836280>',
         color: 0x3b82f6,
         price: { monthly: 299, yearly: 2499 },         // €2.99 / €24.99
         priceDisplay: { monthly: '€2.99', yearly: '€24.99' },
@@ -87,7 +87,7 @@ const TIERS = {
 
     pro: {
         name: 'RankCore Pro',
-        emoji: '<:eco:1555544429253890050>',
+        emoji: '<:eco:1567796967197900842>',
         color: 0xa855f7,
         price: { monthly: 599, yearly: 4999 },         // €5.99 / €49.99
         priceDisplay: { monthly: '€5.99', yearly: '€49.99' },
@@ -124,7 +124,7 @@ const TIERS = {
 
     elite: {
         name: 'RankCore Elite',
-        emoji: '<:1430986209995526274:1555544172302307449>',
+        emoji: '<:1430986209995526274:1567796911350747206>',
         color: 0xf59e0b,
         price: { monthly: 1299, yearly: 9999 },        // €12.99 / €99.99
         priceDisplay: { monthly: '€12.99', yearly: '€99.99' },

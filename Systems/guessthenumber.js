@@ -60,7 +60,7 @@ module.exports = (client) => {
     // ── Correct guess ───────────────────────────────────────────────────────
     if (guess === data.number) {
       const tries = data._tries;
-      try { await message.react('<a:tickyy:1555544712687915008>'); } catch {}
+      try { await message.react('<a:tickyy:1567797045253644368>'); } catch {}
 
       await message.reply(
         interpolate(data.msgWin, { user: `<@${userId}>`, number: data.number, tries })
@@ -92,7 +92,7 @@ module.exports = (client) => {
         const max = data.maxNumber || 1000;
         data.number = Math.floor(Math.random() * (max - min + 1)) + min;
         await data.save();
-        await message.channel.send(`<:n_add:1555544335036973106> New number set! Guess between **${min}** and **${max}**.`).catch(() => {});
+        await message.channel.send(`<:n_add:1567796983408754731> New number set! Guess between **${min}** and **${max}**.`).catch(() => {});
       } else {
         data.enabled = false;
         await data.save();
@@ -102,7 +102,7 @@ module.exports = (client) => {
     }
 
     // ── Wrong guess ─────────────────────────────────────────────────────────
-    try { await message.react('<:crossy:1555544390221562048>'); } catch {}
+    try { await message.react('<:crossy:1567796959648030831>'); } catch {}
 
     if (data.hintsEnabled) {
       const hintMsg = guess > data.number

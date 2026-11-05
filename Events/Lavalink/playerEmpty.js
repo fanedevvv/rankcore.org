@@ -24,7 +24,7 @@ module.exports = {
       .setColor(client.config.embedColor)
       .setTitle(`Music Playback Ended`)
       .setDescription(`The song has ended.\nThe queue is now empty and the player is now stopped.`)
-      .setFooter({ text: `Thanks For Listening <:Red_Heart:1555544329605615758>`, iconURL: client.user.displayAvatarURL() })
+      .setFooter({ text: `Thanks For Listening <:Red_Heart:1567796949271191642>`, iconURL: client.user.displayAvatarURL() })
       .setTimestamp();
 
     try {

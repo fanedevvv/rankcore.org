@@ -19,8 +19,8 @@ module.exports = {
       .setTitle(`🎒 ${user.username}'s Inventory`)
       .setThumbnail(user.displayAvatarURL({ dynamic: true }))
       .addFields(
-        { name: `<:files:1555544445565407352> Items (${data?.items?.length || 0})`, value: itemsList, inline: false },
-        { name: `<:error:1555544434601369620> Confiscated Items (${data?.confiscated?.length || 0})`, value: confiscatedList, inline: false }
+        { name: `<:files:1567796970964394044> Items (${data?.items?.length || 0})`, value: itemsList, inline: false },
+        { name: `<:error:1567796968758050868> Confiscated Items (${data?.confiscated?.length || 0})`, value: confiscatedList, inline: false }
       );
 
     return interaction.reply({ embeds: [embed] });

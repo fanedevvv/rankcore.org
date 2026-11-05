@@ -222,7 +222,7 @@ async function handleModalSubmit(interaction, panelId, tempId = null) {
     }
 
     return interaction.editReply({
-      content: `<a:tickyy:1555544712687915008> Your **${panel.name}** application has been submitted! You'll be notified when it's reviewed.`,
+      content: `<a:tickyy:1567797045253644368> Your **${panel.name}** application has been submitted! You'll be notified when it's reviewed.`,
     });
 
   } catch (err) {

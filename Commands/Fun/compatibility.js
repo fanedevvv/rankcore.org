@@ -4,7 +4,7 @@ const check = require('./compatibility/check');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('compatibility')
-    .setDescription('Check the love compatibility between two people <:Red_Heart:1555544329605615758>')
+    .setDescription('Check the love compatibility between two people <:Red_Heart:1567796949271191642>')
 
     // ── Option A: two Discord users ───────────────────────────────────────
     .addUserOption(o =>

@@ -187,8 +187,8 @@ function handleLogs(client) {
           { name: "• Created At", value: `> <t:${Math.floor(message.createdTimestamp / 1000)}:R>`, inline: true }
         )
         .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Message Deleted" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Message Deleted" });
 
       if (message.attachments.size > 0) {
         mainEmbed.addFields({ name: "• Attachments", value: `> ${attachments}` });
@@ -264,8 +264,8 @@ function handleLogs(client) {
           { name: "• Details", value: `> Full log attached as file` }
         )
         .setThumbnail(guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Bulk Delete" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Bulk Delete" });
 
       return send_log(guild.id, embed, "message", [contentToFile(messageLog, `bulk-delete-${Date.now()}.txt`)]);
     } catch (err) {
@@ -308,8 +308,8 @@ function handleLogs(client) {
             { name: "• Jump", value: `> [Go to message](${newMessage.url})`, inline: true }
           )
           .setThumbnail(newMessage.author.displayAvatarURL({ dynamic: true }))
-          .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-          .setFooter({ text: "<:error:1555544434601369620> Message Edited" })
+          .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+          .setFooter({ text: "<:error:1567796968758050868> Message Edited" })
       );
 
       // BEFORE
@@ -372,8 +372,8 @@ function handleLogs(client) {
           { name: "• Jump to Message", value: `> [Click Here](${reaction.message.url})`, inline: true }
         )
         .setThumbnail(user.displayAvatarURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Reaction Added" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Reaction Added" });
 
       return send_log(reaction.message.guild.id, embed, "message");
     } catch (err) {
@@ -399,8 +399,8 @@ function handleLogs(client) {
           { name: "• Jump to Message", value: `> [Click Here](${reaction.message.url})`, inline: true }
         )
         .setThumbnail(user.displayAvatarURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Reaction Removed" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Reaction Removed" });
 
       return send_log(reaction.message.guild.id, embed, "message");
     } catch (err) {
@@ -437,8 +437,8 @@ function handleLogs(client) {
           { name: "• Jump", value: `> [Go to message](${message.url})` }
         )
         .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: `<:error:1555544434601369620> Message ${isPinned ? 'Pinned' : 'Unpinned'}` });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: `<:error:1567796968758050868> Message ${isPinned ? 'Pinned' : 'Unpinned'}` });
 
       return send_log(channel.guild.id, embed, "message");
     } catch (err) {
@@ -475,8 +475,8 @@ function handleLogs(client) {
           { name: "• Created By", value: `> ${executor || "Unknown"}`, inline: true }
         )
         .setThumbnail(channel.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Channel Created" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Channel Created" });
 
       if (channel.nsfw !== undefined) {
         embed.addFields({ name: "• NSFW", value: `> ${channel.nsfw ? "Yes" : "No"}`, inline: true });
@@ -523,8 +523,8 @@ function handleLogs(client) {
           { name: "• Deleted By", value: `> ${executor || "Unknown"}`, inline: true }
         )
         .setThumbnail(channel.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Channel Deleted" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Channel Deleted" });
 
       if (channel.nsfw !== undefined) {
         embed.addFields({ name: "• NSFW", value: `> ${channel.nsfw ? "Yes" : "No"}`, inline: true });
@@ -551,47 +551,47 @@ function handleLogs(client) {
       const changes = [];
 
       if (oldChannel.name !== newChannel.name) {
-        changes.push(`**Name:** \`${oldChannel.name}\` <:arrow:1555544351118196810> \`${newChannel.name}\``);
+        changes.push(`**Name:** \`${oldChannel.name}\` <:arrow:1567796951527850055> \`${newChannel.name}\``);
       }
 
       if (oldChannel.type !== newChannel.type) {
-        changes.push(`**Type:** \`${oldChannel.type}\` <:arrow:1555544351118196810> \`${newChannel.type}\``);
+        changes.push(`**Type:** \`${oldChannel.type}\` <:arrow:1567796951527850055> \`${newChannel.type}\``);
       }
 
       if (oldChannel.topic !== newChannel.topic) {
-        changes.push(`**Topic:** \`${oldChannel.topic || 'None'}\` <:arrow:1555544351118196810> \`${newChannel.topic || 'None'}\``);
+        changes.push(`**Topic:** \`${oldChannel.topic || 'None'}\` <:arrow:1567796951527850055> \`${newChannel.topic || 'None'}\``);
       }
 
       if (oldChannel.nsfw !== newChannel.nsfw) {
-        changes.push(`**NSFW:** \`${oldChannel.nsfw ? 'Yes' : 'No'}\` <:arrow:1555544351118196810> \`${newChannel.nsfw ? 'Yes' : 'No'}\``);
+        changes.push(`**NSFW:** \`${oldChannel.nsfw ? 'Yes' : 'No'}\` <:arrow:1567796951527850055> \`${newChannel.nsfw ? 'Yes' : 'No'}\``);
       }
 
       if (oldChannel.rateLimitPerUser !== newChannel.rateLimitPerUser) {
-        changes.push(`**Slowmode:** \`${oldChannel.rateLimitPerUser}s\` <:arrow:1555544351118196810> \`${newChannel.rateLimitPerUser}s\``);
+        changes.push(`**Slowmode:** \`${oldChannel.rateLimitPerUser}s\` <:arrow:1567796951527850055> \`${newChannel.rateLimitPerUser}s\``);
       }
 
       if (oldChannel.parentId !== newChannel.parentId) {
-        changes.push(`**Category:** \`${oldChannel.parent?.name || 'None'}\` <:arrow:1555544351118196810> \`${newChannel.parent?.name || 'None'}\``);
+        changes.push(`**Category:** \`${oldChannel.parent?.name || 'None'}\` <:arrow:1567796951527850055> \`${newChannel.parent?.name || 'None'}\``);
       }
 
       if (oldChannel.rawPosition !== newChannel.rawPosition) {
-        changes.push(`**Position:** \`${oldChannel.rawPosition}\` <:arrow:1555544351118196810> \`${newChannel.rawPosition}\``);
+        changes.push(`**Position:** \`${oldChannel.rawPosition}\` <:arrow:1567796951527850055> \`${newChannel.rawPosition}\``);
       }
 
       if (oldChannel.bitrate !== newChannel.bitrate) {
-        changes.push(`**Bitrate:** \`${oldChannel.bitrate / 1000}kbps\` <:arrow:1555544351118196810> \`${newChannel.bitrate / 1000}kbps\``);
+        changes.push(`**Bitrate:** \`${oldChannel.bitrate / 1000}kbps\` <:arrow:1567796951527850055> \`${newChannel.bitrate / 1000}kbps\``);
       }
 
       if (oldChannel.userLimit !== newChannel.userLimit) {
-        changes.push(`**User Limit:** \`${oldChannel.userLimit || 'Unlimited'}\` <:arrow:1555544351118196810> \`${newChannel.userLimit || 'Unlimited'}\``);
+        changes.push(`**User Limit:** \`${oldChannel.userLimit || 'Unlimited'}\` <:arrow:1567796951527850055> \`${newChannel.userLimit || 'Unlimited'}\``);
       }
 
       if (oldChannel.rtcRegion !== newChannel.rtcRegion) {
-        changes.push(`**Region:** \`${oldChannel.rtcRegion || 'Automatic'}\` <:arrow:1555544351118196810> \`${newChannel.rtcRegion || 'Automatic'}\``);
+        changes.push(`**Region:** \`${oldChannel.rtcRegion || 'Automatic'}\` <:arrow:1567796951527850055> \`${newChannel.rtcRegion || 'Automatic'}\``);
       }
 
       if (oldChannel.videoQualityMode !== newChannel.videoQualityMode) {
-        changes.push(`**Video Quality:** \`${oldChannel.videoQualityMode}\` <:arrow:1555544351118196810> \`${newChannel.videoQualityMode}\``);
+        changes.push(`**Video Quality:** \`${oldChannel.videoQualityMode}\` <:arrow:1567796951527850055> \`${newChannel.videoQualityMode}\``);
       }
 
       if (changes.length === 0) return;
@@ -605,8 +605,8 @@ function handleLogs(client) {
           { name: "• Changes", value: changes.join("\n") }
         )
         .setThumbnail(newChannel.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Channel Updated" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Channel Updated" });
 
       return send_log(newChannel.guild.id, embed, "channel");
     } catch (err) {
@@ -625,7 +625,7 @@ function handleLogs(client) {
 
         if (!oldOverwrite) {
           const target = channel.guild.roles.cache.get(id) || await channel.guild.members.fetch(id).catch(() => null);
-          changes.push(`<:n_add:1555544335036973106> **New overwrite added for ${target || `<@${id}>`}**`);
+          changes.push(`<:n_add:1567796983408754731> **New overwrite added for ${target || `<@${id}>`}**`);
           continue;
         }
 
@@ -650,10 +650,10 @@ function handleLogs(client) {
           const target = channel.guild.roles.cache.get(id) || await channel.guild.members.fetch(id).catch(() => null);
           changes.push(
             `**${target || `<@${id}>`}**\n` +
-            (addedAllows.length ? `<:LEgreen:1555544256356159600> Allowed: \`${addedAllows.join("`, `")}\`\n` : "") +
-            (removedAllows.length ? `<:dot:1555544412300378243> Removed Allow: \`${removedAllows.join("`, `")}\`\n` : "") +
-            (addedDenies.length ? `<:LEred:1555544262123323422> Denied: \`${addedDenies.join("`, `")}\`\n` : "") +
-            (removedDenies.length ? `<:dot:1555544412300378243> Removed Deny: \`${removedDenies.join("`, `")}\`\n` : "")
+            (addedAllows.length ? `<:LEgreen:1567796933307666515> Allowed: \`${addedAllows.join("`, `")}\`\n` : "") +
+            (removedAllows.length ? `<:dot:1567796963624226826> Removed Allow: \`${removedAllows.join("`, `")}\`\n` : "") +
+            (addedDenies.length ? `<:LEred:1567796934545121280> Denied: \`${addedDenies.join("`, `")}\`\n` : "") +
+            (removedDenies.length ? `<:dot:1567796963624226826> Removed Deny: \`${removedDenies.join("`, `")}\`\n` : "")
           );
         }
       }
@@ -661,7 +661,7 @@ function handleLogs(client) {
       for (const [id, oldOverwrite] of oldPermissions.cache) {
         if (!newPermissions.cache.has(id)) {
           const target = channel.guild.roles.cache.get(id) || await channel.guild.members.fetch(id).catch(() => null);
-          changes.push(`<:1430986239036625017:1555544229143519304> **Overwrite removed for ${target || `<@${id}>`}**`);
+          changes.push(`<:1430986239036625017:1567796926689185822> **Overwrite removed for ${target || `<@${id}>`}**`);
         }
       }
 
@@ -676,8 +676,8 @@ function handleLogs(client) {
           { name: "• Changes", value: changes.join("\n") }
         )
         .setThumbnail(channel.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Permissions Update" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Permissions Update" });
 
       return send_log(channel.guild.id, embed, "channel");
     } catch (err) {
@@ -700,8 +700,8 @@ function handleLogs(client) {
           { name: "• Created By", value: `> ${thread.ownerId ? `<@${thread.ownerId}>` : 'Unknown'}`, inline: true }
         )
         .setThumbnail(thread.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Thread Created" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Thread Created" });
 
       return send_log(thread.guild.id, embed, "channel");
     } catch (err) {
@@ -724,8 +724,8 @@ function handleLogs(client) {
           { name: "• Locked", value: `> ${thread.locked ? 'Yes' : 'No'}`, inline: true }
         )
         .setThumbnail(thread.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Thread Deleted" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Thread Deleted" });
 
       return send_log(thread.guild.id, embed, "channel");
     } catch (err) {
@@ -740,23 +740,23 @@ function handleLogs(client) {
       const changes = [];
 
       if (oldThread.name !== newThread.name) {
-        changes.push(`**Name:** \`${oldThread.name}\` <:arrow:1555544351118196810> \`${newThread.name}\``);
+        changes.push(`**Name:** \`${oldThread.name}\` <:arrow:1567796951527850055> \`${newThread.name}\``);
       }
 
       if (oldThread.archived !== newThread.archived) {
-        changes.push(`**Archived:** \`${oldThread.archived ? 'Yes' : 'No'}\` <:arrow:1555544351118196810> \`${newThread.archived ? 'Yes' : 'No'}\``);
+        changes.push(`**Archived:** \`${oldThread.archived ? 'Yes' : 'No'}\` <:arrow:1567796951527850055> \`${newThread.archived ? 'Yes' : 'No'}\``);
       }
 
       if (oldThread.locked !== newThread.locked) {
-        changes.push(`**Locked:** \`${oldThread.locked ? 'Yes' : 'No'}\` <:arrow:1555544351118196810> \`${newThread.locked ? 'Yes' : 'No'}\``);
+        changes.push(`**Locked:** \`${oldThread.locked ? 'Yes' : 'No'}\` <:arrow:1567796951527850055> \`${newThread.locked ? 'Yes' : 'No'}\``);
       }
 
       if (oldThread.autoArchiveDuration !== newThread.autoArchiveDuration) {
-        changes.push(`**Auto Archive:** \`${oldThread.autoArchiveDuration}m\` <:arrow:1555544351118196810> \`${newThread.autoArchiveDuration}m\``);
+        changes.push(`**Auto Archive:** \`${oldThread.autoArchiveDuration}m\` <:arrow:1567796951527850055> \`${newThread.autoArchiveDuration}m\``);
       }
 
       if (oldThread.rateLimitPerUser !== newThread.rateLimitPerUser) {
-        changes.push(`**Slowmode:** \`${oldThread.rateLimitPerUser}s\` <:arrow:1555544351118196810> \`${newThread.rateLimitPerUser}s\``);
+        changes.push(`**Slowmode:** \`${oldThread.rateLimitPerUser}s\` <:arrow:1567796951527850055> \`${newThread.rateLimitPerUser}s\``);
       }
 
       if (changes.length === 0) return;
@@ -770,8 +770,8 @@ function handleLogs(client) {
           { name: "• Changes", value: changes.join("\n") }
         )
         .setThumbnail(newThread.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Thread Updated" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Thread Updated" });
 
       return send_log(newThread.guild.id, embed, "channel");
     } catch (err) {
@@ -786,7 +786,7 @@ function handleLogs(client) {
       const changes = [];
 
       if (oldGuild.name !== newGuild.name) {
-        changes.push(`**Name:** \`${oldGuild.name}\` <:arrow:1555544351118196810> \`${newGuild.name}\``);
+        changes.push(`**Name:** \`${oldGuild.name}\` <:arrow:1567796951527850055> \`${newGuild.name}\``);
       }
 
       if (oldGuild.icon !== newGuild.icon) {
@@ -802,51 +802,51 @@ function handleLogs(client) {
       }
 
       if (oldGuild.description !== newGuild.description) {
-        changes.push(`**Description:** \`${oldGuild.description || 'None'}\` <:arrow:1555544351118196810> \`${newGuild.description || 'None'}\``);
+        changes.push(`**Description:** \`${oldGuild.description || 'None'}\` <:arrow:1567796951527850055> \`${newGuild.description || 'None'}\``);
       }
 
       if (oldGuild.verificationLevel !== newGuild.verificationLevel) {
-        changes.push(`**Verification Level:** \`${oldGuild.verificationLevel}\` <:arrow:1555544351118196810> \`${newGuild.verificationLevel}\``);
+        changes.push(`**Verification Level:** \`${oldGuild.verificationLevel}\` <:arrow:1567796951527850055> \`${newGuild.verificationLevel}\``);
       }
 
       if (oldGuild.defaultMessageNotifications !== newGuild.defaultMessageNotifications) {
-        changes.push(`**Default Notifications:** \`${oldGuild.defaultMessageNotifications}\` <:arrow:1555544351118196810> \`${newGuild.defaultMessageNotifications}\``);
+        changes.push(`**Default Notifications:** \`${oldGuild.defaultMessageNotifications}\` <:arrow:1567796951527850055> \`${newGuild.defaultMessageNotifications}\``);
       }
 
       if (oldGuild.explicitContentFilter !== newGuild.explicitContentFilter) {
-        changes.push(`**Explicit Content Filter:** \`${oldGuild.explicitContentFilter}\` <:arrow:1555544351118196810> \`${newGuild.explicitContentFilter}\``);
+        changes.push(`**Explicit Content Filter:** \`${oldGuild.explicitContentFilter}\` <:arrow:1567796951527850055> \`${newGuild.explicitContentFilter}\``);
       }
 
       if (oldGuild.afkChannelId !== newGuild.afkChannelId) {
-        changes.push(`**AFK Channel:** ${oldGuild.afkChannel || 'None'} <:arrow:1555544351118196810> ${newGuild.afkChannel || 'None'}`);
+        changes.push(`**AFK Channel:** ${oldGuild.afkChannel || 'None'} <:arrow:1567796951527850055> ${newGuild.afkChannel || 'None'}`);
       }
 
       if (oldGuild.afkTimeout !== newGuild.afkTimeout) {
-        changes.push(`**AFK Timeout:** \`${oldGuild.afkTimeout / 60}m\` <:arrow:1555544351118196810> \`${newGuild.afkTimeout / 60}m\``);
+        changes.push(`**AFK Timeout:** \`${oldGuild.afkTimeout / 60}m\` <:arrow:1567796951527850055> \`${newGuild.afkTimeout / 60}m\``);
       }
 
       if (oldGuild.systemChannelId !== newGuild.systemChannelId) {
-        changes.push(`**System Channel:** ${oldGuild.systemChannel || 'None'} <:arrow:1555544351118196810> ${newGuild.systemChannel || 'None'}`);
+        changes.push(`**System Channel:** ${oldGuild.systemChannel || 'None'} <:arrow:1567796951527850055> ${newGuild.systemChannel || 'None'}`);
       }
 
       if (oldGuild.rulesChannelId !== newGuild.rulesChannelId) {
-        changes.push(`**Rules Channel:** ${oldGuild.rulesChannel || 'None'} <:arrow:1555544351118196810> ${newGuild.rulesChannel || 'None'}`);
+        changes.push(`**Rules Channel:** ${oldGuild.rulesChannel || 'None'} <:arrow:1567796951527850055> ${newGuild.rulesChannel || 'None'}`);
       }
 
       if (oldGuild.publicUpdatesChannelId !== newGuild.publicUpdatesChannelId) {
-        changes.push(`**Updates Channel:** ${oldGuild.publicUpdatesChannel || 'None'} <:arrow:1555544351118196810> ${newGuild.publicUpdatesChannel || 'None'}`);
+        changes.push(`**Updates Channel:** ${oldGuild.publicUpdatesChannel || 'None'} <:arrow:1567796951527850055> ${newGuild.publicUpdatesChannel || 'None'}`);
       }
 
       if (oldGuild.preferredLocale !== newGuild.preferredLocale) {
-        changes.push(`**Preferred Locale:** \`${oldGuild.preferredLocale}\` <:arrow:1555544351118196810> \`${newGuild.preferredLocale}\``);
+        changes.push(`**Preferred Locale:** \`${oldGuild.preferredLocale}\` <:arrow:1567796951527850055> \`${newGuild.preferredLocale}\``);
       }
 
       if (oldGuild.premiumTier !== newGuild.premiumTier) {
-        changes.push(`**Boost Tier:** \`Level ${oldGuild.premiumTier}\` <:arrow:1555544351118196810> \`Level ${newGuild.premiumTier}\``);
+        changes.push(`**Boost Tier:** \`Level ${oldGuild.premiumTier}\` <:arrow:1567796951527850055> \`Level ${newGuild.premiumTier}\``);
       }
 
       if (oldGuild.premiumSubscriptionCount !== newGuild.premiumSubscriptionCount) {
-        changes.push(`**Boost Count:** \`${oldGuild.premiumSubscriptionCount}\` <:arrow:1555544351118196810> \`${newGuild.premiumSubscriptionCount}\``);
+        changes.push(`**Boost Count:** \`${oldGuild.premiumSubscriptionCount}\` <:arrow:1567796951527850055> \`${newGuild.premiumSubscriptionCount}\``);
       }
 
       if (changes.length === 0) return;
@@ -860,8 +860,8 @@ function handleLogs(client) {
           { name: "• Changes", value: changes.join("\n") }
         )
         .setThumbnail(newGuild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Guild Updated" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Guild Updated" });
 
       return send_log(newGuild.id, embed, "guild");
     } catch (err) {
@@ -893,8 +893,8 @@ function handleLogs(client) {
           { name: "• Member Count", value: `> ${member.guild.memberCount}`, inline: true }
         )
         .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> User Joined" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> User Joined" });
 
       if (member.user.bot && inviter) {
         embed.addFields({ name: "• Bot Added By", value: `> ${inviter}` });
@@ -902,7 +902,7 @@ function handleLogs(client) {
 
       // Warn if account is very new (less than 7 days old)
       if (accountAge < 7 * 24 * 60 * 60 * 1000) {
-        embed.addFields({ name: "• <:error:1555544434601369620> Warning", value: `> Account is less than 7 days old` });
+        embed.addFields({ name: "• <:error:1567796968758050868> Warning", value: `> Account is less than 7 days old` });
         embed.setColor("#FFA500");
       }
 
@@ -945,8 +945,8 @@ function handleLogs(client) {
           { name: "• Roles", value: `> ${roles.substring(0, 1000)}${roles.length > 1000 ? '...' : ''}` }
         )
         .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: wasKicked ? "<:error:1555544434601369620> User Kicked" : "<:error:1555544434601369620> User Left" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: wasKicked ? "<:error:1567796968758050868> User Kicked" : "<:error:1567796968758050868> User Left" });
 
       if (wasKicked && kickEntry) {
         embed.addFields({ name: "• Kicked By", value: `> ${kickEntry.executor}` });
@@ -969,7 +969,7 @@ function handleLogs(client) {
 
       // Nickname change (handled by dedicated event but adding here for completeness)
       if (oldMember.nickname !== newMember.nickname) {
-        changes.push(`**Nickname:** \`${oldMember.nickname || 'None'}\` <:arrow:1555544351118196810> \`${newMember.nickname || 'None'}\``);
+        changes.push(`**Nickname:** \`${oldMember.nickname || 'None'}\` <:arrow:1567796951527850055> \`${newMember.nickname || 'None'}\``);
       }
 
       // Avatar change
@@ -1015,8 +1015,8 @@ function handleLogs(client) {
           { name: "• Changes", value: changes.join("\n") }
         )
         .setThumbnail(newMember.user.displayAvatarURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Member Updated" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Member Updated" });
 
       return send_log(newMember.guild.id, embed, "member");
     } catch (err) {
@@ -1048,8 +1048,8 @@ function handleLogs(client) {
           { name: "• Reason", value: `> ${reason || 'No reason provided'}` }
         )
         .setThumbnail(user.displayAvatarURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> User Banned" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> User Banned" });
 
       return send_log(guild.id, embed, "member");
     } catch (err) {
@@ -1078,8 +1078,8 @@ function handleLogs(client) {
           { name: "• Unbanned By", value: `> ${executor || 'Unknown'}`, inline: true }
         )
         .setThumbnail(user.displayAvatarURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> User Unbanned" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> User Unbanned" });
 
       return send_log(guild.id, embed, "member");
     } catch (err) {
@@ -1117,8 +1117,8 @@ function handleLogs(client) {
           { name: "• Permissions", value: `> ${permissions.substring(0, 1000)}${permissions.length > 1000 ? '...' : ''}` }
         )
         .setThumbnail(role.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Role Created" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Role Created" });
 
       return send_log(role.guild.id, embed, "role");
     } catch (err) {
@@ -1149,8 +1149,8 @@ function handleLogs(client) {
           { name: "• Deleted By", value: `> ${executor || 'Unknown'}`, inline: true }
         )
         .setThumbnail(role.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Role Deleted" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Role Deleted" });
 
       return send_log(role.guild.id, embed, "role");
     } catch (err) {
@@ -1165,23 +1165,23 @@ function handleLogs(client) {
       const changes = [];
 
       if (oldRole.name !== newRole.name) {
-        changes.push(`**Name:** \`${oldRole.name}\` <:arrow:1555544351118196810> \`${newRole.name}\``);
+        changes.push(`**Name:** \`${oldRole.name}\` <:arrow:1567796951527850055> \`${newRole.name}\``);
       }
 
       if (oldRole.color !== newRole.color) {
-        changes.push(`**Color:** \`${oldRole.hexColor}\` <:arrow:1555544351118196810> \`${newRole.hexColor}\``);
+        changes.push(`**Color:** \`${oldRole.hexColor}\` <:arrow:1567796951527850055> \`${newRole.hexColor}\``);
       }
 
       if (oldRole.hoist !== newRole.hoist) {
-        changes.push(`**Hoisted:** \`${oldRole.hoist ? 'Yes' : 'No'}\` <:arrow:1555544351118196810> \`${newRole.hoist ? 'Yes' : 'No'}\``);
+        changes.push(`**Hoisted:** \`${oldRole.hoist ? 'Yes' : 'No'}\` <:arrow:1567796951527850055> \`${newRole.hoist ? 'Yes' : 'No'}\``);
       }
 
       if (oldRole.mentionable !== newRole.mentionable) {
-        changes.push(`**Mentionable:** \`${oldRole.mentionable ? 'Yes' : 'No'}\` <:arrow:1555544351118196810> \`${newRole.mentionable ? 'Yes' : 'No'}\``);
+        changes.push(`**Mentionable:** \`${oldRole.mentionable ? 'Yes' : 'No'}\` <:arrow:1567796951527850055> \`${newRole.mentionable ? 'Yes' : 'No'}\``);
       }
 
       if (oldRole.position !== newRole.position) {
-        changes.push(`**Position:** \`${oldRole.position}\` <:arrow:1555544351118196810> \`${newRole.position}\``);
+        changes.push(`**Position:** \`${oldRole.position}\` <:arrow:1567796951527850055> \`${newRole.position}\``);
       }
 
       if (oldRole.icon !== newRole.icon) {
@@ -1189,7 +1189,7 @@ function handleLogs(client) {
       }
 
       if (oldRole.unicodeEmoji !== newRole.unicodeEmoji) {
-        changes.push(`**Emoji:** \`${oldRole.unicodeEmoji || 'None'}\` <:arrow:1555544351118196810> \`${newRole.unicodeEmoji || 'None'}\``);
+        changes.push(`**Emoji:** \`${oldRole.unicodeEmoji || 'None'}\` <:arrow:1567796951527850055> \`${newRole.unicodeEmoji || 'None'}\``);
       }
 
       // Permission changes
@@ -1215,8 +1215,8 @@ function handleLogs(client) {
           { name: "• Changes", value: changes.join("\n") }
         )
         .setThumbnail(newRole.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Role Updated" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Role Updated" });
 
       return send_log(newRole.guild.id, embed, "role");
     } catch (err) {
@@ -1246,8 +1246,8 @@ function handleLogs(client) {
             { name: "• Server Deafened", value: `> ${newState.serverDeaf ? 'Yes' : 'No'}`, inline: true }
           )
           .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-          .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-          .setFooter({ text: "<:error:1555544434601369620> Voice Joined" });
+          .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+          .setFooter({ text: "<:error:1567796968758050868> Voice Joined" });
 
         return send_log(newState.guild.id, embed, "voice");
       }
@@ -1262,8 +1262,8 @@ function handleLogs(client) {
             { name: "• Channel", value: `> ${oldState.channel}`, inline: true }
           )
           .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-          .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-          .setFooter({ text: "<:error:1555544434601369620> Voice Left" });
+          .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+          .setFooter({ text: "<:error:1567796968758050868> Voice Left" });
 
         return send_log(newState.guild.id, embed, "voice");
       }
@@ -1279,8 +1279,8 @@ function handleLogs(client) {
             { name: "• To", value: `> ${newState.channel}`, inline: true }
           )
           .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-          .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-          .setFooter({ text: "<:error:1555544434601369620> Voice Switch" });
+          .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+          .setFooter({ text: "<:error:1567796968758050868> Voice Switch" });
 
         return send_log(newState.guild.id, embed, "voice");
       }
@@ -1289,27 +1289,27 @@ function handleLogs(client) {
       const changes = [];
 
       if (oldState.selfMute !== newState.selfMute) {
-        changes.push(`**Self Mute:** ${newState.selfMute ? '<:LEred:1555544262123323422> Muted' : '<:LEgreen:1555544256356159600> Unmuted'}`);
+        changes.push(`**Self Mute:** ${newState.selfMute ? '<:LEred:1567796934545121280> Muted' : '<:LEgreen:1567796933307666515> Unmuted'}`);
       }
 
       if (oldState.selfDeaf !== newState.selfDeaf) {
-        changes.push(`**Self Deafen:** ${newState.selfDeaf ? '<:LEred:1555544262123323422> Deafened' : '<:LEgreen:1555544256356159600> Undeafened'}`);
+        changes.push(`**Self Deafen:** ${newState.selfDeaf ? '<:LEred:1567796934545121280> Deafened' : '<:LEgreen:1567796933307666515> Undeafened'}`);
       }
 
       if (oldState.serverMute !== newState.serverMute) {
-        changes.push(`**Server Mute:** ${newState.serverMute ? '<:LEred:1555544262123323422> Muted' : '<:LEgreen:1555544256356159600> Unmuted'}`);
+        changes.push(`**Server Mute:** ${newState.serverMute ? '<:LEred:1567796934545121280> Muted' : '<:LEgreen:1567796933307666515> Unmuted'}`);
       }
 
       if (oldState.serverDeaf !== newState.serverDeaf) {
-        changes.push(`**Server Deafen:** ${newState.serverDeaf ? '<:LEred:1555544262123323422> Deafened' : '<:LEgreen:1555544256356159600> Undeafened'}`);
+        changes.push(`**Server Deafen:** ${newState.serverDeaf ? '<:LEred:1567796934545121280> Deafened' : '<:LEgreen:1567796933307666515> Undeafened'}`);
       }
 
       if (oldState.streaming !== newState.streaming) {
-        changes.push(`**Streaming:** ${newState.streaming ? '<:LEgreen:1555544256356159600> Started' : '<:LEred:1555544262123323422> Stopped'}`);
+        changes.push(`**Streaming:** ${newState.streaming ? '<:LEgreen:1567796933307666515> Started' : '<:LEred:1567796934545121280> Stopped'}`);
       }
 
       if (oldState.selfVideo !== newState.selfVideo) {
-        changes.push(`**Video:** ${newState.selfVideo ? '<:LEgreen:1555544256356159600> Started' : '<:LEred:1555544262123323422> Stopped'}`);
+        changes.push(`**Video:** ${newState.selfVideo ? '<:LEgreen:1567796933307666515> Started' : '<:LEred:1567796934545121280> Stopped'}`);
       }
 
       if (changes.length === 0) return;
@@ -1323,8 +1323,8 @@ function handleLogs(client) {
           { name: "• Changes", value: changes.join("\n") }
         )
         .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Voice State Updated" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Voice State Updated" });
 
       return send_log(newState.guild.id, embed, "voice");
     } catch (err) {
@@ -1357,8 +1357,8 @@ function handleLogs(client) {
           { name: "• URL", value: `> [Link](${emoji.url})` }
         )
         .setThumbnail(emoji.url)
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Emoji Created" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Emoji Created" });
 
       return send_log(emoji.guild.id, embed, "guild");
     } catch (err) {
@@ -1387,8 +1387,8 @@ function handleLogs(client) {
           { name: "• Deleted By", value: `> ${executor || 'Unknown'}`, inline: true }
         )
         .setThumbnail(emoji.url)
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Emoji Deleted" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Emoji Deleted" });
 
       return send_log(emoji.guild.id, embed, "guild");
     } catch (err) {
@@ -1403,7 +1403,7 @@ function handleLogs(client) {
       const changes = [];
 
       if (oldEmoji.name !== newEmoji.name) {
-        changes.push(`**Name:** \`${oldEmoji.name}\` <:arrow:1555544351118196810> \`${newEmoji.name}\``);
+        changes.push(`**Name:** \`${oldEmoji.name}\` <:arrow:1567796951527850055> \`${newEmoji.name}\``);
       }
 
       if (changes.length === 0) return;
@@ -1417,8 +1417,8 @@ function handleLogs(client) {
           { name: "• Changes", value: changes.join("\n") }
         )
         .setThumbnail(newEmoji.url)
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Emoji Updated" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Emoji Updated" });
 
       return send_log(newEmoji.guild.id, embed, "guild");
     } catch (err) {
@@ -1448,8 +1448,8 @@ function handleLogs(client) {
           { name: "• Created By", value: `> ${executor || 'Unknown'}`, inline: true }
         )
         .setThumbnail(sticker.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Sticker Created" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Sticker Created" });
 
       return send_log(sticker.guild.id, embed, "guild");
     } catch (err) {
@@ -1477,8 +1477,8 @@ function handleLogs(client) {
           { name: "• Deleted By", value: `> ${executor || 'Unknown'}`, inline: true }
         )
         .setThumbnail(sticker.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Sticker Deleted" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Sticker Deleted" });
 
       return send_log(sticker.guild.id, embed, "guild");
     } catch (err) {
@@ -1493,15 +1493,15 @@ function handleLogs(client) {
       const changes = [];
 
       if (oldSticker.name !== newSticker.name) {
-        changes.push(`**Name:** \`${oldSticker.name}\` <:arrow:1555544351118196810> \`${newSticker.name}\``);
+        changes.push(`**Name:** \`${oldSticker.name}\` <:arrow:1567796951527850055> \`${newSticker.name}\``);
       }
 
       if (oldSticker.description !== newSticker.description) {
-        changes.push(`**Description:** \`${oldSticker.description || 'None'}\` <:arrow:1555544351118196810> \`${newSticker.description || 'None'}\``);
+        changes.push(`**Description:** \`${oldSticker.description || 'None'}\` <:arrow:1567796951527850055> \`${newSticker.description || 'None'}\``);
       }
 
       if (oldSticker.tags !== newSticker.tags) {
-        changes.push(`**Tags:** \`${oldSticker.tags || 'None'}\` <:arrow:1555544351118196810> \`${newSticker.tags || 'None'}\``);
+        changes.push(`**Tags:** \`${oldSticker.tags || 'None'}\` <:arrow:1567796951527850055> \`${newSticker.tags || 'None'}\``);
       }
 
       if (changes.length === 0) return;
@@ -1515,8 +1515,8 @@ function handleLogs(client) {
           { name: "• Changes", value: changes.join("\n") }
         )
         .setThumbnail(newSticker.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Sticker Updated" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Sticker Updated" });
 
       return send_log(newSticker.guild.id, embed, "guild");
     } catch (err) {
@@ -1543,8 +1543,8 @@ function handleLogs(client) {
           { name: "• URL", value: `> https://discord.gg/${invite.code}` }
         )
         .setThumbnail(invite.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Invite Created" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Invite Created" });
 
       return send_log(invite.guild.id, embed, "guild");
     } catch (err) {
@@ -1565,8 +1565,8 @@ function handleLogs(client) {
           { name: "• Uses", value: `> ${invite.uses || 0}`, inline: true }
         )
         .setThumbnail(invite.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Invite Deleted" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Invite Deleted" });
 
       return send_log(invite.guild.id, embed, "guild");
     } catch (err) {
@@ -1588,19 +1588,19 @@ function handleLogs(client) {
       newWebhooks.forEach((wh) => {
         const old = oldWebhooks.get(wh.id);
         if (!old) {
-          changes.push(`<:n_add:1555544335036973106> Webhook created: **${wh.name}** (ID: \`${wh.id}\`)`);
+          changes.push(`<:n_add:1567796983408754731> Webhook created: **${wh.name}** (ID: \`${wh.id}\`)`);
         } else if (old.name !== wh.name || old.avatar !== wh.avatar || old.channelId !== wh.channelId) {
           const updates = [];
-          if (old.name !== wh.name) updates.push(`Name: \`${old.name}\` <:arrow:1555544351118196810> \`${wh.name}\``);
+          if (old.name !== wh.name) updates.push(`Name: \`${old.name}\` <:arrow:1567796951527850055> \`${wh.name}\``);
           if (old.avatar !== wh.avatar) updates.push('Avatar updated');
           if (old.channelId !== wh.channelId) updates.push(`Channel changed`);
-          changes.push(`<:files:1555544445565407352> Webhook updated: **${wh.name}**\n   ${updates.join(', ')}`);
+          changes.push(`<:files:1567796970964394044> Webhook updated: **${wh.name}**\n   ${updates.join(', ')}`);
         }
       });
 
       oldWebhooks.forEach((wh, id) => {
         if (!newWebhooks.has(id)) {
-          changes.push(`<:1430986239036625017:1555544229143519304> Webhook deleted: **${wh.name}** (ID: \`${wh.id}\`)`);
+          changes.push(`<:1430986239036625017:1567796926689185822> Webhook deleted: **${wh.name}** (ID: \`${wh.id}\`)`);
         }
       });
 
@@ -1618,8 +1618,8 @@ function handleLogs(client) {
           { name: "• Changes", value: changes.join("\n") }
         )
         .setThumbnail(channel.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> Webhook Updated" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> Webhook Updated" });
 
       return send_log(channel.guild.id, embed, "guild");
     } catch (err) {
@@ -1645,8 +1645,8 @@ function handleLogs(client) {
           { name: "• Content", value: `> ${execution.content?.substring(0, 100) || 'N/A'}${execution.content?.length > 100 ? '...' : ''}` }
         )
         .setThumbnail(execution.user.displayAvatarURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> AutoMod Action" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> AutoMod Action" });
 
       if (execution.action.metadata?.durationSeconds) {
         embed.addFields({
@@ -1677,8 +1677,8 @@ function handleLogs(client) {
           { name: "• Actions", value: `> ${rule.actions.map(a => a.type).join(", ")}` }
         )
         .setThumbnail(rule.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> AutoMod Rule Created" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> AutoMod Rule Created" });
 
       return send_log(rule.guild.id, embed, "moderation");
     } catch (err) {
@@ -1699,8 +1699,8 @@ function handleLogs(client) {
           { name: "• Trigger Type", value: `> ${rule.triggerType}`, inline: true }
         )
         .setThumbnail(rule.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> AutoMod Rule Deleted" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> AutoMod Rule Deleted" });
 
       return send_log(rule.guild.id, embed, "moderation");
     } catch (err) {
@@ -1715,15 +1715,15 @@ function handleLogs(client) {
       const changes = [];
 
       if (oldRule.name !== newRule.name) {
-        changes.push(`**Name:** \`${oldRule.name}\` <:arrow:1555544351118196810> \`${newRule.name}\``);
+        changes.push(`**Name:** \`${oldRule.name}\` <:arrow:1567796951527850055> \`${newRule.name}\``);
       }
 
       if (oldRule.enabled !== newRule.enabled) {
-        changes.push(`**Enabled:** \`${oldRule.enabled ? 'Yes' : 'No'}\` <:arrow:1555544351118196810> \`${newRule.enabled ? 'Yes' : 'No'}\``);
+        changes.push(`**Enabled:** \`${oldRule.enabled ? 'Yes' : 'No'}\` <:arrow:1567796951527850055> \`${newRule.enabled ? 'Yes' : 'No'}\``);
       }
 
       if (oldRule.triggerType !== newRule.triggerType) {
-        changes.push(`**Trigger Type:** \`${oldRule.triggerType}\` <:arrow:1555544351118196810> \`${newRule.triggerType}\``);
+        changes.push(`**Trigger Type:** \`${oldRule.triggerType}\` <:arrow:1567796951527850055> \`${newRule.triggerType}\``);
       }
 
       if (JSON.stringify(oldRule.actions) !== JSON.stringify(newRule.actions)) {
@@ -1741,8 +1741,8 @@ function handleLogs(client) {
           { name: "• Changes", value: changes.join("\n") }
         )
         .setThumbnail(newRule.guild.iconURL({ dynamic: true }))
-        .setAuthor({ name: "<:error:1555544434601369620> Logging System" })
-        .setFooter({ text: "<:error:1555544434601369620> AutoMod Rule Updated" });
+        .setAuthor({ name: "<:error:1567796968758050868> Logging System" })
+        .setFooter({ text: "<:error:1567796968758050868> AutoMod Rule Updated" });
 
       return send_log(newRule.guild.id, embed, "moderation");
     } catch (err) {

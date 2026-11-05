@@ -43,7 +43,7 @@ module.exports = {
       const sent = await interaction.reply({
         components: [
           new ContainerBuilder().setAccentColor(accentColor)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:ping:1555544527597604968>  Pinging…"))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:ping:1567796998902521920>  Pinging…"))
             .addSeparatorComponents(sep())
             .addTextDisplayComponents(new TextDisplayBuilder().setContent("Calculating latency…")),
         ],
@@ -56,10 +56,10 @@ module.exports = {
       return interaction.editReply({
         components: [
           new ContainerBuilder().setAccentColor(color)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:ping:1555544527597604968>  Pong!"))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:ping:1567796998902521920>  Pong!"))
             .addSeparatorComponents(sep())
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(
-              `**Roundtrip** — \`${roundtrip}ms\`\n**WebSocket** — \`${ws}ms\`\n**Status** — ${roundtrip < 100 ? "<:LEgreen:1555544256356159600> Excellent" : roundtrip < 250 ? "<:error:1555544434601369620> Good" : "<:LEred:1555544262123323422> High"}`
+              `**Roundtrip** — \`${roundtrip}ms\`\n**WebSocket** — \`${ws}ms\`\n**Status** — ${roundtrip < 100 ? "<:LEgreen:1567796933307666515> Excellent" : roundtrip < 250 ? "<:error:1567796968758050868> Good" : "<:LEred:1567796934545121280> High"}`
             )),
         ],
       });
@@ -74,7 +74,7 @@ module.exports = {
       return interaction.reply({
         components: [
           new ContainerBuilder().setAccentColor(accentColor)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:1430986244921495654:1555544239792980044>  Bot Uptime"))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:1430986244921495654:1567796929587576852>  Bot Uptime"))
             .addSeparatorComponents(sep())
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(
               `**Running for** — \`${fmt}\`\n**Started at** — <t:${started}:F> (<t:${started}:R>)`
@@ -92,7 +92,7 @@ module.exports = {
       return interaction.reply({
         components: [
           new ContainerBuilder().setAccentColor(accentColor)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:n_utils:1555544669545431062>  ${client.user.username} Statistics`))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:n_utils:1567796996830658573>  ${client.user.username} Statistics`))
             .addSeparatorComponents(sep())
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(
               `**Servers** — \`${guilds.toLocaleString()}\`\n**Users** — \`${users.toLocaleString()}\`\n**Commands** — \`${cmds}\`\n**Memory** — \`${mem} MB\`\n**Node.js** — \`${process.version}\`\n**Discord.js** — \`v${require("discord.js").version}\``
@@ -107,14 +107,14 @@ module.exports = {
       return interaction.reply({
         components: [
           new ContainerBuilder().setAccentColor(accentColor)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_add:1555544335036973106>  Invite RankCore"))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_add:1567796983408754731>  Invite RankCore"))
             .addSeparatorComponents(sep())
             .addTextDisplayComponents(new TextDisplayBuilder().setContent("Add RankCore to your server or get help from our support team!"))
             .addActionRowComponents(
               new ActionRowBuilder().addComponents(
-                new ButtonBuilder().setLabel("Invite Bot").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:n_add:1555544335036973106>")).setURL(inviteUrl),
-                new ButtonBuilder().setLabel("Support Server").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:n_utils:1555544669545431062>")).setURL(config.supportURL),
-                new ButtonBuilder().setLabel("Vote on Top.gg").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:boost:1555544362455146576>")).setURL("https://top.gg/bot/960624234688811188"),
+                new ButtonBuilder().setLabel("Invite Bot").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:n_add:1567796983408754731>")).setURL(inviteUrl),
+                new ButtonBuilder().setLabel("Support Server").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:n_utils:1567796996830658573>")).setURL(config.supportURL),
+                new ButtonBuilder().setLabel("Vote on Top.gg").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:boost:1567796953599836280>")).setURL("https://top.gg/bot/960624234688811188"),
               )
             ),
         ],
@@ -128,14 +128,14 @@ module.exports = {
       return interaction.reply({
         components: [
           new ContainerBuilder().setAccentColor(accentColor)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_bot:1555544367886770176>  Server Dashboard"))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_bot:1567796985816154144>  Server Dashboard"))
             .addSeparatorComponents(sep())
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(
               `**Server ID** — \`${guildId}\`\n\nManage welcome messages, leveling, moderation, logs, tickets and all other setups from the dashboard. No slash commands needed for setup!`
             ))
             .addActionRowComponents(
               new ActionRowBuilder().addComponents(
-                new ButtonBuilder().setLabel("Open Dashboard").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:n_bot:1555544367886770176>")).setURL(dashUrl),
+                new ButtonBuilder().setLabel("Open Dashboard").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:n_bot:1567796985816154144>")).setURL(dashUrl),
               )
             ),
         ],
@@ -147,13 +147,13 @@ module.exports = {
       return interaction.reply({
         components: [
           new ContainerBuilder().setAccentColor(accentColor)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_utils:1555544669545431062>  RankCore Support"))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_utils:1567796996830658573>  RankCore Support"))
             .addSeparatorComponents(sep())
             .addTextDisplayComponents(new TextDisplayBuilder().setContent("Need help? We've got you covered."))
             .addActionRowComponents(
               new ActionRowBuilder().addComponents(
-                new ButtonBuilder().setLabel("Support Server").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:n_utils:1555544669545431062>")).setURL(config.supportURL),
-                new ButtonBuilder().setLabel("Documentation").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:files:1555544445565407352>")).setURL("https://dash.rankcore.org/docs"),
+                new ButtonBuilder().setLabel("Support Server").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:n_utils:1567796996830658573>")).setURL(config.supportURL),
+                new ButtonBuilder().setLabel("Documentation").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:files:1567796970964394044>")).setURL("https://dash.rankcore.org/docs"),
               )
             ),
         ],
@@ -165,12 +165,12 @@ module.exports = {
       return interaction.reply({
         components: [
           new ContainerBuilder().setAccentColor(accentColor)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:boost:1555544362455146576>  Vote for RankCore"))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:boost:1567796953599836280>  Vote for RankCore"))
             .addSeparatorComponents(sep())
             .addTextDisplayComponents(new TextDisplayBuilder().setContent("Voting helps RankCore grow! It only takes 10 seconds."))
             .addActionRowComponents(
               new ActionRowBuilder().addComponents(
-                new ButtonBuilder().setLabel("Vote on Top.gg").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:boost:1555544362455146576>")).setURL("https://top.gg/bot/960624234688811188"),
+                new ButtonBuilder().setLabel("Vote on Top.gg").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:boost:1567796953599836280>")).setURL("https://top.gg/bot/960624234688811188"),
               )
             ),
         ],

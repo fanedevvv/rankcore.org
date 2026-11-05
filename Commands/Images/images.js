@@ -14,7 +14,7 @@ module.exports = {
     .addSubcommand((command) =>
       command
         .setName("fake-tweet")
-        .setDescription("Post a real tweet <:n_bot:1555544367886770176>")
+        .setDescription("Post a real tweet <:n_bot:1567796985816154144>")
         .addStringOption((option) =>
           option.setName("tweet").setDescription("Enter your tweet").setRequired(true)
         )
@@ -22,13 +22,13 @@ module.exports = {
     .addSubcommand((command) =>
       command
         .setName("fake-ytcomment")
-        .setDescription("Post a real youtube comment <:LEred:1555544262123323422>")
+        .setDescription("Post a real youtube comment <:LEred:1567796934545121280>")
         .addStringOption((option) =>
           option.setName("comment").setDescription("Enter your comment").setRequired(true)
         )
     )
     .addSubcommand((command) =>
-      command.setName("meme").setDescription("Generates a meme image <:minigames:1555544500179439707>")
+      command.setName("meme").setDescription("Generates a meme image <:minigames:1567796978929238076>")
     )
     .addSubcommand((command) =>
       command
@@ -121,7 +121,7 @@ module.exports = {
         const imageUrl = response.data.message;
 
         const dogEmbed = new EmbedBuilder()
-          .setTitle("<:minigames:1555544500179439707> Random Dog")
+          .setTitle("<:minigames:1567796978929238076> Random Dog")
           .setColor(client.config.embedColor)
           .setImage(imageUrl);
 
@@ -154,7 +154,7 @@ module.exports = {
       const canvasUrl = `https://some-random-api.com/canvas/tweet?avatar=${avatarUrl}&displayname=${interaction.user.username}&username=${interaction.user.username}&comment=${encodeURIComponent(tweet)}`;
 
       const tweetEmbed = new EmbedBuilder()
-        .setTitle("<:n_bot:1555544367886770176>・Fake Tweet!")
+        .setTitle("<:n_bot:1567796985816154144>・Fake Tweet!")
         .setImage(canvasUrl)
         .setTimestamp()
         .setColor(client.config.embedColor);
@@ -179,7 +179,7 @@ module.exports = {
       const canvasUrl = `https://some-random-api.com/canvas/youtube-comment?avatar=${avatarUrl}&displayname=${interaction.user.username}&username=${interaction.user.username}&comment=${encodeURIComponent(comment)}`;
 
       const ytCommentEmbed = new EmbedBuilder()
-        .setTitle("<:LEred:1555544262123323422>・Fake comment!")
+        .setTitle("<:LEred:1567796934545121280>・Fake comment!")
         .setImage(canvasUrl)
         .setTimestamp()
         .setColor(client.config.embedColor);

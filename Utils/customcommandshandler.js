@@ -53,24 +53,24 @@ async function handleCustomCommand(interaction, client) {
 
   // ── Soft-disabled ─────────────────────────────────────────────────────────
   if (cmd.Enabled === false) {
-    await interaction.reply({ content: '<:error:1555544434601369620> This command is currently disabled.', ephemeral: true });
+    await interaction.reply({ content: '<:error:1567796968758050868> This command is currently disabled.', ephemeral: true });
     return true;
   }
 
   // ── DM guard ──────────────────────────────────────────────────────────────
   if (!interaction.guildId && !cmd.DmAllowed) {
-    await interaction.reply({ content: '<:crossy:1555544390221562048> This command cannot be used in DMs.', ephemeral: true });
+    await interaction.reply({ content: '<:crossy:1567796959648030831> This command cannot be used in DMs.', ephemeral: true });
     return true;
   }
 
   // ── Channel restrictions ──────────────────────────────────────────────────
   const channelId = interaction.channelId;
   if (cmd.DeniedChannels?.some(c => c.id === channelId)) {
-    await interaction.reply({ content: '<:crossy:1555544390221562048> This command is not allowed in this channel.', ephemeral: true });
+    await interaction.reply({ content: '<:crossy:1567796959648030831> This command is not allowed in this channel.', ephemeral: true });
     return true;
   }
   if (cmd.AllowedChannels?.length && !cmd.AllowedChannels.some(c => c.id === channelId)) {
-    await interaction.reply({ content: '<:crossy:1555544390221562048> This command can only be used in specific channels.', ephemeral: true });
+    await interaction.reply({ content: '<:crossy:1567796959648030831> This command can only be used in specific channels.', ephemeral: true });
     return true;
   }
 
@@ -78,11 +78,11 @@ async function handleCustomCommand(interaction, client) {
   const memberRoles = interaction.member?.roles?.cache;
   if (memberRoles) {
     if (cmd.DeniedRoles?.some(r => memberRoles.has(r.id))) {
-      await interaction.reply({ content: '<:crossy:1555544390221562048> Your role is not allowed to use this command.', ephemeral: true });
+      await interaction.reply({ content: '<:crossy:1567796959648030831> Your role is not allowed to use this command.', ephemeral: true });
       return true;
     }
     if (cmd.AllowedRoles?.length && !cmd.AllowedRoles.some(r => memberRoles.has(r.id))) {
-      await interaction.reply({ content: '<:crossy:1555544390221562048> You do not have the required role to use this command.', ephemeral: true });
+      await interaction.reply({ content: '<:crossy:1567796959648030831> You do not have the required role to use this command.', ephemeral: true });
       return true;
     }
   }
@@ -93,7 +93,7 @@ async function handleCustomCommand(interaction, client) {
     const gExpiry = guildCooldowns.get(gKey);
     if (gExpiry && Date.now() < gExpiry) {
       const secs = Math.ceil((gExpiry - Date.now()) / 1000);
-      await interaction.reply({ content: `<:1430986244921495654:1555544239792980044> This command is on a server-wide cooldown. Try again in **${secs}s**.`, ephemeral: true });
+      await interaction.reply({ content: `<:1430986244921495654:1567796929587576852> This command is on a server-wide cooldown. Try again in **${secs}s**.`, ephemeral: true });
       return true;
     }
     guildCooldowns.set(gKey, Date.now() + cmd.GlobalCooldown * 1000);
@@ -105,7 +105,7 @@ async function handleCustomCommand(interaction, client) {
     const uExpiry = userCooldowns.get(uKey);
     if (uExpiry && Date.now() < uExpiry) {
       const secs = Math.ceil((uExpiry - Date.now()) / 1000);
-      await interaction.reply({ content: `<:1430986244921495654:1555544239792980044> You're on cooldown! Try again in **${secs}s**.`, ephemeral: true });
+      await interaction.reply({ content: `<:1430986244921495654:1567796929587576852> You're on cooldown! Try again in **${secs}s**.`, ephemeral: true });
       return true;
     }
     userCooldowns.set(uKey, Date.now() + cmd.Cooldown * 1000);
@@ -342,7 +342,7 @@ function attachButtonCollector(message, cmd, ctx, client) {
       const btnIdx = Number(parts[3]);
       const btnDef = (cmd.Buttons || [])[btnIdx];
       if (!btnDef) {
-        return btnInteraction.reply({ content: '<:crossy:1555544390221562048> Button not found.', ephemeral: true });
+        return btnInteraction.reply({ content: '<:crossy:1567796959648030831> Button not found.', ephemeral: true });
       }
 
       // Build a fresh context for the button clicker
@@ -375,7 +375,7 @@ function attachButtonCollector(message, cmd, ctx, client) {
     } catch (err) {
       console.error('[CustomCmd] Button handler error:', err);
       try {
-        await btnInteraction.reply({ content: '<:crossy:1555544390221562048> Something went wrong.', ephemeral: true });
+        await btnInteraction.reply({ content: '<:crossy:1567796959648030831> Something went wrong.', ephemeral: true });
       } catch { /* already replied */ }
     }
   });
@@ -418,7 +418,7 @@ async function handleButtonInteraction(interaction, client) {
   const btnIdx = Number(parts[3]);
   const btnDef = (cmd.Buttons || [])[btnIdx];
   if (!btnDef) {
-    await interaction.reply({ content: '<:crossy:1555544390221562048> Button configuration not found.', ephemeral: true });
+    await interaction.reply({ content: '<:crossy:1567796959648030831> Button configuration not found.', ephemeral: true });
     return true;
   }
 

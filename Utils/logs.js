@@ -51,12 +51,12 @@ const PROCESS_COLORS = {
     CB:        0x23d160,
 };
 const PROCESS_ICONS = {
-    BOT:       '<:n_bot:1555544367886770176>',
-    DASHBOARD: '<:n_bot:1555544367886770176>',
-    CB:        '<:boost:1555544362455146576>',
+    BOT:       '<:n_bot:1567796985816154144>',
+    DASHBOARD: '<:n_bot:1567796985816154144>',
+    CB:        '<:boost:1567796953599836280>',
 };
 function getProcessColor() { return PROCESS_COLORS[getBaseProcessName()] ?? 0x5865f2; }
-function getProcessIcon()  { return PROCESS_ICONS[getBaseProcessName()]  ?? '<:files:1555544445565407352>'; }
+function getProcessIcon()  { return PROCESS_ICONS[getBaseProcessName()]  ?? '<:files:1567796970964394044>'; }
 
 // ================= CONFIG =================
 const ERROR_PING_COOLDOWN = 10 * 60 * 1000; // 10 minutes (kept for shouldPingError gate, no actual ping sent)

@@ -33,11 +33,11 @@ const RATE_LIMITS = {
 const GROQ_MODEL = "llama-3.3-70b-versatile"; // override with GROQ_MODEL in .env
 
 const TOGGLE_COMMANDS = [
-    { cmd: "!swears",   modeKey: "swearing", name: "Swearing mode", emoji: "<:error:1555544434601369620>",       schemaKey: "swearing" },
-    { cmd: "!uwu",      modeKey: "uwu",      name: "UwU mode",      emoji: "<:Red_Heart:1555544329605615758>",   schemaKey: "uwu"      },
-    { cmd: "!roast",    modeKey: "roasting", name: "Roasting mode", emoji: "<:fire:1555544450871332944>",        schemaKey: "roasting" },
-    { cmd: "!ragebait", modeKey: "ragebait", name: "Ragebait mode", emoji: "<:error:1555544434601369620>",       schemaKey: "ragebait" },
-    { cmd: "!help",     modeKey: "helpMode", name: "Helper mode",   emoji: "<:n_bot:1555544367886770176>",         schemaKey: "helpMode" },
+    { cmd: "!swears",   modeKey: "swearing", name: "Swearing mode", emoji: "<:error:1567796968758050868>",       schemaKey: "swearing" },
+    { cmd: "!uwu",      modeKey: "uwu",      name: "UwU mode",      emoji: "<:Red_Heart:1567796949271191642>",   schemaKey: "uwu"      },
+    { cmd: "!roast",    modeKey: "roasting", name: "Roasting mode", emoji: "<:fire:1567796972125945888>",        schemaKey: "roasting" },
+    { cmd: "!ragebait", modeKey: "ragebait", name: "Ragebait mode", emoji: "<:error:1567796968758050868>",       schemaKey: "ragebait" },
+    { cmd: "!help",     modeKey: "helpMode", name: "Helper mode",   emoji: "<:n_bot:1567796985816154144>",         schemaKey: "helpMode" },
 ];
 
 module.exports = { RATE_LIMITS, GROQ_MODEL, TOGGLE_COMMANDS };

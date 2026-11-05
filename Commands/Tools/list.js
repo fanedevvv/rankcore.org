@@ -10,12 +10,12 @@ const {
 
 function getChannelLabel(channel) {
   switch (channel.type) {
-    case ChannelType.GuildAnnouncement: return "<:announcement:1555544345740967956> [ANNOUNCEMENT]";
-    case ChannelType.GuildForum: return "<:files:1555544445565407352> [FORUM]";
-    case ChannelType.GuildVoice: return "<:n_music:1555544516746940416> [VOICE]";
-    case ChannelType.GuildStageVoice: return "<:n_music:1555544516746940416> [STAGE]";
-    case ChannelType.GuildMedia: return "<:files:1555544445565407352> [MEDIA]";
-    case ChannelType.GuildText: return "<:suggestion:1555544601501237322> [TEXT]";
+    case ChannelType.GuildAnnouncement: return "<:announcement:1567796950265241662> [ANNOUNCEMENT]";
+    case ChannelType.GuildForum: return "<:files:1567796970964394044> [FORUM]";
+    case ChannelType.GuildVoice: return "<:n_music:1567796993403658261> [VOICE]";
+    case ChannelType.GuildStageVoice: return "<:n_music:1567796993403658261> [STAGE]";
+    case ChannelType.GuildMedia: return "<:files:1567796970964394044> [MEDIA]";
+    case ChannelType.GuildText: return "<:suggestion:1567797008452812870> [TEXT]";
     default: return `[${channel.type}]`;
   }
 }
@@ -242,7 +242,7 @@ module.exports = {
 
       if (!member.permissions.has(PermissionFlagsBits.Administrator)) {
         return interaction.editReply({
-          content: "<:crossy:1555544390221562048> You must be **Administrator** to use this command.",
+          content: "<:crossy:1567796959648030831> You must be **Administrator** to use this command.",
           flags: MessageFlags.Ephemeral,
         });
       }
@@ -285,7 +285,7 @@ if (sub === "channels") {
               .filter(t => t.isThread() && t.parentId === ch.id)
               .sort((a, b) => a.createdTimestamp - b.createdTimestamp)
               .forEach(thread =>
-                (output += `      └─ <:thread:1555544613035708426> ${thread.name}${idSuffix(thread.id)}\n`)
+                (output += `      └─ <:thread:1567797010692706324> ${thread.name}${idSuffix(thread.id)}\n`)
               );
           }
         });
@@ -311,14 +311,14 @@ if (sub === "channels") {
           .filter(t => t.isThread() && t.parentId === ch.id)
           .sort((a, b) => a.createdTimestamp - b.createdTimestamp)
           .forEach(thread =>
-            (output += `      └─ <:thread:1555544613035708426> ${thread.name}${idSuffix(thread.id)}\n`)
+            (output += `      └─ <:thread:1567797010692706324> ${thread.name}${idSuffix(thread.id)}\n`)
           );
       }
     });
   }
 
   const embed = new EmbedBuilder()
-    .setTitle(`<:files:1555544445565407352> Channels in ${guild.name}`)
+    .setTitle(`<:files:1567796970964394044> Channels in ${guild.name}`)
     .setDescription(`Total channels: **${channels.size}**`)
     .setColor("#5865F2");
 
@@ -379,7 +379,7 @@ if (sub === "channels") {
         const fileName = showPerms ? "roles_with_permissions.txt" : "roles.txt";
 
         const embed = new EmbedBuilder()
-          .setTitle(`<:minigames:1555544500179439707> Roles in ${guild.name}`)
+          .setTitle(`<:minigames:1567796978929238076> Roles in ${guild.name}`)
           .setDescription(
             `Total roles: **${roles.size}**` +
             (showPerms ? "\n_Permissions included in attached file._" : "") +
@@ -413,7 +413,7 @@ if (sub === "channels") {
         const humans  = members.filter(m => !m.user.bot).size;
 
         const embed = new EmbedBuilder()
-          .setTitle(`<:1430986220011524216:1555544196952367134> Members in ${guild.name}`)
+          .setTitle(`<:1430986220011524216:1567796919244161135> Members in ${guild.name}`)
           .setColor("#FF5733")
           .setDescription(
             `Total members: **${members.size}**\nHumans: **${humans}**\nBots: **${bots}**`
@@ -517,7 +517,7 @@ if (sub === "channels") {
         }
 
         const embed = new EmbedBuilder()
-          .setTitle(`<:n_utils:1555544669545431062> Emojis & Stickers in ${guild.name}`)
+          .setTitle(`<:n_utils:1567796996830658573> Emojis & Stickers in ${guild.name}`)
           .setColor("#9B59B6")
           .addFields(
             {

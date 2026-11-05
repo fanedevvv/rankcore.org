@@ -32,7 +32,7 @@ module.exports = {
     const user = interaction.options.getUser ("user");
     const rating = interaction.options.getNumber("rating");
     const reason = interaction.options.getString("reason") || "No reason.";
-    const ratingStars = "<:boost:1555544362455146576>".repeat(rating);
+    const ratingStars = "<:boost:1567796953599836280>".repeat(rating);
 
     if (user.id === interaction.user.id) {
       return await interaction.reply({ content: "You cannot give yourself a rep.", ephemeral: true });

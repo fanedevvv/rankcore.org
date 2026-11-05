@@ -63,19 +63,19 @@ function buildPollContainer(accent, question, options, votes, authorTag, endTs, 
   const total   = Object.values(votes).reduce((a, v) => a + v.size, 0);
   const maxVote = Math.max(...options.map((_, i) => votes[i].size));
   const status  = ended
-    ? "<:LEred:1555544262123323422> **Poll Ended**"
-    : `<:n_loading:1555544489194688623> Ends <t:${endTs}:R>  •  <t:${endTs}:f>`;
+    ? "<:LEred:1567796934545121280> **Poll Ended**"
+    : `<:n_loading:1567796992556666982> Ends <t:${endTs}:R>  •  <t:${endTs}:f>`;
 
   const optionLines = options.map((opt, i) => {
     const count  = votes[i].size;
     const pct    = total ? Math.round((count / total) * 100) : 0;
-    const crown  = ended && count === maxVote && maxVote > 0 ? "  <:1430986209995526274:1555544172302307449>" : "";
+    const crown  = ended && count === maxVote && maxVote > 0 ? "  <:1430986209995526274:1567796911350747206>" : "";
     return `${OPTION_EMOJIS[i]}  **${opt}**${crown}\n\`${progressBar(pct)}\` ${pct}% — ${count} vote${count !== 1 ? "s" : ""}`;
   }).join("\n\n");
 
   const c = new ContainerBuilder().setAccentColor(accent);
   c.addTextDisplayComponents(new TextDisplayBuilder()
-    .setContent(ended ? "## <:n_utils:1555544669545431062>  Poll — Final Results" : "## <:n_utils:1555544669545431062>  Poll"));
+    .setContent(ended ? "## <:n_utils:1567796996830658573>  Poll — Final Results" : "## <:n_utils:1567796996830658573>  Poll"));
   c.addSeparatorComponents(new SeparatorBuilder()
     .setSpacing(SeparatorSpacingSize.Small).setDivider(true));
   c.addTextDisplayComponents(new TextDisplayBuilder()
@@ -99,7 +99,7 @@ function buildPollContainer(accent, question, options, votes, authorTag, endTs, 
         .setCustomId("poll_results")
         .setLabel("My Vote")
         .setStyle(ButtonStyle.Primary)
-        .setEmoji(parseEmoji("<:n_utils:1555544669545431062>")),
+        .setEmoji(parseEmoji("<:n_utils:1567796996830658573>")),
     ));
   } else {
     c.addActionRowComponents(new ActionRowBuilder().addComponents(
@@ -107,7 +107,7 @@ function buildPollContainer(accent, question, options, votes, authorTag, endTs, 
         const isWinner = votes[i].size === maxVote && maxVote > 0;
         return new ButtonBuilder()
           .setCustomId(`poll_done_${i}`)
-          .setLabel(isWinner ? `${OPTION_EMOJIS[i]}` : OPTION_EMOJIS[i]).setEmoji(isWinner ? parseEmoji('<:1430986209995526274:1555544172302307449>') : undefined)
+          .setLabel(isWinner ? `${OPTION_EMOJIS[i]}` : OPTION_EMOJIS[i]).setEmoji(isWinner ? parseEmoji('<:1430986209995526274:1567796911350747206>') : undefined)
           .setStyle(isWinner ? ButtonStyle.Success : ButtonStyle.Secondary)
           .setDisabled(true);
       })
@@ -153,7 +153,7 @@ function attachCollector(msg, { votes, options, question, authorTag, endTs, acce
 
       const resC = new ContainerBuilder().setAccentColor(accent)
         .addTextDisplayComponents(new TextDisplayBuilder()
-          .setContent(`## <:n_utils:1555544669545431062>  Live Results — ${question}`))
+          .setContent(`## <:n_utils:1567796996830658573>  Live Results — ${question}`))
         .addSeparatorComponents(new SeparatorBuilder()
           .setSpacing(SeparatorSpacingSize.Small).setDivider(true))
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(lines))
@@ -182,8 +182,8 @@ function attachCollector(msg, { votes, options, question, authorTag, endTs, acce
 
       await i.reply({
         content: wasVoted
-          ? `<:n_add:1555544335036973106> Removed your vote for **${options[idx]}**.`
-          : `<a:tickyy:1555544712687915008> Voted for **${options[idx]}**! Click again to deselect.`,
+          ? `<:n_add:1567796983408754731> Removed your vote for **${options[idx]}**.`
+          : `<a:tickyy:1567797045253644368> Voted for **${options[idx]}**! Click again to deselect.`,
         flags: MessageFlags.Ephemeral,
       });
 
@@ -216,12 +216,12 @@ async function endPoll(msg, { votes, options, question, authorTag, endTs, accent
   const maxVote = Math.max(...options.map((_, i) => votes[i].size));
   const winners = options.filter((_, i) => votes[i].size === maxVote && maxVote > 0);
   const winText = winners.length === 1
-    ? `<:1430986209995526274:1555544172302307449> **Winner:** ${winners[0]} with ${maxVote} vote${maxVote !== 1 ? "s" : ""}`
-    : `<:user:1555544664155889668> **Tie!** ${winners.join(", ")} — ${maxVote} votes each`;
+    ? `<:1430986209995526274:1567796911350747206> **Winner:** ${winners[0]} with ${maxVote} vote${maxVote !== 1 ? "s" : ""}`
+    : `<:user:1567797032423264261> **Tie!** ${winners.join(", ")} — ${maxVote} votes each`;
 
   const annC = new ContainerBuilder().setAccentColor(ACCENT.success)
     .addTextDisplayComponents(new TextDisplayBuilder()
-      .setContent(`## <:n_utils:1555544669545431062>  Poll Closed — **${question}**`))
+      .setContent(`## <:n_utils:1567796996830658573>  Poll Closed — **${question}**`))
     .addSeparatorComponents(new SeparatorBuilder()
       .setSpacing(SeparatorSpacingSize.Small).setDivider(true))
     .addTextDisplayComponents(new TextDisplayBuilder()
@@ -382,7 +382,7 @@ module.exports = {
         });
       } catch (err) {
         const errC = new ContainerBuilder().setAccentColor(ACCENT.error)
-          .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:crossy:1555544390221562048>  Error"))
+          .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:crossy:1567796959648030831>  Error"))
           .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
           .addTextDisplayComponents(new TextDisplayBuilder().setContent(`\`${err.message}\``));
         return interaction.editReply({ components: [errC], flags: MessageFlags.IsComponentsV2 });
@@ -409,7 +409,7 @@ module.exports = {
       attachCollector(msg, pollData, minutesToMs(durationMin), client);
 
       const okC = new ContainerBuilder().setAccentColor(ACCENT.success)
-        .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <a:tickyy:1555544712687915008>  Poll Sent"))
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <a:tickyy:1567797045253644368>  Poll Sent"))
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(`Sent in ${targetChannel}`));
       return interaction.editReply({ components: [okC], flags: MessageFlags.IsComponentsV2 });
@@ -419,7 +419,7 @@ module.exports = {
     if (sub === "end") {
       if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
         const errC = new ContainerBuilder().setAccentColor(ACCENT.error)
-          .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:crossy:1555544390221562048>  Missing Permission"))
+          .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:crossy:1567796959648030831>  Missing Permission"))
           .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
           .addTextDisplayComponents(new TextDisplayBuilder().setContent("You need **Manage Messages** to end polls early."));
         return interaction.reply({ components: [errC], flags: MessageFlags.Ephemeral | MessageFlags.IsComponentsV2 });
@@ -429,7 +429,7 @@ module.exports = {
       const pollData = activePolls.get(pollId);
       if (!pollData) {
         const errC = new ContainerBuilder().setAccentColor(ACCENT.error)
-          .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:crossy:1555544390221562048>  Poll Not Found"))
+          .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:crossy:1567796959648030831>  Poll Not Found"))
           .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
           .addTextDisplayComponents(new TextDisplayBuilder().setContent(
             `No active poll with ID \`${pollId}\`.\nUse \`/poll list\` to see running polls.`
@@ -444,7 +444,7 @@ module.exports = {
       await pollData.msg.edit({ components: [final], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
 
       const okC = new ContainerBuilder().setAccentColor(ACCENT.success)
-        .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <a:tickyy:1555544712687915008>  Poll Ended Early"))
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <a:tickyy:1567797045253644368>  Poll Ended Early"))
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(
           `**Question:** ${pollData.question}\n**ID:** \`${pollId}\`\nResults are now locked.`
@@ -457,7 +457,7 @@ module.exports = {
       const guildPolls = [...activePolls.entries()].filter(([, p]) => p.guildId === interaction.guild.id);
       if (!guildPolls.length) {
         const noneC = new ContainerBuilder().setAccentColor(ACCENT.info)
-          .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_utils:1555544669545431062>  Active Polls"))
+          .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_utils:1567796996830658573>  Active Polls"))
           .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
           .addTextDisplayComponents(new TextDisplayBuilder().setContent("No active polls in this server right now."));
         return interaction.reply({ components: [noneC], flags: MessageFlags.Ephemeral | MessageFlags.IsComponentsV2 });
@@ -469,7 +469,7 @@ module.exports = {
       }).join("\n\n");
 
       const listC = new ContainerBuilder().setAccentColor(accent)
-        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:n_utils:1555544669545431062>  Active Polls — ${guildPolls.length}`))
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:n_utils:1567796996830658573>  Active Polls — ${guildPolls.length}`))
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(lines))
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))

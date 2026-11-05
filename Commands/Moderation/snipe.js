@@ -167,9 +167,9 @@ module.exports = {
           `There are only **${list.length}** deleted snipe(s) stored for ${target}.`, client);
 
       const s    = list[idx];
-      const atts = s.attachments ? `\n\n<:1430986227909263442:1555544212756242532> **Attachments:**\n${s.attachments}` : '';
-      const stks = s.stickers    ? `\n<:gw:1555544456873119875>️ **Stickers:** ${s.stickers}` : '';
-      const embs = s.embed_count ? `\n<:files:1555544445565407352> **Embeds:** ${s.embed_count}` : '';
+      const atts = s.attachments ? `\n\n<:1430986227909263442:1567796922863984670> **Attachments:**\n${s.attachments}` : '';
+      const stks = s.stickers    ? `\n<:gw:1567796972872536159>️ **Stickers:** ${s.stickers}` : '';
+      const embs = s.embed_count ? `\n<:files:1567796970964394044> **Embeds:** ${s.embed_count}` : '';
       const body =
         `**Author** — <@${s.author.id}> \`${s.author.tag}\`\n` +
         `**Sent** — ${abs(s.created_at)}  •  **Deleted** — ${rel(s.sniped_at)}\n` +
@@ -179,7 +179,7 @@ module.exports = {
         remaining(list.length);
 
       return interaction.reply({
-        components:      [container(client, '<:n_search:1555544554365788191>  Deleted Message Snipe', body)],
+        components:      [container(client, '<:n_search:1567796994792230953>  Deleted Message Snipe', body)],
         flags:           MessageFlags.IsComponentsV2,
         allowedMentions: NO_PINGS,
       });
@@ -212,7 +212,7 @@ module.exports = {
         remaining(list.length);
 
       return interaction.reply({
-        components:      [container(client, '<:files:1555544445565407352>  Edited Message Snipe', body)],
+        components:      [container(client, '<:files:1567796970964394044>  Edited Message Snipe', body)],
         flags:           MessageFlags.IsComponentsV2,
         allowedMentions: NO_PINGS,
       });
@@ -280,7 +280,7 @@ module.exports = {
         remaining(list.length);
 
       return interaction.reply({
-        components:      [container(client, '<:del:1555544395720302643>  Bulk Delete Snipe', body)],
+        components:      [container(client, '<:del:1567796961334267974>  Bulk Delete Snipe', body)],
         flags:           MessageFlags.IsComponentsV2,
         allowedMentions: NO_PINGS,
       });
@@ -299,7 +299,7 @@ module.exports = {
       if (serverWide) {
         clearGuild(interaction.guild.id);
         return interaction.reply({
-          components:      [container(client, '<:del:1555544395720302643>  Snipes Cleared',
+          components:      [container(client, '<:del:1567796961334267974>  Snipes Cleared',
             `All cached snipes across **${interaction.guild.name}** have been wiped.`)],
           flags:           MessageFlags.IsComponentsV2,
           allowedMentions: NO_PINGS,
@@ -307,7 +307,7 @@ module.exports = {
       } else {
         clearChannel(cid);
         return interaction.reply({
-          components:      [container(client, '<:del:1555544395720302643>  Snipes Cleared',
+          components:      [container(client, '<:del:1567796961334267974>  Snipes Cleared',
             `All cached snipes in ${target} have been wiped.`)],
           flags:           MessageFlags.IsComponentsV2,
           allowedMentions: NO_PINGS,

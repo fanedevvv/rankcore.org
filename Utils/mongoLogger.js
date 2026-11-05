@@ -96,7 +96,7 @@ function attachMongoLogger(schema, collectionName) {
     schema.post('save', async function (doc) {
         try {
             const json = safeJsonDoc(doc);
-            const title = `<:LEgreen:1555544256356159600> [${collectionName}] Document Created`;
+            const title = `<:LEgreen:1567796933307666515> [${collectionName}] Document Created`;
 
             logStep('MONGO', `${collectionName} CREATED: ${doc._id}`, theme.green);
             await sendEmbed(title, json, 0x57F287);
@@ -109,7 +109,7 @@ function attachMongoLogger(schema, collectionName) {
     schema.post('findOneAndUpdate', async function (doc) {
         try {
             const json = safeJsonDoc(doc);
-            const title = `<:error:1555544434601369620> [${collectionName}] Document Updated`;
+            const title = `<:error:1567796968758050868> [${collectionName}] Document Updated`;
 
             logStep('MONGO', `${collectionName} UPDATED: ${doc?._id}`, theme.yellow);
             await sendEmbed(title, json, 0xFEE75C);
@@ -122,7 +122,7 @@ function attachMongoLogger(schema, collectionName) {
     schema.post('findOneAndDelete', async function (doc) {
         try {
             const json = safeJsonDoc(doc);
-            const title = `<:LEred:1555544262123323422> [${collectionName}] Document Deleted`;
+            const title = `<:LEred:1567796934545121280> [${collectionName}] Document Deleted`;
 
             logStep('MONGO', `${collectionName} DELETED: ${doc?._id}`, theme.red);
             await sendEmbed(title, json, 0xED4245);
@@ -134,7 +134,7 @@ function attachMongoLogger(schema, collectionName) {
     // DELETE MANY
     schema.post('deleteMany', async function (result) {
         try {
-            const title = `<:LEred:1555544262123323422> [${collectionName}] Multiple Documents Deleted`;
+            const title = `<:LEred:1567796934545121280> [${collectionName}] Multiple Documents Deleted`;
             const description = `Deleted Count: ${result.deletedCount || 'Unknown'}`;
 
             logStep('MONGO', `${collectionName} deleted many documents`, theme.red);
@@ -149,7 +149,7 @@ function attachMongoLogger(schema, collectionName) {
         try {
             if (error) {
                 logStep('MONGO ERROR', `Error in ${collectionName}: ${error.message}`, theme.red);
-                const title = `<:crossy:1555544390221562048> [${collectionName}] Mongo Error`;
+                const title = `<:crossy:1567796959648030831> [${collectionName}] Mongo Error`;
                 await sendEmbed(title, error.message, 0x992D22);
             }
         } catch (err) {

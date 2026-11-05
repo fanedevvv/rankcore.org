@@ -43,7 +43,7 @@ premium: true,
               .setDescription(`\`\`\`md\n# Welcome to Twitch Notifications System\n> Never miss your fav streamer's live!\`\`\``)
               .addFields(
                   { name: 'SYSTEM STATUS', value: notification ? `\`\`\`ansi
-\u001b[32m□ <:LEgreen:1555544256356159600> ALL SYSTEMS ONLINE\n\u001b[32m├───> Features: FULLY AVAILABLE\n\u001b[32m└───> Updates: Real-time Enabled\`\`\`` : '<:LEred:1555544262123323422> SYSTEM OFFLINE\n- Features: NOT CONFIGURED\n- Updates: Disabled' },
+\u001b[32m□ <:LEgreen:1567796933307666515> ALL SYSTEMS ONLINE\n\u001b[32m├───> Features: FULLY AVAILABLE\n\u001b[32m└───> Updates: Real-time Enabled\`\`\`` : '<:LEred:1567796934545121280> SYSTEM OFFLINE\n- Features: NOT CONFIGURED\n- Updates: Disabled' },
                   { name: 'Active Configuration', value: notification ? `\`\`\`yml\n"channel": "${notification.Channel}"\n"twitch-user": "${notification.Streamer}"\`\`\`` : `\`\`\`yml\n"channel": "Not Configured"\n"twitch-user": "Not Configured"\`\`\`` }
               )
               .setFooter({ text: `Today at ${new Date().toLocaleTimeString()}` });
@@ -149,7 +149,7 @@ premium: true,
                                   // Update the embed
                                   embed.spliceFields(0, 2, 
                                       { name: 'SYSTEM STATUS', value: `\`\`\`ansi
-                      \u001b[32m□ <:LEgreen:1555544256356159600> ALL SYSTEMS ONLINE\n\u001b[32m├───> Features: FULLY AVAILABLE\n\u001b[32m└───> Updates: Real-time Enabled\`\`\`` },
+                      \u001b[32m□ <:LEgreen:1567796933307666515> ALL SYSTEMS ONLINE\n\u001b[32m├───> Features: FULLY AVAILABLE\n\u001b[32m└───> Updates: Real-time Enabled\`\`\`` },
                                       { name: 'Active Configuration', value: `\`\`\`yml\n"channel": "${collectedData.channel}"\n"twitch-user": "${collectedData.streamer}"\`\`\`` }
                                   );
                                   setupButton.setDisabled(true);
@@ -177,7 +177,7 @@ premium: true,
                   // Update the embed
                   embed.spliceFields(0, 2, 
                       { name: 'SYSTEM STATUS', value: `\`\`\`ansi
-                      \u001b[32m□ <:LEred:1555544262123323422> SYSTEM OFFLINE\n\u001b[32m├───> Features: NOT CONFIGURED\n\u001b[32m└───> Updates: Disabled\`\`\`` },
+                      \u001b[32m□ <:LEred:1567796934545121280> SYSTEM OFFLINE\n\u001b[32m├───> Features: NOT CONFIGURED\n\u001b[32m└───> Updates: Disabled\`\`\`` },
                       { name: 'Active Configuration', value: `\`\`\`yml\n"channel": "Not Configured"\n"twitch-user": "Not Configured"\`\`\`` }
                   );
                   setupButton.setDisabled(false);

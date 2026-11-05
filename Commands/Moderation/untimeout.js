@@ -32,7 +32,7 @@ module.exports = {
     await targetMember.timeout(null, `Untimeout by ${interaction.user.tag} | ${reason}`);
 
     return interaction.reply({
-      components: [modActionContainer("<:n_music:1555544516746940416>", "Timeout Removed",
+      components: [modActionContainer("<:n_music:1567796993403658261>", "Timeout Removed",
         `${targetUser.tag} (\`${targetUser.id}\`)`, reason, {
           accent, clientId: client.user.id,
           extra: `**Moderator** — ${interaction.user.tag}`,

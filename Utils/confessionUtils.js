@@ -22,8 +22,8 @@ function containsBlockedWord(text, blockedWords) {
 // ── Build the confession embed ────────────────────────────────────────────────
 function buildConfessionEmbed(config, confessionText, number) {
     const title = config.ShowConfessionNumber && number
-        ? `${config.ConfessionTitle || '<:suggestion:1555544601501237322> Anonymous Confession'} #${number}`
-        : (config.ConfessionTitle || '<:suggestion:1555544601501237322> Anonymous Confession');
+        ? `${config.ConfessionTitle || '<:suggestion:1567797008452812870> Anonymous Confession'} #${number}`
+        : (config.ConfessionTitle || '<:suggestion:1567797008452812870> Anonymous Confession');
 
     const color = config.ConfessionColor || '#5865F2';
 
@@ -52,12 +52,12 @@ function buildConfessionButtons(msgId) {
             .setCustomId('new_confession')
             .setLabel('Send Your Own')
             .setStyle(ButtonStyle.Secondary)
-            .setEmoji(parseEmoji('<:files:1555544445565407352>')),
+            .setEmoji(parseEmoji('<:files:1567796970964394044>')),
         new ButtonBuilder()
             .setCustomId(`report_confession_${msgId || 'pending'}`)
             .setLabel('Report')
             .setStyle(ButtonStyle.Danger)
-            .setEmoji(parseEmoji('<:restrict:1555544549105999962>')),
+            .setEmoji(parseEmoji('<:restrict:1567797003638022166>')),
     );
 }
 
@@ -68,7 +68,7 @@ function buildAdminButtons(confessionMsgId) {
             .setCustomId(`admin_delete_${confessionMsgId}`)
             .setLabel('Delete')
             .setStyle(ButtonStyle.Danger)
-            .setEmoji(parseEmoji('<:del:1555544395720302643>')),
+            .setEmoji(parseEmoji('<:del:1567796961334267974>')),
     );
 }
 
@@ -162,7 +162,7 @@ async function postConfession(interaction, confessionText, opts = {}) {
     );
 
     // Reply to user
-    const replyMsg = `<a:tickyy:1555544712687915008> Your confession (#${confessionNumber}) has been posted anonymously!`;
+    const replyMsg = `<a:tickyy:1567797045253644368> Your confession (#${confessionNumber}) has been posted anonymously!`;
     try {
         if (!interaction.replied && !interaction.deferred) {
             await interaction.reply({ content: replyMsg, flags: MessageFlags.Ephemeral });
@@ -186,7 +186,7 @@ async function sendToReview(interaction, confessionText, config, opts = {}) {
     const userId = opts.userId || interaction.user?.id;
 
     const embed = new EmbedBuilder()
-        .setTitle('<:files:1555544445565407352> Confession Pending Review')
+        .setTitle('<:files:1567796970964394044> Confession Pending Review')
         .setDescription(confessionText)
         .setColor('Yellow')
         .setTimestamp();
@@ -206,9 +206,9 @@ async function sendToReview(interaction, confessionText, config, opts = {}) {
     }
 
     const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId('approve_confession').setLabel('Approve').setStyle(ButtonStyle.Success).setEmoji(parseEmoji('<a:tickyy:1555544712687915008>')),
-        new ButtonBuilder().setCustomId('deny_confession').setLabel('Deny').setStyle(ButtonStyle.Danger).setEmoji(parseEmoji('<:crossy:1555544390221562048>')),
-        new ButtonBuilder().setCustomId('edit_confession').setLabel('Edit & Approve').setStyle(ButtonStyle.Secondary).setEmoji(parseEmoji('<:files:1555544445565407352>')),
+        new ButtonBuilder().setCustomId('approve_confession').setLabel('Approve').setStyle(ButtonStyle.Success).setEmoji(parseEmoji('<a:tickyy:1567797045253644368>')),
+        new ButtonBuilder().setCustomId('deny_confession').setLabel('Deny').setStyle(ButtonStyle.Danger).setEmoji(parseEmoji('<:crossy:1567796959648030831>')),
+        new ButtonBuilder().setCustomId('edit_confession').setLabel('Edit & Approve').setStyle(ButtonStyle.Secondary).setEmoji(parseEmoji('<:files:1567796970964394044>')),
     );
 
     const pingContent = config.ReviewPingRole
@@ -237,7 +237,7 @@ async function sendToReview(interaction, confessionText, config, opts = {}) {
         `Submitted by user ID \`${userId}\`. Content: \`${confessionText.slice(0, 100)}${confessionText.length > 100 ? '…' : ''}\``
     );
 
-    const replyMsg = '<:files:1555544445565407352> Your confession has been submitted for review. You will be notified when it is approved or denied.';
+    const replyMsg = '<:files:1567796970964394044> Your confession has been submitted for review. You will be notified when it is approved or denied.';
     try {
         if (!interaction.replied && !interaction.deferred) {
             await interaction.reply({ content: replyMsg, flags: MessageFlags.Ephemeral });
@@ -254,7 +254,7 @@ async function dmSubmitter(client, userId, guildName, approved, reason) {
         if (!user) return;
         await user.send({
             embeds: [new EmbedBuilder()
-                .setTitle(approved ? '<a:tickyy:1555544712687915008> Confession Approved' : '<:crossy:1555544390221562048> Confession Denied')
+                .setTitle(approved ? '<a:tickyy:1567797045253644368> Confession Approved' : '<:crossy:1567796959648030831> Confession Denied')
                 .setDescription(approved
                     ? `Your confession in **${guildName}** has been approved and posted.`
                     : `Your confession in **${guildName}** was denied.${reason ? `\n**Reason:** ${reason}` : ''}`)

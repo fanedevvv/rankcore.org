@@ -35,7 +35,7 @@ module.exports = {
       command.setName(`happy`).setDescription(`Show happiness 😄`)
     )
     .addSubcommand((command) =>
-      command.setName(`sad`).setDescription(`Show sadness <:error:1555544434601369620>`)
+      command.setName(`sad`).setDescription(`Show sadness <:error:1567796968758050868>`)
     )
     .addSubcommand((command) =>
       command.setName(`confused`).setDescription(`Show confusion 😕`)
@@ -104,7 +104,7 @@ module.exports = {
         break;
       case "sad":
         apiEndpoint = "https://api.purrbot.site/v2/img/sfw/sad/gif";
-        description = `${interaction.user} is feeling sad <:error:1555544434601369620>`;
+        description = `${interaction.user} is feeling sad <:error:1567796968758050868>`;
         break;
       case "confused":
         apiEndpoint = "https://api.purrbot.site/v2/img/sfw/confused/gif";
@@ -133,7 +133,7 @@ module.exports = {
       default:
         const errorEmbed = new EmbedBuilder()
           .setColor("Red")
-          .setDescription(`<:crossy:1555544390221562048> Unknown reaction!`);
+          .setDescription(`<:crossy:1567796959648030831> Unknown reaction!`);
         return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
     }
 
@@ -151,7 +151,7 @@ module.exports = {
     } catch (err) {
       const errorEmbed = new EmbedBuilder()
         .setColor("Red")
-        .setDescription(`<:crossy:1555544390221562048> Failed to fetch reaction. Try again later.`);
+        .setDescription(`<:crossy:1567796959648030831> Failed to fetch reaction. Try again later.`);
       await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
     }
   },

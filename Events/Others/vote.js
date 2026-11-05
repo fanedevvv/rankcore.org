@@ -8,7 +8,7 @@ module.exports = async (vote, client) => {
         if (user) {
             // DM the user
             const dmEmbed = new EmbedBuilder()
-                .setTitle('<:boost:1555544362455146576> Thanks for Voting!')
+                .setTitle('<:boost:1567796953599836280> Thanks for Voting!')
                 .setDescription('Thanks for supporting the bot! You have unlocked special perks.')
                 .setColor('Green')
                 .setTimestamp();
@@ -19,7 +19,7 @@ module.exports = async (vote, client) => {
         const logChannel = client.channels.cache.get('1380212495351812237');
         if (logChannel) {
             const logEmbed = new EmbedBuilder()
-                .setTitle('<a:votes:1555544718065016844> New Vote!')
+                .setTitle('<a:votes:1567797046562259015> New Vote!')
                 .setDescription(`User <@${vote.user}> just voted for the bot.`)
                 .setColor('Blue')
                 .setTimestamp();

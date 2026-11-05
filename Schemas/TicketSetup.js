@@ -56,11 +56,11 @@ const TicketSetupSchema = new Schema({
   Tags: [{
     name:  { type: String, required: true },
     color: { type: String, default: '#6b7280' },
-    emoji: { type: String, default: '<:thread:1555544613035708426>' },
+    emoji: { type: String, default: '<:thread:1567797010692706324>' },
   }],
 
   Categories: [{
-    emoji:           { type: String,  default: '<:gw:1555544456873119875>' },
+    emoji:           { type: String,  default: '<:gw:1567796972872536159>' },
     name:            { type: String,  required: true },
     value:           { type: String,  required: true },
     description:     { type: String,  default: 'Click to open a ticket' },

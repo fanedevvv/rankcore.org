@@ -51,9 +51,9 @@ const aiConfig = new Schema({
     waitThreshold:  { type: Number, default: 5  },
 
     // ── Custom reply messages ──
-    cooldownMsg:    { type: String, default: '<:n_loading:1555544489194688623> Please wait {remaining}s before using AI again.'        },
+    cooldownMsg:    { type: String, default: '<:n_loading:1567796992556666982> Please wait {remaining}s before using AI again.'        },
     blacklistedMsg: { type: String, default: 'You cannot use AI here as you are blacklisted.'            },
-    spamMsg:        { type: String, default: '<:restrict:1555544549105999962> You have been automatically blacklisted for spamming.'  },
+    spamMsg:        { type: String, default: '<:restrict:1567797003638022166> You have been automatically blacklisted for spamming.'  },
 
     // ── Access control ──
     blacklists:   { type: [String], default: [] },

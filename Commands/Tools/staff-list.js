@@ -162,7 +162,7 @@ module.exports = {
       const buildEmbed = (page, totalPages) => {
         const embed = new EmbedBuilder()
           .setColor(ACCENT.default)
-          .setTitle(`<:1430986220011524216:1555544196952367134> Staff Team — ${interaction.guild.name}`)
+          .setTitle(`<:1430986220011524216:1567796919244161135> Staff Team — ${interaction.guild.name}`)
           .setThumbnail(interaction.guild.iconURL({ dynamic: true }))
           .setFooter({ text: `Page ${page + 1} of ${totalPages} • ${members.filter(m => !m.user.bot && [...roleIds].some(id => m.roles.cache.has(id))).size} staff members total` })
           .setTimestamp();
@@ -178,7 +178,7 @@ module.exports = {
 
           const lines = rMembers.slice(0, PER_PAGE).map(m => {
             const rating = ratingsMap.get(m.id);
-            const stars  = rating ? ` <:boost:1555544362455146576> ${rating.toFixed(1)}` : '';
+            const stars  = rating ? ` <:boost:1567796953599836280> ${rating.toFixed(1)}` : '';
             return `• <@${m.id}>${stars}`;
           });
 
@@ -200,7 +200,7 @@ module.exports = {
 
       const buildRow = (page) => new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('sl_prev').setLabel('◀ Previous').setStyle(ButtonStyle.Secondary).setDisabled(page === 0),
-        new ButtonBuilder().setCustomId('sl_next').setLabel('Next').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(ButtonStyle.Secondary).setDisabled(page >= totalPages - 1),
+        new ButtonBuilder().setCustomId('sl_next').setLabel('Next').setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(ButtonStyle.Secondary).setDisabled(page >= totalPages - 1),
       );
 
       const msg = await interaction.editReply({

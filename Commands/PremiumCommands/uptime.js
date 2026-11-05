@@ -52,11 +52,11 @@ module.exports = {
       const interval = interaction.options.getInteger('interval') || 5;
       const name = interaction.options.getString('name') || '';
 
-      if (!validateUrl(url)) return interaction.reply({ content: '<:error:1555544434601369620> Provide a valid URL starting with http:// or https://', ephemeral: true });
-      if (interval < 1 || interval > 60) return interaction.reply({ content: '<:error:1555544434601369620> Interval must be between 1 and 60 minutes.', ephemeral: true });
+      if (!validateUrl(url)) return interaction.reply({ content: '<:error:1567796968758050868> Provide a valid URL starting with http:// or https://', ephemeral: true });
+      if (interval < 1 || interval > 60) return interaction.reply({ content: '<:error:1567796968758050868> Interval must be between 1 and 60 minutes.', ephemeral: true });
 
       const exists = await uptimeSchema.findOne({ Guild: guildId, URL: url });
-      if (exists) return interaction.reply({ content: '<:error:1555544434601369620> This URL is already being monitored in this guild.', ephemeral: true });
+      if (exists) return interaction.reply({ content: '<:error:1567796968758050868> This URL is already being monitored in this guild.', ephemeral: true });
 
       await uptimeSchema.create({
         Guild: guildId,
@@ -69,11 +69,11 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor('#00ff99')
-        .setTitle('<a:tickyy:1555544712687915008> Monitor Added')
+        .setTitle('<a:tickyy:1567797045253644368> Monitor Added')
         .setDescription(`${name ? `**${name}** — ` : ''}${formatUrl(url)}`)
         .addFields(
           { name: 'Interval', value: `${interval} minutes`, inline: true },
-          { name: 'DM Alerts', value: '<a:tickyy:1555544712687915008> Enabled', inline: true }
+          { name: 'DM Alerts', value: '<a:tickyy:1567797045253644368> Enabled', inline: true }
         )
         .setTimestamp()
         .setFooter({ text: `Added by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL() });
@@ -84,11 +84,11 @@ module.exports = {
     if (sub === 'delete') {
       const url = interaction.options.getString('url').trim();
       const data = await uptimeSchema.findOneAndDelete({ Guild: guildId, URL: url });
-      if (!data) return interaction.reply({ content: '<:error:1555544434601369620> No such monitored URL found.', ephemeral: true });
+      if (!data) return interaction.reply({ content: '<:error:1567796968758050868> No such monitored URL found.', ephemeral: true });
 
       const embed = new EmbedBuilder()
         .setColor('#ff5555')
-        .setTitle('<:del:1555544395720302643> Monitor Removed')
+        .setTitle('<:del:1567796961334267974> Monitor Removed')
         .setDescription(`${formatUrl(url)} has been removed from monitoring.`)
         .setTimestamp();
 
@@ -97,20 +97,20 @@ module.exports = {
 
     if (sub === 'list') {
       const list = await uptimeSchema.find({ Guild: guildId });
-      if (!list.length) return interaction.reply({ content: '<:error:1555544434601369620> No monitored links in this guild.', ephemeral: true });
+      if (!list.length) return interaction.reply({ content: '<:error:1567796968758050868> No monitored links in this guild.', ephemeral: true });
 
       const embed = new EmbedBuilder()
         .setColor('#00aaff')
-        .setTitle('<:1430986225493479485:1555544207652032633> Uptime Dashboard')
+        .setTitle('<:1430986225493479485:1567796921681055824> Uptime Dashboard')
         .setDescription(`Total monitored: **${list.length}**`)
         .setTimestamp();
 
       for (const doc of list.slice(0, 25)) {
         const name = doc.Name || doc.URL;
-        const status = doc.LastStatus === 'online' ? '<:LEgreen:1555544256356159600> Online' : '<:LEred:1555544262123323422> Offline';
+        const status = doc.LastStatus === 'online' ? '<:LEgreen:1567796933307666515> Online' : '<:LEred:1567796934545121280> Offline';
         const avg = doc.RecentPings.length ? `${Math.round(doc.RecentPings.reduce((a, b) => a + b.response, 0) / doc.RecentPings.length)}ms` : '—';
         const uptime = doc.TotalPings ? `${Math.round(doc.UptimePercent)}%` : '—';
-        const alert = doc.AlertDM ? '<a:tickyy:1555544712687915008>' : '<:crossy:1555544390221562048>';
+        const alert = doc.AlertDM ? '<a:tickyy:1567797045253644368>' : '<:crossy:1567796959648030831>';
 
         embed.addFields({
           name: `${name}`,
@@ -123,20 +123,20 @@ module.exports = {
     }
     if (sub === 'setchannel') {
   if (!interaction.memberPermissions.has('Administrator')) {
-    return interaction.reply({ content: '<:crossy:1555544390221562048> Admin only.', ephemeral: true });
+    return interaction.reply({ content: '<:crossy:1567796959648030831> Admin only.', ephemeral: true });
   }
 
   const url = interaction.options.getString('url').trim();
   const channel = interaction.options.getChannel('channel');
 
   const doc = await uptimeSchema.findOne({ Guild: guildId, URL: url });
-  if (!doc) return interaction.reply({ content: '<:error:1555544434601369620> URL not found.', ephemeral: true });
+  if (!doc) return interaction.reply({ content: '<:error:1567796968758050868> URL not found.', ephemeral: true });
 
   if (!channel) {
     doc.AlertChannel = null;
     await doc.save();
     return interaction.reply({
-      content: `<:announcement:1555544345740967956> Channel alerts disabled for ${formatUrl(url)}`,
+      content: `<:announcement:1567796950265241662> Channel alerts disabled for ${formatUrl(url)}`,
       ephemeral: true
     });
   }
@@ -146,7 +146,7 @@ module.exports = {
   await doc.save();
 
   return interaction.reply({
-    content: `<:announcement:1555544345740967956> Alerts for ${formatUrl(url)} will be sent in ${channel}`,
+    content: `<:announcement:1567796950265241662> Alerts for ${formatUrl(url)} will be sent in ${channel}`,
     ephemeral: true
   });
 }
@@ -154,23 +154,23 @@ module.exports = {
     if (sub === 'info') {
       const url = interaction.options.getString('url').trim();
       const doc = await uptimeSchema.findOne({ Guild: guildId, URL: url });
-      if (!doc) return interaction.reply({ content: '<:error:1555544434601369620> URL not found.', ephemeral: true });
+      if (!doc) return interaction.reply({ content: '<:error:1567796968758050868> URL not found.', ephemeral: true });
 
       const recent = doc.RecentPings.slice(-10).reverse()
-        .map(r => `${r.status === 'online' ? '<:LEgreen:1555544256356159600>' : '<:LEred:1555544262123323422>'} ${r.response}ms — ${new Date(r.time).toLocaleString()}`)
+        .map(r => `${r.status === 'online' ? '<:LEgreen:1567796933307666515>' : '<:LEred:1567796934545121280>'} ${r.response}ms — ${new Date(r.time).toLocaleString()}`)
         .join('\n') || 'No pings yet';
 
       const embed = new EmbedBuilder()
         .setColor('#00aaff')
-        .setTitle(`<:n_info:1555544473008873565> Info — ${doc.Name || doc.URL}`)
+        .setTitle(`<:n_info:1567796991419744417> Info — ${doc.Name || doc.URL}`)
         .addFields(
           { name: 'URL', value: formatUrl(doc.URL), inline: true },
-          { name: 'Status', value: `${doc.LastStatus === 'online' ? '<:LEgreen:1555544256356159600> Online' : '<:LEred:1555544262123323422> Offline'}`, inline: true },
+          { name: 'Status', value: `${doc.LastStatus === 'online' ? '<:LEgreen:1567796933307666515> Online' : '<:LEred:1567796934545121280> Offline'}`, inline: true },
           { name: 'Interval', value: `${doc.Interval} min`, inline: true },
           { name: 'Uptime %', value: `${doc.TotalPings ? Math.round(doc.UptimePercent) : '—'}%`, inline: true },
           { name: 'Total Pings', value: `${doc.TotalPings}`, inline: true },
           { name: 'Failed Pings', value: `${doc.FailedPings}`, inline: true },
-          { name: 'DM Alerts', value: `${doc.AlertDM ? '<a:tickyy:1555544712687915008> Enabled' : '<:crossy:1555544390221562048> Disabled'}`, inline: true },
+          { name: 'DM Alerts', value: `${doc.AlertDM ? '<a:tickyy:1567797045253644368> Enabled' : '<:crossy:1567796959648030831> Disabled'}`, inline: true },
           { name: 'Recent Pings', value: recent, inline: false },
           { 
   name: 'Alert Channel',
@@ -187,7 +187,7 @@ module.exports = {
     if (sub === 'resetstats') {
       const url = interaction.options.getString('url').trim();
       const doc = await uptimeSchema.findOne({ Guild: guildId, URL: url });
-      if (!doc) return interaction.reply({ content: '<:error:1555544434601369620> URL not found.', ephemeral: true });
+      if (!doc) return interaction.reply({ content: '<:error:1567796968758050868> URL not found.', ephemeral: true });
 
       doc.TotalPings = 0;
       doc.FailedPings = 0;
@@ -195,18 +195,18 @@ module.exports = {
       doc.RecentPings = [];
       await doc.save();
 
-      return interaction.reply({ content: `<a:tickyy:1555544712687915008> Stats for ${formatUrl(url)} have been reset.`, ephemeral: true });
+      return interaction.reply({ content: `<a:tickyy:1567797045253644368> Stats for ${formatUrl(url)} have been reset.`, ephemeral: true });
     }
 
     if (sub === 'setalert') {
       const url = interaction.options.getString('url').trim();
       const doc = await uptimeSchema.findOne({ Guild: guildId, URL: url });
-      if (!doc) return interaction.reply({ content: '<:error:1555544434601369620> URL not found.', ephemeral: true });
+      if (!doc) return interaction.reply({ content: '<:error:1567796968758050868> URL not found.', ephemeral: true });
 
       doc.AlertDM = !doc.AlertDM;
       await doc.save();
 
-      return interaction.reply({ content: `<:announcement:1555544345740967956> DM alerts ${doc.AlertDM ? 'enabled' : 'disabled'} for ${formatUrl(url)}`, ephemeral: true });
+      return interaction.reply({ content: `<:announcement:1567796950265241662> DM alerts ${doc.AlertDM ? 'enabled' : 'disabled'} for ${formatUrl(url)}`, ephemeral: true });
     }
   }
 };

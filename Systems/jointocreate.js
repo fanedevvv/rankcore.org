@@ -21,23 +21,23 @@ const jtcpanelschema = require("../Schemas/jtc-panel");
 // ── Control panel (shared by the per-room panel and the permanent panel) ──────
 const PANEL_FEATURES = `This **interface** can be used to manage temporary voice channels.
 
-<:1430986227909263442:1555544212756242532> **NAME:** Rename your room  
-<:1430986220011524216:1555544196952367134> **LIMIT:** Set user limit  
-<:1430986222515261441:1555544202274807858> **PRIVACY:** Lock/Unlock  
-<:1430986244921495654:1555544239792980044> **WAITING R.:** Toggle waiting mode  
-<:1430993644189520113:1555544245589381200> **ANNOUNCE:** Toggle Announce mode  
-<:1430986214764318873:1555544186227523665> **INVITE:** Create invite  
-<:1430986225493479485:1555544207652032633> **REGION:** Set RTC region  
-<:1430986233760452783:1555544218091389001> **TRANSFER:** Transfer owner  
-<:1430986212398731355:1555544177578872834> **DELETE:** Delete room
+<:1430986227909263442:1567796922863984670> **NAME:** Rename your room  
+<:1430986220011524216:1567796919244161135> **LIMIT:** Set user limit  
+<:1430986222515261441:1567796920477421698> **PRIVACY:** Lock/Unlock  
+<:1430986244921495654:1567796929587576852> **WAITING R.:** Toggle waiting mode  
+<:1430993644189520113:1567796930799607818> **ANNOUNCE:** Toggle Announce mode  
+<:1430986214764318873:1567796916551421952> **INVITE:** Create invite  
+<:1430986225493479485:1567796921681055824> **REGION:** Set RTC region  
+<:1430986233760452783:1567796924021735484> **TRANSFER:** Transfer owner  
+<:1430986212398731355:1567796915138068620> **DELETE:** Delete room
 
 **Member Management Menu:**
-<:1430986217448542329:1555544191654699018> **KICK** members
-<:1430986236746793000:1555544223506239591> **TRUST** a user
-<:1430986241565790309:1555544234457833472> **UNTRUST** a user
-<:1430986207856300180:1555544166866616410> **BLOCK** a user
-<:1430986239036625017:1555544229143519304> **UNBLOCK** a user
-<:1430986209995526274:1555544172302307449> **CLAIM** ownership (if owner leaves)
+<:1430986217448542329:1567796917977481319> **KICK** members
+<:1430986236746793000:1567796925451866173> **TRUST** a user
+<:1430986241565790309:1567796928140419102> **UNTRUST** a user
+<:1430986207856300180:1567796910062837931> **BLOCK** a user
+<:1430986239036625017:1567796926689185822> **UNBLOCK** a user
+<:1430986209995526274:1567796911350747206> **CLAIM** ownership (if owner leaves)
 `;
 
 function buildPanelEmbed(client, ownerId, triggerChannelId) {
@@ -56,27 +56,27 @@ function buildPanelRows(suffix) {
     const row1 = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId(`jtc_name_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986227909263442:1555544212756242532>"))
+            .setEmoji(parseEmoji("<:1430986227909263442:1567796922863984670>"))
             .setLabel("NAME")
             .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
             .setCustomId(`jtc_limit_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986220011524216:1555544196952367134>"))
+            .setEmoji(parseEmoji("<:1430986220011524216:1567796919244161135>"))
             .setLabel("LIMIT")
             .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
             .setCustomId(`jtc_privacy_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986222515261441:1555544202274807858>"))
+            .setEmoji(parseEmoji("<:1430986222515261441:1567796920477421698>"))
             .setLabel("PRIVACY")
             .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
             .setCustomId(`jtc_wait_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986244921495654:1555544239792980044>"))
+            .setEmoji(parseEmoji("<:1430986244921495654:1567796929587576852>"))
             .setLabel("WAITING")
             .setStyle(ButtonStyle.Primary),
         new ButtonBuilder()
             .setCustomId(`jtc_announce_${suffix}`)
-            .setEmoji(parseEmoji("<:1430993644189520113:1555544245589381200>"))
+            .setEmoji(parseEmoji("<:1430993644189520113:1567796930799607818>"))
             .setLabel("ANNOUNCE")
             .setStyle(ButtonStyle.Secondary)
     );
@@ -84,22 +84,22 @@ function buildPanelRows(suffix) {
     const row2 = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId(`jtc_kick_menu_${suffix}`) // New Custom ID to trigger the menu
-            .setEmoji(parseEmoji("<:1430986217448542329:1555544191654699018>"))
+            .setEmoji(parseEmoji("<:1430986217448542329:1567796917977481319>"))
             .setLabel("KICK")
             .setStyle(ButtonStyle.Danger),
         new ButtonBuilder()
             .setCustomId(`jtc_trust_menu_${suffix}`) // New Custom ID to trigger the menu
-            .setEmoji(parseEmoji("<:1430986236746793000:1555544223506239591>"))
+            .setEmoji(parseEmoji("<:1430986236746793000:1567796925451866173>"))
             .setLabel("TRUST")
             .setStyle(ButtonStyle.Success),
         new ButtonBuilder()
             .setCustomId(`jtc_block_menu_${suffix}`) // New Custom ID to trigger the menu
-            .setEmoji(parseEmoji("<:1430986207856300180:1555544166866616410>"))
+            .setEmoji(parseEmoji("<:1430986207856300180:1567796910062837931>"))
             .setLabel("BLOCK")
             .setStyle(ButtonStyle.Danger),
         new ButtonBuilder()
             .setCustomId(`jtc_transfer_menu_${suffix}`) // New Custom ID to trigger the menu
-            .setEmoji(parseEmoji("<:1430986233760452783:1555544218091389001>"))
+            .setEmoji(parseEmoji("<:1430986233760452783:1567796924021735484>"))
             .setLabel("TRANSFER")
             .setStyle(ButtonStyle.Secondary)
     );
@@ -107,22 +107,22 @@ function buildPanelRows(suffix) {
     const row3 = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId(`jtc_invite_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986214764318873:1555544186227523665>"))
+            .setEmoji(parseEmoji("<:1430986214764318873:1567796916551421952>"))
             .setLabel("INVITE")
             .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
             .setCustomId(`jtc_region_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986225493479485:1555544207652032633>"))
+            .setEmoji(parseEmoji("<:1430986225493479485:1567796921681055824>"))
             .setLabel("REGION")
             .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
             .setCustomId(`jtc_claim_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986209995526274:1555544172302307449>"))
+            .setEmoji(parseEmoji("<:1430986209995526274:1567796911350747206>"))
             .setLabel("CLAIM")
             .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
             .setCustomId(`jtc_delete_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986212398731355:1555544177578872834>"))
+            .setEmoji(parseEmoji("<:1430986212398731355:1567796915138068620>"))
             .setLabel("DELETE")
             .setStyle(ButtonStyle.Danger)
     );
@@ -514,7 +514,7 @@ module.exports = (client) => {
                     const locked = everyone && everyone.deny.has(PermissionsBitField.Flags.Connect);
                     await (locked ? unlock() : lock());
                     return interaction.reply({
-                        content: locked ? "<:lockk:1555544494441635860> Unlocked the channel. Everyone can now join." : "<:lockk:1555544494441635860> Locked the channel. Only allowed users can join.",
+                        content: locked ? "<:lockk:1567796977809367122> Unlocked the channel. Everyone can now join." : "<:lockk:1567796977809367122> Locked the channel. Only allowed users can join.",
                         flags: MessageFlags.Ephemeral,
                     });
                 }
@@ -591,14 +591,14 @@ module.exports = (client) => {
                         await room.permissionOverwrites.edit(everyoneRole, { Speak: false });
                         await room.permissionOverwrites.edit(panel.User, { Speak: true });
                         return interaction.reply({
-                            content: "<:n_music:1555544516746940416> Announce Mode **ON** — only you can speak.",
+                            content: "<:n_music:1567796993403658261> Announce Mode **ON** — only you can speak.",
                             flags: MessageFlags.Ephemeral,
                         });
                     } else {
                         await room.permissionOverwrites.edit(everyoneRole, { Speak: null });
                         await room.permissionOverwrites.edit(panel.User, { Speak: null });
                         return interaction.reply({
-                            content: "<:n_music:1555544516746940416> Announce Mode **OFF** — everyone can speak.",
+                            content: "<:n_music:1567796993403658261> Announce Mode **OFF** — everyone can speak.",
                             flags: MessageFlags.Ephemeral,
                         });
                     }
@@ -629,7 +629,7 @@ module.exports = (client) => {
                     panel.User = interaction.user.id;
                     await panel.save();
                     return interaction.reply({
-                        content: "<:1430986209995526274:1555544172302307449> You have claimed ownership of this room.",
+                        content: "<:1430986209995526274:1567796911350747206> You have claimed ownership of this room.",
                         flags: MessageFlags.Ephemeral,
                     });
                 }
@@ -696,28 +696,28 @@ module.exports = (client) => {
                 
                 if (Number.isNaN(n) || n < 0 || n > 99) {
                     return interaction.reply({
-                        content: "<:crossy:1555544390221562048> Invalid input. Please provide a number between 0 and 99.",
+                        content: "<:crossy:1567796959648030831> Invalid input. Please provide a number between 0 and 99.",
                         flags: MessageFlags.Ephemeral,
                     });
                 }
                 
                 await room.setUserLimit(n);
                 return interaction.reply({
-                    content: `<a:tickyy:1555544712687915008> User limit set to **${n || "Unlimited"}**.`,
+                    content: `<a:tickyy:1567797045253644368> User limit set to **${n || "Unlimited"}**.`,
                     flags: MessageFlags.Ephemeral,
                 });
             } else if (action === "name" && parts[0] === "modal") {
                 const newName = interaction.fields.getTextInputValue("name_input").slice(0, 90);
                 await room.setName(newName);
                 return interaction.reply({
-                    content: `<a:tickyy:1555544712687915008> Renamed to **${newName}**.`,
+                    content: `<a:tickyy:1567797045253644368> Renamed to **${newName}**.`,
                     flags: MessageFlags.Ephemeral,
                 });
             } else if (action === "region" && parts[0] === "modal") {
                 const region = interaction.fields.getTextInputValue("region_input").toLowerCase();
                 await room.setRTCRegion(region === "auto" ? null : region).catch(() => {});
                 return interaction.reply({
-                    content: `<a:tickyy:1555544712687915008> RTC region set to **${region}**.`,
+                    content: `<a:tickyy:1567797045253644368> RTC region set to **${region}**.`,
                     flags: MessageFlags.Ephemeral,
                 });
             }
@@ -742,13 +742,13 @@ module.exports = (client) => {
                 case "select_kick": {
                     if (!room.members.has(target.id)) {
                         return interaction.followUp({
-                            content: `<:crossy:1555544390221562048> **${target.user.tag}** is no longer in your room.`,
+                            content: `<:crossy:1567796959648030831> **${target.user.tag}** is no longer in your room.`,
                             flags: MessageFlags.Ephemeral,
                         });
                     }
                     try { await target.voice.disconnect("Kicked by room owner"); } catch {}
                     return interaction.followUp({
-                        content: `<a:tickyy:1555544712687915008> Kicked **${target.user.tag}** from the room.`,
+                        content: `<a:tickyy:1567797045253644368> Kicked **${target.user.tag}** from the room.`,
                         flags: MessageFlags.Ephemeral,
                     });
                 }
@@ -758,7 +758,7 @@ module.exports = (client) => {
                         ViewChannel: true,
                     });
                     return interaction.followUp({
-                        content: `<a:tickyy:1555544712687915008> Trusted **${target.user.tag}** (can always join, even when locked).`,
+                        content: `<a:tickyy:1567797045253644368> Trusted **${target.user.tag}** (can always join, even when locked).`,
                         flags: MessageFlags.Ephemeral,
                     });
                 }
@@ -772,7 +772,7 @@ module.exports = (client) => {
                         try { await target.voice.disconnect("Blocked by room owner"); } catch {}
                     }
                     return interaction.followUp({
-                        content: `<a:tickyy:1555544712687915008> Blocked **${target.user.tag}** from joining (and kicked if they were connected).`,
+                        content: `<a:tickyy:1567797045253644368> Blocked **${target.user.tag}** from joining (and kicked if they were connected).`,
                         flags: MessageFlags.Ephemeral,
                     });
                 }
@@ -799,7 +799,7 @@ module.exports = (client) => {
                     });
 
                     return interaction.followUp({
-                        content: `<a:tickyy:1555544712687915008> Transferred ownership to **${target.user.tag}**.`,
+                        content: `<a:tickyy:1567797045253644368> Transferred ownership to **${target.user.tag}**.`,
                         flags: MessageFlags.Ephemeral,
                     });
                 }

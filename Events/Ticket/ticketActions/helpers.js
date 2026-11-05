@@ -100,7 +100,7 @@ function formatDuration(ms) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function errEmbed(msg) {
-  return new EmbedBuilder().setDescription(`<:crossy:1555544390221562048> ${msg}`).setColor(0xef4444);
+  return new EmbedBuilder().setDescription(`<:crossy:1567796959648030831> ${msg}`).setColor(0xef4444);
 }
 
 module.exports = {

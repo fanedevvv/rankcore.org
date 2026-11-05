@@ -38,20 +38,20 @@ module.exports = {
 
         const embed = new EmbedBuilder()
           .setDescription(
-            `\`<:dot:1555544412300378243>\` **Changelogs embed information**
+            `\`<:dot:1567796963624226826>\` **Changelogs embed information**
                     
-                    > |\`<:files:1555544445565407352>\` **Title -** ${
+                    > |\`<:files:1567796970964394044>\` **Title -** ${
                       !title ? `${client.user.username} Changelogs` : title
                     }
-                    > |\`<:files:1555544445565407352>\` **Description -** ${
+                    > |\`<:files:1567796970964394044>\` **Description -** ${
                       !description ? "A new changelogs is here!" : description
                     }
-                    > |\`<:dot:1555544412300378243>\` **Footer -** ${
+                    > |\`<:dot:1567796963624226826>\` **Footer -** ${
                       !footer
                         ? `${client.user.username} Changelogs`
                         : `${footer}`
                     } ${!type ? `| Bot` : `| ${type}`}
-                    > |\`<:n_utils:1555544669545431062>\` **Color -** \`${!color ? "#ffffff" : color}\``
+                    > |\`<:n_utils:1567796996830658573>\` **Color -** \`${!color ? "#ffffff" : color}\``
           )
           .setColor(client.config.embedColor);
         return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });

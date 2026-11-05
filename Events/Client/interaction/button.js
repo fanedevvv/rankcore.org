@@ -65,11 +65,11 @@ module.exports = async function handleButton(interaction, client, webhook) {
     const { activePolls } = require("../../../Commands/Community/poll");
     const pollData = activePolls.get(interaction.message.id);
     if (!pollData) {
-      return interaction.reply({ content: "<:n_loading:1555544489194688623> This poll is no longer active, or the bot just restarted — please try again in a moment.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:n_loading:1567796992556666982> This poll is no longer active, or the bot just restarted — please try again in a moment.", flags: MessageFlags.Ephemeral });
     }
     const nowSec = Math.floor(Date.now() / 1000);
     if (pollData.endTs && pollData.endTs <= nowSec) {
-      return interaction.reply({ content: "<:LEred:1555544262123323422> This poll has already ended.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:LEred:1567796934545121280> This poll has already ended.", flags: MessageFlags.Ephemeral });
     }
     return;
   }
@@ -100,15 +100,15 @@ module.exports = async function handleButton(interaction, client, webhook) {
     const action = customId.startsWith("accept") ? "accept" : "decline";
     const targetUserId = customId.split("_")[2];
     if (interaction.user.id !== targetUserId) {
-      return interaction.reply({ components: [errC("<:crossy:1555544390221562048>  Wrong User", "This TOS prompt is not for you.")], flags: MessageFlags.Ephemeral | MessageFlags.IsComponentsV2 });
+      return interaction.reply({ components: [errC("<:crossy:1567796959648030831>  Wrong User", "This TOS prompt is not for you.")], flags: MessageFlags.Ephemeral | MessageFlags.IsComponentsV2 });
     }
     if (action === "accept") {
       await tosSchema.findOneAndUpdate({ userId: interaction.user.id }, { $set: { acceptedAt: Date.now() } }, { upsert: true });
       await webhook?.send({ embeds: [new EmbedBuilder().setTitle("TOS Accepted").setDescription(`<@${interaction.user.id}> accepted.`).setColor("Green")] }).catch(() => {});
-      return interaction.update({ components: [okC("<a:tickyy:1555544712687915008>  Terms of Service Accepted", "You can now use all bot commands. Welcome aboard!")], flags: MessageFlags.IsComponentsV2, embeds: [] });
+      return interaction.update({ components: [okC("<a:tickyy:1567797045253644368>  Terms of Service Accepted", "You can now use all bot commands. Welcome aboard!")], flags: MessageFlags.IsComponentsV2, embeds: [] });
     } else {
       await webhook?.send({ embeds: [new EmbedBuilder().setTitle("TOS Declined").setDescription(`<@${interaction.user.id}> declined.`).setColor("Red")] }).catch(() => {});
-      return interaction.update({ components: [errC("<:crossy:1555544390221562048>  Terms of Service Declined", "You must accept the Terms of Service to use this bot.")], flags: MessageFlags.IsComponentsV2, embeds: [] });
+      return interaction.update({ components: [errC("<:crossy:1567796959648030831>  Terms of Service Declined", "You must accept the Terms of Service to use this bot.")], flags: MessageFlags.IsComponentsV2, embeds: [] });
     }
   }
 
@@ -118,7 +118,7 @@ module.exports = async function handleButton(interaction, client, webhook) {
   if (customId.startsWith("solved_") || customId.startsWith("ignore_")) {
     const isSolved = customId.startsWith("solved_");
     const accent   = isSolved ? ACCENT.success : 0x9ca3af;
-    const label    = isSolved ? "<a:tickyy:1555544712687915008>  Marked as Solved" : "<:announcement:1555544345740967956>  Ignored";
+    const label    = isSolved ? "<a:tickyy:1567797045253644368>  Marked as Solved" : "<:announcement:1567796950265241662>  Ignored";
     const origEmbeds = interaction.message.embeds;
     if (origEmbeds.length > 0) {
       const updatedEmbed = EmbedBuilder.from(origEmbeds[0]).setColor(isSolved ? Colors.Green : Colors.Grey).setFooter({ text: `${isSolved ? "Solved" : "Ignored"} by ${interaction.user.tag}` });
@@ -143,13 +143,13 @@ module.exports = async function handleButton(interaction, client, webhook) {
     await interaction.deferReply({ ephemeral: true });
     const [action, targetId] = customId.split("_");
     const targetMember = await interaction.guild.members.fetch(targetId).catch(() => null);
-    if (!targetMember) return interaction.editReply({ components: [errC("<:crossy:1555544390221562048>  User Not Found", "That member is no longer in this server.")], flags: MessageFlags.IsComponentsV2 });
+    if (!targetMember) return interaction.editReply({ components: [errC("<:crossy:1567796959648030831>  User Not Found", "That member is no longer in this server.")], flags: MessageFlags.IsComponentsV2 });
     if (action === "userinfo") {
       const joinedTs  = Math.floor(targetMember.joinedTimestamp / 1000);
       const createdTs = Math.floor(targetMember.user.createdTimestamp / 1000);
       const roles     = targetMember.roles.cache.filter(r => r.id !== interaction.guild.id).map(r => `<@&${r.id}>`).join(" ") || "None";
       const c = new ContainerBuilder().setAccentColor(ACCENT.info)
-        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:user:1555544664155889668>  ${targetMember.user.tag}`))
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:user:1567797032423264261>  ${targetMember.user.tag}`))
         .addSeparatorComponents(sep())
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(
           `**ID** — \`${targetMember.id}\`\n**Joined** — <t:${joinedTs}:R>\n**Created** — <t:${createdTs}:R>\n**Roles** — ${roles}`
@@ -157,10 +157,10 @@ module.exports = async function handleButton(interaction, client, webhook) {
       return interaction.editReply({ components: [c], flags: MessageFlags.IsComponentsV2 });
     }
     const permMap = { ban: "BanMembers", kick: "KickMembers" };
-    if (!interaction.member.permissions.has(permMap[action])) return interaction.editReply({ components: [errC("<:crossy:1555544390221562048>  No Permission", `You need **${permMap[action]}** to perform this action.`)], flags: MessageFlags.IsComponentsV2 });
-    if (action === "ban" && targetMember.bannable) { await targetMember.ban({ reason: `AI Mod action by ${interaction.user.tag}` }); return interaction.editReply({ components: [okC("<:ban:1555544356352430202>  User Banned", `**${targetMember.user.tag}** has been banned via AI Mod.`)], flags: MessageFlags.IsComponentsV2 }); }
-    if (action === "kick" && targetMember.kickable) { await targetMember.kick(`AI Mod action by ${interaction.user.tag}`); return interaction.editReply({ components: [okC("<:ban:1555544356352430202>  User Kicked", `**${targetMember.user.tag}** has been kicked via AI Mod.`)], flags: MessageFlags.IsComponentsV2 }); }
-    return interaction.editReply({ components: [errC("<:crossy:1555544390221562048>  Action Failed", "I cannot perform this action — the user may outrank me.")], flags: MessageFlags.IsComponentsV2 });
+    if (!interaction.member.permissions.has(permMap[action])) return interaction.editReply({ components: [errC("<:crossy:1567796959648030831>  No Permission", `You need **${permMap[action]}** to perform this action.`)], flags: MessageFlags.IsComponentsV2 });
+    if (action === "ban" && targetMember.bannable) { await targetMember.ban({ reason: `AI Mod action by ${interaction.user.tag}` }); return interaction.editReply({ components: [okC("<:ban:1567796952538554458>  User Banned", `**${targetMember.user.tag}** has been banned via AI Mod.`)], flags: MessageFlags.IsComponentsV2 }); }
+    if (action === "kick" && targetMember.kickable) { await targetMember.kick(`AI Mod action by ${interaction.user.tag}`); return interaction.editReply({ components: [okC("<:ban:1567796952538554458>  User Kicked", `**${targetMember.user.tag}** has been kicked via AI Mod.`)], flags: MessageFlags.IsComponentsV2 }); }
+    return interaction.editReply({ components: [errC("<:crossy:1567796959648030831>  Action Failed", "I cannot perform this action — the user may outrank me.")], flags: MessageFlags.IsComponentsV2 });
   }
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -186,7 +186,7 @@ module.exports = async function handleButton(interaction, client, webhook) {
   if (customId === "show_error_codes") {
     const desc = Object.entries(errorCodes).map(([code, desc]) => `**\`${code}\`** — ${desc}`).join("\n");
     const c = new ContainerBuilder().setAccentColor(ACCENT.error)
-      .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_utils:1555544669545431062>  Error Code Reference"))
+      .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_utils:1567796996830658573>  Error Code Reference"))
       .addSeparatorComponents(sep())
       .addTextDisplayComponents(new TextDisplayBuilder().setContent(desc));
     return interaction.reply({ components: [c], flags: MessageFlags.Ephemeral | MessageFlags.IsComponentsV2 });
@@ -258,20 +258,20 @@ module.exports = async function handleButton(interaction, client, webhook) {
         let title, body, accent;
 
         if (data?.error?.includes('Too many verification')) {
-          title  = '<:n_loading:1555544489194688623>  Slow Down';
+          title  = '<:n_loading:1567796992556666982>  Slow Down';
           body   = "You've requested too many verification links recently.\nPlease wait a few minutes before trying again.";
           accent = ACCENT.warn ?? 0xfb923c;
         } else if (data?.error?.includes('re-verification not due')) {
-          title  = '<a:tickyy:1555544712687915008>  Already Verified';
+          title  = '<a:tickyy:1567797045253644368>  Already Verified';
           body   = "You're already verified and don't need to re-verify yet.\nIf you've lost your role, please contact a moderator.";
           accent = ACCENT.success;
         } else if (data?.error?.includes('No verify config')) {
-          title  = '<:n_utils:1555544669545431062>  Not Configured';
+          title  = '<:n_utils:1567796996830658573>  Not Configured';
           body   = "This server's verification system hasn't been set up yet.\nPlease contact a moderator.";
           accent = ACCENT.error;
         } else {
           console.error(`[ipverify button] unexpected ${resp.status} response:`, text.slice(0, 300));
-          title  = '<:crossy:1555544390221562048>  Verification Failed';
+          title  = '<:crossy:1567796959648030831>  Verification Failed';
           body   = data?.error || 'Something went wrong. Please try again shortly.';
           accent = ACCENT.error;
         }
@@ -298,12 +298,12 @@ module.exports = async function handleButton(interaction, client, webhook) {
       }
 
       const container = new ContainerBuilder().setAccentColor(ACCENT.info ?? 0x6C53FF)
-        .addTextDisplayComponents(new TextDisplayBuilder().setContent('## <:1430986227909263442:1555544212756242532>  Complete Your Verification'))
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent('## <:1430986227909263442:1567796922863984670>  Complete Your Verification'))
         .addSeparatorComponents(sep())
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(
           `Click the button below to open your personal verification link.\n\n` +
-          `> <:lockk:1555544494441635860> This link is **single-use** and tied to your account — do not share it.\n` +
-          `> <:1430986244921495654:1555544239792980044> It expires in **${expiryText}**.${expiryUnix}`
+          `> <:lockk:1567796977809367122> This link is **single-use** and tied to your account — do not share it.\n` +
+          `> <:1430986244921495654:1567796929587576852> It expires in **${expiryText}**.${expiryUnix}`
         ))
         .addSeparatorComponents(sep())
         .addActionRowComponents(
@@ -312,7 +312,7 @@ module.exports = async function handleButton(interaction, client, webhook) {
               .setLabel('Verify Now')
               .setStyle(ButtonStyle.Link)
               .setURL(data.url)
-              .setEmoji(parseEmoji('<a:tickyy:1555544712687915008>'))
+              .setEmoji(parseEmoji('<a:tickyy:1567797045253644368>'))
           )
         );
 
@@ -324,7 +324,7 @@ module.exports = async function handleButton(interaction, client, webhook) {
     } catch (err) {
       console.error('[ipverify button]', err);
       return interaction.editReply({
-        components: [errC('<:crossy:1555544390221562048>  Server Error', 'Could not reach the verification server. Please try again shortly.')],
+        components: [errC('<:crossy:1567796959648030831>  Server Error', 'Could not reach the verification server. Please try again shortly.')],
         flags: MessageFlags.IsComponentsV2,
       });
     }
@@ -395,18 +395,18 @@ async function handleOwnerButton(interaction, client, customId) {
   // customId: owner_bl_remove_<userId>
   if (customId.startsWith("owner_bl_remove_")) {
     if (interaction.user.id !== userId) {
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Only the command user can do this.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Only the command user can do this.", flags: MessageFlags.Ephemeral });
     }
     const state = client.ownerPaginators.get(`bl_${userId}`);
     if (!state) {
-      return interaction.reply({ content: "<:crossy:1555544390221562048> No blacklist state found (bot may have restarted).", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> No blacklist state found (bot may have restarted).", flags: MessageFlags.Ephemeral });
     }
     const blacklistDB = require("../../../Schemas/blacklistSchema");
     await blacklistDB.deleteOne({ userId: state.userId });
     client.ownerPaginators.delete(`bl_${userId}`);
 
     return interaction.update({
-      components: [okC("<a:tickyy:1555544712687915008>  Removed from Blacklist", `User \`${state.userId}\` has been removed from the blacklist.`)],
+      components: [okC("<a:tickyy:1567797045253644368>  Removed from Blacklist", `User \`${state.userId}\` has been removed from the blacklist.`)],
       flags: MessageFlags.IsComponentsV2,
     });
   }
@@ -415,7 +415,7 @@ async function handleOwnerButton(interaction, client, customId) {
   // customId: owner_shutdown_<userId>
   if (customId.startsWith("owner_shutdown_")) {
     if (interaction.user.id !== userId) {
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Only the command user can confirm shutdown.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Only the command user can confirm shutdown.", flags: MessageFlags.Ephemeral });
     }
     const count = (client.ownerShutdown.get(userId) || 0) + 1;
     client.ownerShutdown.set(userId, count);
@@ -424,12 +424,12 @@ async function handleOwnerButton(interaction, client, customId) {
       const remaining = 4 - count;
       return interaction.update({
         components: [new ContainerBuilder().setAccentColor(ACCENT.error)
-          .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:error:1555544434601369620>  Shutdown Confirmation"))
+          .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:error:1567796968758050868>  Shutdown Confirmation"))
           .addSeparatorComponents(sep())
           .addTextDisplayComponents(new TextDisplayBuilder().setContent(`Press the button **${remaining}** more time(s) to confirm.`))
           .addSeparatorComponents(sep())
           .addActionRowComponents(new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId(`owner_shutdown_${userId}`).setLabel(`Confirm Shutdown (${count}/4)`).setStyle(ButtonStyle.Danger).setEmoji(parseEmoji("<:ban:1555544356352430202>"))
+            new ButtonBuilder().setCustomId(`owner_shutdown_${userId}`).setLabel(`Confirm Shutdown (${count}/4)`).setStyle(ButtonStyle.Danger).setEmoji(parseEmoji("<:ban:1567796952538554458>"))
           ))],
         flags: MessageFlags.IsComponentsV2,
       });
@@ -438,7 +438,7 @@ async function handleOwnerButton(interaction, client, customId) {
     // 4 presses reached — shutdown
     client.ownerShutdown.delete(userId);
     await interaction.update({
-      components: [okC("<a:tickyy:1555544712687915008>  Shutdown Confirmed", "Bot is shutting down…")],
+      components: [okC("<a:tickyy:1567797045253644368>  Shutdown Confirmed", "Bot is shutting down…")],
       flags: MessageFlags.IsComponentsV2,
     });
     console.log(`[OWNER CMD] Bot shutdown initiated by ${interaction.user.tag}`);
@@ -451,11 +451,11 @@ async function handleOwnerButton(interaction, client, customId) {
   // customId: owner_srv_prev_<userId> / owner_srv_next_<userId>
   if (customId.startsWith("owner_srv_")) {
     if (interaction.user.id !== userId) {
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Only the command user can navigate.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Only the command user can navigate.", flags: MessageFlags.Ephemeral });
     }
     const state = client.ownerPaginators.get(`srv_${userId}`);
     if (!state) {
-      return interaction.reply({ content: "<:crossy:1555544390221562048> State not found. Run `/owner servers` again.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> State not found. Run `/owner servers` again.", flags: MessageFlags.Ephemeral });
     }
     if (customId.includes("_next_")) state.page = Math.min(state.page + 1, state.totalPages - 1);
     else state.page = Math.max(state.page - 1, 0);
@@ -463,7 +463,7 @@ async function handleOwnerButton(interaction, client, customId) {
       await interaction.update({ components: [await state.buildPage(state.page)], flags: MessageFlags.IsComponentsV2 });
     } catch (err) {
       console.error("[owner servers pag]", err);
-      interaction.reply({ content: "<:crossy:1555544390221562048> Error updating page.", flags: MessageFlags.Ephemeral }).catch(() => {});
+      interaction.reply({ content: "<:crossy:1567796959648030831> Error updating page.", flags: MessageFlags.Ephemeral }).catch(() => {});
     }
     return;
   }
@@ -472,11 +472,11 @@ async function handleOwnerButton(interaction, client, customId) {
   // customId: owner_cmdl_prev_<userId> / owner_cmdl_next_<userId>
   if (customId.startsWith("owner_cmdl_")) {
     if (interaction.user.id !== userId) {
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Only the command user can navigate.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Only the command user can navigate.", flags: MessageFlags.Ephemeral });
     }
     const state = client.ownerPaginators.get(`cmdl_${userId}`);
     if (!state) {
-      return interaction.reply({ content: "<:crossy:1555544390221562048> State not found. Run `/owner list-commands` again.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> State not found. Run `/owner list-commands` again.", flags: MessageFlags.Ephemeral });
     }
     if (customId.includes("_next_")) state.page = Math.min(state.page + 1, state.pages.length - 1);
     else state.page = Math.max(state.page - 1, 0);
@@ -488,11 +488,11 @@ async function handleOwnerButton(interaction, client, customId) {
   // customId: owner_cmdi_prev_<userId> / owner_cmdi_next_<userId>
   if (customId.startsWith("owner_cmdi_")) {
     if (interaction.user.id !== userId) {
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Only the command user can navigate.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Only the command user can navigate.", flags: MessageFlags.Ephemeral });
     }
     const state = client.ownerPaginators.get(`cmdi_${userId}`);
     if (!state) {
-      return interaction.reply({ content: "<:crossy:1555544390221562048> State not found. Run `/owner commands-info` again.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> State not found. Run `/owner commands-info` again.", flags: MessageFlags.Ephemeral });
     }
     if (customId.includes("_next_")) state.page = Math.min(state.page + 1, state.pages.length - 1);
     else state.page = Math.max(state.page - 1, 0);
@@ -611,7 +611,7 @@ async function handleSetupButton(interaction, client, customId) {
   // Orphan entries (post-restart) don't have a trusted stored userId,
   // so we skip this check — each handler's own guild-permission model applies.
   if (!entry._orphan && interaction.user.id !== entry.userId) {
-    return interaction.reply({ content: "<:crossy:1555544390221562048> Only the user who opened this panel can interact with it.", flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: "<:crossy:1567796959648030831> Only the user who opened this panel can interact with it.", flags: MessageFlags.Ephemeral });
   }
 
   // Helper to show a modal and register its context
@@ -674,7 +674,7 @@ async function handleSetupButton(interaction, client, customId) {
     if (customId === "xmas_help") return interaction.update({ components: [helpPanel(accent, client)], flags: MessageFlags.IsComponentsV2 });
     if (customId === "xmas_configure") return interaction.update({ components: [configPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 });
     if (customId === "xmas_toggle") {
-      if (!data?.Channel) return interaction.reply({ content: "<:crossy:1555544390221562048> You must set a channel before enabling.", flags: MessageFlags.Ephemeral });
+      if (!data?.Channel) return interaction.reply({ content: "<:crossy:1567796959648030831> You must set a channel before enabling.", flags: MessageFlags.Ephemeral });
       if (data?.Enabled) { await christmasSchema.deleteMany({ Guild: guildId }); data = null; }
       else { await christmasSchema.findOneAndUpdate({ Guild: guildId }, { Guild: guildId, Enabled: true, Channel: data.Channel, PingRole: data.PingRole || null, LastSentDay: 0 }, { upsert: true }); data = await christmasSchema.findOne({ Guild: guildId }); }
       return interaction.update({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 });
@@ -682,7 +682,7 @@ async function handleSetupButton(interaction, client, customId) {
     if (customId === "xmas_clear_role") {
       if (data) { data.PingRole = null; await data.save(); }
       data = await christmasSchema.findOne({ Guild: guildId });
-      await interaction.reply({ content: "<a:tickyy:1555544712687915008> Ping role cleared.", flags: MessageFlags.Ephemeral });
+      await interaction.reply({ content: "<a:tickyy:1567797045253644368> Ping role cleared.", flags: MessageFlags.Ephemeral });
       return interaction.message.edit({ components: [configPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 });
     }
     if (customId === "xmas_set_channel") {
@@ -713,7 +713,7 @@ async function handleSetupButton(interaction, client, customId) {
     if (customId === "hw_help") return interaction.update({ components: [helpPanel(accent, client)], flags: MessageFlags.IsComponentsV2 });
     if (customId === "hw_configure") return interaction.update({ components: [configPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 });
     if (customId === "hw_toggle") {
-      if (!data?.Channel) return interaction.reply({ content: "<:crossy:1555544390221562048> You must set a channel before enabling.", flags: MessageFlags.Ephemeral });
+      if (!data?.Channel) return interaction.reply({ content: "<:crossy:1567796959648030831> You must set a channel before enabling.", flags: MessageFlags.Ephemeral });
       if (data?.Enabled) { await halloweenSchema.deleteMany({ Guild: guildId }); data = null; }
       else { await halloweenSchema.findOneAndUpdate({ Guild: guildId }, { Guild: guildId, Enabled: true, Channel: data.Channel, PingRole: data.PingRole || null, LastSentDay: 0 }, { upsert: true }); data = await halloweenSchema.findOne({ Guild: guildId }); }
       return interaction.update({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 });
@@ -721,7 +721,7 @@ async function handleSetupButton(interaction, client, customId) {
     if (customId === "hw_clear_role") {
       if (data) { data.PingRole = null; await data.save(); }
       data = await halloweenSchema.findOne({ Guild: guildId });
-      await interaction.reply({ content: "<a:tickyy:1555544712687915008> Ping role cleared.", flags: MessageFlags.Ephemeral });
+      await interaction.reply({ content: "<a:tickyy:1567797045253644368> Ping role cleared.", flags: MessageFlags.Ephemeral });
       return interaction.message.edit({ components: [configPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 });
     }
     if (customId === "hw_set_channel") {
@@ -822,7 +822,7 @@ async function handleSetupButton(interaction, client, customId) {
         new ModalBuilder().setCustomId("rr_modal_add").setTitle("Add Reaction Role")
           .addComponents(
             new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("rr_msg_id").setLabel("Message ID").setStyle(TextInputStyle.Short).setPlaceholder("e.g. 1234567890").setRequired(true)),
-            new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("rr_emoji").setLabel("Emoji (e.g. <a:tickyy:1555544712687915008> or <:name:id>)").setStyle(TextInputStyle.Short).setPlaceholder("<a:tickyy:1555544712687915008> or <:custom:123>").setRequired(true)),
+            new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("rr_emoji").setLabel("Emoji (e.g. <a:tickyy:1567797045253644368> or <:name:id>)").setStyle(TextInputStyle.Short).setPlaceholder("<a:tickyy:1567797045253644368> or <:custom:123>").setRequired(true)),
             new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("rr_role_id").setLabel("Role ID").setStyle(TextInputStyle.Short).setPlaceholder("e.g. 9876543210").setRequired(true)),
           )
       );
@@ -849,14 +849,14 @@ async function handleSetupButton(interaction, client, customId) {
     if (customId === "uptime_view") {
       const lines = list.map(doc => {
         const name = doc.Name || doc.URL;
-        const status = doc.LastStatus === "online" ? "<:LEgreen:1555544256356159600>" : "<:LEred:1555544262123323422>";
+        const status = doc.LastStatus === "online" ? "<:LEgreen:1567796933307666515>" : "<:LEred:1567796934545121280>";
         const uptime = doc.TotalPings ? `${Math.round(doc.UptimePercent)}%` : "—";
         const interval = doc.Interval || 5;
         const alertCh = doc.AlertChannel ? `<#${doc.AlertChannel}>` : "DM";
         return `${status} **${name.slice(0, 30)}**\n  └ URL: \`${doc.URL.slice(0, 50)}\` | Uptime: \`${uptime}\` | Every \`${interval}m\` | Alerts: ${alertCh}`;
       }).join("\n\n") || "*No monitors configured.*";
       const detailPanel = new ContainerBuilder().setAccentColor(accent)
-        .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_utils:1555544669545431062>  Uptime Monitor Details"))
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_utils:1567796996830658573>  Uptime Monitor Details"))
         .addSeparatorComponents(sep())
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(lines))
         .addSeparatorComponents(sep())
@@ -961,7 +961,7 @@ async function handleSetupButton(interaction, client, customId) {
     }
     if (customId === "count_reset") {
       if (data) { data.count = 0; data.lastUserId = null; await data.save(); }
-      await interaction.reply({ content: "<a:tickyy:1555544712687915008> Count reset to 0.", flags: MessageFlags.Ephemeral });
+      await interaction.reply({ content: "<a:tickyy:1567797045253644368> Count reset to 0.", flags: MessageFlags.Ephemeral });
       return interaction.message.edit({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 });
     }
     if (customId === "count_set_channel") {
@@ -1109,13 +1109,13 @@ async function handleSetupButton(interaction, client, customId) {
     if (customId === "wm_toggle_embed_welcome") {
       if (!data) data = new WelcomeMessage({ guildId });
       data.isEmbed = !data.isEmbed; await data.save();
-      await interaction.reply({ content: `<a:tickyy:1555544712687915008> Welcome embed ${data.isEmbed ? "enabled" : "disabled"}.`, flags: MessageFlags.Ephemeral });
+      await interaction.reply({ content: `<a:tickyy:1567797045253644368> Welcome embed ${data.isEmbed ? "enabled" : "disabled"}.`, flags: MessageFlags.Ephemeral });
       return interaction.message.edit({ components: [configSteps("welcome", accent)], flags: MessageFlags.IsComponentsV2 });
     }
     if (customId === "wm_toggle_embed_goodbye") {
       if (!goodbyeData) goodbyeData = new GoodbyeMessage({ guildId });
       goodbyeData.isEmbed = !goodbyeData.isEmbed; await goodbyeData.save();
-      await interaction.reply({ content: `<a:tickyy:1555544712687915008> Goodbye embed ${goodbyeData.isEmbed ? "enabled" : "disabled"}.`, flags: MessageFlags.Ephemeral });
+      await interaction.reply({ content: `<a:tickyy:1567797045253644368> Goodbye embed ${goodbyeData.isEmbed ? "enabled" : "disabled"}.`, flags: MessageFlags.Ephemeral });
       return interaction.message.edit({ components: [configSteps("goodbye", accent)], flags: MessageFlags.IsComponentsV2 });
     }
     if (customId === "wm_set_channel_welcome" || customId === "wm_set_channel_goodbye") {
@@ -1225,7 +1225,7 @@ async function handleSetupButton(interaction, client, customId) {
           .addComponents(
             new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("twitch_channel").setLabel("Notification Channel ID or name").setStyle(TextInputStyle.Short).setPlaceholder("e.g. twitch-alerts  or  1234567890").setRequired(true)),
             new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("twitch_streamer").setLabel("Twitch Streamer URL").setStyle(TextInputStyle.Short).setPlaceholder("https://www.twitch.tv/username").setRequired(true)),
-            new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("twitch_message").setLabel("Custom live notification message").setStyle(TextInputStyle.Paragraph).setPlaceholder("<:LEred:1555544262123323422> {streamer} is now live!").setRequired(false)),
+            new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("twitch_message").setLabel("Custom live notification message").setStyle(TextInputStyle.Paragraph).setPlaceholder("<:LEred:1567796934545121280> {streamer} is now live!").setRequired(false)),
           )
       );
     }
@@ -1246,7 +1246,7 @@ async function handleSetupButton(interaction, client, customId) {
           .addComponents(
             new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("twitter_channel").setLabel("Notification Channel ID or name").setStyle(TextInputStyle.Short).setPlaceholder("e.g. twitter-updates  or  1234567890").setRequired(true)),
             new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("twitter_handle").setLabel("Twitter/X handle (without @)").setStyle(TextInputStyle.Short).setPlaceholder("e.g. elonmusk").setRequired(true)),
-            new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("twitter_message").setLabel("Custom tweet notification message").setStyle(TextInputStyle.Paragraph).setPlaceholder("<:n_bot:1555544367886770176> New tweet from @{handle}!").setRequired(false)),
+            new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("twitter_message").setLabel("Custom tweet notification message").setStyle(TextInputStyle.Paragraph).setPlaceholder("<:n_bot:1567796985816154144> New tweet from @{handle}!").setRequired(false)),
           )
       );
     }
@@ -1264,14 +1264,14 @@ async function handleSetupButton(interaction, client, customId) {
       return interaction.update({ components: [buildPanel([], accent, client)], flags: MessageFlags.IsComponentsV2 });
     }
     if (customId === "yt_add") {
-      if (setupCount >= 5) return interaction.reply({ content: "<:crossy:1555544390221562048> All 5 setup slots are already used!", flags: MessageFlags.Ephemeral });
+      if (setupCount >= 5) return interaction.reply({ content: "<:crossy:1567796959648030831> All 5 setup slots are already used!", flags: MessageFlags.Ephemeral });
       const nextSlot = [1,2,3,4,5].find(n => !notifications.some(notif => notif.SetupNumber === n));
       return showModalAndRegister(
         new ModalBuilder().setCustomId("yt_modal_add").setTitle(`Add YouTube Notification (Slot ${nextSlot})`)
           .addComponents(
             new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("yt_channel").setLabel("Notification Channel ID or name").setStyle(TextInputStyle.Short).setPlaceholder("e.g. yt-notifications  or  1234567890").setRequired(true)),
             new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("yt_url").setLabel("YouTube Channel URL").setStyle(TextInputStyle.Short).setPlaceholder("https://www.youtube.com/@channelname").setRequired(true)),
-            new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("yt_message").setLabel("Custom notification message").setStyle(TextInputStyle.Paragraph).setPlaceholder("<:files:1555544445565407352> New video from {channel}!").setRequired(false)),
+            new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId("yt_message").setLabel("Custom notification message").setStyle(TextInputStyle.Paragraph).setPlaceholder("<:files:1567796970964394044> New video from {channel}!").setRequired(false)),
           ),
         { ytSlot: nextSlot }
       );
@@ -1294,51 +1294,51 @@ async function handleDashboardEmbedAction(interaction, action) {
     switch (action.ActionType) {
       case "reply": {
         const content = action.ReplyContent?.trim();
-        if (!content) return interaction.reply({ content: "<:error:1555544434601369620> This button's reply content is empty.", flags: MessageFlags.Ephemeral });
+        if (!content) return interaction.reply({ content: "<:error:1567796968758050868> This button's reply content is empty.", flags: MessageFlags.Ephemeral });
         return interaction.reply({ content, flags: ephemeral ? MessageFlags.Ephemeral : 0 });
       }
       case "dm": {
         const content = action.ReplyContent?.trim();
-        if (!content) return interaction.reply({ content: "<:error:1555544434601369620> This button's DM content is empty.", flags: MessageFlags.Ephemeral });
+        if (!content) return interaction.reply({ content: "<:error:1567796968758050868> This button's DM content is empty.", flags: MessageFlags.Ephemeral });
         try {
           await interaction.user.send({ content });
-          return interaction.reply({ content: "<:announcement:1555544345740967956> Check your DMs!", flags: MessageFlags.Ephemeral });
+          return interaction.reply({ content: "<:announcement:1567796950265241662> Check your DMs!", flags: MessageFlags.Ephemeral });
         } catch {
-          return interaction.reply({ content: "<:crossy:1555544390221562048> I couldn't DM you — make sure your DMs are open.", flags: MessageFlags.Ephemeral });
+          return interaction.reply({ content: "<:crossy:1567796959648030831> I couldn't DM you — make sure your DMs are open.", flags: MessageFlags.Ephemeral });
         }
       }
       case "role_add": {
-        if (!action.RoleId) return interaction.reply({ content: "<:error:1555544434601369620> No role configured.", flags: MessageFlags.Ephemeral });
+        if (!action.RoleId) return interaction.reply({ content: "<:error:1567796968758050868> No role configured.", flags: MessageFlags.Ephemeral });
         const member = interaction.member;
-        if (member.roles.cache.has(action.RoleId)) return interaction.reply({ content: "<a:tickyy:1555544712687915008> You already have this role.", flags: MessageFlags.Ephemeral });
+        if (member.roles.cache.has(action.RoleId)) return interaction.reply({ content: "<a:tickyy:1567797045253644368> You already have this role.", flags: MessageFlags.Ephemeral });
         const role = interaction.guild.roles.cache.get(action.RoleId);
-        if (!role) return interaction.reply({ content: "<:crossy:1555544390221562048> The configured role no longer exists.", flags: MessageFlags.Ephemeral });
+        if (!role) return interaction.reply({ content: "<:crossy:1567796959648030831> The configured role no longer exists.", flags: MessageFlags.Ephemeral });
         await member.roles.add(action.RoleId, `Dashboard button: ${action.CustomId}`);
-        return interaction.reply({ content: `<a:tickyy:1555544712687915008> You've been given the **${role.name}** role!`, flags: ephemeral ? MessageFlags.Ephemeral : 0 });
+        return interaction.reply({ content: `<a:tickyy:1567797045253644368> You've been given the **${role.name}** role!`, flags: ephemeral ? MessageFlags.Ephemeral : 0 });
       }
       case "role_remove": {
-        if (!action.RoleId) return interaction.reply({ content: "<:error:1555544434601369620> No role configured.", flags: MessageFlags.Ephemeral });
+        if (!action.RoleId) return interaction.reply({ content: "<:error:1567796968758050868> No role configured.", flags: MessageFlags.Ephemeral });
         const member = interaction.member;
-        if (!member.roles.cache.has(action.RoleId)) return interaction.reply({ content: "<:n_info:1555544473008873565> You don't have this role.", flags: MessageFlags.Ephemeral });
+        if (!member.roles.cache.has(action.RoleId)) return interaction.reply({ content: "<:n_info:1567796991419744417> You don't have this role.", flags: MessageFlags.Ephemeral });
         const role = interaction.guild.roles.cache.get(action.RoleId);
-        if (!role) return interaction.reply({ content: "<:crossy:1555544390221562048> The configured role no longer exists.", flags: MessageFlags.Ephemeral });
+        if (!role) return interaction.reply({ content: "<:crossy:1567796959648030831> The configured role no longer exists.", flags: MessageFlags.Ephemeral });
         await member.roles.remove(action.RoleId, `Dashboard button: ${action.CustomId}`);
-        return interaction.reply({ content: `<a:tickyy:1555544712687915008> The **${role.name}** role has been removed.`, flags: ephemeral ? MessageFlags.Ephemeral : 0 });
+        return interaction.reply({ content: `<a:tickyy:1567797045253644368> The **${role.name}** role has been removed.`, flags: ephemeral ? MessageFlags.Ephemeral : 0 });
       }
       case "role_toggle": {
-        if (!action.RoleId) return interaction.reply({ content: "<:error:1555544434601369620> No role configured.", flags: MessageFlags.Ephemeral });
+        if (!action.RoleId) return interaction.reply({ content: "<:error:1567796968758050868> No role configured.", flags: MessageFlags.Ephemeral });
         const member = interaction.member;
         const role = interaction.guild.roles.cache.get(action.RoleId);
-        if (!role) return interaction.reply({ content: "<:crossy:1555544390221562048> The configured role no longer exists.", flags: MessageFlags.Ephemeral });
+        if (!role) return interaction.reply({ content: "<:crossy:1567796959648030831> The configured role no longer exists.", flags: MessageFlags.Ephemeral });
         const hasRole = member.roles.cache.has(action.RoleId);
-        if (hasRole) { await member.roles.remove(action.RoleId); return interaction.reply({ content: `<:n_music:1555544516746940416> The **${role.name}** role has been removed.`, flags: ephemeral ? MessageFlags.Ephemeral : 0 }); }
-        else { await member.roles.add(action.RoleId); return interaction.reply({ content: `<:n_music:1555544516746940416> You've been given the **${role.name}** role!`, flags: ephemeral ? MessageFlags.Ephemeral : 0 }); }
+        if (hasRole) { await member.roles.remove(action.RoleId); return interaction.reply({ content: `<:n_music:1567796993403658261> The **${role.name}** role has been removed.`, flags: ephemeral ? MessageFlags.Ephemeral : 0 }); }
+        else { await member.roles.add(action.RoleId); return interaction.reply({ content: `<:n_music:1567796993403658261> You've been given the **${role.name}** role!`, flags: ephemeral ? MessageFlags.Ephemeral : 0 }); }
       }
     }
   } catch (err) {
     console.error(`[DashboardEmbedAction] customId=${action.CustomId} error:`, err);
     if (!interaction.replied && !interaction.deferred) {
-      await interaction.reply({ content: "<:crossy:1555544390221562048> Something went wrong executing this button's action.", flags: MessageFlags.Ephemeral }).catch(() => {});
+      await interaction.reply({ content: "<:crossy:1567796959648030831> Something went wrong executing this button's action.", flags: MessageFlags.Ephemeral }).catch(() => {});
     }
   }
 }

@@ -469,7 +469,7 @@ module.exports = (client) => {
         case "warn":
           if (!fromLadder) {
             await dmUser(author,
-              `<:error:1555544434601369620> You received a warning in **${guildName}**.\n` +
+              `<:error:1567796968758050868> You received a warning in **${guildName}**.\n` +
               `**Reason:** ${reason}\n*(Warning #${warnCount})*`
             );
           }
@@ -487,7 +487,7 @@ module.exports = (client) => {
             await member.timeout(durationMs, `[AutoMod] ${reason}`);
             if (!fromLadder) {
               await dmUser(author,
-                `<:n_music:1555544516746940416> You have been muted for **${muteDuration} minutes** in **${guildName}**.\n` +
+                `<:n_music:1567796993403658261> You have been muted for **${muteDuration} minutes** in **${guildName}**.\n` +
                 `**Reason:** ${reason}\n*(Warning #${warnCount})*`
               );
             }
@@ -501,7 +501,7 @@ module.exports = (client) => {
           } else {
             if (!fromLadder) {
               await dmUser(author,
-                `<:ban:1555544356352430202> You have been kicked from **${guildName}**.\n` +
+                `<:ban:1567796952538554458> You have been kicked from **${guildName}**.\n` +
                 `**Reason:** ${reason}\n*(Warning #${warnCount})*`
               );
             }
@@ -513,7 +513,7 @@ module.exports = (client) => {
           if (member.bannable) {
             if (!fromLadder) {
               await dmUser(author,
-                `<:ban:1555544356352430202> You have been banned from **${guildName}**.\n` +
+                `<:ban:1567796952538554458> You have been banned from **${guildName}**.\n` +
                 `**Reason:** ${reason}\n*(Warning #${warnCount})*`
               );
             }
@@ -548,7 +548,7 @@ module.exports = (client) => {
           name:    `${message.author.tag} (${message.author.id})`,
           iconURL: message.author.displayAvatarURL({ size: 64 }),
         })
-        .setTitle(`<:error:1555544434601369620> AutoMod — ${action.toUpperCase()}`)
+        .setTitle(`<:error:1567796968758050868> AutoMod — ${action.toUpperCase()}`)
         .addFields(
           { name: "Reason",  value: reason,                            inline: true  },
           { name: "Action",  value: action,                            inline: true  },

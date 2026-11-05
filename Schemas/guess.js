@@ -23,11 +23,11 @@ const guessSchema = new Schema({
   winRoleDuration: { type: Number,  default: 0 },      // hours to keep it (0 = permanent)
 
   // Messages (support {user} {number} {tries} variables)
-  msgWin:     { type: String, default: '<:boost:1555544362455146576> {user} guessed the number **{number}** in **{tries}** tries!' },
-  msgTooHigh: { type: String, default: '<:n_utils:1555544669545431062> Too high! Guess lower.' },
-  msgTooLow:  { type: String, default: '<:n_utils:1555544669545431062> Too low! Guess higher.' },
-  msgCooldown:{ type: String, default: '<:n_loading:1555544489194688623> Slow down! Try again in {seconds}s.' },
-  msgRepeat:  { type: String, default: '<:restrict:1555544549105999962> You just guessed — let someone else try!' },
+  msgWin:     { type: String, default: '<:boost:1567796953599836280> {user} guessed the number **{number}** in **{tries}** tries!' },
+  msgTooHigh: { type: String, default: '<:n_utils:1567796996830658573> Too high! Guess lower.' },
+  msgTooLow:  { type: String, default: '<:n_utils:1567796996830658573> Too low! Guess higher.' },
+  msgCooldown:{ type: String, default: '<:n_loading:1567796992556666982> Slow down! Try again in {seconds}s.' },
+  msgRepeat:  { type: String, default: '<:restrict:1567797003638022166> You just guessed — let someone else try!' },
 
   // Stats
   totalGames:  { type: Number, default: 0 },

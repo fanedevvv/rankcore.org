@@ -14,10 +14,10 @@ module.exports = {
     .addStringOption(o => o.setName("reason").setDescription("Reason for the ban.").setRequired(false).setMaxLength(512))
     .addStringOption(o => o.setName("severity").setDescription("Severity level for the mod log.").setRequired(false)
       .addChoices(
-        { name: "<:error:1555544434601369620> Low",      value: "low"      },
-        { name: "<:error:1555544434601369620> Medium",   value: "medium"   },
-        { name: "<:LEred:1555544262123323422> High",     value: "high"     },
-        { name: "<:error:1555544434601369620> Critical", value: "critical" },
+        { name: "<:error:1567796968758050868> Low",      value: "low"      },
+        { name: "<:error:1567796968758050868> Medium",   value: "medium"   },
+        { name: "<:LEred:1567796934545121280> High",     value: "high"     },
+        { name: "<:error:1567796968758050868> Critical", value: "critical" },
       ))
     .addIntegerOption(o => o.setName("delete_days").setDescription("Days of messages to delete (0–7).").setMinValue(0).setMaxValue(7).setRequired(false))
     .addBooleanOption(o => o.setName("silent").setDescription("Send silently (only visible to you).").setRequired(false))
@@ -62,7 +62,7 @@ module.exports = {
       if (sendDm) {
         try {
           const dmBox = new ContainerBuilder().setAccentColor(ACCENT.error)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:ban:1555544356352430202>  You have been banned"))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:ban:1567796952538554458>  You have been banned"))
             .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(
               `**Server** — ${interaction.guild.name}\n**Banned by** — ${interaction.user.tag}\n**Reason** — ${reason}\n**Case** — ${caseNum}`
@@ -81,12 +81,12 @@ module.exports = {
         deleteMessageSeconds: deleteDays * 86400,
       });
 
-      const severityEmoji = { low: "<:error:1555544434601369620>", medium: "<:error:1555544434601369620>", high: "<:LEred:1555544262123323422>", critical: "<:error:1555544434601369620>" };
+      const severityEmoji = { low: "<:error:1567796968758050868>", medium: "<:error:1567796968758050868>", high: "<:LEred:1567796934545121280>", critical: "<:error:1567796968758050868>" };
 
-      const container = modActionContainer("<:ban:1555544356352430202>", "Ban Executed",
+      const container = modActionContainer("<:ban:1567796952538554458>", "Ban Executed",
         `${targetUser.tag} (\`${targetUser.id}\`)`, reason, {
           accent, clientId: client.user.id,
-          extra: `**Moderator** — ${interaction.user.tag}\n**Case** — ${caseNum}\n**Severity** — ${severityEmoji[severity]} ${severity.charAt(0).toUpperCase() + severity.slice(1)}\n**Messages Deleted** — ${deleteDays > 0 ? `${deleteDays} day(s)` : "None"}\n**DM Sent** — ${dmSent ? "<a:tickyy:1555544712687915008> Yes" : "<:crossy:1555544390221562048> No"}`,
+          extra: `**Moderator** — ${interaction.user.tag}\n**Case** — ${caseNum}\n**Severity** — ${severityEmoji[severity]} ${severity.charAt(0).toUpperCase() + severity.slice(1)}\n**Messages Deleted** — ${deleteDays > 0 ? `${deleteDays} day(s)` : "None"}\n**DM Sent** — ${dmSent ? "<a:tickyy:1567797045253644368> Yes" : "<:crossy:1567796959648030831> No"}`,
           footer: `${interaction.guild.name} • ${new Date().toLocaleString()}`,
         });
 

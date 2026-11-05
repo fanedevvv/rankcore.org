@@ -61,7 +61,7 @@ module.exports = {
 
       // Confirmation prompt
       const confirmContainer = new ContainerBuilder().setAccentColor(ACCENT.error)
-        .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:fire:1555544450871332944>  Confirm Channel Nuke"))
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:fire:1567796972125945888>  Confirm Channel Nuke"))
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(
           `You are about to **nuke** <#${channel.id}>. This will delete the channel and re-create it, wiping **all messages**.\n\n**Reason** — ${reason}\n**Post Notification** — ${sendMsg ? "Yes" : "No"}`
@@ -69,8 +69,8 @@ module.exports = {
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
         .addActionRowComponents(
           new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId("nuke_confirm").setLabel("Confirm Nuke").setEmoji(parseEmoji('<a:tickyy:1555544712687915008>')).setStyle(ButtonStyle.Danger),
-            new ButtonBuilder().setCustomId("nuke_cancel").setLabel("Cancel").setEmoji(parseEmoji('<:crossy:1555544390221562048>')).setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId("nuke_confirm").setLabel("Confirm Nuke").setEmoji(parseEmoji('<a:tickyy:1567797045253644368>')).setStyle(ButtonStyle.Danger),
+            new ButtonBuilder().setCustomId("nuke_cancel").setLabel("Cancel").setEmoji(parseEmoji('<:crossy:1567796959648030831>')).setStyle(ButtonStyle.Secondary),
           )
         );
 
@@ -88,7 +88,7 @@ module.exports = {
       col.on("collect", async b => {
         if (b.customId === "nuke_cancel") {
           return b.update({
-            components: [successContainer("<:fire:1555544450871332944> Nuke Cancelled", "The nuke request was cancelled. No changes made.", { accent, clientId: client.user.id })],
+            components: [successContainer("<:fire:1567796972125945888> Nuke Cancelled", "The nuke request was cancelled. No changes made.", { accent, clientId: client.user.id })],
             flags: MessageFlags.IsComponentsV2,
           });
         }
@@ -120,13 +120,13 @@ module.exports = {
             if (sendMsg) {
               await newChannel.send({
                 components: [new ContainerBuilder().setAccentColor(ACCENT.error)
-                  .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:fire:1555544450871332944>  Channel Nuked\nThis channel was nuked by ${interaction.user} with reason: **${reason}**`))],
+                  .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:fire:1567796972125945888>  Channel Nuked\nThis channel was nuked by ${interaction.user} with reason: **${reason}**`))],
                 flags: MessageFlags.IsComponentsV2,
               }).catch(() => {});
             }
 
             await b.update({
-              components: [successContainer("<:fire:1555544450871332944> Nuke Complete", `**#${name}** has been nuked. New channel: <#${newChannel.id}>`, {
+              components: [successContainer("<:fire:1567796972125945888> Nuke Complete", `**#${name}** has been nuked. New channel: <#${newChannel.id}>`, {
                 accent, clientId: client.user.id,
                 extra: `**Reason** — ${reason}\n**By** — ${interaction.user.tag}`,
               })],
@@ -162,7 +162,7 @@ module.exports = {
           SendMessages: false, SendMessagesInThreads: false, AddReactions: false,
         });
         return interaction.reply({
-          components: [successContainer("<:lockk:1555544494441635860>  Channel Locked", `<#${channel.id}> has been locked.`, {
+          components: [successContainer("<:lockk:1567796977809367122>  Channel Locked", `<#${channel.id}> has been locked.`, {
             accent, clientId: client.user.id,
             extra: `**Reason** — ${reason}\n**Locked by** — ${interaction.user.tag}`,
           })],
@@ -184,7 +184,7 @@ module.exports = {
           SendMessages: null, SendMessagesInThreads: null, AddReactions: null,
         });
         return interaction.reply({
-          components: [successContainer("<:lockk:1555544494441635860>  Channel Unlocked", `<#${channel.id}> has been unlocked.`, {
+          components: [successContainer("<:lockk:1567796977809367122>  Channel Unlocked", `<#${channel.id}> has been unlocked.`, {
             accent, clientId: client.user.id,
             extra: `**Reason** — ${reason}\n**Unlocked by** — ${interaction.user.tag}`,
           })],
@@ -202,7 +202,7 @@ module.exports = {
       try {
         await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { ViewChannel: false });
         return interaction.reply({
-          components: [successContainer("<:n_search:1555544554365788191>️  Channel Hidden", `<#${channel.id}> is now hidden from @everyone.`, {
+          components: [successContainer("<:n_search:1567796994792230953>️  Channel Hidden", `<#${channel.id}> is now hidden from @everyone.`, {
             accent, clientId: client.user.id,
             extra: `**Hidden by** — ${interaction.user.tag}`,
           })],
@@ -220,7 +220,7 @@ module.exports = {
       try {
         await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, { ViewChannel: null });
         return interaction.reply({
-          components: [successContainer("<:n_search:1555544554365788191>️  Channel Visible", `<#${channel.id}> is now visible to @everyone.`, {
+          components: [successContainer("<:n_search:1567796994792230953>️  Channel Visible", `<#${channel.id}> is now visible to @everyone.`, {
             accent, clientId: client.user.id,
             extra: `**Shown by** — ${interaction.user.tag}`,
           })],

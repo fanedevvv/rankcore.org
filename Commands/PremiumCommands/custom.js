@@ -73,7 +73,7 @@ module.exports = {
     // Admin-only (Kept for custom command *management*)
     if (!guild.members.cache.get(user.id).permissions.has(PermissionFlagsBits.Administrator)) {
       return interaction.reply({
-        content: "<:crossy:1555544390221562048> Only server administrators can manage custom commands.",
+        content: "<:crossy:1567796959648030831> Only server administrators can manage custom commands.",
         flags: 64,
       });
     }
@@ -173,12 +173,12 @@ Upgrade with \`/premium plans\` to unlock more.`
         } catch (error) {
           console.error("Failed to register custom slash command:", error);
           return interaction.reply({
-            content: "<:crossy:1555544390221562048> Saved, but failed to register the slash command. Check console.",
+            content: "<:crossy:1567796959648030831> Saved, but failed to register the slash command. Check console.",
             flags: 64,
           });
         }
 
-        let successMsg = `<a:tickyy:1555544712687915008> Custom command \`${name}\` created and **registered instantly**!`;
+        let successMsg = `<a:tickyy:1567797045253644368> Custom command \`${name}\` created and **registered instantly**!`;
         if (requiredPermission) {
           successMsg += `\n**Required Permission:** \`${getPermissionName(parseInt(requiredPermission))}\``;
         }
@@ -232,7 +232,7 @@ Upgrade with \`/premium plans\` to unlock more.`
         }
 
         return interaction.reply({
-          content: `<:del:1555544395720302643> Custom command \`${name}\` deleted **instantly**.`,
+          content: `<:del:1567796961334267974> Custom command \`${name}\` deleted **instantly**.`,
           flags: 64,
         });
       }

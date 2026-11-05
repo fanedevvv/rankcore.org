@@ -18,7 +18,7 @@ module.exports = {
     // ─── Build family lines ──────────────────────────────────────────────
     const marriageStatus = marriageData
       ? `💍 Married to <@${marriageData.marriedTo}> since <t:${Math.floor(marriageData.marriedSince.getTime() / 1000)}:D>`
-      : `<:Red_Heart:1555544329605615758> **Not married** — Use \`/family marry\` to find your love!`;
+      : `<:Red_Heart:1567796949271191642> **Not married** — Use \`/family marry\` to find your love!`;
 
     const parentStatus = adoptedByData
       ? `👨‍👩‍👧 Adopted by <@${adoptedByData.parent}> since <t:${Math.floor(adoptedByData.adoptionDate.getTime() / 1000)}:D>`
@@ -27,7 +27,7 @@ module.exports = {
     const childLines = childrenData.length
       ? childrenData.map((c) => {
           const tag = c.grounded
-            ? `<:lockk:1555544494441635860> <@${c.child}> *(grounded until <t:${Math.floor(c.groundedUntil.getTime() / 1000)}:R>)*`
+            ? `<:lockk:1567796977809367122> <@${c.child}> *(grounded until <t:${Math.floor(c.groundedUntil.getTime() / 1000)}:R>)*`
             : c.isKidnapped
             ? `😱 <@${c.child}> *(kidnapped!)*`
             : `👶 <@${c.child}>`;
@@ -41,7 +41,7 @@ module.exports = {
       .addSectionComponents(
         new SectionBuilder()
           .addTextDisplayComponents(
-            new TextDisplayBuilder().setContent(`## <:n_home:1555544468193546270> ${user.username}'s Family`),
+            new TextDisplayBuilder().setContent(`## <:n_home:1567796990148878446> ${user.username}'s Family`),
             new TextDisplayBuilder().setContent(marriageStatus),
             new TextDisplayBuilder().setContent(parentStatus)
           )

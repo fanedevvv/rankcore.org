@@ -4,8 +4,8 @@ const {
 } = require('discord.js');
 
 // --- Configuration Constants ---
-const CUSTOM_CROSS_EMOJI = '<:crossy:1555544390221562048>';
-const CROSS_EMOJI_ID = '1555544390221562048';
+const CUSTOM_CROSS_EMOJI = '<:crossy:1567796959648030831>';
+const CROSS_EMOJI_ID = '1567796959648030831';
 const WARNING_DELETE_TIMEOUT = 30000; // 30 seconds
 const MAX_HISTORY = 10; // Max reset events to store
 
@@ -209,7 +209,7 @@ module.exports = (client) => {
                         const role = message.guild.roles.cache.get(milestoneRole);
                         if (member && role) {
                             await member.roles.add(role);
-                            await message.channel.send(`<:boost:1555544362455146576> ${message.author} reached **${countdata.Count}** and earned the <@&${milestoneRole}> role!`);
+                            await message.channel.send(`<:boost:1567796953599836280> ${message.author} reached **${countdata.Count}** and earned the <@&${milestoneRole}> role!`);
                         }
                     } catch (e) {
                         console.error("Failed to assign reward role:", e);
@@ -223,7 +223,7 @@ module.exports = (client) => {
 
             let reaction;
             if (isMilestone) {
-                reaction = "<:boost:1555544362455146576>";
+                reaction = "<:boost:1567796953599836280>";
                 const milestoneEmbed = new EmbedBuilder()
                     .setColor(0x00FF88)
                     .setTitle(`Milestone Reached: ${countdata.Count}!`)
@@ -231,13 +231,13 @@ module.exports = (client) => {
                     .setTimestamp();
                 await message.channel.send({ embeds: [milestoneEmbed] });
             } else if (countdata.Count >= 1000) {
-                reaction = "<:boost:1555544362455146576>";
+                reaction = "<:boost:1567796953599836280>";
             } else if (countdata.Count >= 500) {
-                reaction = "<:fire:1555544450871332944>";
+                reaction = "<:fire:1567796972125945888>";
             } else if (countdata.Count >= 100) {
-                reaction = "<:boost:1555544362455146576>";
+                reaction = "<:boost:1567796953599836280>";
             } else {
-                reaction = "<a:tickyy:1555544712687915008>";
+                reaction = "<a:tickyy:1567797045253644368>";
             }
 
             try { await message.react(reaction); } catch (e) { }

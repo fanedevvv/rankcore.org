@@ -73,8 +73,8 @@ async function buildOverviewEmbed(guildId) {
     .setTitle('🔔 Social Notifications Hub')
     .setDescription('```md\n# Manage all your social platform notifications\n> YouTube • Twitch • Twitter/X```')
     .addFields(
-      { name: '<:youtube:1467827561739456687> YouTube', value: ytStatus, inline: true },
-      { name: '<:twitch:1467828803643511042> Twitch', value: twitchStatus, inline: true },
+      { name: '<:youtube:1567797034616885319> YouTube', value: ytStatus, inline: true },
+      { name: '<:twitch:1567797030951325738> Twitch', value: twitchStatus, inline: true },
       { name: '🐦 Twitter / X', value: twitterStatus, inline: true },
     )
     .setFooter({ text: 'Select a platform below to configure it • RankCore' })
@@ -223,7 +223,7 @@ async function handleYouTubeConfig(interaction) {
         .setAuthor({ name: 'RankCore Test Channel', iconURL: 'https://i.imgur.com/iKFGRiS.png' })
         .setTitle('🧪 Test Notification — YouTube')
         .setURL('https://www.youtube.com')
-        .setDescription(`${config.Message}\n\n<:files:1555544445565407352> **New Upload!**\n> This is a test notification from RankCore.`)
+        .setDescription(`${config.Message}\n\n<:files:1567796970964394044> **New Upload!**\n> This is a test notification from RankCore.`)
         .setThumbnail('https://i.imgur.com/iKFGRiS.png')
         .setTimestamp()
         .setFooter({ text: 'YouTube Notifications • RankCore' });

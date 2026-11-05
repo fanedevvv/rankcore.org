@@ -55,7 +55,7 @@ module.exports = (client) => {
                 .filter(t => cfg.modes?.[t.schemaKey] !== false)
                 .map(t => ({
                     name:   `${t.emoji} ${t.name}`,
-                    value:  `**Status:** ${getUserMode(t.modeKey, guildId, userId) ? "<a:tickyy:1555544712687915008> Enabled" : "<:restrict:1555544549105999962> Disabled"}\n**Command:** \`${t.cmd}\``,
+                    value:  `**Status:** ${getUserMode(t.modeKey, guildId, userId) ? "<a:tickyy:1567797045253644368> Enabled" : "<:restrict:1567797003638022166> Disabled"}\n**Command:** \`${t.cmd}\``,
                     inline: true,
                 }));
 
@@ -77,7 +77,7 @@ module.exports = (client) => {
             if (message.channel.id !== channelId) return;
 
             if (cfg.modes?.[t.schemaKey] === false) {
-                const m = await message.reply({ content: `<:crossy:1555544390221562048> **${t.name}** is disabled on this server.`, flags: [MessageFlags.SuppressEmbeds] });
+                const m = await message.reply({ content: `<:crossy:1567796959648030831> **${t.name}** is disabled on this server.`, flags: [MessageFlags.SuppressEmbeds] });
                 setTimeout(() => m.delete().catch(() => {}), 8000);
                 return;
             }
@@ -98,7 +98,7 @@ module.exports = (client) => {
 
         // ── Required role check ───────────────────────────────────────────
         if (cfg.requiredRole && !message.member?.roles.cache.has(cfg.requiredRole) && !isTrusted) {
-            const m = await message.reply({ content: "<:crossy:1555544390221562048> You don't have the required role to use the AI here.", flags: [MessageFlags.SuppressEmbeds] });
+            const m = await message.reply({ content: "<:crossy:1567796959648030831> You don't have the required role to use the AI here.", flags: [MessageFlags.SuppressEmbeds] });
             setTimeout(() => m.delete().catch(() => {}), 10000);
             return;
         }
@@ -106,7 +106,7 @@ module.exports = (client) => {
         // ── Message length cap ────────────────────────────────────────────
         if (!isTrusted && userMsg.length > RATE_LIMITS.MAX_MESSAGE_LENGTH) {
             const m = await message.reply({
-                content: `<:1430986239036625017:1555544229143519304> Your message is too long! Please keep it under **${RATE_LIMITS.MAX_MESSAGE_LENGTH} characters** (yours: ${userMsg.length}).`,
+                content: `<:1430986239036625017:1567796926689185822> Your message is too long! Please keep it under **${RATE_LIMITS.MAX_MESSAGE_LENGTH} characters** (yours: ${userMsg.length}).`,
                 flags: [MessageFlags.SuppressEmbeds],
             });
             setTimeout(() => m.delete().catch(() => {}), 15000);
@@ -139,7 +139,7 @@ module.exports = (client) => {
                             .setTimestamp());
                     }
                 }
-                const spamTxt = (cfg.spamMsg || "<:restrict:1555544549105999962> You have been automatically blacklisted for spamming.").replace("{userId}", userPing);
+                const spamTxt = (cfg.spamMsg || "<:restrict:1567797003638022166> You have been automatically blacklisted for spamming.").replace("{userId}", userPing);
                 const m = await message.reply({ content: spamTxt, flags: [MessageFlags.SuppressEmbeds] });
                 setTimeout(() => m.delete().catch(() => {}), 20000);
                 return;
@@ -165,7 +165,7 @@ module.exports = (client) => {
 
             if (elapsed < cooldownMs) {
                 const remaining = Math.ceil((cooldownMs - elapsed) / 1000);
-                const cdText = (cfg.cooldownMsg || "<:n_loading:1555544489194688623> Please wait {remaining}s before using AI again.")
+                const cdText = (cfg.cooldownMsg || "<:n_loading:1567796992556666982> Please wait {remaining}s before using AI again.")
                     .replace("{remaining}", remaining);
                 const m = await message.reply({ content: cdText, flags: [MessageFlags.SuppressEmbeds] });
                 setTimeout(() => m.delete().catch(() => {}), Math.min(remaining * 1000 + 1000, 30000));
@@ -196,7 +196,7 @@ module.exports = (client) => {
         if (!isTrusted && cfg.filterEnabled !== false) {
             const allBadWords = [...(cfg.badWords || [])];
             if (allBadWords.some(w => lower.includes(w.toLowerCase()))) {
-                const m = await message.reply({ content: "<:restrict:1555544549105999962> Your message contains blocked content and cannot be processed.", flags: [MessageFlags.SuppressEmbeds] });
+                const m = await message.reply({ content: "<:restrict:1567797003638022166> Your message contains blocked content and cannot be processed.", flags: [MessageFlags.SuppressEmbeds] });
                 setTimeout(() => m.delete().catch(() => {}), 15000);
 
                 if (cfg.logBlocks !== false) {
@@ -272,7 +272,7 @@ module.exports = (client) => {
         let queueNotice = null;
         if (enqueueResult.queuePos > RATE_LIMITS.MAX_CONCURRENT) {
             queueNotice = await message.reply({
-                content: `<:1430986244921495654:1555544239792980044> You're at ${queuePositionFor(userId) ?? `position **${enqueueResult.queuePos}**`} — hang tight!`,
+                content: `<:1430986244921495654:1567796929587576852> You're at ${queuePositionFor(userId) ?? `position **${enqueueResult.queuePos}**`} — hang tight!`,
                 flags: [MessageFlags.SuppressEmbeds],
             }).catch(() => null);
         }
@@ -285,7 +285,7 @@ module.exports = (client) => {
             if (queueNotice) queueNotice.delete().catch(() => {});
             if (queueErr.message === "QUEUE_EXPIRED") {
                 const m = await message.reply({
-                    content: "<:1430986244921495654:1555544239792980044> Your request sat in the queue too long and was dropped. Please try again.",
+                    content: "<:1430986244921495654:1567796929587576852> Your request sat in the queue too long and was dropped. Please try again.",
                     flags: [MessageFlags.SuppressEmbeds],
                 }).catch(() => null);
                 setTimeout(() => m?.delete().catch(() => {}), 15000);
@@ -303,7 +303,7 @@ module.exports = (client) => {
 
         // ── Generate response ─────────────────────────────────────────────
         try {
-            await message.react("<a:28213ttsloading:1555544676923351112>").catch(() => {});
+            await message.react("<a:28213ttsloading:1567797035782905866>").catch(() => {});
             await message.channel.sendTyping();
 
             const waitThresholdMs = (cfg.waitThreshold ?? 5) * 1000;
@@ -311,7 +311,7 @@ module.exports = (client) => {
 
             const waitTimer = setTimeout(async () => {
                 waitMsg = await message.reply({
-                    content: "<:n_loading:1555544489194688623> Still thinking, hang tight…",
+                    content: "<:n_loading:1567796992556666982> Still thinking, hang tight…",
                     flags: [MessageFlags.SuppressEmbeds],
                 }).catch(() => null);
             }, waitThresholdMs);
@@ -384,7 +384,7 @@ module.exports = (client) => {
                 // ── Regenerate ────────────────────────────────────────────
                 if (interaction.customId === "ai_regenerate") {
                     if (regenCount >= maxRegens) {
-                        await interaction.reply({ content: `<:crossy:1555544390221562048> Maximum regenerations (${maxRegens}) reached for this response.`, ephemeral: true });
+                        await interaction.reply({ content: `<:crossy:1567796959648030831> Maximum regenerations (${maxRegens}) reached for this response.`, ephemeral: true });
                         return;
                     }
 
@@ -429,7 +429,7 @@ module.exports = (client) => {
                     } catch (reErr) {
                         console.error("[AI] Regen failed:", reErr.message);
                         await replyMsg.edit({
-                            content:    "<:error:1555544434601369620> Regeneration failed.",
+                            content:    "<:error:1567796968758050868> Regeneration failed.",
                             components: [buildButtonRow(cfg, regenCount)],
                         }).catch(() => {});
                     }
@@ -442,7 +442,7 @@ module.exports = (client) => {
                     regenTracker.delete(replyMsg.id);
 
                     await replyMsg.edit({ components: [buildButtonRow(cfg, 0, { cleared: true })] }).catch(() => {});
-                    await interaction.editReply({ content: "<a:tickyy:1555544712687915008> **Context cleared!** Ruby will start fresh with your next message." });
+                    await interaction.editReply({ content: "<a:tickyy:1567797045253644368> **Context cleared!** Ruby will start fresh with your next message." });
                     collector.stop("cleared");
                 }
             });
@@ -461,7 +461,7 @@ module.exports = (client) => {
             await message.reactions.removeAll().catch(() => {});
 
             const errDetail = err?.message ? err.message.slice(0, 200) : String(err).slice(0, 200);
-            await message.reply({ content: `<:error:1555544434601369620> **AI Error:** ${errDetail}`, flags: [MessageFlags.SuppressEmbeds] }).catch(() => {});
+            await message.reply({ content: `<:error:1567796968758050868> **AI Error:** ${errDetail}`, flags: [MessageFlags.SuppressEmbeds] }).catch(() => {});
 
             if (cfg.logErrors !== false) {
                 await sendLog(client, cfg, new EmbedBuilder()

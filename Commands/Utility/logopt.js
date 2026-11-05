@@ -50,7 +50,7 @@ module.exports = {
           const deleted = await RequestLog.deleteMany({ userId });
 
           await sendEmbed(
-            "<:del:1555544395720302643> Data Purged",
+            "<:del:1567796961334267974> Data Purged",
             `Successfully deleted **${deleted.deletedCount}** log entries and Discord webhook messages.`
           );
           break;
@@ -61,7 +61,7 @@ module.exports = {
           client.blockedLogs.add(userId);
 
           await sendEmbed(
-            "<:restrict:1555544549105999962> Logging Disabled",
+            "<:restrict:1567797003638022166> Logging Disabled",
             "Future requests will **not** be logged.",
             0xffa500
           );
@@ -72,7 +72,7 @@ module.exports = {
           client.blockedLogs?.delete(userId);
 
           await sendEmbed(
-            "<a:tickyy:1555544712687915008> Logging Resumed",
+            "<a:tickyy:1567797045253644368> Logging Resumed",
             "Your requests will now be logged again.",
             0x00ff00
           );
@@ -81,7 +81,7 @@ module.exports = {
     } catch (err) {
       console.error("Privacy Command Error:", err);
       const errorEmbed = new EmbedBuilder()
-        .setTitle("<:error:1555544434601369620> Database Error")
+        .setTitle("<:error:1567796968758050868> Database Error")
         .setDescription("An error occurred while processing your privacy request.")
         .setColor(0xff0000);
 

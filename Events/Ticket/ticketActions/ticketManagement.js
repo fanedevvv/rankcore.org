@@ -26,13 +26,13 @@ async function handleTagMenu(interaction, data, docs) {
     .addOptions(docs.Tags.map(t => ({
       label:   t.name,
       value:   t.name,
-      emoji:   parseEmoji(t.emoji || '<:thread:1555544613035708426>'),
+      emoji:   parseEmoji(t.emoji || '<:thread:1567797010692706324>'),
       default: data.Tags?.includes(t.name),
     })));
 
   await interaction.reply({
     embeds: [new EmbedBuilder()
-      .setTitle('<:thread:1555544613035708426> Apply Tags')
+      .setTitle('<:thread:1567797010692706324> Apply Tags')
       .setDescription('Select one or more tags to apply to this ticket. Tags help staff categorise and track issues.')
       .setColor(0x6C53FF)],
     components: [new ActionRowBuilder().addComponents(select)],
@@ -45,7 +45,7 @@ async function handleTagSelect(interaction) {
   const selected = interaction.values;
   await TicketSchema.updateOne({ GuildID: interaction.guild.id, ChannelID: interaction.channel.id }, { Tags: selected });
 
-  const msg = buildStatusV2(0x6C53FF, '<:thread:1555544613035708426>', 'Tags Updated', [
+  const msg = buildStatusV2(0x6C53FF, '<:thread:1567797010692706324>', 'Tags Updated', [
     selected.length ? `Applied: ${selected.map(t => `\`${t}\``).join(' ')}` : 'All tags removed.',
     `-# Updated by <@${interaction.user.id}>`,
   ]);
@@ -58,7 +58,7 @@ async function handleTagSelect(interaction) {
 
 async function handleNote(interaction, data) {
   const modalId = `ticket_note_modal_${interaction.user.id}`;
-  const modal = new ModalBuilder().setCustomId(modalId).setTitle('<:files:1555544445565407352> Add Staff Note');
+  const modal = new ModalBuilder().setCustomId(modalId).setTitle('<:files:1567796970964394044> Add Staff Note');
   modal.addComponents(new ActionRowBuilder().addComponents(
     new TextInputBuilder()
       .setCustomId('note_content')
@@ -84,10 +84,10 @@ async function handleNote(interaction, data) {
 
   await mi.reply({
     embeds: [new EmbedBuilder()
-      .setTitle('<:files:1555544445565407352> Staff Note Added')
+      .setTitle('<:files:1567796970964394044> Staff Note Added')
       .setDescription(content)
       .setColor(0x6b7280)
-      .addFields({ name: '<:files:1555544445565407352>️ Added by', value: `<@${interaction.user.id}>`, inline: true })
+      .addFields({ name: '<:files:1567796970964394044>️ Added by', value: `<@${interaction.user.id}>`, inline: true })
       .setTimestamp()],
     flags: MessageFlags.Ephemeral,
   });
@@ -106,7 +106,7 @@ async function handleManageMember(interaction) {
 
   // Prevent removing the ticket owner
   if (userId === data.OwnerID) {
-    const msg = buildStatusV2(0xeab308, '<:user:1555544664155889668>', 'Cannot Remove Owner', [`<@${userId}> is the ticket owner and cannot be removed.`]);
+    const msg = buildStatusV2(0xeab308, '<:user:1567797032423264261>', 'Cannot Remove Owner', [`<@${userId}> is the ticket owner and cannot be removed.`]);
     return interaction.channel.send(msg).catch(() => {});
   }
 
@@ -114,7 +114,7 @@ async function handleManageMember(interaction) {
   if (isInTicket) {
     await TicketSchema.updateOne({ ChannelID: channel.id }, { $pull: { MembersID: userId } });
     await channel.permissionOverwrites.delete(userId).catch(() => {});
-    const msg = buildStatusV2(0xef4444, '<:user:1555544664155889668>', 'Member Removed', [`<@${userId}> was removed from this ticket.`]);
+    const msg = buildStatusV2(0xef4444, '<:user:1567797032423264261>', 'Member Removed', [`<@${userId}> was removed from this ticket.`]);
     await channel.send(msg).catch(() => {});
   } else {
     await TicketSchema.updateOne({ ChannelID: channel.id }, { $push: { MembersID: userId } });
@@ -123,7 +123,7 @@ async function handleManageMember(interaction) {
       [PermissionFlagsBits.SendMessages]: true,
       [PermissionFlagsBits.ReadMessageHistory]: true,
     }).catch(() => {});
-    const msg = buildStatusV2(0x22c55e, '<:user:1555544664155889668>', 'Member Added', [`<@${userId}> was added to this ticket.`]);
+    const msg = buildStatusV2(0x22c55e, '<:user:1567797032423264261>', 'Member Added', [`<@${userId}> was added to this ticket.`]);
     await channel.send(msg).catch(() => {});
   }
 }
@@ -137,7 +137,7 @@ async function handleAssignSelect(interaction) {
   const userId = interaction.values[0];
   await TicketSchema.updateOne({ GuildID: interaction.guild.id, ChannelID: interaction.channel.id }, { AssignedTo: userId });
 
-  const msg = buildStatusV2(0x6C53FF, '<:minigames:1555544500179439707>', 'Ticket Assigned', [
+  const msg = buildStatusV2(0x6C53FF, '<:minigames:1567796978929238076>', 'Ticket Assigned', [
     `Assigned to <@${userId}> by <@${interaction.user.id}>.`,
   ]);
   await interaction.channel.send(msg).catch(() => {});

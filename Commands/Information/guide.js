@@ -11,16 +11,16 @@ const { ACCENT } = require('../../Utils/v2helpers');
 // ── Guide pages ───────────────────────────────────────────────────────────────
 const PAGES = [
   {
-    title: '<:files:1555544445565407352> Welcome to RankCore',
+    title: '<:files:1567796970964394044> Welcome to RankCore',
     color: ACCENT.default,
     content: [
       '**RankCore** is a feature-rich Discord bot built for server management, community tools, and fun.',
       '',
-      '## <:boost:1555544362455146576> Getting Started',
+      '## <:boost:1567796953599836280> Getting Started',
       '> Use `/setup` to open the **RankCore Dashboard** and configure any feature.',
       '> Most setup is done through the dashboard — it\'s the fastest way to get going.',
       '',
-      '## <:files:1555544445565407352> Pages in this guide',
+      '## <:files:1567796970964394044> Pages in this guide',
       '`1` Welcome & Getting Started',
       '`2` Moderation & Safety',
       '`3` Community Features',
@@ -32,7 +32,7 @@ const PAGES = [
     ].join('\n'),
   },
   {
-    title: '<:restrict:1555544549105999962> Moderation & Safety',
+    title: '<:restrict:1567797003638022166> Moderation & Safety',
     color: ACCENT.moderation,
     content: [
       '## Core Moderation',
@@ -52,7 +52,7 @@ const PAGES = [
     ].join('\n'),
   },
   {
-    title: '<:1430986225493479485:1555544207652032633> Community Features',
+    title: '<:1430986225493479485:1567796921681055824> Community Features',
     color: ACCENT.info,
     content: [
       '## Leveling',
@@ -76,7 +76,7 @@ const PAGES = [
     ].join('\n'),
   },
   {
-    title: '<:n_music:1555544516746940416> Music',
+    title: '<:n_music:1567796993403658261> Music',
     color: ACCENT.music,
     content: [
       '## Quick Start',
@@ -99,11 +99,11 @@ const PAGES = [
       '`/playlist create` — Create a saved playlist',
       '`/playlist play` — Load a saved playlist',
       '',
-      '> <:n_music:1555544516746940416> Supports YouTube, Spotify, SoundCloud, and more.',
+      '> <:n_music:1567796993403658261> Supports YouTube, Spotify, SoundCloud, and more.',
     ].join('\n'),
   },
   {
-    title: '<:modd:1555544511210324030> Staff Tools',
+    title: '<:modd:1567796981160742974> Staff Tools',
     color: ACCENT.warning,
     content: [
       '## Staff Management',
@@ -126,7 +126,7 @@ const PAGES = [
     ].join('\n'),
   },
   {
-    title: '<:gw:1555544456873119875> Tickets & Applications',
+    title: '<:gw:1567796972872536159> Tickets & Applications',
     color: ACCENT.setup,
     content: [
       '## Ticket System',
@@ -147,7 +147,7 @@ const PAGES = [
     ].join('\n'),
   },
   {
-    title: '<:minigames:1555544500179439707> Games & Fun',
+    title: '<:minigames:1567796978929238076> Games & Fun',
     color: ACCENT.fun,
     content: [
       '## Multiplayer Games',
@@ -173,21 +173,21 @@ const PAGES = [
     ].join('\n'),
   },
   {
-    title: '<:1430986209995526274:1555544172302307449> Premium Plans',
+    title: '<:1430986209995526274:1567796911350747206> Premium Plans',
     color: ACCENT.economy,
     content: [
       '## Tier Comparison',
       '',
-      '**<:lockk:1555544494441635860> Free**',
+      '**<:lockk:1567796977809367122> Free**',
       '10 autoresponders • 10 custom commands • 2 ticket categories • Welcome images',
       '',
-      '**<:boost:1555544362455146576> RankCore Basic** — €2.99/mo',
+      '**<:boost:1567796953599836280> RankCore Basic** — €2.99/mo',
       '25 autoresponders • Anti-Nuke/Raid • 24/7 Music • 5 playlists • Mass Role',
       '',
-      '**<:eco:1555544429253890050> RankCore Pro** — €5.99/mo',
+      '**<:eco:1567796967197900842> RankCore Pro** — €5.99/mo',
       '75 autoresponders • Music filters • AI Chatbot • Image gen • VirusTotal • 20 playlists',
       '',
-      '**<:1430986209995526274:1555544172302307449> RankCore Elite** — €12.99/mo',
+      '**<:1430986209995526274:1567796911350747206> RankCore Elite** — €12.99/mo',
       '**Unlimited everything** • Unlimited connection roles • Priority support',
       '',
       '## How to Upgrade',
@@ -225,10 +225,10 @@ module.exports = {
 
     const buildRow = (page) => new ActionRowBuilder().addComponents(
       new ButtonBuilder().setCustomId('guide_prev').setLabel('◀').setStyle(ButtonStyle.Secondary).setDisabled(page === 0),
-      new ButtonBuilder().setCustomId('guide_home').setLabel('​').setEmoji(parseEmoji('<:n_home:1555544468193546270>')).setStyle(ButtonStyle.Secondary),
-      new ButtonBuilder().setCustomId('guide_next').setLabel('​').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(ButtonStyle.Secondary).setDisabled(page >= PAGES.length - 1),
-      new ButtonBuilder().setLabel('Docs').setStyle(ButtonStyle.Link).setEmoji(parseEmoji('<:files:1555544445565407352>')).setURL('https://dash.rankcore.org/docs'),
-      new ButtonBuilder().setLabel('Support').setStyle(ButtonStyle.Link).setEmoji(parseEmoji('<:n_utils:1555544669545431062>')).setURL('https://discord.gg/a9Kea3ymC7'),
+      new ButtonBuilder().setCustomId('guide_home').setLabel('​').setEmoji(parseEmoji('<:n_home:1567796990148878446>')).setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder().setCustomId('guide_next').setLabel('​').setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(ButtonStyle.Secondary).setDisabled(page >= PAGES.length - 1),
+      new ButtonBuilder().setLabel('Docs').setStyle(ButtonStyle.Link).setEmoji(parseEmoji('<:files:1567796970964394044>')).setURL('https://dash.rankcore.org/docs'),
+      new ButtonBuilder().setLabel('Support').setStyle(ButtonStyle.Link).setEmoji(parseEmoji('<:n_utils:1567796996830658573>')).setURL('https://discord.gg/a9Kea3ymC7'),
     );
 
     const msg = await interaction.reply({

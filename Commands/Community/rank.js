@@ -35,7 +35,7 @@ module.exports = {
 
     return interaction.editReply({
       components: [new ContainerBuilder().setAccentColor(accent)
-        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:boost:1555544362455146576>  Rank Card — ${target.username}`))
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:boost:1567796953599836280>  Rank Card — ${target.username}`))
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(
           `**Rank** — #${rank}\n**Level** — ${data.Level ?? 0}\n**XP** — ${(data.XP ?? 0).toLocaleString()} / ${xpNeeded.toLocaleString()}\n\n\`${bar}\` ${pct}%`

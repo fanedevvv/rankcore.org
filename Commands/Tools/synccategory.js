@@ -23,7 +23,7 @@ module.exports = {
 
         if (!botMember.permissions.has(PermissionFlagsBits.ManageChannels)) {
             return interaction.reply({
-                content: "<:crossy:1555544390221562048> I need **MANAGE_CHANNELS** permission to sync channels.",
+                content: "<:crossy:1567796959648030831> I need **MANAGE_CHANNELS** permission to sync channels.",
                 ephemeral: true
             });
         }
@@ -81,7 +81,7 @@ module.exports = {
 
         collector.on("collect", async i => {
             if (i.user.id !== interaction.user.id) {
-                return i.reply({ content: "<:crossy:1555544390221562048> You can't use this panel.", ephemeral: true });
+                return i.reply({ content: "<:crossy:1567796959648030831> You can't use this panel.", ephemeral: true });
             }
 
             // Defer immediately to prevent the 3-second expiry (error 10062)
@@ -91,7 +91,7 @@ module.exports = {
             if (i.customId === "mode_category") {
                 if (!categoryOptions.length) {
                     return interaction.editReply({
-                        content: "<:crossy:1555544390221562048> This server has no categories.",
+                        content: "<:crossy:1567796959648030831> This server has no categories.",
                         embeds: [], components: []
                     });
                 }
@@ -242,7 +242,7 @@ module.exports = {
             if (i.customId === "sync_cat_button") {
                 if (!selectedCategories.length) {
                     collector.stop("done");
-                    return interaction.editReply({ content: "<:crossy:1555544390221562048> No categories selected.", embeds: [], components: [] });
+                    return interaction.editReply({ content: "<:crossy:1567796959648030831> No categories selected.", embeds: [], components: [] });
                 }
 
                 let synced = 0, skipped = 0;
@@ -263,7 +263,7 @@ module.exports = {
                     .map(n => `\`${n}\``).join(", ");
 
                 const resultEmbed = new EmbedBuilder()
-                    .setTitle("<a:tickyy:1555544712687915008> Sync Complete")
+                    .setTitle("<a:tickyy:1567797045253644368> Sync Complete")
                     .setColor("Green")
                     .setDescription(
                         `**Categories:** ${catNames}\n\n` +
@@ -280,7 +280,7 @@ module.exports = {
             if (i.customId === "sync_channels_button") {
                 if (!selectedChannels.length) {
                     collector.stop("done");
-                    return interaction.editReply({ content: "<:crossy:1555544390221562048> No channels selected.", embeds: [], components: [] });
+                    return interaction.editReply({ content: "<:crossy:1567796959648030831> No channels selected.", embeds: [], components: [] });
                 }
 
                 let synced = 0, skipped = 0;
@@ -293,7 +293,7 @@ module.exports = {
                 }
 
                 const resultEmbed = new EmbedBuilder()
-                    .setTitle("<a:tickyy:1555544712687915008> Sync Complete")
+                    .setTitle("<a:tickyy:1567797045253644368> Sync Complete")
                     .setColor("Green")
                     .setDescription(
                         `**Synced:** ${synced}\n**Skipped:** ${skipped}\n\n` +

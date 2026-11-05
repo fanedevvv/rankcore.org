@@ -238,7 +238,7 @@ async function createTicket(interaction, cat, docs, client, intakeAnswers) {
 
         scheduleAutoClose(thread, docs, { OwnerID: ownerId, TicketID: ticketId }, client).catch(() => {});
 
-        return interaction.editReply({ embeds: [{ description: `<a:tickyy:1555544712687915008> Ticket created: ${thread}`, color: 0x22c55e }] });
+        return interaction.editReply({ embeds: [{ description: `<a:tickyy:1567797045253644368> Ticket created: ${thread}`, color: 0x22c55e }] });
     }
 
     // ── Channel mode ───────────────────────────────────────────────────────
@@ -311,7 +311,7 @@ async function createTicket(interaction, cat, docs, client, intakeAnswers) {
 
     scheduleAutoClose(ticketChannel, docs, { OwnerID: ownerId, TicketID: ticketId }, client).catch(() => {});
 
-    return interaction.editReply({ embeds: [{ description: `<a:tickyy:1555544712687915008> Ticket created: ${ticketChannel}`, color: 0x22c55e }] });
+    return interaction.editReply({ embeds: [{ description: `<a:tickyy:1567797045253644368> Ticket created: ${ticketChannel}`, color: 0x22c55e }] });
 }
 
 module.exports = { handleDropdown, handleIntakeModal, scheduleAutoClose };

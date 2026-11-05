@@ -66,7 +66,7 @@ module.exports = {
         .addStringOption((option) =>
           option
             .setName("emoji")
-            .setDescription("Optional emoji on the button (e.g. <:1430986227909263442:1555544212756242532>).")
+            .setDescription("Optional emoji on the button (e.g. <:1430986227909263442:1567796922863984670>).")
             .setRequired(false)
         )
     )
@@ -107,7 +107,7 @@ module.exports = {
             embeds: [
               new EmbedBuilder()
                 .setColor("Red")
-                .setTitle("<:thunderr:1555544623735242883> Autoresponder Limit Reached")
+                .setTitle("<:thunderr:1567797012991189134> Autoresponder Limit Reached")
                 .setDescription(
                   `You've reached the **${limit}** autoresponder limit for your current plan (**${tierLabels[tier] ?? tier}**).
 
@@ -126,7 +126,7 @@ module.exports = {
 
         const updatedEmbed = new EmbedBuilder()
           .setColor("Green")
-          .setDescription(`<a:tickyy:1555544712687915008> Updated the autoresponder for trigger: \`${trigger}\``);
+          .setDescription(`<a:tickyy:1567797045253644368> Updated the autoresponder for trigger: \`${trigger}\``);
         return interaction.reply({ embeds: [updatedEmbed], ephemeral: true });
       }
 
@@ -140,7 +140,7 @@ module.exports = {
 
       const createdEmbed = new EmbedBuilder()
         .setColor("Green")
-        .setDescription(`<a:tickyy:1555544712687915008> Created a new autoresponder for trigger: \`${trigger}\``);
+        .setDescription(`<a:tickyy:1567797045253644368> Created a new autoresponder for trigger: \`${trigger}\``);
 
       return interaction.reply({ embeds: [createdEmbed], ephemeral: true });
     }
@@ -158,7 +158,7 @@ module.exports = {
           embeds: [
             new EmbedBuilder()
               .setColor("Red")
-              .setDescription(`<:crossy:1555544390221562048> No autoresponder found for: \`${trigger}\``),
+              .setDescription(`<:crossy:1567796959648030831> No autoresponder found for: \`${trigger}\``),
           ],
           ephemeral: true,
         });
@@ -168,7 +168,7 @@ module.exports = {
         embeds: [
           new EmbedBuilder()
             .setColor("Green")
-            .setDescription(`<a:tickyy:1555544712687915008> Removed the autoresponder for: \`${trigger}\``),
+            .setDescription(`<a:tickyy:1567797045253644368> Removed the autoresponder for: \`${trigger}\``),
         ],
         ephemeral: true,
       });
@@ -182,7 +182,7 @@ module.exports = {
           embeds: [
             new EmbedBuilder()
               .setColor("Yellow")
-              .setDescription("<:n_info:1555544473008873565> There are no autoresponders set for this server."),
+              .setDescription("<:n_info:1567796991419744417> There are no autoresponders set for this server."),
           ],
           ephemeral: true,
         });
@@ -190,7 +190,7 @@ module.exports = {
 
       const listEmbed = new EmbedBuilder()
         .setColor("Blue")
-        .setTitle("<:files:1555544445565407352> Autoresponders List")
+        .setTitle("<:files:1567796970964394044> Autoresponders List")
         .setDescription(
           autoresponders
             .map(
@@ -211,7 +211,7 @@ module.exports = {
 
       if (!url.startsWith("https://") && !url.startsWith("http://")) {
         return interaction.reply({
-          embeds: [new EmbedBuilder().setColor("Red").setDescription("<:crossy:1555544390221562048> The URL must start with `https://` or `http://`.")],
+          embeds: [new EmbedBuilder().setColor("Red").setDescription("<:crossy:1567796959648030831> The URL must start with `https://` or `http://`.")],
           ephemeral: true,
         });
       }
@@ -219,7 +219,7 @@ module.exports = {
       const auto = await Autoresponder.findOne({ guildId: interaction.guild.id, trigger });
       if (!auto) {
         return interaction.reply({
-          embeds: [new EmbedBuilder().setColor("Red").setDescription(`<:crossy:1555544390221562048> No autoresponder found for trigger: \`${trigger}\``)],
+          embeds: [new EmbedBuilder().setColor("Red").setDescription(`<:crossy:1567796959648030831> No autoresponder found for trigger: \`${trigger}\``)],
           ephemeral: true,
         });
       }
@@ -230,7 +230,7 @@ module.exports = {
 
       if (auto.buttons.components.length >= 5) {
         return interaction.reply({
-          embeds: [new EmbedBuilder().setColor("Red").setDescription("<:crossy:1555544390221562048> This autoresponder already has 5 buttons (Discord maximum). Remove one first.")],
+          embeds: [new EmbedBuilder().setColor("Red").setDescription("<:crossy:1567796959648030831> This autoresponder already has 5 buttons (Discord maximum). Remove one first.")],
           ephemeral: true,
         });
       }
@@ -251,7 +251,7 @@ module.exports = {
       return interaction.reply({
         embeds: [new EmbedBuilder()
           .setColor("Green")
-          .setTitle("<:1430986227909263442:1555544212756242532> Link Button Added")
+          .setTitle("<:1430986227909263442:1567796922863984670> Link Button Added")
           .setDescription(`Added a **${label}** link button to the \`${trigger}\` autoresponder.`)
           .addFields({ name: "URL", value: url })],
         ephemeral: true,
@@ -263,14 +263,14 @@ module.exports = {
       const auto = await Autoresponder.findOne({ guildId: interaction.guild.id, trigger });
       if (!auto) {
         return interaction.reply({
-          embeds: [new EmbedBuilder().setColor("Red").setDescription(`<:crossy:1555544390221562048> No autoresponder found for trigger: \`${trigger}\``)],
+          embeds: [new EmbedBuilder().setColor("Red").setDescription(`<:crossy:1567796959648030831> No autoresponder found for trigger: \`${trigger}\``)],
           ephemeral: true,
         });
       }
 
       if (!auto.buttons?.components?.length) {
         return interaction.reply({
-          embeds: [new EmbedBuilder().setColor("Yellow").setDescription("<:error:1555544434601369620> This autoresponder has no buttons to remove.")],
+          embeds: [new EmbedBuilder().setColor("Yellow").setDescription("<:error:1567796968758050868> This autoresponder has no buttons to remove.")],
           ephemeral: true,
         });
       }
@@ -285,7 +285,7 @@ module.exports = {
       return interaction.reply({
         embeds: [new EmbedBuilder()
           .setColor("Green")
-          .setDescription(`<a:tickyy:1555544712687915008> Removed **${removed}** link button(s) from the \`${trigger}\` autoresponder.`)],
+          .setDescription(`<a:tickyy:1567797045253644368> Removed **${removed}** link button(s) from the \`${trigger}\` autoresponder.`)],
         ephemeral: true,
       });
     }

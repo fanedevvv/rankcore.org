@@ -101,7 +101,7 @@ class ModuleManager extends EventEmitter {
       mod.error     = null;
       mod.startedAt = Date.now();
       this._setState(mod, STATE.RUNNING);
-      this._log(name, 'info', `Module "${mod.label}" started <a:tickyy:1555544712687915008>`);
+      this._log(name, 'info', `Module "${mod.label}" started <a:tickyy:1567797045253644368>`);
     } catch (err) {
       mod.error = err;
       this._setState(mod, STATE.ERROR);

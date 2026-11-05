@@ -7,7 +7,7 @@ const { StaffRating, StaffRatingConfig } = require('../../Schemas/staffRatingSch
 const staffrole = require('../../Schemas/staffrole');
 const { successContainer, errorContainer, ACCENT } = require('../../Utils/v2helpers');
 
-const STAR_MAP = { 1: '<:boost:1555544362455146576>', 2: '<:boost:1555544362455146576><:boost:1555544362455146576>', 3: '<:boost:1555544362455146576><:boost:1555544362455146576><:boost:1555544362455146576>', 4: '<:boost:1555544362455146576><:boost:1555544362455146576><:boost:1555544362455146576><:boost:1555544362455146576>', 5: '<:boost:1555544362455146576><:boost:1555544362455146576><:boost:1555544362455146576><:boost:1555544362455146576><:boost:1555544362455146576>' };
+const STAR_MAP = { 1: '<:boost:1567796953599836280>', 2: '<:boost:1567796953599836280><:boost:1567796953599836280>', 3: '<:boost:1567796953599836280><:boost:1567796953599836280><:boost:1567796953599836280>', 4: '<:boost:1567796953599836280><:boost:1567796953599836280><:boost:1567796953599836280><:boost:1567796953599836280>', 5: '<:boost:1567796953599836280><:boost:1567796953599836280><:boost:1567796953599836280><:boost:1567796953599836280><:boost:1567796953599836280>' };
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -81,8 +81,8 @@ module.exports = {
       );
 
       return interaction.editReply({
-        components: [successContainer('<a:tickyy:1555544712687915008> Rating System Configured', [
-          `**Status:** ${enabled ? '<:LEgreen:1555544256356159600> Enabled' : '<:LEred:1555544262123323422> Disabled'}`,
+        components: [successContainer('<a:tickyy:1567797045253644368> Rating System Configured', [
+          `**Status:** ${enabled ? '<:LEgreen:1567796933307666515> Enabled' : '<:LEred:1567796934545121280> Disabled'}`,
           logChannel ? `**Log Channel:** <#${logChannel.id}>` : null,
           staffRole  ? `**Staff Role:** <@&${staffRole.id}>` : null,
           `**Anonymous Ratings:** ${allowAnon ? 'Yes' : 'No'}`,
@@ -150,13 +150,13 @@ module.exports = {
         if (logCh?.isTextBased()) {
           const logEmbed = new EmbedBuilder()
             .setColor(ACCENT.default)
-            .setTitle('<:boost:1555544362455146576> New Staff Rating')
+            .setTitle('<:boost:1567796953599836280> New Staff Rating')
             .addFields(
               { name: 'Staff Member', value: `<@${target.id}> (${target.user.tag})`, inline: true },
               { name: 'Rating', value: `${STAR_MAP[score]} (${score}/5)`, inline: true },
               { name: 'From', value: anonymous && cfg.allowAnonymous ? '_Anonymous_' : `<@${interaction.user.id}>`, inline: true },
               ...(comment ? [{ name: 'Comment', value: comment }] : []),
-              { name: 'New Average', value: `${record.averageScore.toFixed(1)} <:boost:1555544362455146576> (${record.totalRatings} ratings)`, inline: true },
+              { name: 'New Average', value: `${record.averageScore.toFixed(1)} <:boost:1567796953599836280> (${record.totalRatings} ratings)`, inline: true },
             )
             .setThumbnail(target.user.displayAvatarURL({ dynamic: true }))
             .setTimestamp();
@@ -165,7 +165,7 @@ module.exports = {
       }
 
       return interaction.editReply({
-        components: [successContainer('<:boost:1555544362455146576> Rating Submitted', [
+        components: [successContainer('<:boost:1567796953599836280> Rating Submitted', [
           `You rated **${target.user.username}** ${STAR_MAP[score]}`,
           comment ? `**Your comment:** ${comment}` : null,
           `**Their new average:** ${record.averageScore.toFixed(1)}/5 (${record.totalRatings} total ratings)`,
@@ -206,10 +206,10 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor(ACCENT.default)
-        .setTitle(`<:boost:1555544362455146576> Staff Rating — ${target.user.username}`)
+        .setTitle(`<:boost:1567796953599836280> Staff Rating — ${target.user.username}`)
         .setThumbnail(target.user.displayAvatarURL({ dynamic: true }))
         .addFields(
-          { name: 'Average Score', value: `**${record.averageScore.toFixed(1)} / 5** <:boost:1555544362455146576>`, inline: true },
+          { name: 'Average Score', value: `**${record.averageScore.toFixed(1)} / 5** <:boost:1567796953599836280>`, inline: true },
           { name: 'Total Ratings', value: `${record.totalRatings}`, inline: true },
           { name: 'Distribution', value: `\`\`\`\n${dist}\n\`\`\`` },
           ...(comments ? [{ name: 'Recent Comments', value: comments }] : []),
@@ -231,15 +231,15 @@ module.exports = {
         flags: MessageFlags.IsComponentsV2,
       });
 
-      const medals = ['<:1430986209995526274:1555544172302307449>','<:1430986209995526274:1555544172302307449>','<:1430986209995526274:1555544172302307449>'];
+      const medals = ['<:1430986209995526274:1567796911350747206>','<:1430986209995526274:1567796911350747206>','<:1430986209995526274:1567796911350747206>'];
       const lines = records.map((r, i) => {
         const medal = medals[i] ?? `**${i+1}.**`;
-        return `${medal} <@${r.staffId}> — ${r.averageScore.toFixed(1)} <:boost:1555544362455146576> (${r.totalRatings} ratings)`;
+        return `${medal} <@${r.staffId}> — ${r.averageScore.toFixed(1)} <:boost:1567796953599836280> (${r.totalRatings} ratings)`;
       }).join('\n');
 
       const embed = new EmbedBuilder()
         .setColor(ACCENT.default)
-        .setTitle(`<:1430986209995526274:1555544172302307449> Top Rated Staff — ${interaction.guild.name}`)
+        .setTitle(`<:1430986209995526274:1567796911350747206> Top Rated Staff — ${interaction.guild.name}`)
         .setDescription(lines)
         .setFooter({ text: 'Minimum 3 ratings required to appear • Use /staff-rating rate to submit your rating' })
         .setTimestamp();

@@ -43,22 +43,22 @@ async function sendRatingDM(owner, docs, ticketId) {
   if (!owner || !docs.EnableRating) return;
   try {
     const embed = new EmbedBuilder()
-      .setTitle('<:boost:1555544362455146576> How Was Your Experience?')
+      .setTitle('<:boost:1567796953599836280> How Was Your Experience?')
       .setDescription(docs.RatingMessage || "We'd love to hear how your support experience went.")
       .setColor(parseInt((docs.Color || '#6C53FF').replace('#', ''), 16) || 0x6C53FF)
       .addFields(
-        { name: '<:gw:1555544456873119875> Ticket',    value: `#${ticketId}`, inline: true },
-        { name: '<:suggestion:1555544601501237322> Response', value: 'Click a star below to rate', inline: true },
+        { name: '<:gw:1567796972872536159> Ticket',    value: `#${ticketId}`, inline: true },
+        { name: '<:suggestion:1567797008452812870> Response', value: 'Click a star below to rate', inline: true },
       )
       .setFooter({ text: 'Your rating helps us improve our support.' })
       .setTimestamp();
 
     const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder().setCustomId(`ticket-rate-1-${ticketId}`).setLabel('1').setEmoji(parseEmoji('<:boost:1555544362455146576>')).setStyle(ButtonStyle.Secondary),
-      new ButtonBuilder().setCustomId(`ticket-rate-2-${ticketId}`).setLabel('2').setEmoji(parseEmoji('<:boost:1555544362455146576>')).setStyle(ButtonStyle.Secondary),
-      new ButtonBuilder().setCustomId(`ticket-rate-3-${ticketId}`).setLabel('3').setEmoji(parseEmoji('<:boost:1555544362455146576>')).setStyle(ButtonStyle.Secondary),
-      new ButtonBuilder().setCustomId(`ticket-rate-4-${ticketId}`).setLabel('4').setEmoji(parseEmoji('<:boost:1555544362455146576>')).setStyle(ButtonStyle.Secondary),
-      new ButtonBuilder().setCustomId(`ticket-rate-5-${ticketId}`).setLabel('5').setEmoji(parseEmoji('<:boost:1555544362455146576>')).setStyle(ButtonStyle.Primary),
+      new ButtonBuilder().setCustomId(`ticket-rate-1-${ticketId}`).setLabel('1').setEmoji(parseEmoji('<:boost:1567796953599836280>')).setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder().setCustomId(`ticket-rate-2-${ticketId}`).setLabel('2').setEmoji(parseEmoji('<:boost:1567796953599836280>')).setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder().setCustomId(`ticket-rate-3-${ticketId}`).setLabel('3').setEmoji(parseEmoji('<:boost:1567796953599836280>')).setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder().setCustomId(`ticket-rate-4-${ticketId}`).setLabel('4').setEmoji(parseEmoji('<:boost:1567796953599836280>')).setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder().setCustomId(`ticket-rate-5-${ticketId}`).setLabel('5').setEmoji(parseEmoji('<:boost:1567796953599836280>')).setStyle(ButtonStyle.Primary),
     );
 
     await owner.send({ embeds: [embed], components: [row] }).catch(() => {});
@@ -73,7 +73,7 @@ async function handleCloseTicket(interaction, member, data, docs, client) {
   let reason = 'No reason provided.';
 
   if (docs.RequireCloseReason !== false) {
-    const modal = new ModalBuilder().setCustomId('close_reason_modal').setTitle('<:lockk:1555544494441635860> Close Ticket');
+    const modal = new ModalBuilder().setCustomId('close_reason_modal').setTitle('<:lockk:1567796977809367122> Close Ticket');
     modal.addComponents(new ActionRowBuilder().addComponents(
       new TextInputBuilder()
         .setCustomId('close_reason')
@@ -95,7 +95,7 @@ async function handleCloseTicket(interaction, member, data, docs, client) {
     await mi.deferReply({ flags: MessageFlags.Ephemeral });
     reason      = mi.fields.getTextInputValue('close_reason');
     interaction = mi;
-    await mi.editReply({ content: '<:lockk:1555544494441635860> Closing ticket…' });
+    await mi.editReply({ content: '<:lockk:1567796977809367122> Closing ticket…' });
   } else {
     await interaction.deferUpdate().catch(() => {});
   }
@@ -156,7 +156,7 @@ async function handleCloseTicket(interaction, member, data, docs, client) {
         ? [new ActionRowBuilder().addComponents(new ButtonBuilder().setLabel('View Transcript').setStyle(ButtonStyle.Link).setURL(webTranscriptLink))]
         : [];
       await owner.send({ embeds: [dmEmbed], components: dmComps })
-        .catch(() => interaction.channel.send(`<:error:1555544434601369620> Could not DM <@${data.OwnerID}>.`).catch(() => {}));
+        .catch(() => interaction.channel.send(`<:error:1567796968758050868> Could not DM <@${data.OwnerID}>.`).catch(() => {}));
       await sendRatingDM(owner, docs, data.TicketID);
     }
   }
@@ -234,7 +234,7 @@ async function handleCloseReqDecline(interaction) {
   return interaction.reply({
     embeds: [new EmbedBuilder()
       .setColor(0x22c55e)
-      .setDescription('<:restrict:1555544549105999962> **Close request declined.** The ticket remains open — please describe what else you need help with.')],
+      .setDescription('<:restrict:1567797003638022166> **Close request declined.** The ticket remains open — please describe what else you need help with.')],
   });
 }
 
@@ -250,7 +250,7 @@ async function handleReopenTicket(interaction, member, data) {
     [PermissionFlagsBits.ReadMessageHistory]: true,
   }).catch(() => {});
 
-  const msg = buildStatusV2(0x22c55e, '<:lockk:1555544494441635860>', 'Ticket Reopened', [
+  const msg = buildStatusV2(0x22c55e, '<:lockk:1567796977809367122>', 'Ticket Reopened', [
     `Reopened by <@${member.id}>.`,
     `-# Reopened ${relativeTs(new Date())}`,
   ]);
@@ -266,12 +266,12 @@ async function handleDeleteTicket(interaction, data) {
 
   const msg = await interaction.channel.send({
     embeds: [new EmbedBuilder()
-      .setTitle('<:del:1555544395720302643> Deleting Ticket')
+      .setTitle('<:del:1567796961334267974> Deleting Ticket')
       .setDescription('This channel will be **deleted in 10 seconds**.\n\nClick **Cancel** to stop the deletion.')
       .setColor(0xef4444)
       .setTimestamp()],
     components: [new ActionRowBuilder().addComponents(
-      new ButtonBuilder().setCustomId('stop-delete').setLabel('Cancel').setStyle(ButtonStyle.Secondary).setEmoji(parseEmoji('<:restrict:1555544549105999962>')),
+      new ButtonBuilder().setCustomId('stop-delete').setLabel('Cancel').setStyle(ButtonStyle.Secondary).setEmoji(parseEmoji('<:restrict:1567797003638022166>')),
     )],
   }).catch(() => null);
 
@@ -281,7 +281,7 @@ async function handleDeleteTicket(interaction, data) {
   collector.on('collect', i => { stopped = true; i.deferUpdate().catch(() => {}); collector.stop(); });
   collector.on('end', async () => {
     if (stopped) {
-      await msg.edit({ embeds: [new EmbedBuilder().setDescription('<a:tickyy:1555544712687915008> Deletion cancelled.').setColor(0x22c55e)], components: [] }).catch(() => {});
+      await msg.edit({ embeds: [new EmbedBuilder().setDescription('<a:tickyy:1567797045253644368> Deletion cancelled.').setColor(0x22c55e)], components: [] }).catch(() => {});
       return;
     }
     await TicketSchema.findOneAndDelete({ GuildID: interaction.guild.id, ChannelID: interaction.channel.id }).catch(() => {});
@@ -302,7 +302,7 @@ async function handleLockTicket(interaction, data) {
   }).catch(() => {});
   await TicketSchema.updateOne({ ChannelID: interaction.channel.id }, { Locked: true });
 
-  const msg = buildStatusV2(0xeab308, '<:lockk:1555544494441635860>', 'Ticket Locked', [
+  const msg = buildStatusV2(0xeab308, '<:lockk:1567796977809367122>', 'Ticket Locked', [
     `Locked by <@${interaction.user.id}>.`,
     '-# The ticket owner can no longer send messages.',
   ]);
@@ -317,7 +317,7 @@ async function handleUnlockTicket(interaction, data) {
   }).catch(() => {});
   await TicketSchema.updateOne({ ChannelID: interaction.channel.id }, { Locked: false });
 
-  const msg = buildStatusV2(0x22c55e, '<:lockk:1555544494441635860>', 'Ticket Unlocked', [
+  const msg = buildStatusV2(0x22c55e, '<:lockk:1567796977809367122>', 'Ticket Unlocked', [
     `Unlocked by <@${interaction.user.id}>.`,
     '-# The ticket owner can now send messages again.',
   ]);
@@ -343,7 +343,7 @@ async function handleClaimTicket(interaction, member, data, docs) {
   await TicketSchema.updateOne({ ChannelID: interaction.channel.id }, { Claimed: true, ClaimedBy: member.id, AssignedTo: member.id });
   await interaction.channel.setName(newName).catch(() => {});
 
-  const msg = buildStatusV2(0xeab308, '<:restrict:1555544549105999962>', 'Ticket Claimed', [
+  const msg = buildStatusV2(0xeab308, '<:restrict:1567797003638022166>', 'Ticket Claimed', [
     `Claimed by <@${member.id}>.`,
     `<@${data.OwnerID}> — your ticket is being handled.`,
     `-# Claimed ${relativeTs(new Date())}`,
@@ -378,7 +378,7 @@ async function handleUnclaimTicket(interaction, member, data, docs) {
   await TicketSchema.updateOne({ ChannelID: interaction.channel.id }, { Claimed: false, ClaimedBy: null, AssignedTo: null });
   await interaction.channel.setName(newName).catch(() => {});
 
-  const msg = buildStatusV2(0x6b7280, '<:restrict:1555544549105999962>', 'Ticket Unclaimed', [
+  const msg = buildStatusV2(0x6b7280, '<:restrict:1567797003638022166>', 'Ticket Unclaimed', [
     `Unclaimed by <@${member.id}>.`,
     `<@${data.OwnerID}> — your ticket is back in the queue.`,
     `-# Unclaimed ${relativeTs(new Date())}`,
@@ -434,7 +434,7 @@ async function handleSendTranscript(interaction, data) {
     filename: `${docs?.TicketPrefix || 'ticket'}-${data.TicketID}.html`,
   }).catch(() => null);
 
-  if (!transcript) return interaction.editReply({ content: '<:crossy:1555544390221562048> Failed to generate transcript.' });
+  if (!transcript) return interaction.editReply({ content: '<:crossy:1567796959648030831> Failed to generate transcript.' });
 
   const webLink = isDashboardEnabled(interaction.client)
     ? `${interaction.client.config.dashboard.domain}/guild/${interaction.guild.id}/transcripts/${data.TicketID}`
@@ -446,16 +446,16 @@ async function handleSendTranscript(interaction, data) {
 
   await interaction.user.send({
     embeds: [new EmbedBuilder()
-      .setTitle(`<:files:1555544445565407352> Transcript — Ticket #${data.TicketID}`)
+      .setTitle(`<:files:1567796970964394044> Transcript — Ticket #${data.TicketID}`)
       .setDescription('Your ticket transcript is attached below.')
       .setColor(0x6C53FF)
-      .addFields({ name: '<:gw:1555544456873119875> Ticket ID', value: `#${data.TicketID}`, inline: true })
+      .addFields({ name: '<:gw:1567796972872536159> Ticket ID', value: `#${data.TicketID}`, inline: true })
       .setTimestamp()],
     files: [transcript],
     components: comps,
   }).catch(() => {});
 
-  await interaction.editReply({ content: '<:announcement:1555544345740967956> Transcript sent to your DMs.' });
+  await interaction.editReply({ content: '<:announcement:1567796950265241662> Transcript sent to your DMs.' });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -470,7 +470,7 @@ async function handleRating(interaction) {
 
   const data = await TicketSchema.findOne({ TicketID: ticketId });
   if (!data)       return interaction.reply({ embeds: [errEmbed('Ticket not found.')], flags: MessageFlags.Ephemeral });
-  if (data.Rating) return interaction.update({ embeds: [new EmbedBuilder().setDescription(`You already rated this ticket ${data.Rating}<:boost:1555544362455146576>.`).setColor(0xeab308)], components: [] });
+  if (data.Rating) return interaction.update({ embeds: [new EmbedBuilder().setDescription(`You already rated this ticket ${data.Rating}<:boost:1567796953599836280>.`).setColor(0xeab308)], components: [] });
   if (interaction.user.id !== data.OwnerID)
     return interaction.reply({ embeds: [errEmbed('Only the ticket owner can rate.')], flags: MessageFlags.Ephemeral });
 
@@ -478,8 +478,8 @@ async function handleRating(interaction) {
 
   await interaction.update({
     embeds: [new EmbedBuilder()
-      .setTitle('<:boost:1555544362455146576> Thank You for Your Rating!')
-      .setDescription(`You gave **${'<:boost:1555544362455146576>'.repeat(stars)}** — ${stars}/5 stars.\n\nYour feedback helps us improve our support team.`)
+      .setTitle('<:boost:1567796953599836280> Thank You for Your Rating!')
+      .setDescription(`You gave **${'<:boost:1567796953599836280>'.repeat(stars)}** — ${stars}/5 stars.\n\nYour feedback helps us improve our support team.`)
       .setColor(stars >= 4 ? 0x22c55e : stars >= 3 ? 0xeab308 : 0xef4444)
       .setTimestamp()],
     components: [],

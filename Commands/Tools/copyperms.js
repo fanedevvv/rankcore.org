@@ -52,7 +52,7 @@ module.exports = {
             });
 
             const embed = new EmbedBuilder()
-                .setTitle("<:n_utils:1555544669545431062> Category Permissions Updated")
+                .setTitle("<:n_utils:1567796996830658573> Category Permissions Updated")
                 .setDescription(`The category **${category.name}** now has all permissions copied from **${source.name}**.`)
                 .setColor("Blue");
 
@@ -61,7 +61,7 @@ module.exports = {
         } catch (err) {
             console.error(err);
             return interaction.reply({
-                content: "<:crossy:1555544390221562048> Failed to override category permissions due to an error.",
+                content: "<:crossy:1567796959648030831> Failed to override category permissions due to an error.",
                 ephemeral: true
             });
         }

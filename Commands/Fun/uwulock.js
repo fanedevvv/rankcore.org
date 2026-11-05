@@ -33,7 +33,7 @@ module.exports = {
         // Only allow admins to target others
         if (targetUser.id !== interaction.user.id && !interaction.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
             return interaction.reply({
-                content: `${client.emoji?.error ?? '<:crossy:1555544390221562048>'} | You don't have permission to enable/remove UwULock for others.`,
+                content: `${client.emoji?.error ?? '<:crossy:1567796959648030831>'} | You don't have permission to enable/remove UwULock for others.`,
                 flags: MessageFlags.Ephemeral,
             });
         }
@@ -44,7 +44,7 @@ module.exports = {
                 const existing = await uwuSchema.findOne({ Guild: guild.id, User: targetUser.id }).lean();
                 if (existing) {
                     return interaction.reply({
-                        content: `${client.emoji?.error ?? '<:crossy:1555544390221562048>'} | ${targetUser.username} is already UwULocked!`,
+                        content: `${client.emoji?.error ?? '<:crossy:1567796959648030831>'} | ${targetUser.username} is already UwULocked!`,
                         flags: MessageFlags.Ephemeral,
                     });
                 }
@@ -53,7 +53,7 @@ module.exports = {
                 const catData = await catSchema.findOne({ Guild: guild.id, User: targetUser.id }).lean();
                 if (catData) {
                     return interaction.reply({
-                        content: `${client.emoji?.error ?? '<:crossy:1555544390221562048>'} | ${targetUser.username} is already CatLocked! Remove their CatLock first before applying UwULock. 🐱`,
+                        content: `${client.emoji?.error ?? '<:crossy:1567796959648030831>'} | ${targetUser.username} is already CatLocked! Remove their CatLock first before applying UwULock. 🐱`,
                         flags: MessageFlags.Ephemeral,
                     });
                 }
@@ -61,7 +61,7 @@ module.exports = {
                 await uwuSchema.create({ Guild: guild.id, User: targetUser.id });
 
                 return interaction.reply({
-                    content: `${client.emoji?.tick ?? '<a:tickyy:1555544712687915008>'} ${targetUser.username} is now UwULocked! All their messages will be uwuified.`,
+                    content: `${client.emoji?.tick ?? '<a:tickyy:1567797045253644368>'} ${targetUser.username} is now UwULocked! All their messages will be uwuified.`,
                     flags: MessageFlags.Ephemeral,
                 });
             }
@@ -71,7 +71,7 @@ module.exports = {
                 const existing = await uwuSchema.findOne({ Guild: guild.id, User: targetUser.id }).lean();
                 if (!existing) {
                     return interaction.reply({
-                        content: `${client.emoji?.error ?? '<:crossy:1555544390221562048>'} | ${targetUser.username} is not UwULocked.`,
+                        content: `${client.emoji?.error ?? '<:crossy:1567796959648030831>'} | ${targetUser.username} is not UwULocked.`,
                         flags: MessageFlags.Ephemeral,
                     });
                 }
@@ -80,7 +80,7 @@ module.exports = {
 
                 const embed = new EmbedBuilder()
                     .setColor(client.config?.embedColor ?? 0x5865F2)
-                    .setDescription(`${client.emoji?.tick ?? '<a:tickyy:1555544712687915008>'} UwULock has been removed from ${targetUser.username}!`);
+                    .setDescription(`${client.emoji?.tick ?? '<a:tickyy:1567797045253644368>'} UwULock has been removed from ${targetUser.username}!`);
 
                 return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
             }

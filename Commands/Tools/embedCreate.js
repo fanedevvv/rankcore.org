@@ -37,73 +37,73 @@ const { parseEmoji } = require('../../Utils/emojis');
             .setPlaceholder("Nothing selected")
             .addOptions([
               {
-                emoji: parseEmoji("<:files:1555544445565407352>"),
+                emoji: parseEmoji("<:files:1567796970964394044>"),
                 label: "Title",
                 description: "Create an embed title",
                 value: "title_embed",
               },
               {
-                emoji: parseEmoji("<:files:1555544445565407352>"),
+                emoji: parseEmoji("<:files:1567796970964394044>"),
                 label: "Title Url",
                 description: "Create an embed title URL",
                 value: "title_url",
               },
               {
-                emoji: parseEmoji("<:suggestion:1555544601501237322>"),
+                emoji: parseEmoji("<:suggestion:1567797008452812870>"),
                 label: "Description",
                 description: "Create an embed description",
                 value: "description_embed",
               },
               {
-                emoji: parseEmoji("<:n_search:1555544554365788191>"),
+                emoji: parseEmoji("<:n_search:1567796994792230953>"),
                 label: "Author",
                 description: "Create an embed author",
                 value: "author_embed",
               },
               {
-                emoji: parseEmoji("<:n_search:1555544554365788191>"),
+                emoji: parseEmoji("<:n_search:1567796994792230953>"),
                 label: "Author Image",
                 description: "Create an embed author image",
                 value: "author_image",
               },
               {
-                emoji: parseEmoji("<:down:1555544418407157790>"),
+                emoji: parseEmoji("<:down:1567796964672929802>"),
                 label: "Footer",
                 description: "Create an embed footer",
                 value: "footer_embed",
               },
               {
-                emoji: parseEmoji("<:down:1555544418407157790>"),
+                emoji: parseEmoji("<:down:1567796964672929802>"),
                 label: "Footer Image",
                 description: "Create an embed footer image",
                 value: "footer_image",
               },
               {
-                emoji: parseEmoji("<:dot:1555544412300378243>"),
+                emoji: parseEmoji("<:dot:1567796963624226826>"),
                 label: "Thumbnail",
                 description: "Create an embed thumbnail",
                 value: "thumbnail_embed",
               },
               {
-                emoji: parseEmoji("<:1430986244921495654:1555544239792980044>"),
+                emoji: parseEmoji("<:1430986244921495654:1567796929587576852>"),
                 label: "Timestamp",
                 description: "Create an embed timestamp",
                 value: "timestamp_embed",
               },
               {
-                emoji: parseEmoji("<:files:1555544445565407352>"),
+                emoji: parseEmoji("<:files:1567796970964394044>"),
                 label: "Image",
                 description: "Create an embed image",
                 value: "image_embed",
               },
               {
-                emoji: parseEmoji("<:n_info:1555544473008873565>"),
+                emoji: parseEmoji("<:n_info:1567796991419744417>"),
                 label: "Color",
                 description: "Create an embed color",
                 value: "color_embed",
               },
               {
-                emoji: parseEmoji("<:dot:1555544412300378243>"),
+                emoji: parseEmoji("<:dot:1567796963624226826>"),
                 label: "Button URL",
                 description: "Create URL buttons in embed",
                 value: "button",
@@ -115,7 +115,7 @@ const { parseEmoji } = require('../../Utils/emojis');
         let row2 = new Discord.ActionRowBuilder().addComponents(
           new Discord.ButtonBuilder()
             .setCustomId("send_embed")
-            .setEmoji(parseEmoji("<a:tickyy:1555544712687915008>"))
+            .setEmoji(parseEmoji("<a:tickyy:1567797045253644368>"))
             .setLabel("Send embed")
             .setStyle(Discord.ButtonStyle.Success)
         );

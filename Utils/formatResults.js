@@ -1,16 +1,16 @@
 const pb = {
-    leGreen: '<:LEgreen:1555544256356159600>',
-    meGreen: '<:MEgreen:1555544279894462494>',
-    reGreen: '<:REgreen:1555544308118200371>',
-    lfGreen: '<:LFgreen:1555544269044060200>',
-    mfGreen: '<:MFgreen:1555544290430558358>',
-    rfGreen: '<:RFgreen:1555544319035711508>',
-    leRed: '<:LEred:1555544262123323422>',
-    meRed: '<:MEred:1555544284764053556>',
-    reRed: '<:REred:1555544313683902554>',
-    lfRed: '<:LFred:1555544274412769410>',
-    mfRed: '<:MFred:1555544295556124714>',
-    rfRed: '<:RFred:1555544324681244713>',
+    leGreen: '<:LEgreen:1567796933307666515>',
+    meGreen: '<:MEgreen:1567796937921400862>',
+    reGreen: '<:REgreen:1567796944548536382>',
+    lfGreen: '<:LFgreen:1567796935601950730>',
+    mfGreen: '<:MFgreen:1567796940421333002>',
+    rfGreen: '<:RFgreen:1567796946876371047>',
+    leRed: '<:LEred:1567796934545121280>',
+    meRed: '<:MEred:1567796939003666463>',
+    reRed: '<:REred:1567796945752166490>',
+    lfRed: '<:LFred:1567796936814104626>',
+    mfRed: '<:MFred:1567796941549604915>',
+    rfRed: '<:RFred:1567796948092583996>',
 };
 
 function calculateColor(upvotePercentage, downvotePercentage) {

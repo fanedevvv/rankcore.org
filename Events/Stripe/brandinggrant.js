@@ -42,7 +42,7 @@ module.exports = {
     if (!discordGuildId) {
       // Can't activate without a guild ID — DM the user to let them know
       const embed = new EmbedBuilder()
-        .setTitle("<:error:1555544434601369620> Custom Branding — Server ID Missing")
+        .setTitle("<:error:1567796968758050868> Custom Branding — Server ID Missing")
         .setColor(0xf59e0b)
         .setDescription(
           "Your Custom Branding subscription was received but **no Server ID was provided** during checkout.\n\n" +
@@ -74,17 +74,17 @@ module.exports = {
         const expiresAt = new Date(now.getTime() + durationDays * 24 * 60 * 60 * 1000);
 
         const embed = new EmbedBuilder()
-          .setTitle(type === "renew" ? "<:n_add:1555544335036973106> Custom Branding Renewed" : "<:n_utils:1555544669545431062> Custom Branding Activated!")
+          .setTitle(type === "renew" ? "<:n_add:1567796983408754731> Custom Branding Renewed" : "<:n_utils:1567796996830658573> Custom Branding Activated!")
           .setColor(0x8b5cf6)
           .setDescription(
             type === "renew"
               ? "Your **Custom Branding** subscription has been renewed for your server."
-              : "**Custom Branding** is now active for your server! <:boost:1555544362455146576>\n\nHead to your server's dashboard to set up your bot's name, avatar, embed colour, and more."
+              : "**Custom Branding** is now active for your server! <:boost:1567796953599836280>\n\nHead to your server's dashboard to set up your bot's name, avatar, embed colour, and more."
           )
           .addFields(
             { name: "🏰 Server",   value: `Server ID: \`${discordGuildId}\``, inline: true },
-            { name: "<:calendar:1555544372953616426> Expires",  value: `<t:${Math.floor(expiresAt / 1000)}:D>`, inline: true },
-            { name: "<:n_utils:1555544669545431062> Setup",    value: `Visit your [dashboard](${process.env.DASHBOARD_URL}/guild/${discordGuildId}/custombranding) to configure branding`, inline: false }
+            { name: "<:calendar:1567796954640158770> Expires",  value: `<t:${Math.floor(expiresAt / 1000)}:D>`, inline: true },
+            { name: "<:n_utils:1567796996830658573> Setup",    value: `Visit your [dashboard](${process.env.DASHBOARD_URL}/guild/${discordGuildId}/custombranding) to configure branding`, inline: false }
           )
           .setFooter({ text: `Subscription: ${subscriptionId}` })
           .setTimestamp();
@@ -101,7 +101,7 @@ module.exports = {
         await deactivateBrandingSubscription(discordGuildId);
 
         const embed = new EmbedBuilder()
-          .setTitle("<:crossy:1555544390221562048> Custom Branding Cancelled")
+          .setTitle("<:crossy:1567796959648030831> Custom Branding Cancelled")
           .setColor(0xef4444)
           .setDescription(
             "Your **Custom Branding** subscription has ended.\n\n" +
@@ -110,7 +110,7 @@ module.exports = {
           )
           .addFields(
             { name: "🏰 Server",    value: `Server ID: \`${discordGuildId}\``, inline: true },
-            { name: "<:n_add:1555544335036973106> Resubscribe", value: `[Get Custom Branding again](${process.env.DASHBOARD_URL}/premium/branding)`, inline: true }
+            { name: "<:n_add:1567796983408754731> Resubscribe", value: `[Get Custom Branding again](${process.env.DASHBOARD_URL}/premium/branding)`, inline: true }
           )
           .setFooter({ text: `Subscription: ${subscriptionId}` })
           .setTimestamp();

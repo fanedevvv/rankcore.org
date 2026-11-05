@@ -80,7 +80,7 @@ module.exports = (client) => {
                     const levelembed = new EmbedBuilder()
                         .setColor(client.config.embedColor)
                         .setTitle(`> ${member.user.username} has Leveled Up!`)
-                        .setDescription(`<:boost:1555544362455146576> **Congratulations!** You've reached **Level ${userData.Level}**!`)
+                        .setDescription(`<:boost:1567796953599836280> **Congratulations!** You've reached **Level ${userData.Level}**!`)
                         .setFooter({ text: `Keep chatting in voice channels to level up faster!` })
                         .setTimestamp();
 

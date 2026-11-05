@@ -21,23 +21,23 @@ module.exports = {
     .addSubcommand((sub) =>
       sub
         .setName("play")
-        .setDescription("<:n_music:1555544516746940416> Play a song")
+        .setDescription("<:n_music:1567796993403658261> Play a song")
         .addStringOption((opt) => opt.setName("search").setDescription("The song to play").setRequired(true))
     )
-    .addSubcommand((sub) => sub.setName("pause").setDescription("<:n_music:1555544516746940416> Pause the current song"))
-    .addSubcommand((sub) => sub.setName("resume").setDescription("<:n_music:1555544516746940416> Resume the paused song"))
-    .addSubcommand((sub) => sub.setName("stop").setDescription("<:n_music:1555544516746940416> Stop the music and clear the queue"))
-    .addSubcommand((sub) => sub.setName("skip").setDescription("<:n_music:1555544516746940416> Skip the current song"))
+    .addSubcommand((sub) => sub.setName("pause").setDescription("<:n_music:1567796993403658261> Pause the current song"))
+    .addSubcommand((sub) => sub.setName("resume").setDescription("<:n_music:1567796993403658261> Resume the paused song"))
+    .addSubcommand((sub) => sub.setName("stop").setDescription("<:n_music:1567796993403658261> Stop the music and clear the queue"))
+    .addSubcommand((sub) => sub.setName("skip").setDescription("<:n_music:1567796993403658261> Skip the current song"))
     .addSubcommand((sub) =>
       sub
         .setName("volume")
-        .setDescription("<:n_music:1555544516746940416> Set the volume")
+        .setDescription("<:n_music:1567796993403658261> Set the volume")
         .addIntegerOption((opt) => opt.setName("volume").setDescription("The volume level (0-100)").setRequired(true))
     )
-    .addSubcommand((sub) => sub.setName("nowplaying").setDescription("<:files:1555544445565407352>️ View the currently playing song"))
+    .addSubcommand((sub) => sub.setName("nowplaying").setDescription("<:files:1567796970964394044>️ View the currently playing song"))
     .addSubcommand((sub) => sub.setName("queue").setDescription("View the music queue"))
-    .addSubcommand((sub) => sub.setName("clearqueue").setDescription("<:n_add:1555544335036973106> Clear the music queue"))
-    .addSubcommand((sub) => sub.setName("shuffle").setDescription("<:n_music:1555544516746940416> Shuffle the music queue"))
+    .addSubcommand((sub) => sub.setName("clearqueue").setDescription("<:n_add:1567796983408754731> Clear the music queue"))
+    .addSubcommand((sub) => sub.setName("shuffle").setDescription("<:n_music:1567796993403658261> Shuffle the music queue"))
     .addSubcommand((sub) =>
       sub
         .setName("loop")
@@ -54,20 +54,20 @@ module.exports = {
             )
         )
     )
-    .addSubcommand((sub) => sub.setName("replay").setDescription("<:n_music:1555544516746940416> Replay the current song"))
+    .addSubcommand((sub) => sub.setName("replay").setDescription("<:n_music:1567796993403658261> Replay the current song"))
     .addSubcommand((sub) =>
       sub
         .setName("forward")
-        .setDescription("<:n_music:1555544516746940416> Forward the current song")
+        .setDescription("<:n_music:1567796993403658261> Forward the current song")
         .addIntegerOption((opt) => opt.setName("seconds").setDescription("Seconds to forward").setRequired(true))
     )
     .addSubcommand((sub) =>
       sub
         .setName("backward")
-        .setDescription("<:n_music:1555544516746940416> Backward the current song")
+        .setDescription("<:n_music:1567796993403658261> Backward the current song")
         .addIntegerOption((opt) => opt.setName("seconds").setDescription("Seconds to backward").setRequired(true))
     )
-    .addSubcommand((sub) => sub.setName("autoplay").setDescription("<:n_music:1555544516746940416> Toggle autoplay for music"))
+    .addSubcommand((sub) => sub.setName("autoplay").setDescription("<:n_music:1567796993403658261> Toggle autoplay for music"))
     .addSubcommand((sub) => sub.setName("247").setDescription("Toggles 24/7 mode")),
 
 
@@ -224,7 +224,7 @@ module.exports = {
             .map((track, index) => `**${start + index + 1}.** [${track.title}](${track.uri}) - **${track.author}**`)
             .join("\n");
 
-          return new EmbedBuilder().setColor(client.config.embedColor).setTitle("<:files:1555544445565407352> Music Queue").setDescription(queue || "No tracks in this page.").setFooter({ text: `Page ${page + 1} of ${totalPages} | Total tracks: ${totalTracks}` });
+          return new EmbedBuilder().setColor(client.config.embedColor).setTitle("<:files:1567796970964394044> Music Queue").setDescription(queue || "No tracks in this page.").setFooter({ text: `Page ${page + 1} of ${totalPages} | Total tracks: ${totalTracks}` });
         };
 
         const embed = createEmbed(currentPage);
@@ -382,7 +382,7 @@ module.exports = {
         player.data.set("identifier", player.queue.current.identifier);
         player.data.set("requester", interaction.user);
 
-        return interaction.reply({ content: newSetting ? "<:n_music:1555544516746940416> **Autoplay has been enabled.**" : "<:n_music:1555544516746940416> **Autoplay has been disabled.**", ephemeral: true });
+        return interaction.reply({ content: newSetting ? "<:n_music:1567796993403658261> **Autoplay has been enabled.**" : "<:n_music:1567796993403658261> **Autoplay has been disabled.**", ephemeral: true });
       }
 
       // --- 24/7 MODE ---

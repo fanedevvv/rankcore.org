@@ -99,19 +99,19 @@ async function closeTicketsForMember(member, client) {
       if (ticketChannel) {
         const closedEmbed = new EmbedBuilder()
           .setColor(0xef4444)
-          .setTitle('<:lockk:1555544494441635860> Ticket Auto-Closed')
+          .setTitle('<:lockk:1567796977809367122> Ticket Auto-Closed')
           .setDescription(`This ticket was automatically closed because **${member.user.tag}** left the server.`)
           .addFields(
-            { name: '<:user:1555544664155889668> Owner',      value: `<@${userId}>`,        inline: true },
-            { name: '<:gw:1555544456873119875> Ticket',       value: `#${data.TicketID}`,   inline: true },
-            { name: '<:1430986244921495654:1555544239792980044> Duration',   value: duration,               inline: true },
-            { name: '<:files:1555544445565407352> Reason',    value: reason,                 inline: false },
+            { name: '<:user:1567797032423264261> Owner',      value: `<@${userId}>`,        inline: true },
+            { name: '<:gw:1567796972872536159> Ticket',       value: `#${data.TicketID}`,   inline: true },
+            { name: '<:1430986244921495654:1567796929587576852> Duration',   value: duration,               inline: true },
+            { name: '<:files:1567796970964394044> Reason',    value: reason,                 inline: false },
           )
           .setTimestamp();
 
         const closeButtons = new ActionRowBuilder().addComponents(
-          new ButtonBuilder().setCustomId('ticket-delete').setLabel('Delete').setStyle(ButtonStyle.Danger).setEmoji('<:del:1555544395720302643>'),
-          new ButtonBuilder().setCustomId('ticket-transcript').setLabel('Transcript').setStyle(ButtonStyle.Secondary).setEmoji('<:files:1555544445565407352>'),
+          new ButtonBuilder().setCustomId('ticket-delete').setLabel('Delete').setStyle(ButtonStyle.Danger).setEmoji('<:del:1567796961334267974>'),
+          new ButtonBuilder().setCustomId('ticket-transcript').setLabel('Transcript').setStyle(ButtonStyle.Secondary).setEmoji('<:files:1567796970964394044>'),
         );
         if (webTranscriptLink) {
           closeButtons.addComponents(
@@ -145,18 +145,18 @@ async function closeTicketsForMember(member, client) {
         if (logChannel) {
           const logEmbed = new EmbedBuilder()
             .setColor(0xef4444)
-            .setTitle(`<:files:1555544445565407352> Auto-Closed � ${docs.TicketPrefix || 'ticket'}-${data.TicketID}`)
+            .setTitle(`<:files:1567796970964394044> Auto-Closed � ${docs.TicketPrefix || 'ticket'}-${data.TicketID}`)
             .addFields(
-              { name: '<:user:1555544664155889668> Owner',    value: `<@${userId}>`,      inline: true },
-              { name: '<:gw:1555544456873119875> Ticket',     value: `#${data.TicketID}`, inline: true },
-              { name: '<:1430986244921495654:1555544239792980044> Duration', value: duration,             inline: true },
-              { name: '<:files:1555544445565407352> Reason',  value: reason,               inline: false },
+              { name: '<:user:1567797032423264261> Owner',    value: `<@${userId}>`,      inline: true },
+              { name: '<:gw:1567796972872536159> Ticket',     value: `#${data.TicketID}`, inline: true },
+              { name: '<:1430986244921495654:1567796929587576852> Duration', value: duration,             inline: true },
+              { name: '<:files:1567796970964394044> Reason',  value: reason,               inline: false },
             )
             .setTimestamp()
             .setFooter({ text: 'RankCore Ticket System � Member Left' });
 
           if (webTranscriptLink) {
-            logEmbed.addFields({ name: '<:1430986225493479485:1555544207652032633> Transcript', value: `[View Online](${webTranscriptLink})` });
+            logEmbed.addFields({ name: '<:1430986225493479485:1567796921681055824> Transcript', value: `[View Online](${webTranscriptLink})` });
           }
 
           await logChannel.send({ embeds: [logEmbed] }).catch(() => {});
@@ -202,10 +202,10 @@ async function denyApplicationsForMember(member, client) {
         if (logChannel) {
           const updatedEmbed = new EmbedBuilder()
             .setColor(0xef4444)
-            .setTitle(`${panel.emoji || '<:files:1555544445565407352>'} ${panel.name} Application`)
+            .setTitle(`${panel.emoji || '<:files:1567796970964394044>'} ${panel.name} Application`)
             .setDescription(
               `**Applicant:** <@${userId}> (${submission.userTag})\n` +
-              `**Status:** <:crossy:1555544390221562048> Auto-Denied\n` +
+              `**Status:** <:crossy:1567796959648030831> Auto-Denied\n` +
               `**Reason:** Applicant left the server.`
             )
             .setFooter({ text: `Submission ID: ${submission.submissionId}` })

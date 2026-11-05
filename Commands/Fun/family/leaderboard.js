@@ -5,7 +5,7 @@ const {
 const adoptionSchema  = require("../../../Schemas/adoptionSchema");
 const marriageSchema  = require("../../../Schemas/marriageSchema");
 
-const MEDALS = ["<:1430986209995526274:1555544172302307449>", "<:1430986209995526274:1555544172302307449>", "<:1430986209995526274:1555544172302307449>", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
+const MEDALS = ["<:1430986209995526274:1567796911350747206>", "<:1430986209995526274:1567796911350747206>", "<:1430986209995526274:1567796911350747206>", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
 
 module.exports = {
   async execute(interaction, client) {
@@ -26,7 +26,7 @@ module.exports = {
     if (!sorted.length) {
       const c = new ContainerBuilder().setAccentColor(0x95A5A6)
         .addTextDisplayComponents(
-          new TextDisplayBuilder().setContent(`## <:1430986209995526274:1555544172302307449> Family Leaderboard\n*No families found yet! Use \`/family adopt\` to start one.*`)
+          new TextDisplayBuilder().setContent(`## <:1430986209995526274:1567796911350747206> Family Leaderboard\n*No families found yet! Use \`/family adopt\` to start one.*`)
         );
       return interaction.editReply({ flags: MessageFlags.IsComponentsV2, components: [c] });
     }
@@ -53,7 +53,7 @@ module.exports = {
     const container = new ContainerBuilder()
       .setAccentColor(0xF1C40F)
       .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent(`## <:1430986209995526274:1555544172302307449> Family Leaderboard\n*The biggest families in the server:*`)
+        new TextDisplayBuilder().setContent(`## <:1430986209995526274:1567796911350747206> Family Leaderboard\n*The biggest families in the server:*`)
       )
       .addSeparatorComponents(new SeparatorBuilder())
       .addTextDisplayComponents(new TextDisplayBuilder().setContent(podium));

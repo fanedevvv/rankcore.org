@@ -56,7 +56,7 @@ module.exports = async function handleError(interaction, client, error) {
             if (!interaction.replied && !interaction.deferred) {
                 return interaction
                     .reply({
-                        content: "<:error:1555544434601369620> Command disabled temporarily due to repeated errors.",
+                        content: "<:error:1567796968758050868> Command disabled temporarily due to repeated errors.",
                         ephemeral: true
                     })
                     .catch(() => {});

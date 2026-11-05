@@ -19,7 +19,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor("Green")
-      .setTitle("Ungrounded! <:boost:1555544362455146576>")
+      .setTitle("Ungrounded! <:boost:1567796953599836280>")
       .setDescription(`${child} has been ungrounded by ${parent}.`);
 
     return interaction.reply({ embeds: [embed] });

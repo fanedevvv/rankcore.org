@@ -235,7 +235,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor(client.config.embed)
-                        .setDescription(`<:n_cross:1555544384429105222> | You don't have any Playlist named **${Name}**.`)
+                        .setDescription(`<:n_cross:1567796987481296986> | You don't have any Playlist named **${Name}**.`)
                 ],
                 ephemeral: true
             });
@@ -276,7 +276,7 @@ module.exports = {
                 iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
                 url: "https://discord.gg/a9Kea3ymC7"
             })
-            .setDescription(`<:n_spotify:1555544559981957151> [${song.title.substring(0, 63)}](${song.uri})`);
+            .setDescription(`<:n_spotify:1567796995836477501> [${song.title.substring(0, 63)}](${song.uri})`);
         
         return interaction.reply({ embeds: [embed] });
           }
@@ -299,7 +299,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor(client.config.embed)
-                        .setDescription(`<:n_cross:1555544384429105222> | You don't have any Playlist named **${Name}**.`)
+                        .setDescription(`<:n_cross:1567796987481296986> | You don't have any Playlist named **${Name}**.`)
                 ],
                 ephemeral: true
             });
@@ -354,7 +354,7 @@ module.exports = {
             })
             .setColor(client.config.embed);
 
-        embed.setDescription(`<:n_spotify:1555544559981957151> **Total Tracks Added: ${newSongs.length}**`);
+        embed.setDescription(`<:n_spotify:1567796995836477501> **Total Tracks Added: ${newSongs.length}**`);
 
         if (newSongs.length > 0) {
             const addedSongsList = newSongs.map((song, index) => `${index + 1}. ${song.title}`).join("\n");
@@ -506,17 +506,17 @@ e5732f870d366f8ef24a9603c455d66d
         } else {
             let previousButton = new ButtonBuilder()
                 .setCustomId("Previous")
-                .setEmoji(parseEmoji("<:n_music:1555544516746940416>"))
+                .setEmoji(parseEmoji("<:n_music:1567796993403658261>"))
                 .setStyle(ButtonStyle.Secondary);
 
             let nextButton = new ButtonBuilder()
                 .setCustomId("Next")
-                .setEmoji(parseEmoji("<:n_music:1555544516746940416>"))
+                .setEmoji(parseEmoji("<:n_music:1567796993403658261>"))
                 .setStyle(ButtonStyle.Secondary);
 
             let stopButton = new ButtonBuilder()
                 .setCustomId("Stop")
-                .setEmoji(parseEmoji("<:n_music:1555544516746940416>"))
+                .setEmoji(parseEmoji("<:n_music:1567796993403658261>"))
                 .setStyle(ButtonStyle.Secondary);
 
             const row = new ActionRowBuilder().addComponents(previousButton, stopButton, nextButton);
@@ -746,7 +746,7 @@ e5732f870d366f8ef24a9603c455d66d
                 embeds: [
                     new EmbedBuilder()
                         .setColor(client.config.embed)
-                        .setDescription(`<:n_cross:1555544384429105222> | You don't have any playlist named **${Name}**.`)
+                        .setDescription(`<:n_cross:1567796987481296986> | You don't have any playlist named **${Name}**.`)
                 ]
             });
         }
@@ -757,7 +757,7 @@ e5732f870d366f8ef24a9603c455d66d
                 embeds: [
                     new EmbedBuilder()
                         .setColor("#2F3136")
-                        .setDescription(`<:n_cross:1555544384429105222> | Invalid track number provided for playlist ${Name}.`)
+                        .setDescription(`<:n_cross:1567796987481296986> | Invalid track number provided for playlist ${Name}.`)
                 ]
             });
         }
@@ -774,7 +774,7 @@ e5732f870d366f8ef24a9603c455d66d
                 iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
                 url: "https://discord.gg/a9Kea3ymC7"
             })
-            .setDescription(`<:n_spotify:1555544559981957151> [${tracks[trackNumber].title.substring(0, 63)}](${tracks[trackNumber].uri})`);
+            .setDescription(`<:n_spotify:1567796995836477501> [${tracks[trackNumber].title.substring(0, 63)}](${tracks[trackNumber].uri})`);
 
         return interaction.channel.send({ embeds: [embed] });
           }

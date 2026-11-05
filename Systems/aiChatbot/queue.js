@@ -58,13 +58,13 @@ function drainQueue() {
  */
 function enqueue(job) {
     if (globalQueue.length >= RATE_LIMITS.GLOBAL_QUEUE_MAX)
-        return { ok: false, reason: `<:error:1555544434601369620> The AI is overloaded right now (global limit). Please try again in a moment.` };
+        return { ok: false, reason: `<:error:1567796968758050868> The AI is overloaded right now (global limit). Please try again in a moment.` };
 
     if (guildQueueCount(job.guildId) >= RATE_LIMITS.PER_GUILD_QUEUE_MAX)
-        return { ok: false, reason: `<:error:1555544434601369620> This server's AI queue is full (**${RATE_LIMITS.PER_GUILD_QUEUE_MAX}** max). Please wait for others to finish.` };
+        return { ok: false, reason: `<:error:1567796968758050868> This server's AI queue is full (**${RATE_LIMITS.PER_GUILD_QUEUE_MAX}** max). Please wait for others to finish.` };
 
     if (userQueueCount(job.userId) >= RATE_LIMITS.PER_USER_QUEUE_MAX)
-        return { ok: false, reason: `<:error:1555544434601369620> You already have **${RATE_LIMITS.PER_USER_QUEUE_MAX}** request(s) in queue. Please wait for them to complete.` };
+        return { ok: false, reason: `<:error:1567796968758050868> You already have **${RATE_LIMITS.PER_USER_QUEUE_MAX}** request(s) in queue. Please wait for them to complete.` };
 
     globalQueue.push(job);
     const pos = globalQueue.length;

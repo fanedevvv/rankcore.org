@@ -83,7 +83,7 @@ const pingUrl = async (url, timeout = 10000) => {
   }
 };
 
-// <:announcement:1555544345740967956> Unified alert sender (channel > DM)
+// <:announcement:1567796950265241662> Unified alert sender (channel > DM)
 const sendAlert = async (client, doc, embed) => {
   // Channel first
   if (doc.AlertChannel) {
@@ -148,9 +148,9 @@ module.exports = async (client) => {
           if (fails === 3) {
             const embed = new EmbedBuilder()
               .setColor('#ff5555')
-              .setTitle('<:error:1555544434601369620> Website DOWN')
+              .setTitle('<:error:1567796968758050868> Website DOWN')
               .setDescription(
-                `<:1430986227909263442:1555544212756242532> ${doc.URL}\n` +
+                `<:1430986227909263442:1567796922863984670> ${doc.URL}\n` +
                 `Checked: ${doc.LastPing.toLocaleString()}\n` +
                 `Reason: ${result.error || 'Failed to respond'}`
               );
@@ -165,9 +165,9 @@ module.exports = async (client) => {
           if (previousStatus === 'offline') {
             const embed = new EmbedBuilder()
               .setColor('#22bb33')
-              .setTitle('<a:tickyy:1555544712687915008> Website RECOVERED')
+              .setTitle('<a:tickyy:1567797045253644368> Website RECOVERED')
               .setDescription(
-                `<:1430986227909263442:1555544212756242532> ${doc.URL}\n` +
+                `<:1430986227909263442:1567796922863984670> ${doc.URL}\n` +
                 `Response: ${result.time}ms\n` +
                 `Checked: ${doc.LastPing.toLocaleString()}`
               );
@@ -187,7 +187,7 @@ module.exports = async (client) => {
         console.error('[Uptime] Error:', err);
         await sendWebhookLog(
           client,
-          '<:crossy:1555544390221562048> Uptime Error',
+          '<:crossy:1567796959648030831> Uptime Error',
           `Error checking ${doc.URL}\n\`\`\`${err.message}\`\`\``,
           '#ff0000'
         );

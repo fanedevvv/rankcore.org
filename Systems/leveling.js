@@ -138,12 +138,12 @@ module.exports = (client) => {
 
       let payload;
       if (cfg.useEmbed !== false) {
-        const desc   = interpolate(cfg.levelUpMessage || '<:boost:1555544362455146576> {user} just reached **Level {level}**!', vars);
+        const desc   = interpolate(cfg.levelUpMessage || '<:boost:1567796953599836280> {user} just reached **Level {level}**!', vars);
         const footer = interpolate(cfg.embedFooter || '', vars);
         const embed  = new EmbedBuilder()
           .setColor(cfg.embedColor || client.config.embedColor || '#6C53FF')
           .setTitle(interpolate(cfg.embedTitle || 'Level Up!', vars))
-          .setDescription(desc + (earnedRole ? `\n<:minigames:1555544500179439707> Earned role: ${vars.role}` : ''));
+          .setDescription(desc + (earnedRole ? `\n<:minigames:1567796978929238076> Earned role: ${vars.role}` : ''));
 
         if (cfg.showProgress !== false) {
           embed.addFields({
@@ -155,7 +155,7 @@ module.exports = (client) => {
         embed.setTimestamp();
         payload = { content, embeds: [embed] };
       } else {
-        payload = { content: interpolate(cfg.levelUpMessage || '<:boost:1555544362455146576> {user} just reached **Level {level}**!', vars) };
+        payload = { content: interpolate(cfg.levelUpMessage || '<:boost:1567796953599836280> {user} just reached **Level {level}**!', vars) };
       }
 
       if (mode === 'dm' || mode === 'both') {

@@ -267,14 +267,14 @@ module.exports = {
         const log = member.guild.channels.cache.get(guildConfig.logChannelId);
         if (log) {
           const inviterTag = await getInviterTag();
-          let msg = `<:files:1555544445565407352> **${member.user.tag}** joined — invited by **${inviterTag}** (\`${inviterId ?? 'none'}\`)${isFake ? ' <:error:1555544434601369620> **FAKE**' : ''}`;
+          let msg = `<:files:1567796970964394044> **${member.user.tag}** joined — invited by **${inviterTag}** (\`${inviterId ?? 'none'}\`)${isFake ? ' <:error:1567796968758050868> **FAKE**' : ''}`;
           if (guildConfig.verboseLogs) {
             msg += `\n> Code: \`${usedInvite.code ?? 'unknown'}\` | Account age: \`${Math.floor(accountAgeDays)}d\` | Members: \`${member.guild.memberCount}\``;
           }
           log.send({ content: msg }).catch(() => null);
 
           if (isFake && guildConfig.alertFake) {
-            log.send({ content: `<:error:1555544434601369620> Fake account detected: <@${member.id}> (account age: ${Math.floor(accountAgeDays)}d)` }).catch(() => null);
+            log.send({ content: `<:error:1567796968758050868> Fake account detected: <@${member.id}> (account age: ${Math.floor(accountAgeDays)}d)` }).catch(() => null);
           }
         }
       }

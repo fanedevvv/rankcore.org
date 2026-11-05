@@ -20,7 +20,7 @@ const StaffApplicationSchema = new Schema({
   // Identity
   name:         { type: String, required: true },          // e.g. "Moderator"
   description:  { type: String, default: "" },             // shown in the panel embed
-  emoji:        { type: String, default: "<:files:1555544445565407352>" },
+  emoji:        { type: String, default: "<:files:1567796970964394044>" },
 
   // Channels
   panelChannelId:  { type: String, default: null },        // where the button embed is posted

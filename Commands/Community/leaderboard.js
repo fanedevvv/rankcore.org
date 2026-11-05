@@ -39,7 +39,7 @@ module.exports = {
       }).join("\n");
 
       return new ContainerBuilder().setAccentColor(accent)
-        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:1430986209995526274:1555544172302307449>  XP Leaderboard — ${interaction.guild.name}`))
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:1430986209995526274:1567796911350747206>  XP Leaderboard — ${interaction.guild.name}`))
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(lines))
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))

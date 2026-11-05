@@ -33,7 +33,7 @@ module.exports = {
       const oldNick = member.nickname || target.username;
       await member.setNickname(newNick, `Changed by ${interaction.user.tag}`);
       return interaction.reply({
-        components: [successContainer("<:files:1555544445565407352>  Nickname Changed",
+        components: [successContainer("<:files:1567796970964394044>  Nickname Changed",
           `**${target.tag}**'s nickname has been updated.`, {
             accent, clientId: client.user.id,
             extra: `**Before** — \`${oldNick}\`\n**After** — \`${newNick}\`\n**Changed by** — ${interaction.user.tag}`,
@@ -46,7 +46,7 @@ module.exports = {
       const oldNick = member.nickname || target.username;
       await member.setNickname(null, `Reset by ${interaction.user.tag}`);
       return interaction.reply({
-        components: [successContainer("<:files:1555544445565407352>  Nickname Reset",
+        components: [successContainer("<:files:1567796970964394044>  Nickname Reset",
           `**${target.tag}**'s nickname has been reset.`, {
             accent, clientId: client.user.id,
             extra: `**Was** — \`${oldNick}\`\n**Reset by** — ${interaction.user.tag}`,

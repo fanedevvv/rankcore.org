@@ -56,7 +56,7 @@ async function handleInteraction(interaction) {
         // ── Approve confession ─────────────────────────────────────────────
         if (customId === 'approve_confession') {
             if (!isModerator(interaction.member, config)) {
-                return interaction.reply({ content: '<:crossy:1555544390221562048> You are not a confession moderator.', flags: MessageFlags.Ephemeral });
+                return interaction.reply({ content: '<:crossy:1567796959648030831> You are not a confession moderator.', flags: MessageFlags.Ephemeral });
             }
 
             await interaction.deferReply({ ephemeral: true });
@@ -86,13 +86,13 @@ async function handleInteraction(interaction) {
                 `Approved by ${interaction.user.tag} (${interaction.user.id})`
             );
 
-            return interaction.editReply({ content: '<a:tickyy:1555544712687915008> Confession approved and posted.' });
+            return interaction.editReply({ content: '<a:tickyy:1567797045253644368> Confession approved and posted.' });
         }
 
         // ── Deny confession ────────────────────────────────────────────────
         else if (customId === 'deny_confession') {
             if (!isModerator(interaction.member, config)) {
-                return interaction.reply({ content: '<:crossy:1555544390221562048> You are not a confession moderator.', flags: MessageFlags.Ephemeral });
+                return interaction.reply({ content: '<:crossy:1567796959648030831> You are not a confession moderator.', flags: MessageFlags.Ephemeral });
             }
 
             const modal = new ModalBuilder().setCustomId('deny_reason_modal').setTitle('Deny Confession');
@@ -130,13 +130,13 @@ async function handleInteraction(interaction) {
                 `Denied by ${interaction.user.tag}${reason ? `\nReason: ${reason}` : ''}`
             );
 
-            await mi.reply({ content: '<:crossy:1555544390221562048> Confession denied.', flags: MessageFlags.Ephemeral });
+            await mi.reply({ content: '<:crossy:1567796959648030831> Confession denied.', flags: MessageFlags.Ephemeral });
         }
 
         // ── Edit & Approve ────────────────────────────────────────────────
         else if (customId === 'edit_confession') {
             if (!isModerator(interaction.member, config)) {
-                return interaction.reply({ content: '<:crossy:1555544390221562048> You are not a confession moderator.', flags: MessageFlags.Ephemeral });
+                return interaction.reply({ content: '<:crossy:1567796959648030831> You are not a confession moderator.', flags: MessageFlags.Ephemeral });
             }
 
             const originalText = interaction.message.embeds[0]?.description || '';
@@ -179,7 +179,7 @@ async function handleInteraction(interaction) {
         // ── Admin delete (posted confession) ─────────────────────────────
         else if (customId.startsWith('admin_delete_')) {
             if (!isModerator(interaction.member, config)) {
-                return interaction.reply({ content: '<:crossy:1555544390221562048> You are not a confession moderator.', flags: MessageFlags.Ephemeral });
+                return interaction.reply({ content: '<:crossy:1567796959648030831> You are not a confession moderator.', flags: MessageFlags.Ephemeral });
             }
 
             await interaction.deferReply({ ephemeral: true });
@@ -218,8 +218,8 @@ async function handleInteraction(interaction) {
 
                 return interaction.editReply({
                     content: deleted
-                        ? '<:del:1555544395720302643> Confession deleted.'
-                        : '<:error:1555544434601369620> Could not find the original message, but the report has been cleared.',
+                        ? '<:del:1567796961334267974> Confession deleted.'
+                        : '<:error:1567796968758050868> Could not find the original message, but the report has been cleared.',
                 });
 
             } else {
@@ -229,7 +229,7 @@ async function handleInteraction(interaction) {
                     `Deleted by ${interaction.user.tag} (${interaction.user.id})`
                 );
 
-                return interaction.editReply({ content: '<:del:1555544395720302643> Confession deleted.' });
+                return interaction.editReply({ content: '<:del:1567796961334267974> Confession deleted.' });
             }
         }
 
@@ -267,7 +267,7 @@ async function handleInteraction(interaction) {
                 const reportChan = interaction.guild.channels.cache.get(reportTargetId);
                 if (reportChan) {
                     const reportEmbed = new EmbedBuilder()
-                        .setTitle('<:restrict:1555544549105999962> Confession Reported')
+                        .setTitle('<:restrict:1567797003638022166> Confession Reported')
                         .setDescription(interaction.message.embeds[0]?.description || 'N/A')
                         .addFields(
                             { name: 'Reported By', value: `${interaction.user.tag} (${interaction.user.id})`, inline: true },
@@ -282,7 +282,7 @@ async function handleInteraction(interaction) {
                             .setCustomId(`admin_delete_${interaction.message.id}`)
                             .setLabel('Delete Confession')
                             .setStyle(ButtonStyle.Danger)
-                            .setEmoji(parseEmoji('<:del:1555544395720302643>')),
+                            .setEmoji(parseEmoji('<:del:1567796961334267974>')),
                     );
 
                     // ── Ping the ReportPingRole if configured ──────────────
@@ -298,13 +298,13 @@ async function handleInteraction(interaction) {
                 }
             }
 
-            await mi.reply({ content: '<:restrict:1555544549105999962> Your report has been submitted to the moderation team.', flags: MessageFlags.Ephemeral });
+            await mi.reply({ content: '<:restrict:1567797003638022166> Your report has been submitted to the moderation team.', flags: MessageFlags.Ephemeral });
         }
 
         // ── Reply anonymously ──────────────────────────────────────────────
         else if (customId === 'reply_confession') {
             const cdLeft = checkCooldown(`reply_${interaction.user.id}`, config);
-            if (cdLeft) return interaction.reply({ content: `<:n_loading:1555544489194688623> Please wait **${cdLeft}s** before replying again.`, flags: MessageFlags.Ephemeral });
+            if (cdLeft) return interaction.reply({ content: `<:n_loading:1567796992556666982> Please wait **${cdLeft}s** before replying again.`, flags: MessageFlags.Ephemeral });
 
             const modal = new ModalBuilder()
                 .setCustomId(`replyConfessionModal_${interaction.message.id}`)
@@ -324,13 +324,13 @@ async function handleInteraction(interaction) {
         // ── New confession ────────────────────────────────────────────────
         else if (customId === 'new_confession') {
             if (config.Blacklist?.includes(interaction.user.id)) {
-                return interaction.reply({ content: '<:restrict:1555544549105999962> You are blacklisted from submitting confessions.', flags: MessageFlags.Ephemeral });
+                return interaction.reply({ content: '<:restrict:1567797003638022166> You are blacklisted from submitting confessions.', flags: MessageFlags.Ephemeral });
             }
 
             const cdLeft = checkCooldown(interaction.user.id, config);
             const isTrusted = config.TrustedUsers?.includes(interaction.user.id);
             if (cdLeft && !isTrusted) {
-                return interaction.reply({ content: `<:n_loading:1555544489194688623> Please wait **${cdLeft}s** before sending another confession.`, flags: MessageFlags.Ephemeral });
+                return interaction.reply({ content: `<:n_loading:1567796992556666982> Please wait **${cdLeft}s** before sending another confession.`, flags: MessageFlags.Ephemeral });
             }
 
             if (config.CategoriesEnabled && config.Categories?.length > 0) {
@@ -338,7 +338,7 @@ async function handleInteraction(interaction) {
                     .setCustomId('confession_category_select')
                     .setPlaceholder('Select a category…')
                     .addOptions(config.Categories.map(c => {
-                        const emojiRaw = c.emoji || '<:files:1555544445565407352>';
+                        const emojiRaw = c.emoji || '<:files:1567796970964394044>';
                         const opt = {
                             label:       c.label,
                             value:       c.label,
@@ -389,7 +389,7 @@ async function handleInteraction(interaction) {
                 interaction.client.emit('confessionLog', interaction.guild, config, 'WORD FILTER TRIGGERED',
                     `Reply blocked from ${interaction.user.id}`
                 );
-                return interaction.editReply({ content: '<:restrict:1555544549105999962> Your reply contains prohibited content and was not sent.' });
+                return interaction.editReply({ content: '<:restrict:1567797003638022166> Your reply contains prohibited content and was not sent.' });
             }
 
             const cdKey = `reply_${interaction.user.id}`;
@@ -424,7 +424,7 @@ async function handleInteraction(interaction) {
             try {
                 const validationError = validateConfession(text, config, userId);
                 if (validationError) {
-                    return interaction.editReply({ content: `<:crossy:1555544390221562048> ${validationError}` });
+                    return interaction.editReply({ content: `<:crossy:1567796959648030831> ${validationError}` });
                 }
 
                 if (config.RequiredRoles?.length > 0) {
@@ -433,7 +433,7 @@ async function handleInteraction(interaction) {
                     );
                     if (!hasRequired) {
                         return interaction.editReply({
-                            content: '<:crossy:1555544390221562048> You do not have the required role to submit confessions.'
+                            content: '<:crossy:1567796959648030831> You do not have the required role to submit confessions.'
                         });
                     }
                 }
@@ -452,17 +452,17 @@ async function handleInteraction(interaction) {
 
                     if (config.FilterAction === 'review') {
                         await sendToReview(interaction, text, config, { userId, categoryLabel });
-                        return interaction.editReply({ content: '<:announcement:1555544345740967956> Your confession was sent for moderator review.' });
+                        return interaction.editReply({ content: '<:announcement:1567796950265241662> Your confession was sent for moderator review.' });
                     }
 
-                    return interaction.editReply({ content: '<:restrict:1555544549105999962> Your confession contains prohibited content and was not submitted.' });
+                    return interaction.editReply({ content: '<:restrict:1567797003638022166> Your confession contains prohibited content and was not submitted.' });
                 }
 
                 const isTrusted = config.TrustedUsers?.includes(userId);
 
                 if (config.ReviewEnabled && config.ReviewChannel && !isTrusted) {
                     await sendToReview(interaction, text, config, { userId, categoryLabel });
-                    return interaction.editReply({ content: '<:announcement:1555544345740967956> Your confession was sent for moderator review.' });
+                    return interaction.editReply({ content: '<:announcement:1567796950265241662> Your confession was sent for moderator review.' });
                 } else {
                     let categoryChannel = null;
                     if (categoryLabel && config.CategoriesEnabled) {
@@ -471,12 +471,12 @@ async function handleInteraction(interaction) {
                     }
 
                     await postConfession(interaction, text, { userId, categoryChannel });
-                    return interaction.editReply({ content: '<a:tickyy:1555544712687915008> Your confession has been submitted successfully!' });
+                    return interaction.editReply({ content: '<a:tickyy:1567797045253644368> Your confession has been submitted successfully!' });
                 }
 
             } catch (err) {
                 console.error('Confession submit error:', err);
-                return interaction.editReply({ content: '<:crossy:1555544390221562048> Something went wrong while submitting your confession. Please try again.' });
+                return interaction.editReply({ content: '<:crossy:1567796959648030831> Something went wrong while submitting your confession. Please try again.' });
             }
         }
     }

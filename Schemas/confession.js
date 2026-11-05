@@ -18,7 +18,7 @@ const confessionConfigSchema = new mongoose.Schema({
     // ── Posting settings ─────────────────────────────────────────────────────
     ConfessionPingRole: { type: String,  default: null },
     ReportPingRole:     { type: String,  default: null },  // ← NEW: role pinged on reports
-    ConfessionTitle:    { type: String,  default: '<:suggestion:1555544601501237322> Anonymous Confession' },
+    ConfessionTitle:    { type: String,  default: '<:suggestion:1567797008452812870> Anonymous Confession' },
     ConfessionColor:    { type: String,  default: '#5865F2' },
     ConfessionFooter:   { type: String,  default: '' },
     ShowConfessionNumber: { type: Boolean, default: true },
@@ -46,7 +46,7 @@ const confessionConfigSchema = new mongoose.Schema({
 
     // ── Reactions ────────────────────────────────────────────────────────────
     ReactionsEnabled:   { type: Boolean, default: true },
-    ReactionEmojis:     { type: [String], default: ['<:Red_Heart:1555544329605615758>', '😂', '😮', '😢'] },
+    ReactionEmojis:     { type: [String], default: ['<:Red_Heart:1567796949271191642>', '😂', '😮', '😢'] },
 
     // ── Scheduled confessions ────────────────────────────────────────────────
     ScheduledConfessions: { type: [mongoose.Schema.Types.Mixed], default: [] },

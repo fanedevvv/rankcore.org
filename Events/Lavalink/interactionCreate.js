@@ -24,7 +24,7 @@ module.exports = {
         // --- Only allow requester to use buttons ---
         if (interaction.user.id !== panelData.requesterId) {
             return interaction.reply({
-                content: "<:crossy:1555544390221562048> Only the user who requested this song can use these buttons!",
+                content: "<:crossy:1567796959648030831> Only the user who requested this song can use these buttons!",
                 ephemeral: true
             });
         }
@@ -50,10 +50,10 @@ module.exports = {
                     if (player) {
                         if (player.paused) {
                             await player.pause(false);
-                            feedback = "<:n_music:1555544516746940416> **Resumed playback!**";
+                            feedback = "<:n_music:1567796993403658261> **Resumed playback!**";
                         } else {
                             await player.pause(true);
-                            feedback = "<:n_music:1555544516746940416> **Paused playback!**";
+                            feedback = "<:n_music:1567796993403658261> **Paused playback!**";
                         }
                     }
                     break;
@@ -61,24 +61,24 @@ module.exports = {
                     if (player && (player.queue.size > 0 || player.queue.current)) {
                         try {
                             await player.skip();
-                            feedback = "<:n_music:1555544516746940416> **Skipped to next track!**";
+                            feedback = "<:n_music:1567796993403658261> **Skipped to next track!**";
                             await new Promise(resolve => setTimeout(resolve, 1500));
                         } catch (skipError) {
                             console.error(`[Button Error] Skip failed: ${skipError}`);
-                            feedback = "<:crossy:1555544390221562048> **Failed to skip track!**";
+                            feedback = "<:crossy:1567796959648030831> **Failed to skip track!**";
                         }
                     } else {
-                        feedback = "<:crossy:1555544390221562048> **No tracks to skip!**";
+                        feedback = "<:crossy:1567796959648030831> **No tracks to skip!**";
                     }
                     break;
                 case "stop":
                     if (player) {
                         try {
                             await player.destroy();
-                            feedback = "<:n_music:1555544516746940416> **Stopped playback and disconnected!**";
+                            feedback = "<:n_music:1567796993403658261> **Stopped playback and disconnected!**";
                         } catch (stopError) {
                             console.error(`[Button Error] Stop failed: ${stopError}`);
-                            feedback = "<:crossy:1555544390221562048> **Failed to stop player!**";
+                            feedback = "<:crossy:1567796959648030831> **Failed to stop player!**";
                         }
                     }
                     break;
@@ -86,34 +86,34 @@ module.exports = {
                     if (player.queue.current) {
                         player.queue.unshift(player.queue.current);
                         await player.play();
-                        feedback = "<:n_add:1555544335036973106> **Replayed current track!**";
+                        feedback = "<:n_add:1567796983408754731> **Replayed current track!**";
                     }
                     break;
                 case "shuffle":
                     if (player.queue.size > 1) {
                         player.queue.shuffle();
-                        feedback = "<:n_music:1555544516746940416> **Shuffled queue!**";
+                        feedback = "<:n_music:1567796993403658261> **Shuffled queue!**";
                     }
                     break;
                 case "forward":
                     const position = player.position + 10000;
                     await player.seek(Math.min(position, player.queue.current.length));
-                    feedback = "<:n_music:1555544516746940416> **Forwarded 10 seconds!**";
+                    feedback = "<:n_music:1567796993403658261> **Forwarded 10 seconds!**";
                     break;
                 case "backward":
                     const newPosition = player.position - 10000;
                     await player.seek(Math.max(newPosition, 0));
-                    feedback = "<:n_music:1555544516746940416> **Rewound 10 seconds!**";
+                    feedback = "<:n_music:1567796993403658261> **Rewound 10 seconds!**";
                     break;
                 case "volplus":
                     const newVolume = Math.min(player.volume + 10, 150);
                     await player.setVolume(newVolume);
-                    feedback = "<:n_music:1555544516746940416> **Volume increased to " + newVolume + "%!**";
+                    feedback = "<:n_music:1567796993403658261> **Volume increased to " + newVolume + "%!**";
                     break;
                 case "volminus":
                     const reducedVolume = Math.max(player.volume - 10, 0);
                     await player.setVolume(reducedVolume);
-                    feedback = "<:n_music:1555544516746940416> **Volume decreased to " + reducedVolume + "%!**";
+                    feedback = "<:n_music:1567796993403658261> **Volume decreased to " + reducedVolume + "%!**";
                     break;
                 default:
                     return;
@@ -153,15 +153,15 @@ module.exports = {
                             });
                         }
 
-                        const playPauseButton = new ButtonBuilder().setCustomId("playpause").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(false);
-                        const skipButton = new ButtonBuilder().setCustomId("skip").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(currentPlayer.queue.size === 0 && !currentPlayer.queue.current);
-                        const stopButton = new ButtonBuilder().setCustomId("stop").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(false);
-                        const replayButton = new ButtonBuilder().setCustomId("replay").setEmoji(parseEmoji("<:n_add:1555544335036973106>")).setStyle(ButtonStyle.Secondary).setDisabled(false);
-                        const shuffleButton = new ButtonBuilder().setCustomId("shuffle").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(currentPlayer.queue.size < 2);
-                        const forwardButton = new ButtonBuilder().setCustomId("forward").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(false);
-                        const backwardButton = new ButtonBuilder().setCustomId("backward").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(false);
-                        const volPlusButton = new ButtonBuilder().setCustomId("volplus").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(false);
-                        const volMinusButton = new ButtonBuilder().setCustomId("volminus").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(false);
+                        const playPauseButton = new ButtonBuilder().setCustomId("playpause").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(false);
+                        const skipButton = new ButtonBuilder().setCustomId("skip").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(currentPlayer.queue.size === 0 && !currentPlayer.queue.current);
+                        const stopButton = new ButtonBuilder().setCustomId("stop").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(false);
+                        const replayButton = new ButtonBuilder().setCustomId("replay").setEmoji(parseEmoji("<:n_add:1567796983408754731>")).setStyle(ButtonStyle.Secondary).setDisabled(false);
+                        const shuffleButton = new ButtonBuilder().setCustomId("shuffle").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(currentPlayer.queue.size < 2);
+                        const forwardButton = new ButtonBuilder().setCustomId("forward").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(false);
+                        const backwardButton = new ButtonBuilder().setCustomId("backward").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(false);
+                        const volPlusButton = new ButtonBuilder().setCustomId("volplus").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(false);
+                        const volMinusButton = new ButtonBuilder().setCustomId("volminus").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(false);
 
                         const row1 = new ActionRowBuilder().addComponents(playPauseButton, skipButton, stopButton, forwardButton, volPlusButton);
                         const row2 = new ActionRowBuilder().addComponents(replayButton, shuffleButton, backwardButton, volMinusButton);
@@ -173,23 +173,23 @@ module.exports = {
                         const defaultEmbed = new EmbedBuilder()
                             .setColor(client.config.embedColor)
                             .setTitle("Music Control Panel")
-                            .setDescription("<:n_music:1555544516746940416> **No music currently playing**\nSend a song name/link in this channel to add songs to the queue!")
+                            .setDescription("<:n_music:1567796993403658261> **No music currently playing**\nSend a song name/link in this channel to add songs to the queue!")
                             .setImage("https://i.pinimg.com/originals/e2/d4/5c/e2d45c1474a5b514be7d10cd47ed26b4.jpg")
                             .setFooter({ text: `Bot by ${client.config.dev} | Guild: ${interaction.guild.name} v2.0 Testing`, iconURL: client.user.displayAvatarURL() });
 
                         const disabledButtons1 = [
-                            new ButtonBuilder().setCustomId("playpause").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(true),
-                            new ButtonBuilder().setCustomId("skip").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(true),
-                            new ButtonBuilder().setCustomId("stop").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(true),
-                            new ButtonBuilder().setCustomId("forward").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(true),
-                            new ButtonBuilder().setCustomId("volplus").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(true)
+                            new ButtonBuilder().setCustomId("playpause").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(true),
+                            new ButtonBuilder().setCustomId("skip").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(true),
+                            new ButtonBuilder().setCustomId("stop").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(true),
+                            new ButtonBuilder().setCustomId("forward").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(true),
+                            new ButtonBuilder().setCustomId("volplus").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(true)
                         ];
                         
                         const disabledButtons2 = [
-                            new ButtonBuilder().setCustomId("replay").setEmoji(parseEmoji("<:n_add:1555544335036973106>")).setStyle(ButtonStyle.Secondary).setDisabled(true),
-                            new ButtonBuilder().setCustomId("shuffle").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(true),
-                            new ButtonBuilder().setCustomId("backward").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(true),
-                            new ButtonBuilder().setCustomId("volminus").setEmoji(parseEmoji("<:n_music:1555544516746940416>")).setStyle(ButtonStyle.Secondary).setDisabled(true)
+                            new ButtonBuilder().setCustomId("replay").setEmoji(parseEmoji("<:n_add:1567796983408754731>")).setStyle(ButtonStyle.Secondary).setDisabled(true),
+                            new ButtonBuilder().setCustomId("shuffle").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(true),
+                            new ButtonBuilder().setCustomId("backward").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(true),
+                            new ButtonBuilder().setCustomId("volminus").setEmoji(parseEmoji("<:n_music:1567796993403658261>")).setStyle(ButtonStyle.Secondary).setDisabled(true)
                         ];
 
                         const row1 = new ActionRowBuilder().addComponents(disabledButtons1);

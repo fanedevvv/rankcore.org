@@ -33,19 +33,19 @@ function generateCase() {
  */
 function canModerate(interaction, targetMember, perm) {
   if (!interaction.member.permissions.has(perm))
-    return `<:restrict:1555544549105999962> You need the **${readablePerm(perm)}** permission.`;
+    return `<:restrict:1567797003638022166> You need the **${readablePerm(perm)}** permission.`;
   if (!targetMember)
-    return `<:restrict:1555544549105999962> That user is not in this server.`;
+    return `<:restrict:1567797003638022166> That user is not in this server.`;
   if (targetMember.id === interaction.user.id)
-    return `<:restrict:1555544549105999962> You can't moderate yourself.`;
+    return `<:restrict:1567797003638022166> You can't moderate yourself.`;
   if (targetMember.id === interaction.guild.ownerId)
-    return `<:restrict:1555544549105999962> You can't moderate the server owner.`;
+    return `<:restrict:1567797003638022166> You can't moderate the server owner.`;
   if (!targetMember.moderatable)
-    return `<:restrict:1555544549105999962> I can't moderate that member — check my role position.`;
+    return `<:restrict:1567797003638022166> I can't moderate that member — check my role position.`;
   if (
     interaction.guild.ownerId !== interaction.user.id &&
     interaction.member.roles.highest.position <= targetMember.roles.highest.position
-  ) return `<:restrict:1555544549105999962> Their highest role is equal to or above yours.`;
+  ) return `<:restrict:1567797003638022166> Their highest role is equal to or above yours.`;
   return null;
 }
 
@@ -68,12 +68,12 @@ const DM_ACCENTS = {
   warn: ACCENT.warning, unban: ACCENT.success, untimeout: ACCENT.success,
 };
 const DM_TITLES = {
-  ban:      "## <:ban:1555544356352430202>  You have been banned",
-  kick:     "## <:ban:1555544356352430202>  You have been kicked",
-  timeout:  "## <:n_music:1555544516746940416>  You have been timed out",
-  warn:     "## <:error:1555544434601369620>  You received a warning",
-  unban:    "## <a:tickyy:1555544712687915008>  You have been unbanned",
-  untimeout:"## <:n_music:1555544516746940416>  Your timeout has been removed",
+  ban:      "## <:ban:1567796952538554458>  You have been banned",
+  kick:     "## <:ban:1567796952538554458>  You have been kicked",
+  timeout:  "## <:n_music:1567796993403658261>  You have been timed out",
+  warn:     "## <:error:1567796968758050868>  You received a warning",
+  unban:    "## <a:tickyy:1567797045253644368>  You have been unbanned",
+  untimeout:"## <:n_music:1567796993403658261>  Your timeout has been removed",
 };
 const DM_FOOTERS = {
   ban:      "-# You may appeal by contacting a server administrator.",
@@ -104,7 +104,7 @@ async function dmUser(user, guild, action, reason, extra = {}) {
 
   const container = new ContainerBuilder()
     .setAccentColor(accentColor)
-    .addTextDisplayComponents(new TextDisplayBuilder().setContent(DM_TITLES[action] || `## <:n_info:1555544473008873565> Moderation Action`))
+    .addTextDisplayComponents(new TextDisplayBuilder().setContent(DM_TITLES[action] || `## <:n_info:1567796991419744417> Moderation Action`))
     .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
     .addTextDisplayComponents(new TextDisplayBuilder().setContent(bodyLines))
     .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))

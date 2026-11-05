@@ -32,7 +32,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor("LuminousVividPink")
-      .setTitle("Parental Guidance <:Currency:1555544251268595792>")
+      .setTitle("Parental Guidance <:Currency:1567796932041121873>")
       .setDescription(`${parent} gave ${child} **${amount}** in pocket money! What a responsible parent.`);
 
     return interaction.reply({ embeds: [embed] });

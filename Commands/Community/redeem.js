@@ -16,7 +16,7 @@ async function run(interaction) {
         return interaction.reply({
             embeds: [new EmbedBuilder()
                 .setColor(0xef4444)
-                .setDescription(`<:cross:1467859453121658982> ${result.error}`)],
+                .setDescription(`<:cross:1567796958188540016> ${result.error}`)],
             flags: MessageFlags.Ephemeral,
         });
     }
@@ -31,11 +31,11 @@ async function run(interaction) {
         embeds: [new EmbedBuilder()
             .setColor(tier.color)
             .setDescription(
-                `## <:premium:1467910095911256198> Premium activated!\n` +
+                `## <:premium:1567797001473622066> Premium activated!\n` +
                 `**${tier.name}** is now active on ${forWhom}.\n\n` +
-                `<:star:1467885469928001557> **Plan:** ${tier.name}\n` +
-                `<:time:1467826155217354834> **Duration:** ${DURATIONS[result.duration].label}\n` +
-                `<:calendar:1555544372953616426> **Expires:** ${expires}`
+                `<:star:1567797006972231702> **Plan:** ${tier.name}\n` +
+                `<:time:1567797024575725669> **Duration:** ${DURATIONS[result.duration].label}\n` +
+                `<:calendar:1567796954640158770> **Expires:** ${expires}`
             )
             .setFooter({ text: "Thanks for supporting RankCore! • /premium status" })],
         flags: MessageFlags.Ephemeral,

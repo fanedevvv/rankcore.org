@@ -147,7 +147,7 @@ async function _handleTicketInteraction(interaction, client) {
     case 'ticket-assign':
       if (!data || !canManage) return interaction.reply({ embeds: [errEmbed('No permission.')], flags: MessageFlags.Ephemeral });
       return interaction.reply({
-        embeds: [new EmbedBuilder().setTitle('<:minigames:1555544500179439707> Assign Ticket').setDescription('Select a staff member to assign this ticket to.').setColor(0x6C53FF)],
+        embeds: [new EmbedBuilder().setTitle('<:minigames:1567796978929238076> Assign Ticket').setDescription('Select a staff member to assign this ticket to.').setColor(0x6C53FF)],
         components: [new ActionRowBuilder().addComponents(
           new UserSelectMenuBuilder().setCustomId('ticket-assign-menu').setPlaceholder('Assign to…').setMinValues(1).setMaxValues(1),
         )],
@@ -165,12 +165,12 @@ async function _handleTicketInteraction(interaction, client) {
     case 'ticket-priority':
       if (!data || !canManage) return interaction.reply({ embeds: [errEmbed('No permission.')], flags: MessageFlags.Ephemeral });
       return interaction.reply({
-        embeds: [new EmbedBuilder().setTitle('<:thunderr:1555544623735242883> Set Priority').setDescription('Select a priority level for this ticket.').setColor(0x6C53FF)
+        embeds: [new EmbedBuilder().setTitle('<:thunderr:1567797012991189134> Set Priority').setDescription('Select a priority level for this ticket.').setColor(0x6C53FF)
           .addFields(
-            { name: '<:LEgreen:1555544256356159600> Low',    value: 'Routine — no time pressure',         inline: true },
-            { name: '<:error:1555544434601369620> Medium',   value: 'Should be addressed soon',           inline: true },
-            { name: '<:error:1555544434601369620> High',     value: 'Needs attention quickly',            inline: true },
-            { name: '<:LEred:1555544262123323422> Urgent',   value: 'Critical — immediate action needed', inline: true },
+            { name: '<:LEgreen:1567796933307666515> Low',    value: 'Routine — no time pressure',         inline: true },
+            { name: '<:error:1567796968758050868> Medium',   value: 'Should be addressed soon',           inline: true },
+            { name: '<:error:1567796968758050868> High',     value: 'Needs attention quickly',            inline: true },
+            { name: '<:LEred:1567796934545121280> Urgent',   value: 'Critical — immediate action needed', inline: true },
           )],
         components: [buildPriorityRow()],
         flags: MessageFlags.Ephemeral,

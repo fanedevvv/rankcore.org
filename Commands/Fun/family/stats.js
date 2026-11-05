@@ -20,7 +20,7 @@ module.exports = {
     ]);
 
     // ─── Marriage duration ───────────────────────────────────────────────
-    let marriedLine = "<:Red_Heart:1555544329605615758> Not married";
+    let marriedLine = "<:Red_Heart:1567796949271191642> Not married";
     if (marriageData) {
       const days = Math.floor((Date.now() - marriageData.marriedSince.getTime()) / 86400000);
       marriedLine = `💍 <@${marriageData.marriedTo}> — married **${days}** day${days !== 1 ? "s" : ""} ago`;
@@ -31,7 +31,7 @@ module.exports = {
     const kidnapped  = children.filter((c) => c.isKidnapped).length;
     const childLine  = children.length
       ? `**${children.length}** child${children.length !== 1 ? "ren" : ""} ` +
-        `${grounded ? `• <:lockk:1555544494441635860> ${grounded} grounded` : ""} ${kidnapped ? `• 😱 ${kidnapped} kidnapped` : ""}`.trim()
+        `${grounded ? `• <:lockk:1567796977809367122> ${grounded} grounded` : ""} ${kidnapped ? `• 😱 ${kidnapped} kidnapped` : ""}`.trim()
       : "No children yet";
 
     const parentLine = adoptedBy
@@ -46,10 +46,10 @@ module.exports = {
     // ─── Tier label ───────────────────────────────────────────────────────
     const totalFamily = children.length + (marriageData ? 1 : 0);
     const tier =
-      totalFamily >= 10 ? "<:1430986209995526274:1555544172302307449> Dynasty"
-      : totalFamily >= 5  ? "<:boost:1555544362455146576> Big Family"
-      : totalFamily >= 2  ? "<:n_home:1555544468193546270> Growing"
-      : "<:eco:1555544429253890050> Starting Out";
+      totalFamily >= 10 ? "<:1430986209995526274:1567796911350747206> Dynasty"
+      : totalFamily >= 5  ? "<:boost:1567796953599836280> Big Family"
+      : totalFamily >= 2  ? "<:n_home:1567796990148878446> Growing"
+      : "<:eco:1567796967197900842> Starting Out";
 
     // ─── Container ────────────────────────────────────────────────────────
     const container = new ContainerBuilder()
@@ -57,14 +57,14 @@ module.exports = {
       .addSectionComponents(
         new SectionBuilder()
           .addTextDisplayComponents(
-            new TextDisplayBuilder().setContent(`## <:n_utils:1555544669545431062> Family Stats — ${user.username}`),
+            new TextDisplayBuilder().setContent(`## <:n_utils:1567796996830658573> Family Stats — ${user.username}`),
             new TextDisplayBuilder().setContent(`**Family Tier:** ${tier}`)
           )
           .setThumbnailAccessory(new ThumbnailBuilder().setURL(user.displayAvatarURL({ size: 256 })))
       )
       .addSeparatorComponents(new SeparatorBuilder())
       .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent(`### <:Red_Heart:1555544329605615758> Relationships`),
+        new TextDisplayBuilder().setContent(`### <:Red_Heart:1567796949271191642> Relationships`),
         new TextDisplayBuilder().setContent(
           `${marriedLine}\n` +
           `👨‍👩‍👧 ${childLine}\n` +
@@ -73,11 +73,11 @@ module.exports = {
       )
       .addSeparatorComponents(new SeparatorBuilder())
       .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent(`### <:1430986209995526274:1555544172302307449> Activity`),
+        new TextDisplayBuilder().setContent(`### <:1430986209995526274:1567796911350747206> Activity`),
         new TextDisplayBuilder().setContent(
-          `<:1430986209995526274:1555544172302307449> Achievements: **${achieveCount}**\n` +
-          `<:Currency:1555544251268595792> Guidance given: **${guidanceCount}** time${guidanceCount !== 1 ? "s" : ""}\n` +
-          `<:ban:1555544356352430202> Items confiscated: **${confiscated}**`
+          `<:1430986209995526274:1567796911350747206> Achievements: **${achieveCount}**\n` +
+          `<:Currency:1567796932041121873> Guidance given: **${guidanceCount}** time${guidanceCount !== 1 ? "s" : ""}\n` +
+          `<:ban:1567796952538554458> Items confiscated: **${confiscated}**`
         )
       )
       .addSeparatorComponents(new SeparatorBuilder())

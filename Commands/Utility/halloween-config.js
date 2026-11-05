@@ -37,14 +37,14 @@ module.exports = {
     }
 
     const embed = new EmbedBuilder()
-      .setTitle("<:fire:1555544450871332944> Halloween Countdown Configuration")
+      .setTitle("<:fire:1567796972125945888> Halloween Countdown Configuration")
       .setColor("Orange")
       .addFields(
         {
           name: "Status",
           value: data?.Enabled
-            ? "```ansi\n\u001b[32m<:LEgreen:1555544256356159600> ENABLED```"
-            : "```ansi\n\u001b[31m<:LEred:1555544262123323422> DISABLED```",
+            ? "```ansi\n\u001b[32m<:LEgreen:1567796933307666515> ENABLED```"
+            : "```ansi\n\u001b[31m<:LEred:1567796934545121280> DISABLED```",
         },
         {
           name: "Configuration",
@@ -93,7 +93,7 @@ module.exports = {
       if (i.customId === "disable") {
         await halloweenSchema.deleteMany({ Guild: interaction.guild.id });
 
-        embed.data.fields[0].value = "```ansi\n\u001b[31m<:LEred:1555544262123323422> DISABLED```";
+        embed.data.fields[0].value = "```ansi\n\u001b[31m<:LEred:1567796934545121280> DISABLED```";
         embed.data.fields[1].value =
           "```yml\nchannel: \"Not Set\"\npingRole: \"Not Set\"\nenabled: \"No\"```";
 
@@ -120,7 +120,7 @@ module.exports = {
           { upsert: true }
         );
 
-        embed.data.fields[0].value = "```ansi\n\u001b[32m<:LEgreen:1555544256356159600> ENABLED```";
+        embed.data.fields[0].value = "```ansi\n\u001b[32m<:LEgreen:1567796933307666515> ENABLED```";
         embed.data.fields[1].value =
           `\`\`\`yml\nchannel: "<#${collected.channel}>"\npingRole: "${collected.pingRole ? `<@&${collected.pingRole}>` : "Not Set"}"\nenabled: "Yes"\n\`\`\``;
 

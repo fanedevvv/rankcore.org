@@ -12,7 +12,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setAuthor({name:client.user.username,iconURL:client.user.displayAvatarURL()})
         .setTitle("Sorry to see you go!")
-        .setDescription(`Hey ${owner.user}, I noticed that **${client.user.username}** was removed from **${guild.name}**.\n\nIf this was a mistake, feel free to invite me back anytime!\n> <:1430986225493479485:1555544207652032633> Current Servers: ${client.guilds.cache.size}`)
+        .setDescription(`Hey ${owner.user}, I noticed that **${client.user.username}** was removed from **${guild.name}**.\n\nIf this was a mistake, feel free to invite me back anytime!\n> <:1430986225493479485:1567796921681055824> Current Servers: ${client.guilds.cache.size}`)
         .setThumbnail(guild.iconURL({size:512})||client.user.displayAvatarURL())
         .setColor("#ED4245")
         .setFooter({text:"Thank you for trying RankCore 💕",iconURL:client.user.displayAvatarURL()});

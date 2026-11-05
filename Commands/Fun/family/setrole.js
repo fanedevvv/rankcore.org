@@ -41,7 +41,7 @@ module.exports = {
       const removeAt = new Date(Date.now() + durationMs);
       const embed = new EmbedBuilder()
         .setColor("Purple")
-        .setTitle("Role Assigned <:1430986209995526274:1555544172302307449>")
+        .setTitle("Role Assigned <:1430986209995526274:1567796911350747206>")
         .setDescription(`${parent} gave **${role.name}** to ${child} for **${durationString}**! It will be removed <t:${Math.floor(removeAt.getTime() / 1000)}:R>.`);
 
       await interaction.reply({ embeds: [embed] });

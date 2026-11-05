@@ -7,8 +7,8 @@ const { generateCompatibilityImage } = require('./generateimage');
 const { getCheesyLine } = require('./lines');
 
 const TIER_EMOJIS = {
-  doomed: '💀', rocky: '🌪️', potential: '<:eco:1555544429253890050>',
-  lovely: '<:Red_Heart:1555544329605615758>', soulmates: '<:Red_Heart:1555544329605615758>', perfect: '💍',
+  doomed: '💀', rocky: '🌪️', potential: '<:eco:1567796967197900842>',
+  lovely: '<:Red_Heart:1567796949271191642>', soulmates: '<:Red_Heart:1567796949271191642>', perfect: '💍',
 };
 const TIER_COLORS = {
   doomed: 0x8b1a1a, rocky: 0x7a3500, potential: 0x5a4a00,
@@ -27,7 +27,7 @@ async function buildResult(nameA, nameB) {
 
   const embed = new EmbedBuilder()
     .setColor(TIER_COLORS[tier] ?? 0xe8003d)
-    .setTitle(`${TIER_EMOJIS[tier] ?? '<:Red_Heart:1555544329605615758>'} ${nameA} & ${nameB}`)
+    .setTitle(`${TIER_EMOJIS[tier] ?? '<:Red_Heart:1567796949271191642>'} ${nameA} & ${nameB}`)
     .setDescription(`*"${line}"*`)
     .setImage('attachment://compatibility.png')
     .setFooter({ text: 'Results are ~scientifically~ determined 🔬' });
@@ -35,7 +35,7 @@ async function buildResult(nameA, nameB) {
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
       .setCustomId(`compat_reroll__${nameA}__${nameB}`)
-      .setLabel('Try Again').setEmoji(parseEmoji('<:n_add:1555544335036973106>'))
+      .setLabel('Try Again').setEmoji(parseEmoji('<:n_add:1567796983408754731>'))
       .setStyle(ButtonStyle.Secondary),
   );
 
@@ -75,7 +75,7 @@ module.exports = {
       result = await buildResult(nameA, nameB);
     } catch (err) {
       console.error('[Compatibility] Image generation failed:', err);
-      return interaction.editReply({ content: '<:Red_Heart:1555544329605615758> Something went wrong generating the image.' });
+      return interaction.editReply({ content: '<:Red_Heart:1567796949271191642> Something went wrong generating the image.' });
     }
 
     const msg = await interaction.editReply({
@@ -109,7 +109,7 @@ module.exports = {
       } catch (err) {
         console.error('[Compatibility] Reroll failed:', err);
         return btnInteraction.followUp({
-          content: '<:Red_Heart:1555544329605615758> Something went wrong. Try again!',
+          content: '<:Red_Heart:1567796949271191642> Something went wrong. Try again!',
           flags: MessageFlags.Ephemeral,
         });
       }
@@ -126,7 +126,7 @@ module.exports = {
       const disabled = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
           .setCustomId('compat_reroll_expired')
-          .setLabel('Try Again').setEmoji(parseEmoji('<:n_add:1555544335036973106>'))
+          .setLabel('Try Again').setEmoji(parseEmoji('<:n_add:1567796983408754731>'))
           .setStyle(ButtonStyle.Secondary)
           .setDisabled(true),
       );

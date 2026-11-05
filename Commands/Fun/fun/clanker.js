@@ -7,7 +7,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(client.config.embedColor)
-      .setTitle("<:n_bot:1555544367886770176> Clanker Meter")
+      .setTitle("<:n_bot:1567796985816154144> Clanker Meter")
       .setDescription(`${user} is **${percent}%** a clanker!`);
 
     return interaction.reply({ embeds: [embed] });

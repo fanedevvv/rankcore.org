@@ -54,7 +54,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor("Yellow")
-        .setTitle("Item Gifted <:boost:1555544362455146576>")
+        .setTitle("Item Gifted <:boost:1567796953599836280>")
         .setDescription(`${parent} has gifted **${chosenItem}** to ${child}!`);
 
       await i.update({ embeds: [embed], components: [] });

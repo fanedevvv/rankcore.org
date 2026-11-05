@@ -41,11 +41,11 @@ module.exports = {
         .addSubcommand(s => s.setName('set-action').setDescription('Set the global punishment action.')
             .addStringOption(o => o.setName('action').setDescription('Action to take').setRequired(true)
                 .addChoices(
-                    { name: '<:files:1555544445565407352> Log Only', value: 'log' },
-                    { name: '<:ban:1555544356352430202> Kick User', value: 'kick' },
-                    { name: '<:ban:1555544356352430202> Ban User', value: 'ban' },
-                    { name: '<:1430986239036625017:1555544229143519304> Strip Roles', value: 'stripRoles' },
-                    { name: '<:n_music:1555544516746940416> Timeout (28d)', value: 'timeout' },
+                    { name: '<:files:1567796970964394044> Log Only', value: 'log' },
+                    { name: '<:ban:1567796952538554458> Kick User', value: 'kick' },
+                    { name: '<:ban:1567796952538554458> Ban User', value: 'ban' },
+                    { name: '<:1430986239036625017:1567796926689185822> Strip Roles', value: 'stripRoles' },
+                    { name: '<:n_music:1567796993403658261> Timeout (28d)', value: 'timeout' },
                 )))
 
         // Log channel
@@ -83,12 +83,12 @@ module.exports = {
                 .addChoices(...EVENT_KEYS.map(k => ({ name: EVENT_LABELS[k], value: k }))))
             .addStringOption(o => o.setName('action').setDescription('Action').setRequired(true)
                 .addChoices(
-                    { name: '<:n_music:1555544516746940416> Inherit Global', value: 'inherit' },
-                    { name: '<:files:1555544445565407352> Log Only', value: 'log' },
-                    { name: '<:ban:1555544356352430202> Kick', value: 'kick' },
-                    { name: '<:ban:1555544356352430202> Ban', value: 'ban' },
-                    { name: '<:1430986239036625017:1555544229143519304> Strip Roles', value: 'stripRoles' },
-                    { name: '<:n_music:1555544516746940416> Timeout', value: 'timeout' },
+                    { name: '<:n_music:1567796993403658261> Inherit Global', value: 'inherit' },
+                    { name: '<:files:1567796970964394044> Log Only', value: 'log' },
+                    { name: '<:ban:1567796952538554458> Kick', value: 'kick' },
+                    { name: '<:ban:1567796952538554458> Ban', value: 'ban' },
+                    { name: '<:1430986239036625017:1567796926689185822> Strip Roles', value: 'stripRoles' },
+                    { name: '<:n_music:1567796993403658261> Timeout', value: 'timeout' },
                 )))
         .addSubcommand(s => s.setName('event-threshold').setDescription('Set rate-limit threshold for an event (0 = instant).')
             .addStringOption(o => o.setName('event').setDescription('Event key').setRequired(true)
@@ -113,7 +113,7 @@ module.exports = {
             // Owner-only commands
             const ownerOnly = ['enable', 'disable', 'reset'];
             if (ownerOnly.includes(sub) && interaction.user.id !== interaction.guild.ownerId) {
-                return interaction.reply({ content: '<:error:1555544434601369620> Only the server owner can use this subcommand.', flags: MessageFlags.Ephemeral });
+                return interaction.reply({ content: '<:error:1567796968758050868> Only the server owner can use this subcommand.', flags: MessageFlags.Ephemeral });
             }
 
             const handlers = {
@@ -153,7 +153,7 @@ async function getEntry(guildId) {
 async function requireEntry(interaction) {
     const entry = await getEntry(interaction.guild.id);
     if (!entry) {
-        await interaction.reply({ content: '<:crossy:1555544390221562048> Anti-nuke is not enabled. Use `/antinuke enable` first.', flags: MessageFlags.Ephemeral });
+        await interaction.reply({ content: '<:crossy:1567796959648030831> Anti-nuke is not enabled. Use `/antinuke enable` first.', flags: MessageFlags.Ephemeral });
         return null;
     }
     return entry;
@@ -163,7 +163,7 @@ async function requireEntry(interaction) {
 
 async function enableAntinuke(interaction) {
     const existing = await getEntry(interaction.guild.id);
-    if (existing) return interaction.reply({ content: '<a:tickyy:1555544712687915008> Anti-nuke is already enabled. Use `/antinuke status` to view config.', flags: MessageFlags.Ephemeral });
+    if (existing) return interaction.reply({ content: '<a:tickyy:1567797045253644368> Anti-nuke is already enabled. Use `/antinuke status` to view config.', flags: MessageFlags.Ephemeral });
 
     await interaction.deferReply();
 
@@ -175,7 +175,7 @@ async function enableAntinuke(interaction) {
     });
 
     const embed = new EmbedBuilder()
-        .setTitle('<:restrict:1555544549105999962> Anti-Nuke Enabled')
+        .setTitle('<:restrict:1567797003638022166> Anti-Nuke Enabled')
         .setDescription(
             `Anti-nuke protection is now **active**.\n\n` +
             `**Default Action:** Log Only\n` +
@@ -192,33 +192,33 @@ async function enableAntinuke(interaction) {
 
 async function disableAntinuke(interaction) {
     const entry = await getEntry(interaction.guild.id);
-    if (!entry) return interaction.reply({ content: '<:crossy:1555544390221562048> Anti-nuke is not enabled.', flags: MessageFlags.Ephemeral });
+    if (!entry) return interaction.reply({ content: '<:crossy:1567796959648030831> Anti-nuke is not enabled.', flags: MessageFlags.Ephemeral });
     await antinukeSchema.findOneAndDelete({ guildId: interaction.guild.id });
-    return interaction.reply('<:restrict:1555544549105999962> Anti-nuke protection has been **disabled**.');
+    return interaction.reply('<:restrict:1567797003638022166> Anti-nuke protection has been **disabled**.');
 }
 
 async function checkStatus(interaction) {
     const entry = await getEntry(interaction.guild.id);
-    if (!entry) return interaction.reply({ content: '<:crossy:1555544390221562048> Anti-nuke is **disabled**.', flags: MessageFlags.Ephemeral });
+    if (!entry) return interaction.reply({ content: '<:crossy:1567796959648030831> Anti-nuke is **disabled**.', flags: MessageFlags.Ephemeral });
 
-    const actionEmoji = { log: '<:files:1555544445565407352>', kick: '<:ban:1555544356352430202>', ban: '<:ban:1555544356352430202>', stripRoles: '<:1430986239036625017:1555544229143519304>', timeout: '<:n_music:1555544516746940416>' };
+    const actionEmoji = { log: '<:files:1567796970964394044>', kick: '<:ban:1567796952538554458>', ban: '<:ban:1567796952538554458>', stripRoles: '<:1430986239036625017:1567796926689185822>', timeout: '<:n_music:1567796993403658261>' };
     const actionNames = { log: 'Log Only', kick: 'Kick', ban: 'Ban', stripRoles: 'Strip Roles', timeout: 'Timeout' };
 
     const disabledEvents = EVENT_KEYS.filter(k => entry.events?.[k]?.enabled === false);
     const customActionEvents = EVENT_KEYS.filter(k => entry.events?.[k]?.action && entry.events[k].action !== 'inherit');
 
     const embed = new EmbedBuilder()
-        .setTitle('<:restrict:1555544549105999962> Anti-Nuke Status')
+        .setTitle('<:restrict:1567797003638022166> Anti-Nuke Status')
         .setColor('#00ff88')
         .addFields(
-            { name: '<:thunderr:1555544623735242883> Status', value: entry.enabled ? '<a:tickyy:1555544712687915008> Enabled' : '<:crossy:1555544390221562048> Disabled', inline: true },
-            { name: `${actionEmoji[entry.action] || '<:files:1555544445565407352>'} Global Action`, value: actionNames[entry.action] || 'Log Only', inline: true },
-            { name: '<:announcement:1555544345740967956> Log Channel', value: entry.logChannelId ? `<#${entry.logChannelId}>` : 'Not Set', inline: true },
-            { name: '<:1430986220011524216:1555544196952367134> Whitelisted Users', value: `${entry.whitelist.length} user(s)`, inline: true },
-            { name: '<:minigames:1555544500179439707> Trusted Roles', value: `${entry.trustedRoles?.length || 0} role(s)`, inline: true },
-            { name: '<:announcement:1555544345740967956> DM Owner', value: entry.dmOwner ? 'Yes' : 'No', inline: true },
-            { name: '<:announcement:1555544345740967956> Disabled Events', value: disabledEvents.length ? disabledEvents.map(k => EVENT_LABELS[k]).join(', ') : 'None', inline: false },
-            { name: '<:n_utils:1555544669545431062> Custom Event Actions', value: customActionEvents.length ? customActionEvents.map(k => `${EVENT_LABELS[k]}: ${entry.events[k].action}`).join('\n') : 'None', inline: false },
+            { name: '<:thunderr:1567797012991189134> Status', value: entry.enabled ? '<a:tickyy:1567797045253644368> Enabled' : '<:crossy:1567796959648030831> Disabled', inline: true },
+            { name: `${actionEmoji[entry.action] || '<:files:1567796970964394044>'} Global Action`, value: actionNames[entry.action] || 'Log Only', inline: true },
+            { name: '<:announcement:1567796950265241662> Log Channel', value: entry.logChannelId ? `<#${entry.logChannelId}>` : 'Not Set', inline: true },
+            { name: '<:1430986220011524216:1567796919244161135> Whitelisted Users', value: `${entry.whitelist.length} user(s)`, inline: true },
+            { name: '<:minigames:1567796978929238076> Trusted Roles', value: `${entry.trustedRoles?.length || 0} role(s)`, inline: true },
+            { name: '<:announcement:1567796950265241662> DM Owner', value: entry.dmOwner ? 'Yes' : 'No', inline: true },
+            { name: '<:announcement:1567796950265241662> Disabled Events', value: disabledEvents.length ? disabledEvents.map(k => EVENT_LABELS[k]).join(', ') : 'None', inline: false },
+            { name: '<:n_utils:1567796996830658573> Custom Event Actions', value: customActionEvents.length ? customActionEvents.map(k => `${EVENT_LABELS[k]}: ${entry.events[k].action}`).join('\n') : 'None', inline: false },
         )
         .setTimestamp();
 
@@ -231,7 +231,7 @@ async function setAction(interaction) {
     entry.action = interaction.options.getString('action');
     await entry.save();
     const actionNames = { log: 'Log Only', kick: 'Kick', ban: 'Ban', stripRoles: 'Strip Roles', timeout: 'Timeout (28d)' };
-    return interaction.reply(`<a:tickyy:1555544712687915008> Global action set to **${actionNames[entry.action]}**.`);
+    return interaction.reply(`<a:tickyy:1567797045253644368> Global action set to **${actionNames[entry.action]}**.`);
 }
 
 async function setLogChannel(interaction) {
@@ -240,7 +240,7 @@ async function setLogChannel(interaction) {
     const channel = interaction.options.getChannel('channel');
     entry.logChannelId = channel.id;
     await entry.save();
-    return interaction.reply(`<a:tickyy:1555544712687915008> Alert log channel set to ${channel}.`);
+    return interaction.reply(`<a:tickyy:1567797045253644368> Alert log channel set to ${channel}.`);
 }
 
 async function setAlertPing(interaction) {
@@ -249,7 +249,7 @@ async function setAlertPing(interaction) {
     const target = interaction.options.getMentionable('target');
     entry.alertPing = target.id;
     await entry.save();
-    return interaction.reply(`<a:tickyy:1555544712687915008> Alert ping set to <@${target.id}>.`);
+    return interaction.reply(`<a:tickyy:1567797045253644368> Alert ping set to <@${target.id}>.`);
 }
 
 async function setDmOwner(interaction) {
@@ -257,17 +257,17 @@ async function setDmOwner(interaction) {
     if (!entry) return;
     entry.dmOwner = interaction.options.getBoolean('enabled');
     await entry.save();
-    return interaction.reply(`<a:tickyy:1555544712687915008> DM owner on alert: **${entry.dmOwner ? 'Enabled' : 'Disabled'}**.`);
+    return interaction.reply(`<a:tickyy:1567797045253644368> DM owner on alert: **${entry.dmOwner ? 'Enabled' : 'Disabled'}**.`);
 }
 
 async function whitelistAdd(interaction) {
     const entry = await requireEntry(interaction);
     if (!entry) return;
     const user = interaction.options.getUser('user');
-    if (entry.whitelist.includes(user.id)) return interaction.reply({ content: `<:error:1555544434601369620> ${user.tag} is already whitelisted.`, flags: MessageFlags.Ephemeral });
+    if (entry.whitelist.includes(user.id)) return interaction.reply({ content: `<:error:1567796968758050868> ${user.tag} is already whitelisted.`, flags: MessageFlags.Ephemeral });
     entry.whitelist.push(user.id);
     await entry.save();
-    return interaction.reply(`<a:tickyy:1555544712687915008> **${user.tag}** added to whitelist.`);
+    return interaction.reply(`<a:tickyy:1567797045253644368> **${user.tag}** added to whitelist.`);
 }
 
 async function whitelistRemove(interaction) {
@@ -276,7 +276,7 @@ async function whitelistRemove(interaction) {
     const user = interaction.options.getUser('user');
     entry.whitelist = entry.whitelist.filter(id => id !== user.id);
     await entry.save();
-    return interaction.reply(`<a:tickyy:1555544712687915008> **${user.tag}** removed from whitelist.`);
+    return interaction.reply(`<a:tickyy:1567797045253644368> **${user.tag}** removed from whitelist.`);
 }
 
 async function whitelistList(interaction) {
@@ -284,7 +284,7 @@ async function whitelistList(interaction) {
     if (!entry) return;
     const users = entry.whitelist.map(id => `<@${id}>`).join('\n') || 'None';
     const embed = new EmbedBuilder()
-        .setTitle('<:1430986220011524216:1555544196952367134> Whitelisted Users')
+        .setTitle('<:1430986220011524216:1567796919244161135> Whitelisted Users')
         .setDescription(users)
         .setColor('#00ff88');
     return interaction.reply({ embeds: [embed] });
@@ -295,10 +295,10 @@ async function trustedRoleAdd(interaction) {
     if (!entry) return;
     const role = interaction.options.getRole('role');
     if (!entry.trustedRoles) entry.trustedRoles = [];
-    if (entry.trustedRoles.includes(role.id)) return interaction.reply({ content: `<:error:1555544434601369620> ${role.name} is already trusted.`, flags: MessageFlags.Ephemeral });
+    if (entry.trustedRoles.includes(role.id)) return interaction.reply({ content: `<:error:1567796968758050868> ${role.name} is already trusted.`, flags: MessageFlags.Ephemeral });
     entry.trustedRoles.push(role.id);
     await entry.save();
-    return interaction.reply(`<a:tickyy:1555544712687915008> **${role.name}** added as trusted role.`);
+    return interaction.reply(`<a:tickyy:1567797045253644368> **${role.name}** added as trusted role.`);
 }
 
 async function trustedRoleRemove(interaction) {
@@ -307,7 +307,7 @@ async function trustedRoleRemove(interaction) {
     const role = interaction.options.getRole('role');
     entry.trustedRoles = (entry.trustedRoles || []).filter(id => id !== role.id);
     await entry.save();
-    return interaction.reply(`<a:tickyy:1555544712687915008> **${role.name}** removed from trusted roles.`);
+    return interaction.reply(`<a:tickyy:1567797045253644368> **${role.name}** removed from trusted roles.`);
 }
 
 async function eventToggle(interaction) {
@@ -318,7 +318,7 @@ async function eventToggle(interaction) {
     if (!entry.events[eventKey]) entry.events[eventKey] = {};
     entry.events[eventKey].enabled = enabled;
     await entry.save();
-    return interaction.reply(`<a:tickyy:1555544712687915008> **${EVENT_LABELS[eventKey]}** protection: **${enabled ? 'Enabled' : 'Disabled'}**.`);
+    return interaction.reply(`<a:tickyy:1567797045253644368> **${EVENT_LABELS[eventKey]}** protection: **${enabled ? 'Enabled' : 'Disabled'}**.`);
 }
 
 async function eventAction(interaction) {
@@ -329,7 +329,7 @@ async function eventAction(interaction) {
     if (!entry.events[eventKey]) entry.events[eventKey] = {};
     entry.events[eventKey].action = action;
     await entry.save();
-    return interaction.reply(`<a:tickyy:1555544712687915008> **${EVENT_LABELS[eventKey]}** action set to **${action}**.`);
+    return interaction.reply(`<a:tickyy:1567797045253644368> **${EVENT_LABELS[eventKey]}** action set to **${action}**.`);
 }
 
 async function eventThreshold(interaction) {
@@ -343,8 +343,8 @@ async function eventThreshold(interaction) {
     entry.events[eventKey].thresholdWindow = window;
     await entry.save();
     const msg = count === 0
-        ? `<a:tickyy:1555544712687915008> **${EVENT_LABELS[eventKey]}** set to trigger **instantly**.`
-        : `<a:tickyy:1555544712687915008> **${EVENT_LABELS[eventKey]}** threshold set to **${count}** actions within **${window}s**.`;
+        ? `<a:tickyy:1567797045253644368> **${EVENT_LABELS[eventKey]}** set to trigger **instantly**.`
+        : `<a:tickyy:1567797045253644368> **${EVENT_LABELS[eventKey]}** threshold set to **${count}** actions within **${window}s**.`;
     return interaction.reply(msg);
 }
 
@@ -352,10 +352,10 @@ async function viewLogs(interaction) {
     const entry = await requireEntry(interaction);
     if (!entry) return;
     const logs = (entry.punishmentLog || []).slice(-10).reverse();
-    if (!logs.length) return interaction.reply({ content: '<:files:1555544445565407352> No punishment logs yet.', flags: MessageFlags.Ephemeral });
+    if (!logs.length) return interaction.reply({ content: '<:files:1567796970964394044> No punishment logs yet.', flags: MessageFlags.Ephemeral });
 
     const embed = new EmbedBuilder()
-        .setTitle('<:files:1555544445565407352> Recent Anti-Nuke Actions')
+        .setTitle('<:files:1567796970964394044> Recent Anti-Nuke Actions')
         .setColor('#00ff88')
         .setDescription(logs.map((l, i) =>
             `**${i + 1}.** \`${l.type}\` — ${l.executorTag} → **${l.actionTaken}**\n` +
@@ -368,5 +368,5 @@ async function viewLogs(interaction) {
 
 async function resetConfig(interaction) {
     await antinukeSchema.findOneAndDelete({ guildId: interaction.guild.id });
-    return interaction.reply('<:n_add:1555544335036973106> Anti-nuke configuration has been **reset**. Use `/antinuke enable` to set up again.');
+    return interaction.reply('<:n_add:1567796983408754731> Anti-nuke configuration has been **reset**. Use `/antinuke enable` to set up again.');
 }

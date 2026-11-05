@@ -73,8 +73,8 @@
           `• Read how we handle data in our [Privacy Policy](https://rankcore.org/privacy).\n` +
           (automodCreated ? `• I turned on basic AutoMod protection (spam, mention spam, slurs). Change it anytime in Server Settings → AutoMod.\n` : "") +
           `\n` +
-          `> ${client.emoji?.sparkles || "<:boost:1555544362455146576>"} **Total Commands:** ${client.commands.size}\n` +
-          `> ${client.emoji?.guilds || "<:1430986225493479485:1555544207652032633>"} **Total Servers:** ${client.guilds.cache.size}\n`
+          `> ${client.emoji?.sparkles || "<:boost:1567796953599836280>"} **Total Commands:** ${client.commands.size}\n` +
+          `> ${client.emoji?.guilds || "<:1430986225493479485:1567796921681055824>"} **Total Servers:** ${client.guilds.cache.size}\n`
         )
         .setThumbnail(client.user.displayAvatarURL({ size: 512 }))
         .setColor(client.config?.embedColor || "#5865F2")

@@ -39,26 +39,26 @@ module.exports = {
     const docs = await TicketSetup.findOne({ GuildID: guild.id });
     if (!docs) {
       return interaction.editReply({
-        embeds: [new EmbedBuilder().setColor(0xef4444).setDescription('<:crossy:1555544390221562048> Ticket system is not configured.')],
+        embeds: [new EmbedBuilder().setColor(0xef4444).setDescription('<:crossy:1567796959648030831> Ticket system is not configured.')],
       });
     }
 
     if (!hasManagePermission(member, docs)) {
       return interaction.editReply({
-        embeds: [new EmbedBuilder().setColor(0xef4444).setDescription('<:crossy:1555544390221562048> You do not have permission to use this command.')],
+        embeds: [new EmbedBuilder().setColor(0xef4444).setDescription('<:crossy:1567796959648030831> You do not have permission to use this command.')],
       });
     }
 
     const data = await TicketSchema.findOne({ GuildID: guild.id, ChannelID: channel.id });
     if (!data) {
       return interaction.editReply({
-        embeds: [new EmbedBuilder().setColor(0xef4444).setDescription('<:crossy:1555544390221562048> This channel is not a ticket.')],
+        embeds: [new EmbedBuilder().setColor(0xef4444).setDescription('<:crossy:1567796959648030831> This channel is not a ticket.')],
       });
     }
 
     if (data.Closed) {
       return interaction.editReply({
-        embeds: [new EmbedBuilder().setColor(0xef4444).setDescription('<:crossy:1555544390221562048> This ticket is already closed.')],
+        embeds: [new EmbedBuilder().setColor(0xef4444).setDescription('<:crossy:1567796959648030831> This ticket is already closed.')],
       });
     }
 
@@ -73,19 +73,19 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0xeab308)
-      .setTitle('<:1430986244921495654:1555544239792980044> Ticket Reminder')
+      .setTitle('<:1430986244921495654:1567796929587576852> Ticket Reminder')
       .setDescription(
         customMessage ||
         'This is a friendly reminder that your ticket is still open and awaiting a response.'
       )
       .addFields(
-        { name: '<:gw:1555544456873119875> Ticket', value: `#${data.TicketID}`, inline: true },
-        { name: '<:user:1555544664155889668> Owner', value: `<@${data.OwnerID}>`, inline: true },
+        { name: '<:gw:1567796972872536159> Ticket', value: `#${data.TicketID}`, inline: true },
+        { name: '<:user:1567797032423264261> Owner', value: `<@${data.OwnerID}>`, inline: true },
         ...(data.AssignedTo || data.ClaimedBy
-          ? [{ name: '<:minigames:1555544500179439707> Handler', value: `<@${data.AssignedTo || data.ClaimedBy}>`, inline: true }]
+          ? [{ name: '<:minigames:1567796978929238076> Handler', value: `<@${data.AssignedTo || data.ClaimedBy}>`, inline: true }]
           : []
         ),
-        { name: '<:announcement:1555544345740967956> Sent by', value: `<@${member.id}>`, inline: true },
+        { name: '<:announcement:1567796950265241662> Sent by', value: `<@${member.id}>`, inline: true },
       )
       .setTimestamp()
       .setFooter({ text: 'RankCore Ticket System' });
@@ -97,7 +97,7 @@ module.exports = {
     });
 
     return interaction.editReply({
-      embeds: [new EmbedBuilder().setColor(0x22c55e).setDescription(`<a:tickyy:1555544712687915008> Reminder sent to ${[...pingIds].map(id => `<@${id}>`).join(', ')}.`)],
+      embeds: [new EmbedBuilder().setColor(0x22c55e).setDescription(`<a:tickyy:1567797045253644368> Reminder sent to ${[...pingIds].map(id => `<@${id}>`).join(', ')}.`)],
     });
   },
 };

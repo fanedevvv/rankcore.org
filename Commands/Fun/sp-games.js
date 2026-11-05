@@ -30,7 +30,7 @@ const ms = require("ms");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("games-singleplayer")
-    .setDescription("Play a single-player minigame within Discord. <:minigames:1555544500179439707>")
+    .setDescription("Play a single-player minigame within Discord. <:minigames:1567796978929238076>")
     .addStringOption((option) =>
       option
         .setName("game")
@@ -74,10 +74,10 @@ module.exports = {
               color: client.config.embedColor,
             },
             emojis: {
-              up: "<:arrow:1555544351118196810>",
-              down: "<:down:1555544418407157790>",
-              left: "<:arrow:1555544351118196810>",
-              right: "<:arrow:1555544351118196810>",
+              up: "<:arrow:1567796951527850055>",
+              down: "<:down:1567796964672929802>",
+              left: "<:arrow:1567796951527850055>",
+              right: "<:arrow:1567796951527850055>",
             },
             timeoutTime: 60000,
             buttonStyle: "PRIMARY",
@@ -299,7 +299,7 @@ module.exports = {
               description:
                 "Click on the buttons to reveal the blocks except mines.",
             },
-            emojis: { flag: "<:restrict:1555544549105999962>", mine: "💣" },
+            emojis: { flag: "<:restrict:1567797003638022166>", mine: "💣" },
             mines: 5,
             timeoutTime: 60000,
             winMessage:
@@ -341,7 +341,7 @@ module.exports = {
               .setStyle(ButtonStyle.Primary)
               .setCustomId("paper")
               .setLabel("Paper")
-              .setEmoji(parseEmoji(`<:restrict:1555544549105999962>`)),
+              .setEmoji(parseEmoji(`<:restrict:1567797003638022166>`)),
 
             new ButtonBuilder()
               .setStyle(ButtonStyle.Primary)
@@ -633,14 +633,14 @@ module.exports = {
             emojis: {
               board: "⬛",
               food: "🍎",
-              up: "<:arrow:1555544351118196810>",
-              down: "<:down:1555544418407157790>",
-              left: "<:arrow:1555544351118196810>",
-              right: "<:arrow:1555544351118196810>",
+              up: "<:arrow:1567796951527850055>",
+              down: "<:down:1567796964672929802>",
+              left: "<:arrow:1567796951527850055>",
+              right: "<:arrow:1567796951527850055>",
             },
             stopButton: "Stop",
             timeoutTime: 60000,
-            snake: { head: "<:LEgreen:1555544256356159600>", body: "🟩", tail: "<:LEgreen:1555544256356159600>", over: "💀" },
+            snake: { head: "<:LEgreen:1567796933307666515>", body: "🟩", tail: "<:LEgreen:1567796933307666515>", over: "💀" },
             foods: ["🍎", "🍇", "🍊", "🫐", "🥕", "🥝", "🌽"],
             playerOnlyMessage: "Only {player} can use these buttons.",
           });
@@ -727,22 +727,22 @@ module.exports = {
       case "emojiquiz": {
         const EMOJI_QUIZ_BANK = [
           { emoji: "🍕", answer: "pizza" },
-          { emoji: "<:boost:1555544362455146576>", answer: "rocket" },
+          { emoji: "<:boost:1567796953599836280>", answer: "rocket" },
           { emoji: "🦊", answer: "fox" },
-          { emoji: "<:eco:1555544429253890050>", answer: "rainbow" },
-          { emoji: "<:n_music:1555544516746940416>", answer: "guitar" },
-          { emoji: "<:1430986209995526274:1555544172302307449>", answer: "trophy" },
+          { emoji: "<:eco:1567796967197900842>", answer: "rainbow" },
+          { emoji: "<:n_music:1567796993403658261>", answer: "guitar" },
+          { emoji: "<:1430986209995526274:1567796911350747206>", answer: "trophy" },
           { emoji: "🦋", answer: "butterfly" },
           { emoji: "🎃", answer: "pumpkin" },
-          { emoji: "<:eco:1555544429253890050>", answer: "flower" },
+          { emoji: "<:eco:1567796967197900842>", answer: "flower" },
           { emoji: "🐬", answer: "dolphin" },
-          { emoji: "<:minigames:1555544500179439707>", answer: "target" },
+          { emoji: "<:minigames:1567796978929238076>", answer: "target" },
           { emoji: "🦄", answer: "unicorn" },
           { emoji: "🍩", answer: "donut" },
           { emoji: "🏰", answer: "castle" },
           { emoji: "🦁", answer: "lion" },
           { emoji: "🌙", answer: "moon" },
-          { emoji: "<:minigames:1555544500179439707>", answer: "masks" },
+          { emoji: "<:minigames:1567796978929238076>", answer: "masks" },
           { emoji: "🐉", answer: "dragon" },
           { emoji: "🎪", answer: "circus" },
           { emoji: "🌊", answer: "wave" },
@@ -770,11 +770,11 @@ module.exports = {
             return msg.reply({
               embeds: [new EmbedBuilder()
                 .setColor(0x22c55e)
-                .setTitle("<a:tickyy:1555544712687915008> Correct!")
+                .setTitle("<a:tickyy:1567797045253644368> Correct!")
                 .setDescription(`The answer was **${pick.answer}** ${pick.emoji}\n\nWell done, ${interaction.user.toString()}!`)],
             });
           }
-          msg.reply({ content: `<:crossy:1555544390221562048> Not quite! Keep trying…`, flags: MessageFlags.Ephemeral }).catch(() => {});
+          msg.reply({ content: `<:crossy:1567796959648030831> Not quite! Keep trying…`, flags: MessageFlags.Ephemeral }).catch(() => {});
         });
 
         collector.on("end", () => {
@@ -782,7 +782,7 @@ module.exports = {
             interaction.channel.send({
               embeds: [new EmbedBuilder()
                 .setColor(0xef4444)
-                .setTitle("<:1430986244921495654:1555544239792980044> Time's Up!")
+                .setTitle("<:1430986244921495654:1567796929587576852> Time's Up!")
                 .setDescription(`The answer was **${pick.answer}** ${pick.emoji}`)],
             }).catch(() => {});
           }
@@ -831,7 +831,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
           .setColor(client.config.embedColor)
-          .setTitle("<:1430986225493479485:1555544207652032633> Guess the Flag!")
+          .setTitle("<:1430986225493479485:1567796921681055824> Guess the Flag!")
           .setDescription(`Which country does this flag belong to?\n\n# ${pick.flag}\n\n*Type your answer in chat! You have 25 seconds.*`)
           .setFooter({ text: `Player: ${interaction.user.username}` });
 
@@ -851,11 +851,11 @@ module.exports = {
             return msg.reply({
               embeds: [new EmbedBuilder()
                 .setColor(0x22c55e)
-                .setTitle("<a:tickyy:1555544712687915008> Correct!")
+                .setTitle("<a:tickyy:1567797045253644368> Correct!")
                 .setDescription(`The flag was **${pick.country}** ${pick.flag}\n\nNice geography knowledge, ${interaction.user.toString()}!`)],
             });
           }
-          msg.reply({ content: `<:crossy:1555544390221562048> Not that one! Keep trying…`, flags: MessageFlags.Ephemeral }).catch(() => {});
+          msg.reply({ content: `<:crossy:1567796959648030831> Not that one! Keep trying…`, flags: MessageFlags.Ephemeral }).catch(() => {});
         });
 
         collector.on("end", () => {
@@ -863,7 +863,7 @@ module.exports = {
             interaction.channel.send({
               embeds: [new EmbedBuilder()
                 .setColor(0xef4444)
-                .setTitle("<:1430986244921495654:1555544239792980044> Time's Up!")
+                .setTitle("<:1430986244921495654:1567796929587576852> Time's Up!")
                 .setDescription(`The answer was **${pick.country}** ${pick.flag}`)],
             }).catch(() => {});
           }

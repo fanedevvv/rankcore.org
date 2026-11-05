@@ -30,7 +30,7 @@ module.exports = {
       try {
         const user = await client.users.fetch(targetId);
         const dmBox = new ContainerBuilder().setAccentColor(accent)
-          .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <a:tickyy:1555544712687915008>  You have been unbanned"))
+          .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <a:tickyy:1567797045253644368>  You have been unbanned"))
           .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
           .addTextDisplayComponents(new TextDisplayBuilder().setContent(
             `**Server** — ${interaction.guild.name}\n**Reason** — ${reason}\n\nYou may now rejoin the server.`
@@ -39,7 +39,7 @@ module.exports = {
       } catch {}
 
       return interaction.reply({
-        components: [modActionContainer("<a:tickyy:1555544712687915008>", "Unban Executed",
+        components: [modActionContainer("<a:tickyy:1567797045253644368>", "Unban Executed",
           `<@${targetId}> (\`${targetId}\`)`, reason, {
             accent, clientId: client.user.id,
             extra: `**Moderator** — ${interaction.user.tag}`,

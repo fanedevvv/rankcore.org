@@ -44,9 +44,9 @@ const LINES = {
     "Written in pencil, not pen. There's hope.",
     "Butterflies are warming up their wings.",
     "Somewhere between 'maybe' and 'definitely maybe'.",
-    "A love story loading… please wait. <:n_loading:1555544489194688623>",
+    "A love story loading… please wait. <:n_loading:1567796992556666982>",
     "The ingredients are there. Someone just needs to cook.",
-    "Right person, wrong timeline — or is it? <:1430986244921495654:1555544239792980044>",
+    "Right person, wrong timeline — or is it? <:1430986244921495654:1567796929587576852>",
     "The pilot episode of something great.",
     "Could be nothing. Could be everything.",
     "Promising. Very promising.",
@@ -65,18 +65,18 @@ const LINES = {
     "Your energy? Dangerously compatible.",
     "A love story the poets wish they wrote.",
     "Built different. Built for each other.",
-    "Even the stars are shipping this. <:boost:1555544362455146576>",
+    "Even the stars are shipping this. <:boost:1567796953599836280>",
     "Where you lead, they follow. Willingly.",
-    "This could go in a museum. <:files:1555544445565407352>",
+    "This could go in a museum. <:files:1567796970964394044>",
     "Certified wholesome. Certified electric.",
     "The kind of love songs are written about.",
     "The sequel is always better. This is the sequel.",
-    "Rare. Like finding WiFi in the middle of nowhere. <:ping:1555544527597604968>",
+    "Rare. Like finding WiFi in the middle of nowhere. <:ping:1567796998902521920>",
   ],
 
   // 81–99% — soulmates
   soulmates: [
-    "Your hearts beat in perfect sync. <:boost:1555544362455146576>",
+    "Your hearts beat in perfect sync. <:boost:1567796953599836280>",
     "Written in the stars since the Big Bang.",
     "Scientists can't explain it. We don't need to.",
     "If love had a leaderboard, you'd top it.",
@@ -89,17 +89,17 @@ const LINES = {
     "The math doesn't lie. Neither does the heart.",
     "Statistically improbable. Emotionally inevitable.",
     "Destiny called. You both picked up. 📞",
-    "If love were a sport, you'd both be MVPs. <:1430986209995526274:1555544172302307449>",
+    "If love were a sport, you'd both be MVPs. <:1430986209995526274:1567796911350747206>",
     "Even the moon is jealous of your glow tonight. 🌙",
   ],
 
   // 100% — perfect
   perfect: [
     "Mathematically, cosmically, undeniably perfect. 💍",
-    "100%. No notes. No revisions. Perfection. <:Red_Heart:1555544329605615758>",
+    "100%. No notes. No revisions. Perfection. <:Red_Heart:1567796949271191642>",
     "The algorithm has spoken. You are it.",
     "Beyond soulmates. Beyond science. Beyond words.",
-    "The universe ran out of superlatives. <:boost:1555544362455146576>",
+    "The universe ran out of superlatives. <:boost:1567796953599836280>",
   ],
 };
 
@@ -119,7 +119,7 @@ const EASTER_EGGS = [
   // ── Classic literature ─────────────────────────────────────────────────────
   {
     test: (a, b) => pair(a, b, 'romeo', 'juliet'),
-    line: "Star-crossed and absolutely iconic. <:Red_Heart:1555544329605615758>",
+    line: "Star-crossed and absolutely iconic. <:Red_Heart:1567796949271191642>",
     tier: 'soulmates',
   },
   {
@@ -129,12 +129,12 @@ const EASTER_EGGS = [
   },
   {
     test: (a, b) => pair(a, b, 'elizabeth', 'darcy') || pair(a, b, 'lizzie', 'darcy') || pair(a, b, 'lizzie bennet', 'mr darcy'),
-    line: "It is a truth universally acknowledged… <:files:1555544445565407352>",
+    line: "It is a truth universally acknowledged… <:files:1567796970964394044>",
     tier: 'soulmates',
   },
   {
     test: (a, b) => pair(a, b, 'scarlett', 'rhett') || pair(a, b, 'scarlett ohara', 'rhett butler'),
-    line: "Frankly my dear — actually, please care. <:Red_Heart:1555544329605615758>",
+    line: "Frankly my dear — actually, please care. <:Red_Heart:1567796949271191642>",
     tier: 'rocky',
   },
   {
@@ -149,7 +149,7 @@ const EASTER_EGGS = [
   },
   {
     test: (a, b) => pair(a, b, 'gatsby', 'daisy') || pair(a, b, 'jay gatsby', 'daisy buchanan'),
-    line: "Old sport, this was never going to work. <:LEgreen:1555544256356159600>",
+    line: "Old sport, this was never going to work. <:LEgreen:1567796933307666515>",
     tier: 'doomed',
   },
 
@@ -171,7 +171,7 @@ const EASTER_EGGS = [
   },
   {
     test: (a, b) => pair(a, b, 'harry', 'ginny') || pair(a, b, 'harry potter', 'ginny weasley'),
-    line: "The chosen one chose wisely. <:thunderr:1555544623735242883>",
+    line: "The chosen one chose wisely. <:thunderr:1567797012991189134>",
     tier: 'soulmates',
   },
   {
@@ -181,12 +181,12 @@ const EASTER_EGGS = [
   },
   {
     test: (a, b) => pair(a, b, 'han', 'leia') || pair(a, b, 'han solo', 'princess leia'),
-    line: "I know. <:boost:1555544362455146576>",
+    line: "I know. <:boost:1567796953599836280>",
     tier: 'soulmates',
   },
   {
     test: (a, b) => pair(a, b, 'wall-e', 'eve'),
-    line: "Across galaxies of trash, love found a way. <:n_bot:1555544367886770176><:Red_Heart:1555544329605615758>",
+    line: "Across galaxies of trash, love found a way. <:n_bot:1567796985816154144><:Red_Heart:1567796949271191642>",
     tier: 'perfect',
   },
   {
@@ -206,7 +206,7 @@ const EASTER_EGGS = [
   },
   {
     test: (a, b) => pair(a, b, 'ken', 'barbie'),
-    line: "Life in plastic. It's fantastic. <:Red_Heart:1555544329605615758>",
+    line: "Life in plastic. It's fantastic. <:Red_Heart:1567796949271191642>",
     tier: 'perfect',
   },
 
@@ -228,7 +228,7 @@ const EASTER_EGGS = [
   },
   {
     test: (a, b) => pair(a, b, 'chandler', 'monica') || pair(a, b, 'chandler bing', 'monica geller'),
-    line: "Could this BE any more compatible? <:eco:1555544429253890050>",
+    line: "Could this BE any more compatible? <:eco:1567796967197900842>",
     tier: 'perfect',
   },
   {
@@ -275,7 +275,7 @@ const EASTER_EGGS = [
   },
   {
     test: (a, b) => pair(a, b, 'beyonce', 'jay-z') || pair(a, b, 'beyoncé', 'jay z') || pair(a, b, 'bey', 'hov'),
-    line: "Empire state of love. <:1430986209995526274:1555544172302307449>",
+    line: "Empire state of love. <:1430986209995526274:1567796911350747206>",
     tier: 'perfect',
   },
   {
@@ -285,7 +285,7 @@ const EASTER_EGGS = [
   },
   {
     test: (a, b) => pair(a, b, 'brad', 'jennifer') || pair(a, b, 'brad pitt', 'jennifer aniston'),
-    line: "We're still not over it. <:Red_Heart:1555544329605615758>",
+    line: "We're still not over it. <:Red_Heart:1567796949271191642>",
     tier: 'doomed',
   },
   {
@@ -349,12 +349,12 @@ const EASTER_EGGS = [
   },
   {
     test: (a, b) => pair(a, b, 'vegeta', 'bulma'),
-    line: "He insulted her. She built him a spaceship. It's love. <:boost:1555544362455146576>",
+    line: "He insulted her. She built him a spaceship. It's love. <:boost:1567796953599836280>",
     tier: 'rocky',
   },
   {
     test: (a, b) => pair(a, b, 'light', 'l') || pair(a, b, 'light yagami', 'l lawliet'),
-    line: "A deadly game of cat and mouse. <:files:1555544445565407352>",
+    line: "A deadly game of cat and mouse. <:files:1567796970964394044>",
     tier: 'doomed',
   },
 
@@ -376,12 +376,12 @@ const EASTER_EGGS = [
   },
   {
     test: (a, b) => includes(a, 'claude') || includes(b, 'claude'),
-    line: "An AI is involved. Unexpectedly wholesome. <:n_bot:1555544367886770176><:Red_Heart:1555544329605615758>",
+    line: "An AI is involved. Unexpectedly wholesome. <:n_bot:1567796985816154144><:Red_Heart:1567796949271191642>",
     tier: 'potential',
   },
   {
     test: (a, b) => includes(a, 'chatgpt') || includes(b, 'chatgpt'),
-    line: "Competitor detected. Claude is concerned. <:n_bot:1555544367886770176>",
+    line: "Competitor detected. Claude is concerned. <:n_bot:1567796985816154144>",
     tier: 'doomed',
   },
   {
@@ -391,7 +391,7 @@ const EASTER_EGGS = [
   },
   {
     test: (a, b) => includes(a, 'alexa') || includes(b, 'alexa'),
-    line: "Alexa, play 'Can't Help Falling in Love'. <:n_music:1555544516746940416>",
+    line: "Alexa, play 'Can't Help Falling in Love'. <:n_music:1567796993403658261>",
     tier: 'lovely',
   },
   {
@@ -406,7 +406,7 @@ const EASTER_EGGS = [
   },
   {
     test: (a, b) => includes(a, 'coffee') || includes(b, 'coffee'),
-    line: "The most stable relationship of all time. <:eco:1555544429253890050>",
+    line: "The most stable relationship of all time. <:eco:1567796967197900842>",
     tier: 'perfect',
   },
   {
@@ -416,7 +416,7 @@ const EASTER_EGGS = [
   },
   {
     test: (a, b) => includes(a, 'wifi') || includes(b, 'wifi') || includes(a, 'wi-fi') || includes(b, 'wi-fi'),
-    line: "Connection: strong. Always. <:ping:1555544527597604968><:Red_Heart:1555544329605615758>",
+    line: "Connection: strong. Always. <:ping:1567796998902521920><:Red_Heart:1567796949271191642>",
     tier: 'perfect',
   },
   {
@@ -431,7 +431,7 @@ const EASTER_EGGS = [
   },
   {
     test: (a, b) => includes(a, 'money') || includes(b, 'money') || includes(a, 'cash') || includes(b, 'cash'),
-    line: "Can't buy love. Can't stop trying, apparently. <:Currency:1555544251268595792>",
+    line: "Can't buy love. Can't stop trying, apparently. <:Currency:1567796932041121873>",
     tier: 'rocky',
   },
   {

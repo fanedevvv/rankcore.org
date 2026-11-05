@@ -7,7 +7,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(client.config.embedColor)
-      .setTitle("🏳️‍<:eco:1555544429253890050> Gay Meter")
+      .setTitle("🏳️‍<:eco:1567796967197900842> Gay Meter")
       .setDescription(`${user} is **${percent}%** gay!`);
 
     return interaction.reply({ embeds: [embed] });

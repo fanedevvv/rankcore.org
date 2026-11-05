@@ -47,11 +47,11 @@ function buildOversizedNoticeEmbed(panel, submission) {
 
   const embed = new EmbedBuilder()
     .setColor(panel.embedColor || "#6C53FF")
-    .setTitle(`${panel.emoji || "<:files:1555544445565407352>"} ${panel.name} Application`)
+    .setTitle(`${panel.emoji || "<:files:1567796970964394044>"} ${panel.name} Application`)
     .setDescription(
       `**Applicant:** <@${submission.userId}> (${submission.userTag})\n` +
-      `**Status:** <:n_loading:1555544489194688623> Pending Review\n\n` +
-      `<:announcement:1555544345740967956> **This application exceeds Discord's message limits.**\n` +
+      `**Status:** <:n_loading:1567796992556666982> Pending Review\n\n` +
+      `<:announcement:1567796950265241662> **This application exceeds Discord's message limits.**\n` +
       `Kindly view and review it from the dashboard:\n` +
       `[**View Application →**](${dashUrl})`
     )
@@ -73,9 +73,9 @@ function buildReviewEmbeds(panel, submission, status = "pending") {
   const MAX_EMBED_CHARS = 5800; // conservative; Discord limit is 6000
 
   const statusMeta = {
-    pending:  { color: "#6C53FF", label: "<:n_loading:1555544489194688623> Pending Review" },
-    accepted: { color: "#53FF6C", label: "<a:tickyy:1555544712687915008> Accepted" },
-    denied:   { color: "#f87171", label: "<:crossy:1555544390221562048> Denied" },
+    pending:  { color: "#6C53FF", label: "<:n_loading:1567796992556666982> Pending Review" },
+    accepted: { color: "#53FF6C", label: "<a:tickyy:1567797045253644368> Accepted" },
+    denied:   { color: "#f87171", label: "<:crossy:1567796959648030831> Denied" },
   };
   const meta = statusMeta[status] ?? statusMeta.pending;
 
@@ -85,7 +85,7 @@ function buildReviewEmbeds(panel, submission, status = "pending") {
 
   const headerEmbed = new EmbedBuilder()
     .setColor(meta.color)
-    .setTitle(`${panel.emoji || "<:files:1555544445565407352>"} ${panel.name} Application`)
+    .setTitle(`${panel.emoji || "<:files:1567796970964394044>"} ${panel.name} Application`)
     .setDescription(
       `**Applicant:** <@${submission.userId}> (${submission.userTag})\n` +
       `**Status:** ${meta.label}`
@@ -147,13 +147,13 @@ function buildReviewRow(submissionId, disabled = false) {
       .setCustomId(`staffapp_accept:${submissionId}`)
       .setLabel("Accept")
       .setStyle(ButtonStyle.Success)
-      .setEmoji(parseEmoji("<a:tickyy:1555544712687915008>"))
+      .setEmoji(parseEmoji("<a:tickyy:1567797045253644368>"))
       .setDisabled(disabled),
     new ButtonBuilder()
       .setCustomId(`staffapp_deny:${submissionId}`)
       .setLabel("Deny")
       .setStyle(ButtonStyle.Danger)
-      .setEmoji(parseEmoji("<:crossy:1555544390221562048>"))
+      .setEmoji(parseEmoji("<:crossy:1567796959648030831>"))
       .setDisabled(disabled),
   );
 }

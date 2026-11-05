@@ -32,7 +32,7 @@ async function scheduleAutoClose(ticketChannel, docs, data, client) {
       // Re-check ticket is still open before sending warning
       const freshData = await TicketSchema.findOne({ ChannelID: ticketChannel.id });
       if (!freshData || freshData.Closed) return;
-      const warnMsg = buildStatusV2(0xeab308, '<:1430986244921495654:1555544239792980044>', 'Inactivity Warning', [
+      const warnMsg = buildStatusV2(0xeab308, '<:1430986244921495654:1567796929587576852>', 'Inactivity Warning', [
         docs.AutoCloseWarningMessage || 'This ticket will be automatically closed in **2 minutes** due to inactivity.',
         `-# <@${data.OwnerID}> — respond to prevent auto-close.`,
       ]);
@@ -55,7 +55,7 @@ async function scheduleAutoClose(ticketChannel, docs, data, client) {
         await ticketChannel.members.remove(freshData.OwnerID).catch(() => {});
       }
 
-      const autoMsg = buildStatusV2(0xef4444, '<:lockk:1555544494441635860>', 'Ticket Auto-Closed', [
+      const autoMsg = buildStatusV2(0xef4444, '<:lockk:1567796977809367122>', 'Ticket Auto-Closed', [
         'This ticket was automatically closed due to inactivity.',
         `-# Closed ${relativeTs(new Date())}`,
       ]);

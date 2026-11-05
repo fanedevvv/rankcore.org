@@ -43,7 +43,7 @@ module.exports = (client) => {
             const backEmbed = new EmbedBuilder()
                 .setColor(0x22c55e)
                 .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-                .setTitle('<:user:1555544664155889668> Welcome Back!')
+                .setTitle('<:user:1567797032423264261> Welcome Back!')
                 .setDescription(`You were AFK for **${duration}**`)
                 .setFooter({ text: 'AFK status removed' })
                 .setTimestamp();
@@ -72,7 +72,7 @@ module.exports = (client) => {
         const afkEmbed = new EmbedBuilder()
             .setColor(0xf97316)
             .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
-            .setTitle('<:n_loading:1555544489194688623> AFK Notice')
+            .setTitle('<:n_loading:1567796992556666982> AFK Notice')
             .setDescription(`${member.user.tag} is currently **AFK**`)
             .addFields(
                 { name: 'Reason', value: reason, inline: true },

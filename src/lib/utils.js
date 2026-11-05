@@ -25,12 +25,12 @@ function uwuify(text) {
 
     // Random kawaii faces
     const faces = [
-        '(｡<:Red_Heart:1555544329605615758>‿<:Red_Heart:1555544329605615758>｡)', '(≧◡≦)', '(*≧ω≦)', '(U ᵕ U<:dot:1555544412300378243>)', 'uwu', 'owo', '>w<', '^w^', 'rawr~', 'nya~', '*blushes*', 'mwehehe~', 'teehee~', 'meow~'
+        '(｡<:Red_Heart:1567796949271191642>‿<:Red_Heart:1567796949271191642>｡)', '(≧◡≦)', '(*≧ω≦)', '(U ᵕ U<:dot:1567796963624226826>)', 'uwu', 'owo', '>w<', '^w^', 'rawr~', 'nya~', '*blushes*', 'mwehehe~', 'teehee~', 'meow~'
     ];
 
     // Extra cute suffixes
     const suffixes = [
-        '~', ' >w<', ' uwu', ' owo', ' <:boost:1555544362455146576>', ' <:Red_Heart:1555544329605615758>', ' rawr~', ' nya~', ' *snuggles*', ' *huggles*', ' *giggles*'
+        '~', ' >w<', ' uwu', ' owo', ' <:boost:1567796953599836280>', ' <:Red_Heart:1567796949271191642>', ' rawr~', ' nya~', ' *snuggles*', ' *huggles*', ' *giggles*'
     ];
 
     // Add faces/suffixes to words randomly
@@ -43,12 +43,12 @@ function uwuify(text) {
 
     // Sprinkle hearts and sparkles at sentence ends
     uwuText = uwuText.replace(/([.?!])/g, (match) => {
-        const extras = [' <:Red_Heart:1555544329605615758>', ' <:boost:1555544362455146576>', ' >w<', ' owo', ' uwu', ' rawr~', ' *blushes*'];
+        const extras = [' <:Red_Heart:1567796949271191642>', ' <:boost:1567796953599836280>', ' >w<', ' owo', ' uwu', ' rawr~', ' *blushes*'];
         return match + ' ' + extras[Math.floor(Math.random() * extras.length)];
     });
 
     // Add a final mega cute ending
-    const endings = [' >w~ <:Red_Heart:1555544329605615758><:boost:1555544362455146576>', ' uwu~ <:Red_Heart:1555544329605615758>', ' *snuggles you*', ' mwehehe~ <:Red_Heart:1555544329605615758>', ' nyaaa~ <:boost:1555544362455146576>'];
+    const endings = [' >w~ <:Red_Heart:1567796949271191642><:boost:1567796953599836280>', ' uwu~ <:Red_Heart:1567796949271191642>', ' *snuggles you*', ' mwehehe~ <:Red_Heart:1567796949271191642>', ' nyaaa~ <:boost:1567796953599836280>'];
     uwuText += endings[Math.floor(Math.random() * endings.length)];
 
     return uwuText;

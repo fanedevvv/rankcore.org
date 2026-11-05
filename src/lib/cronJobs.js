@@ -64,8 +64,8 @@ module.exports = (client) => {
     function getChristmasMessage(daysLeft, isChristmasDay) {
         if (isChristmasDay) {
             return {
-                title: "<:boost:1555544362455146576> **MERRY CHRISTMAS!** 🎄",
-                description: "<:boost:1555544362455146576> **It's finally here!**\nMay your day be filled with joy, warmth, and presents! <:boost:1555544362455146576>🎄<:Red_Heart:1555544329605615758>\n\nThank you for counting down with us!",
+                title: "<:boost:1567796953599836280> **MERRY CHRISTMAS!** 🎄",
+                description: "<:boost:1567796953599836280> **It's finally here!**\nMay your day be filled with joy, warmth, and presents! <:boost:1567796953599836280>🎄<:Red_Heart:1567796949271191642>\n\nThank you for counting down with us!",
                 footer: "🎄 Enjoy your Christmas Day!"
             };
         }
@@ -88,16 +88,16 @@ module.exports = (client) => {
 
         if (daysLeft > 7) {
             return {
-                title: "🎄<:boost:1555544362455146576> Christmas Countdown <:boost:1555544362455146576>🎄",
-                description: `🎅 **ONLY ${daysLeft} DAYS LEFT!**\nLights, music, and hot chocolate season is almost here! <:eco:1555544429253890050><:boost:1555544362455146576>`,
+                title: "🎄<:boost:1567796953599836280> Christmas Countdown <:boost:1567796953599836280>🎄",
+                description: `🎅 **ONLY ${daysLeft} DAYS LEFT!**\nLights, music, and hot chocolate season is almost here! <:eco:1567796967197900842><:boost:1567796953599836280>`,
                 footer: "The festive vibes are getting stronger!"
             };
         }
 
         return {
-            title: "🎄<:boost:1555544362455146576> CHRISTMAS IS ALMOST HERE! <:boost:1555544362455146576>🎄",
-            description: `<:fire:1555544450871332944> **JUST ${daysLeft} DAYS TO GO!** <:fire:1555544450871332944>\nThe hype is REAL — get those presents ready! 🎅<:boost:1555544362455146576><:boost:1555544362455146576>`,
-            footer: "Maximum festive energy 🎄<:fire:1555544450871332944>"
+            title: "🎄<:boost:1567796953599836280> CHRISTMAS IS ALMOST HERE! <:boost:1567796953599836280>🎄",
+            description: `<:fire:1567796972125945888> **JUST ${daysLeft} DAYS TO GO!** <:fire:1567796972125945888>\nThe hype is REAL — get those presents ready! 🎅<:boost:1567796953599836280><:boost:1567796953599836280>`,
+            footer: "Maximum festive energy 🎄<:fire:1567796972125945888>"
         };
     }
 
@@ -194,8 +194,8 @@ module.exports = (client) => {
 
         return {
             title: "👻🎃 HALLOWEEN IS ALMOST HERE! 🎃👻",
-            description: `<:fire:1555544450871332944> **JUST ${daysLeft} DAYS REMAIN!** <:fire:1555544450871332944>\nThe veil thins… the spirits awaken… prepare yourself! 🕸️🦇🎃`,
-            footer: "Maximum spookiness 👻<:fire:1555544450871332944>"
+            description: `<:fire:1567796972125945888> **JUST ${daysLeft} DAYS REMAIN!** <:fire:1567796972125945888>\nThe veil thins… the spirits awaken… prepare yourself! 🕸️🦇🎃`,
+            footer: "Maximum spookiness 👻<:fire:1567796972125945888>"
         };
     }
 
@@ -345,7 +345,7 @@ module.exports = (client) => {
     }));
 
     // -------------------------------
-    // <:boost:1555544362455146576> GIVEAWAY POLLER — EVERY 15 SECONDS
+    // <:boost:1567796953599836280> GIVEAWAY POLLER — EVERY 15 SECONDS
     // -------------------------------
     jobs.push(cron.schedule('*/15 * * * * *', async () => {
         try {

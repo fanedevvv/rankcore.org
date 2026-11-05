@@ -22,14 +22,14 @@ module.exports = {
     if (intUserData) {
       const c = new ContainerBuilder().setAccentColor(0xED4245)
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(
-          `## <:Red_Heart:1555544329605615758> Already Married\nYou are already married! Use \`/family divorce\` first.`
+          `## <:Red_Heart:1567796949271191642> Already Married\nYou are already married! Use \`/family divorce\` first.`
         ));
       return interaction.reply({ flags: MessageFlags.IsComponentsV2, components: [c] });
     }
     if (userData) {
       const c = new ContainerBuilder().setAccentColor(0xED4245)
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(
-          `## <:Red_Heart:1555544329605615758> Already Taken\n**${user.username}** is already married to someone else!`
+          `## <:Red_Heart:1567796949271191642> Already Taken\n**${user.username}** is already married to someone else!`
         ));
       return interaction.reply({ flags: MessageFlags.IsComponentsV2, components: [c] });
     }
@@ -55,7 +55,7 @@ module.exports = {
       .addActionRowComponents(
         new ActionRowBuilder().addComponents(
           new ButtonBuilder().setCustomId("accept").setLabel("I Do! 💍").setStyle(ButtonStyle.Success),
-          new ButtonBuilder().setCustomId("no").setLabel("I Don't").setEmoji(parseEmoji('<:Red_Heart:1555544329605615758>')).setStyle(ButtonStyle.Danger)
+          new ButtonBuilder().setCustomId("no").setLabel("I Don't").setEmoji(parseEmoji('<:Red_Heart:1567796949271191642>')).setStyle(ButtonStyle.Danger)
         )
       );
 
@@ -89,9 +89,9 @@ const msg = await interaction.reply({
           .addSectionComponents(
             new SectionBuilder()
               .addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(`## <:boost:1555544362455146576> Just Married!`),
+                new TextDisplayBuilder().setContent(`## <:boost:1567796953599836280> Just Married!`),
                 new TextDisplayBuilder().setContent(
-                  `**${intUser.username}** & **${user.username}** are officially married! <:boost:1555544362455146576>\n\n` +
+                  `**${intUser.username}** & **${user.username}** are officially married! <:boost:1567796953599836280>\n\n` +
                   `> *May your bond be forever strong. Congratulations!*\n\n` +
                   `-# Married since <t:${Math.floor(now.getTime() / 1000)}:D>`
                 )
@@ -103,7 +103,7 @@ const msg = await interaction.reply({
           .addSectionComponents(
             new SectionBuilder()
               .addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(`## <:Red_Heart:1555544329605615758> Proposal Rejected`),
+                new TextDisplayBuilder().setContent(`## <:Red_Heart:1567796949271191642> Proposal Rejected`),
                 new TextDisplayBuilder().setContent(
                   `**${user.username}** didn't want to marry **${intUser.username}**.\n\n` +
                   `> *Plenty of fish in the sea...*`
@@ -121,7 +121,7 @@ const msg = await interaction.reply({
         const expired = new ContainerBuilder().setAccentColor(0x95A5A6)
           .addTextDisplayComponents(
             new TextDisplayBuilder().setContent(
-              `## <:1430986244921495654:1555544239792980044> Proposal Expired\nThe marriage proposal timed out. Maybe next time!`
+              `## <:1430986244921495654:1567796929587576852> Proposal Expired\nThe marriage proposal timed out. Maybe next time!`
             )
           );
         await interaction.editReply({ components: [expired] });

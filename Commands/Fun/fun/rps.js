@@ -5,7 +5,7 @@ const {
   ButtonStyle, MessageFlags,
 } = require("discord.js");
 
-const CHOICES = { rock: "<:dot:1555544412300378243>", paper: "<:files:1555544445565407352>", scissors: "<:1430986239036625017:1555544229143519304>" };
+const CHOICES = { rock: "<:dot:1567796963624226826>", paper: "<:files:1567796970964394044>", scissors: "<:1430986239036625017:1567796926689185822>" };
 const BEATS   = { rock: "scissors", scissors: "paper", paper: "rock" };
 
 function getOutcome(a, b) {
@@ -18,11 +18,11 @@ function buildWaitContainer(challenger, opponent, challengerPicked) {
     .addSectionComponents(
       new SectionBuilder()
         .addTextDisplayComponents(
-          new TextDisplayBuilder().setContent(`## <:1430986239036625017:1555544229143519304> Rock Paper Scissors`),
+          new TextDisplayBuilder().setContent(`## <:1430986239036625017:1567796926689185822> Rock Paper Scissors`),
           new TextDisplayBuilder().setContent(
             `**${challenger.username}** challenged **${opponent.username}**!\n\n` +
             (challengerPicked
-              ? `<a:tickyy:1555544712687915008> ${challenger.username} has locked in their choice!\n<:n_loading:1555544489194688623> Waiting for ${opponent.username}...`
+              ? `<a:tickyy:1567797045253644368> ${challenger.username} has locked in their choice!\n<:n_loading:1567796992556666982> Waiting for ${opponent.username}...`
               : `Both players pick below — your choice is hidden from your opponent!`)
           )
         )
@@ -31,9 +31,9 @@ function buildWaitContainer(challenger, opponent, challengerPicked) {
     .addSeparatorComponents(new SeparatorBuilder())
     .addActionRowComponents(
       new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId("rps_rock").setLabel("Rock").setEmoji(parseEmoji('<:dot:1555544412300378243>')).setStyle(ButtonStyle.Secondary),
-        new ButtonBuilder().setCustomId("rps_paper").setLabel("Paper").setEmoji(parseEmoji('<:files:1555544445565407352>')).setStyle(ButtonStyle.Secondary),
-        new ButtonBuilder().setCustomId("rps_scissors").setLabel("Scissors").setEmoji(parseEmoji('<:1430986239036625017:1555544229143519304>')).setStyle(ButtonStyle.Secondary)
+        new ButtonBuilder().setCustomId("rps_rock").setLabel("Rock").setEmoji(parseEmoji('<:dot:1567796963624226826>')).setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId("rps_paper").setLabel("Paper").setEmoji(parseEmoji('<:files:1567796970964394044>')).setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId("rps_scissors").setLabel("Scissors").setEmoji(parseEmoji('<:1430986239036625017:1567796926689185822>')).setStyle(ButtonStyle.Secondary)
       )
     )
     .addTextDisplayComponents(
@@ -55,15 +55,15 @@ module.exports = {
 
       const pickRow = new ContainerBuilder().setAccentColor(0x5865F2)
         .addTextDisplayComponents(
-          new TextDisplayBuilder().setContent(`## <:1430986239036625017:1555544229143519304> Rock Paper Scissors vs Bot`),
+          new TextDisplayBuilder().setContent(`## <:1430986239036625017:1567796926689185822> Rock Paper Scissors vs Bot`),
           new TextDisplayBuilder().setContent(`Pick your weapon!`)
         )
         .addSeparatorComponents(new SeparatorBuilder())
         .addActionRowComponents(
           new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId("rps_rock").setLabel("Rock").setEmoji(parseEmoji('<:dot:1555544412300378243>')).setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId("rps_paper").setLabel("Paper").setEmoji(parseEmoji('<:files:1555544445565407352>')).setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId("rps_scissors").setLabel("Scissors").setEmoji(parseEmoji('<:1430986239036625017:1555544229143519304>')).setStyle(ButtonStyle.Secondary)
+            new ButtonBuilder().setCustomId("rps_rock").setLabel("Rock").setEmoji(parseEmoji('<:dot:1567796963624226826>')).setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId("rps_paper").setLabel("Paper").setEmoji(parseEmoji('<:files:1567796970964394044>')).setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId("rps_scissors").setLabel("Scissors").setEmoji(parseEmoji('<:1430986239036625017:1567796926689185822>')).setStyle(ButtonStyle.Secondary)
           )
         );
 
@@ -78,11 +78,11 @@ module.exports = {
         const userChoice = i.customId.replace("rps_", "");
         const outcome    = getOutcome(userChoice, botChoice);
         const color = outcome === "win" ? 0x57F287 : outcome === "tie" ? 0xFEE75C : 0xED4245;
-        const headline = outcome === "win" ? "<:boost:1555544362455146576> You Win!" : outcome === "tie" ? "🤝 It's a Tie!" : "<:error:1555544434601369620> You Lose!";
+        const headline = outcome === "win" ? "<:boost:1567796953599836280> You Win!" : outcome === "tie" ? "🤝 It's a Tie!" : "<:error:1567796968758050868> You Lose!";
 
         const result = new ContainerBuilder().setAccentColor(color)
           .addTextDisplayComponents(
-            new TextDisplayBuilder().setContent(`## <:1430986239036625017:1555544229143519304> Rock Paper Scissors\n## ${headline}`),
+            new TextDisplayBuilder().setContent(`## <:1430986239036625017:1567796926689185822> Rock Paper Scissors\n## ${headline}`),
             new TextDisplayBuilder().setContent(
               `**You:** ${CHOICES[userChoice]} ${userChoice}\n` +
               `**Bot:** ${CHOICES[botChoice]} ${botChoice}`
@@ -101,7 +101,7 @@ module.exports = {
           await interaction.editReply({
             components: [
               new ContainerBuilder().setAccentColor(0x95A5A6)
-                .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:1430986239036625017:1555544229143519304> RPS\n*You didn't pick in time!*`)),
+                .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:1430986239036625017:1567796926689185822> RPS\n*You didn't pick in time!*`)),
             ],
           });
         }
@@ -138,7 +138,7 @@ module.exports = {
       if (Object.keys(picks).length < 2) {
         const challengerPicked = !!picks[challenger.id];
         await i.update({ components: [buildWaitContainer(challenger, opponent, challengerPicked)] });
-        await i.followUp({ content: `<a:tickyy:1555544712687915008> You picked **${CHOICES[choice]} ${choice}** — locked in!`, flags: MessageFlags.Ephemeral });
+        await i.followUp({ content: `<a:tickyy:1567797045253644368> You picked **${CHOICES[choice]} ${choice}** — locked in!`, flags: MessageFlags.Ephemeral });
       } else {
         col.stop("both_picked");
       }
@@ -150,7 +150,7 @@ module.exports = {
         await interaction.editReply({
           components: [
             new ContainerBuilder().setAccentColor(0x95A5A6)
-              .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:1430986239036625017:1555544229143519304> RPS\n*${didntPick} didn't pick in time! Game cancelled.*`)),
+              .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:1430986239036625017:1567796926689185822> RPS\n*${didntPick} didn't pick in time! Game cancelled.*`)),
           ],
         });
         return;
@@ -162,13 +162,13 @@ module.exports = {
       const color   = outcome === "win" ? 0x57F287 : outcome === "tie" ? 0xFEE75C : 0xED4245;
 
       let headline;
-      if (outcome === "win")  headline = `<:boost:1555544362455146576> ${challenger.username} Wins!`;
-      if (outcome === "lose") headline = `<:boost:1555544362455146576> ${opponent.username} Wins!`;
+      if (outcome === "win")  headline = `<:boost:1567796953599836280> ${challenger.username} Wins!`;
+      if (outcome === "lose") headline = `<:boost:1567796953599836280> ${opponent.username} Wins!`;
       if (outcome === "tie")  headline = `🤝 It's a Tie!`;
 
       const result = new ContainerBuilder().setAccentColor(color)
         .addTextDisplayComponents(
-          new TextDisplayBuilder().setContent(`## <:1430986239036625017:1555544229143519304> Rock Paper Scissors\n## ${headline}`),
+          new TextDisplayBuilder().setContent(`## <:1430986239036625017:1567796926689185822> Rock Paper Scissors\n## ${headline}`),
           new TextDisplayBuilder().setContent(
             `**${challenger.username}:** ${CHOICES[cChoice]} ${cChoice}\n` +
             `**${opponent.username}:** ${CHOICES[oChoice]} ${oChoice}`

@@ -81,7 +81,7 @@ const guildConfigSchema = new mongoose.Schema({
   // DM Welcome
   dmWelcome: {
     enabled: { type: Boolean, default: false },
-    message: { type: String, default: 'Welcome to {server}, {username}! <:boost:1555544362455146576>' }
+    message: { type: String, default: 'Welcome to {server}, {username}! <:boost:1567796953599836280>' }
   },
 
   // Invite Filter

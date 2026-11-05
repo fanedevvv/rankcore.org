@@ -32,7 +32,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor("Orange")
-      .setTitle("Grounded! <:ban:1555544356352430202>")
+      .setTitle("Grounded! <:ban:1567796952538554458>")
       .setDescription(`${parent} has grounded ${child} for **${durationString}**! They will be ungrounded <t:${Math.floor(groundedUntil.getTime() / 1000)}:R>.`);
 
     const row = new ActionRowBuilder().addComponents(
@@ -56,7 +56,7 @@ module.exports = {
         data.groundedBy = null;
         await data.save();
 
-        embed.setColor("Green").setTitle("Ungrounded! <:boost:1555544362455146576>").setDescription(`${child} has been ungrounded by ${parent} early.`);
+        embed.setColor("Green").setTitle("Ungrounded! <:boost:1567796953599836280>").setDescription(`${child} has been ungrounded by ${parent} early.`);
         await i.update({ embeds: [embed], components: [] });
         collector.stop();
       }

@@ -88,7 +88,7 @@ module.exports = {
             .addSubcommand(sub => sub.setName('reactions')
                 .setDescription('Configure auto-reactions on confessions')
                 .addBooleanOption(opt => opt.setName('enabled').setDescription('Enable auto-reactions').setRequired(true))
-                .addStringOption(opt => opt.setName('emojis').setDescription('Comma-separated emoji list e.g. <:Red_Heart:1555544329605615758>,😂,😮').setMaxLength(200)))
+                .addStringOption(opt => opt.setName('emojis').setDescription('Comma-separated emoji list e.g. <:Red_Heart:1567796949271191642>,😂,😮').setMaxLength(200)))
 
             .addSubcommand(sub => sub.setName('threads')
                 .setDescription('Toggle automatic reply threads on confessions')
@@ -182,7 +182,7 @@ async function handleSend(interaction, client) {
     const config = await confessionConfig.findOne({ Guild: interaction.guild.id });
     if (!config) {
         return interaction.reply({
-            content: '<:crossy:1555544390221562048> Confessions are not set up in this server. An admin can configure them via the dashboard.',
+            content: '<:crossy:1567796959648030831> Confessions are not set up in this server. An admin can configure them via the dashboard.',
             flags: MessageFlags.Ephemeral,
         });
     }
@@ -192,13 +192,13 @@ async function handleSend(interaction, client) {
 
     const validationError = validateConfession(text, config, userId);
     if (validationError) {
-        return interaction.reply({ content: `<:crossy:1555544390221562048> ${validationError}`, flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: `<:crossy:1567796959648030831> ${validationError}`, flags: MessageFlags.Ephemeral });
     }
 
     if (config.RequiredRoles?.length > 0) {
         const hasRequired = config.RequiredRoles.some(id => interaction.member.roles.cache.has(id));
         if (!hasRequired) {
-            return interaction.reply({ content: '<:crossy:1555544390221562048> You do not have the required role to submit confessions.', flags: MessageFlags.Ephemeral });
+            return interaction.reply({ content: '<:crossy:1567796959648030831> You do not have the required role to submit confessions.', flags: MessageFlags.Ephemeral });
         }
     }
 
@@ -207,7 +207,7 @@ async function handleSend(interaction, client) {
     if (!isTrusted) {
         const cdLeft = checkCooldown(userId, config);
         if (cdLeft) {
-            return interaction.reply({ content: `<:n_loading:1555544489194688623> Please wait **${cdLeft}s** before sending another confession.`, flags: MessageFlags.Ephemeral });
+            return interaction.reply({ content: `<:n_loading:1567796992556666982> Please wait **${cdLeft}s** before sending another confession.`, flags: MessageFlags.Ephemeral });
         }
     }
 
@@ -221,37 +221,37 @@ async function handleSend(interaction, client) {
 
         if (config.FilterAction === 'review') {
             await sendToReview(interaction, text, config, { userId });
-            return interaction.reply({ content: '<:announcement:1555544345740967956> Your confession was sent for moderator review.', flags: MessageFlags.Ephemeral });
+            return interaction.reply({ content: '<:announcement:1567796950265241662> Your confession was sent for moderator review.', flags: MessageFlags.Ephemeral });
         }
 
-        return interaction.reply({ content: '<:restrict:1555544549105999962> Your confession contains prohibited content and was not submitted.', flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: '<:restrict:1567797003638022166> Your confession contains prohibited content and was not submitted.', flags: MessageFlags.Ephemeral });
     }
 
     if (config.ReviewEnabled && config.ReviewChannel && !isTrusted) {
         await sendToReview(interaction, text, config, { userId });
-        return interaction.reply({ content: '<:announcement:1555544345740967956> Your confession was sent for moderator review.', flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: '<:announcement:1567796950265241662> Your confession was sent for moderator review.', flags: MessageFlags.Ephemeral });
     }
 
     await postConfession(interaction, text, { userId });
-    return interaction.reply({ content: '<a:tickyy:1555544712687915008> Your confession has been submitted successfully!', flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: '<a:tickyy:1567797045253644368> Your confession has been submitted successfully!', flags: MessageFlags.Ephemeral });
 }
 
 // ── Handle /confession stats ───────────────────────────────────────────────
 async function handleStats(interaction, client) {
     const config = await confessionConfig.findOne({ Guild: interaction.guild.id });
     if (!config) {
-        return interaction.reply({ content: '<:crossy:1555544390221562048> Confessions are not set up in this server.', flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: '<:crossy:1567796959648030831> Confessions are not set up in this server.', flags: MessageFlags.Ephemeral });
     }
 
     const embed = new EmbedBuilder()
-        .setTitle('<:suggestion:1555544601501237322> Confession Statistics')
+        .setTitle('<:suggestion:1567797008452812870> Confession Statistics')
         .setColor(config.ConfessionColor || '#5865F2')
         .addFields(
             { name: 'Total Confessions', value: String(config.ConfessionCount || 0), inline: true },
             { name: 'Total Posted', value: String(config.TotalPosted || 0), inline: true },
             { name: 'Total Denied', value: String(config.TotalDenied || 0), inline: true },
             { name: 'Total Filtered', value: String(config.TotalFiltered || 0), inline: true },
-            { name: 'Review Enabled', value: config.ReviewEnabled ? '<a:tickyy:1555544712687915008>' : '<:crossy:1555544390221562048>', inline: true },
+            { name: 'Review Enabled', value: config.ReviewEnabled ? '<a:tickyy:1567797045253644368>' : '<:crossy:1567796959648030831>', inline: true },
             { name: 'Cooldown', value: `${config.CooldownSeconds || 60}s`, inline: true },
             { name: 'Blacklisted Users', value: String(config.Blacklist?.length || 0), inline: true },
             { name: 'Trusted Users', value: String(config.TrustedUsers?.length || 0), inline: true },
@@ -267,30 +267,30 @@ async function handleBlacklist(interaction, client) {
     const add = interaction.options.getBoolean('add');
 
     if (!interaction.member.permissions.has('Administrator') && !interaction.member.permissions.has('ModerateMembers')) {
-        return interaction.reply({ content: '<:crossy:1555544390221562048> You need administrator or moderate members permission.', flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: '<:crossy:1567796959648030831> You need administrator or moderate members permission.', flags: MessageFlags.Ephemeral });
     }
 
     const config = await confessionConfig.findOne({ Guild: interaction.guild.id });
     if (!config) {
-        return interaction.reply({ content: '<:crossy:1555544390221562048> Confessions are not set up in this server.', flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: '<:crossy:1567796959648030831> Confessions are not set up in this server.', flags: MessageFlags.Ephemeral });
     }
 
     config.Blacklist = config.Blacklist || [];
 
     if (add) {
         if (config.Blacklist.includes(target.id)) {
-            return interaction.reply({ content: `<:crossy:1555544390221562048> ${target.tag} is already blacklisted.`, flags: MessageFlags.Ephemeral });
+            return interaction.reply({ content: `<:crossy:1567796959648030831> ${target.tag} is already blacklisted.`, flags: MessageFlags.Ephemeral });
         }
         config.Blacklist.push(target.id);
         await config.save();
-        return interaction.reply({ content: `<:restrict:1555544549105999962> ${target.tag} has been blacklisted from confessions.`, flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: `<:restrict:1567797003638022166> ${target.tag} has been blacklisted from confessions.`, flags: MessageFlags.Ephemeral });
     } else {
         if (!config.Blacklist.includes(target.id)) {
-            return interaction.reply({ content: `<:crossy:1555544390221562048> ${target.tag} is not blacklisted.`, flags: MessageFlags.Ephemeral });
+            return interaction.reply({ content: `<:crossy:1567796959648030831> ${target.tag} is not blacklisted.`, flags: MessageFlags.Ephemeral });
         }
         config.Blacklist = config.Blacklist.filter(id => id !== target.id);
         await config.save();
-        return interaction.reply({ content: `<a:tickyy:1555544712687915008> ${target.tag} has been removed from the blacklist.`, flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: `<a:tickyy:1567797045253644368> ${target.tag} has been removed from the blacklist.`, flags: MessageFlags.Ephemeral });
     }
 }
 
@@ -300,29 +300,29 @@ async function handleTrusted(interaction, client) {
     const add = interaction.options.getBoolean('add');
 
     if (!interaction.member.permissions.has('Administrator') && !interaction.member.permissions.has('ModerateMembers')) {
-        return interaction.reply({ content: '<:crossy:1555544390221562048> You need administrator or moderate members permission.', flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: '<:crossy:1567796959648030831> You need administrator or moderate members permission.', flags: MessageFlags.Ephemeral });
     }
 
     const config = await confessionConfig.findOne({ Guild: interaction.guild.id });
     if (!config) {
-        return interaction.reply({ content: '<:crossy:1555544390221562048> Confessions are not set up in this server.', flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: '<:crossy:1567796959648030831> Confessions are not set up in this server.', flags: MessageFlags.Ephemeral });
     }
 
     config.TrustedUsers = config.TrustedUsers || [];
 
     if (add) {
         if (config.TrustedUsers.includes(target.id)) {
-            return interaction.reply({ content: `<:crossy:1555544390221562048> ${target.tag} is already a trusted user.`, flags: MessageFlags.Ephemeral });
+            return interaction.reply({ content: `<:crossy:1567796959648030831> ${target.tag} is already a trusted user.`, flags: MessageFlags.Ephemeral });
         }
         config.TrustedUsers.push(target.id);
         await config.save();
-        return interaction.reply({ content: `<a:tickyy:1555544712687915008> ${target.tag} is now a trusted user (bypasses review & cooldown).`, flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: `<a:tickyy:1567797045253644368> ${target.tag} is now a trusted user (bypasses review & cooldown).`, flags: MessageFlags.Ephemeral });
     } else {
         if (!config.TrustedUsers.includes(target.id)) {
-            return interaction.reply({ content: `<:crossy:1555544390221562048> ${target.tag} is not a trusted user.`, flags: MessageFlags.Ephemeral });
+            return interaction.reply({ content: `<:crossy:1567796959648030831> ${target.tag} is not a trusted user.`, flags: MessageFlags.Ephemeral });
         }
         config.TrustedUsers = config.TrustedUsers.filter(id => id !== target.id);
         await config.save();
-        return interaction.reply({ content: `<a:tickyy:1555544712687915008> ${target.tag} has been removed from trusted users.`, flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: `<a:tickyy:1567797045253644368> ${target.tag} has been removed from trusted users.`, flags: MessageFlags.Ephemeral });
     }
 }

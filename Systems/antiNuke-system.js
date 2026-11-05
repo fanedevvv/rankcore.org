@@ -99,9 +99,9 @@ module.exports = (client) => {
             .setTitle(`Anti-Nuke Triggered: ${type}`)
             .setColor(effectiveAction === 'log' ? '#ffcc00' : '#ff3333')
             .addFields(
-                { name: '<:user:1555544664155889668> Executor', value: `${executor.tag}\n\`${executor.id}\``, inline: true },
-                { name: '<:thunderr:1555544623735242883> Action Taken', value: `**${actionTaken}**`, inline: true },
-                { name: '<:files:1555544445565407352> Details', value: details },
+                { name: '<:user:1567797032423264261> Executor', value: `${executor.tag}\n\`${executor.id}\``, inline: true },
+                { name: '<:thunderr:1567797012991189134> Action Taken', value: `**${actionTaken}**`, inline: true },
+                { name: '<:files:1567796970964394044> Details', value: details },
             )
             .setThumbnail(executor.displayAvatarURL?.() || null)
             .setTimestamp();

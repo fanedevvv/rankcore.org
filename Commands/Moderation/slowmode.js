@@ -40,7 +40,7 @@ module.exports = {
 
       await channel.setRateLimitPerUser(seconds, `Set by ${interaction.user.tag}`);
       return interaction.reply({
-        components: [successContainer("<:1430986244921495654:1555544239792980044>  Slowmode Set",
+        components: [successContainer("<:1430986244921495654:1567796929587576852>  Slowmode Set",
           `Slowmode on ${channel} set to **${time} ${fmt}**.`, {
             accent, clientId: client.user.id,
             extra: `**Channel** — ${channel}\n**Duration** — ${time} ${fmt} (${seconds}s)\n**Set by** — ${interaction.user.tag}`,
@@ -52,7 +52,7 @@ module.exports = {
     if (sub === "disable") {
       await channel.setRateLimitPerUser(0, `Disabled by ${interaction.user.tag}`);
       return interaction.reply({
-        components: [successContainer("<:1430986244921495654:1555544239792980044>  Slowmode Disabled",
+        components: [successContainer("<:1430986244921495654:1567796929587576852>  Slowmode Disabled",
           `Slowmode on ${channel} has been **removed**.`, {
             accent, clientId: client.user.id,
             extra: `**Channel** — ${channel}\n**Disabled by** — ${interaction.user.tag}`,

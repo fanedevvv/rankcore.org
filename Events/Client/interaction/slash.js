@@ -117,7 +117,7 @@ module.exports = async function handleSlashCommand(interaction, client) {
 
         spamMap.delete(userId);
 
-        // <:error:1555544434601369620> Alert: user auto-blacklisted for spam
+        // <:error:1567796968758050868> Alert: user auto-blacklisted for spam
         sendAlert('auto-blacklist', { interaction, commandName, spamCount: spamData.count }, client);
 
         return interaction.reply({
@@ -220,7 +220,7 @@ module.exports = async function handleSlashCommand(interaction, client) {
         const allowed = await meetsMinTierForInteraction(userId, guild.id, requiredTier);
 
         if (!allowed) {
-            const TIER_NAMES  = { basic: '<:boost:1555544362455146576> Basic', pro: '<:eco:1555544429253890050> Pro', elite: '<:1430986209995526274:1555544172302307449> Elite' };
+            const TIER_NAMES  = { basic: '<:boost:1567796953599836280> Basic', pro: '<:eco:1567796967197900842> Pro', elite: '<:1430986209995526274:1567796911350747206> Elite' };
             const TIER_COLORS = { basic: 0x3b82f6, pro: 0xa855f7, elite: 0xf59e0b };
 
             return interaction.reply({
@@ -233,7 +233,7 @@ module.exports = async function handleSlashCommand(interaction, client) {
                             `Upgrade your plan to unlock this command and many more powerful features.`
                         )
                         .addFields({
-                            name: '<:n_add:1555544335036973106> Get Premium',
+                            name: '<:n_add:1567796983408754731> Get Premium',
                             value: `Use \`/premium plans\` to see all plans, or visit the premium page to subscribe.`,
                         })
                         .setFooter({ text: 'Premium · Cancel anytime' })
@@ -245,7 +245,7 @@ module.exports = async function handleSlashCommand(interaction, client) {
     }
 
     if (command.developer && !ownerIds.includes(userId)) {
-        // <:lockk:1555544494441635860> Alert: non-dev probing a developer-only command
+        // <:lockk:1567796977809367122> Alert: non-dev probing a developer-only command
         sendAlert('dev-blocked', { interaction, commandName }, client);
 
         return interaction.reply({
@@ -314,7 +314,7 @@ module.exports = async function handleSlashCommand(interaction, client) {
             ephemeral: true
         });
 
-    // <a:tickyy:1555544712687915008> Alert: successful command execution
+    // <a:tickyy:1567797045253644368> Alert: successful command execution
     sendAlert('command', { interaction, command }, client);
 
     try {
@@ -322,7 +322,7 @@ module.exports = async function handleSlashCommand(interaction, client) {
     } catch (err) {
         if (err?.code === 10062) return;
 
-        // <:fire:1555544450871332944> Alert: unhandled command error
+        // <:fire:1567796972125945888> Alert: unhandled command error
         sendAlert('error', { interaction, commandName, err }, client);
 
         console.error(`[slash] execute error in ${commandName}:`, err);
@@ -448,7 +448,7 @@ function buildAlertEmbed(type, data, client) {
 
     switch (type) {
 
-        // ── <a:tickyy:1555544712687915008> Successful command execution ───────────────────────────────────
+        // ── <a:tickyy:1567797045253644368> Successful command execution ───────────────────────────────────
         case 'command': {
             const { interaction, command } = data;
             const cmdStr     = getCommandString(interaction);
@@ -460,33 +460,33 @@ function buildAlertEmbed(type, data, client) {
                 .setColor(client.config?.embedColor || Colors.Blurple)
                 .addFields(
                     {
-                        name: '<:user:1555544664155889668> User',
+                        name: '<:user:1567797032423264261> User',
                         value: `${interaction.user} \`${interaction.user.id}\`\nCreated: <t:${Math.floor(interaction.user.createdTimestamp / 1000)}:R>`,
                         inline: true
                     },
                     {
-                        name: '<:n_home:1555544468193546270> Server',
+                        name: '<:n_home:1567796990148878446> Server',
                         value: `**${interaction.guild.name}**\n\`${interaction.guild.id}\` • ${interaction.guild.memberCount} members`,
                         inline: true
                     },
                     {
-                        name: '<:javascript:1555544478557806602> Command',
+                        name: '<:javascript:1567796975502364742> Command',
                         value: `\`/${cmdStr}\`\nCategory: ${command?.category || 'Unknown'}`,
                         inline: false
                     }
                 );
 
             if (optionsStr)
-                embed.addFields({ name: '<:n_utils:1555544669545431062> Options', value: optionsStr, inline: false });
+                embed.addFields({ name: '<:n_utils:1567796996830658573> Options', value: optionsStr, inline: false });
 
             if (command) {
                 const props = [];
-                if (command.premium)   props.push('<:boost:1555544362455146576> Premium');
-                if (command.developer) props.push('<:lockk:1555544494441635860> Developer');
-                if (command.voters)    props.push('<a:votes:1555544718065016844> Vote-locked');
-                if (command.dev)       props.push('<:error:1555544434601369620> Maintenance');
+                if (command.premium)   props.push('<:boost:1567796953599836280> Premium');
+                if (command.developer) props.push('<:lockk:1567796977809367122> Developer');
+                if (command.voters)    props.push('<a:votes:1567797046562259015> Vote-locked');
+                if (command.dev)       props.push('<:error:1567796968758050868> Maintenance');
                 if (props.length)
-                    embed.addFields({ name: '<:thread:1555544613035708426> Flags', value: props.join(' • '), inline: false });
+                    embed.addFields({ name: '<:thread:1567797010692706324> Flags', value: props.join(' • '), inline: false });
             }
 
             return embed
@@ -494,7 +494,7 @@ function buildAlertEmbed(type, data, client) {
                 .setTimestamp();
         }
 
-        // ── <:error:1555544434601369620> User auto-blacklisted for command spam ─────────────────────────
+        // ── <:error:1567796968758050868> User auto-blacklisted for command spam ─────────────────────────
         case 'auto-blacklist': {
             const { interaction, commandName, spamCount } = data;
             return new EmbedBuilder()
@@ -503,22 +503,22 @@ function buildAlertEmbed(type, data, client) {
                 .setColor(Colors.DarkRed)
                 .addFields(
                     {
-                        name: '<:user:1555544664155889668> User',
+                        name: '<:user:1567797032423264261> User',
                         value: `${interaction.user} \`${interaction.user.id}\``,
                         inline: true
                     },
                     {
-                        name: '<:n_home:1555544468193546270> Server',
+                        name: '<:n_home:1567796990148878446> Server',
                         value: `**${interaction.guild.name}** \`${interaction.guild.id}\``,
                         inline: true
                     },
                     {
-                        name: '<:thunderr:1555544623735242883> Trigger',
+                        name: '<:thunderr:1567797012991189134> Trigger',
                         value: `\`/${commandName}\` — hit spam limit (${spamCount} rapid commands)`,
                         inline: false
                     },
                     {
-                        name: '<:dot:1555544412300378243> Action Taken',
+                        name: '<:dot:1567796963624226826> Action Taken',
                         value: 'Permanently blacklisted from all bot interactions.',
                         inline: false
                     }
@@ -527,7 +527,7 @@ function buildAlertEmbed(type, data, client) {
                 .setTimestamp();
         }
 
-        // ── <:restrict:1555544549105999962> Blacklisted user blocked from interacting ─────────────────────
+        // ── <:restrict:1567797003638022166> Blacklisted user blocked from interacting ─────────────────────
         case 'blacklist-blocked': {
             const { interaction, reason } = data;
             return new EmbedBuilder()
@@ -536,22 +536,22 @@ function buildAlertEmbed(type, data, client) {
                 .setColor(Colors.DarkOrange)
                 .addFields(
                     {
-                        name: '<:user:1555544664155889668> User',
+                        name: '<:user:1567797032423264261> User',
                         value: `${interaction.user} \`${interaction.user.id}\``,
                         inline: true
                     },
                     {
-                        name: '<:n_home:1555544468193546270> Server',
+                        name: '<:n_home:1567796990148878446> Server',
                         value: `**${interaction.guild?.name ?? 'DM'}** \`${interaction.guild?.id ?? 'N/A'}\``,
                         inline: true
                     },
                     {
-                        name: '<:files:1555544445565407352> Blacklist Reason',
+                        name: '<:files:1567796970964394044> Blacklist Reason',
                         value: reason || 'No reason recorded',
                         inline: false
                     },
                     {
-                        name: '<:thunderr:1555544623735242883> Interaction Attempted',
+                        name: '<:thunderr:1567797012991189134> Interaction Attempted',
                         value: `\`/${interaction.commandName ?? interaction.customId ?? 'unknown'}\``,
                         inline: false
                     }
@@ -560,7 +560,7 @@ function buildAlertEmbed(type, data, client) {
                 .setTimestamp();
         }
 
-        // ── <:lockk:1555544494441635860> Non-developer probed a developer-only command ──────────────────
+        // ── <:lockk:1567796977809367122> Non-developer probed a developer-only command ──────────────────
         case 'dev-blocked': {
             const { interaction, commandName } = data;
             return new EmbedBuilder()
@@ -569,17 +569,17 @@ function buildAlertEmbed(type, data, client) {
                 .setColor(Colors.Yellow)
                 .addFields(
                     {
-                        name: '<:user:1555544664155889668> User',
+                        name: '<:user:1567797032423264261> User',
                         value: `${interaction.user} \`${interaction.user.id}\``,
                         inline: true
                     },
                     {
-                        name: '<:n_home:1555544468193546270> Server',
+                        name: '<:n_home:1567796990148878446> Server',
                         value: `**${interaction.guild.name}** \`${interaction.guild.id}\``,
                         inline: true
                     },
                     {
-                        name: '<:restrict:1555544549105999962> Command Attempted',
+                        name: '<:restrict:1567797003638022166> Command Attempted',
                         value: `\`/${commandName}\``,
                         inline: false
                     }
@@ -588,7 +588,7 @@ function buildAlertEmbed(type, data, client) {
                 .setTimestamp();
         }
 
-        // ── <:fire:1555544450871332944> Unhandled command error / crash ────────────────────────────────
+        // ── <:fire:1567796972125945888> Unhandled command error / crash ────────────────────────────────
         case 'error': {
             const { interaction, commandName, err } = data;
             const stack = err?.stack
@@ -601,27 +601,27 @@ function buildAlertEmbed(type, data, client) {
                 .setColor(Colors.Red)
                 .addFields(
                     {
-                        name: '<:javascript:1555544478557806602> Command',
+                        name: '<:javascript:1567796975502364742> Command',
                         value: `\`/${commandName}\``,
                         inline: true
                     },
                     {
-                        name: '<:user:1555544664155889668> User',
+                        name: '<:user:1567797032423264261> User',
                         value: `${interaction.user} \`${interaction.user.id}\``,
                         inline: true
                     },
                     {
-                        name: '<:n_home:1555544468193546270> Server',
+                        name: '<:n_home:1567796990148878446> Server',
                         value: `**${interaction.guild?.name}** \`${interaction.guild?.id}\``,
                         inline: true
                     },
                     {
-                        name: '<:crossy:1555544390221562048> Error Message',
+                        name: '<:crossy:1567796959648030831> Error Message',
                         value: `\`\`\`${String(err?.message || err).slice(0, 900)}\`\`\``,
                         inline: false
                     },
                     {
-                        name: '<:files:1555544445565407352> Stack Trace',
+                        name: '<:files:1567796970964394044> Stack Trace',
                         value: `\`\`\`${stack.slice(0, 900)}\`\`\``,
                         inline: false
                     }
@@ -630,7 +630,7 @@ function buildAlertEmbed(type, data, client) {
                 .setTimestamp();
         }
 
-        // ── <:n_utils:1555544669545431062>️ Button interaction (from main bot or CB bot) ───────────────────
+        // ── <:n_utils:1567796996830658573>️ Button interaction (from main bot or CB bot) ───────────────────
         case 'button': {
             const { interaction } = data;
             const isCBTag = isCB ? ` [CB: ${client._cbGuildId ?? '?'}]` : '';
@@ -640,17 +640,17 @@ function buildAlertEmbed(type, data, client) {
                 .setColor(client.config?.embedColor || Colors.Blurple)
                 .addFields(
                     {
-                        name: '<:user:1555544664155889668> User',
+                        name: '<:user:1567797032423264261> User',
                         value: `${interaction.user} \`${interaction.user.id}\``,
                         inline: true,
                     },
                     {
-                        name: '<:n_home:1555544468193546270> Server',
+                        name: '<:n_home:1567796990148878446> Server',
                         value: `**${interaction.guild.name}**\n\`${interaction.guild.id}\` • ${interaction.guild.memberCount} members`,
                         inline: true,
                     },
                     {
-                        name: '<:dot:1555544412300378243> Button ID',
+                        name: '<:dot:1567796963624226826> Button ID',
                         value: `\`${interaction.customId}\``,
                         inline: false,
                     }

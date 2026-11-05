@@ -56,7 +56,7 @@ module.exports = {
 
     // Fetch all members
     const fetchContainer = new ContainerBuilder().setAccentColor(CONFIG.COLORS.WAITING)
-      .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_loading:1555544489194688623>  Fetching Members...\nPlease wait while I gather all server members."));
+      .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_loading:1567796992556666982>  Fetching Members...\nPlease wait while I gather all server members."));
     await interaction.editReply({ components: [fetchContainer], flags: MessageFlags.IsComponentsV2 });
 
     let members;
@@ -79,7 +79,7 @@ module.exports = {
 
     if (!targets.length) {
       return interaction.editReply({
-        components: [successContainer(`${isAdd ? "<a:tickyy:1555544712687915008>" : "<a:tickyy:1555544712687915008>"}  Nothing to do`,
+        components: [successContainer(`${isAdd ? "<a:tickyy:1567797045253644368>" : "<a:tickyy:1567797045253644368>"}  Nothing to do`,
           isAdd
             ? `All eligible members already have ${role}.`
             : `No members with ${role} found.`,
@@ -97,7 +97,7 @@ module.exports = {
 
     // Confirmation
     const confirmContainer = new ContainerBuilder().setAccentColor(ACCENT.warning)
-      .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:error:1555544434601369620>  Confirm Mass Role ${isAdd ? "Add" : "Remove"}`))
+      .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## <:error:1567796968758050868>  Confirm Mass Role ${isAdd ? "Add" : "Remove"}`))
       .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
       .addTextDisplayComponents(new TextDisplayBuilder().setContent(
         `**Action** — ${isAdd ? "Add" : "Remove"} ${role}\n**Targets** — ${targets.length} member(s) (${filter})\n**Rate-limit safe** — Yes, using batches of ${CONFIG.BATCH_SIZE} with ${CONFIG.CYCLE_DELAY / 1000}s delay\n\n-# This may take several minutes for large servers.`
@@ -105,8 +105,8 @@ module.exports = {
       .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
       .addActionRowComponents(
         new ActionRowBuilder().addComponents(
-          new ButtonBuilder().setCustomId("roleall_confirm").setLabel(`Confirm ${isAdd ? 'Add' : 'Remove'}`).setEmoji({ id: '1555544712687915008', name: 'tickyy', animated: true }).setStyle(ButtonStyle.Success),
-          new ButtonBuilder().setCustomId("roleall_cancel").setLabel("Cancel").setEmoji({ id: '1555544390221562048', name: 'crossy', animated: false }).setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId("roleall_confirm").setLabel(`Confirm ${isAdd ? 'Add' : 'Remove'}`).setEmoji({ id: '1567797045253644368', name: 'tickyy', animated: true }).setStyle(ButtonStyle.Success),
+          new ButtonBuilder().setCustomId("roleall_cancel").setLabel("Cancel").setEmoji({ id: '1567796959648030831', name: 'crossy', animated: false }).setStyle(ButtonStyle.Secondary),
         )
       );
 
@@ -120,7 +120,7 @@ module.exports = {
     collector.on("collect", async b => {
       if (b.customId === "roleall_cancel") {
         return b.update({
-          components: [successContainer("<:crossy:1555544390221562048> Cancelled", "Mass role operation was cancelled.", { accent: ACCENT.info, clientId: client.user.id })],
+          components: [successContainer("<:crossy:1567796959648030831> Cancelled", "Mass role operation was cancelled.", { accent: ACCENT.info, clientId: client.user.id })],
           flags: MessageFlags.IsComponentsV2,
         });
       }
@@ -150,7 +150,7 @@ module.exports = {
 
           const progressContainer = new ContainerBuilder().setAccentColor(ACCENT.moderation)
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(
-              `## <:n_utils:1555544669545431062>  ${isAdd ? "Adding" : "Removing"} ${role.name}...\n\`${bar}\` ${pct}%\n\n**Progress** — ${processed}/${targets.length}\n**Succeeded** — ${succeeded} | **Failed** — ${failed}\n**Elapsed** — ${elapsed}s | **ETA** — ~${eta}s`
+              `## <:n_utils:1567796996830658573>  ${isAdd ? "Adding" : "Removing"} ${role.name}...\n\`${bar}\` ${pct}%\n\n**Progress** — ${processed}/${targets.length}\n**Succeeded** — ${succeeded} | **Failed** — ${failed}\n**Elapsed** — ${elapsed}s | **ETA** — ~${eta}s`
             ));
           await interaction.editReply({ components: [progressContainer], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
         }
@@ -161,7 +161,7 @@ module.exports = {
       const elapsed = Math.round((Date.now() - startTime) / 1000);
       return interaction.editReply({
         components: [successContainer(
-          `${isAdd ? "<a:tickyy:1555544712687915008>" : "<a:tickyy:1555544712687915008>"}  Mass Role ${isAdd ? "Add" : "Remove"} Complete`,
+          `${isAdd ? "<a:tickyy:1567797045253644368>" : "<a:tickyy:1567797045253644368>"}  Mass Role ${isAdd ? "Add" : "Remove"} Complete`,
           `Successfully ${isAdd ? "added" : "removed"} **${role}** for **${succeeded}** member(s).`,
           {
             accent: ACCENT.success, clientId: client.user.id,

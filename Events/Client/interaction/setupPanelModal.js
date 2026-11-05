@@ -49,7 +49,7 @@ async function handleSetupModal(interaction, client) {
     const channel = resolveChannel(guild, raw);
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Channel not found.", flags: MessageFlags.Ephemeral });
     }
     const data = await BoosterChannel.findOneAndUpdate(
       { guildId },
@@ -61,7 +61,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Booster notification channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Booster notification channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Christmas — channel ──────────────────────────────────────────────────────
@@ -72,7 +72,7 @@ async function handleSetupModal(interaction, client) {
     const channel = resolveChannel(guild, raw);
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Channel not found.", flags: MessageFlags.Ephemeral });
     }
     const data = await christmasSchema.findOneAndUpdate(
       { Guild: guildId },
@@ -84,7 +84,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [configPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Christmas channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Christmas channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Christmas — role ─────────────────────────────────────────────────────────
@@ -95,7 +95,7 @@ async function handleSetupModal(interaction, client) {
     const role = resolveRole(guild, raw);
     if (!role) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Role not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Role not found.", flags: MessageFlags.Ephemeral });
     }
     const data = await christmasSchema.findOneAndUpdate(
       { Guild: guildId },
@@ -107,7 +107,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [configPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Christmas ping role set to ${role}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Christmas ping role set to ${role}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Halloween — channel ──────────────────────────────────────────────────────
@@ -118,7 +118,7 @@ async function handleSetupModal(interaction, client) {
     const channel = resolveChannel(guild, raw);
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Channel not found.", flags: MessageFlags.Ephemeral });
     }
     const data = await halloweenSchema.findOneAndUpdate(
       { Guild: guildId },
@@ -130,7 +130,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [configPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Halloween channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Halloween channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Halloween — role ─────────────────────────────────────────────────────────
@@ -141,7 +141,7 @@ async function handleSetupModal(interaction, client) {
     const role = resolveRole(guild, raw);
     if (!role) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Role not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Role not found.", flags: MessageFlags.Ephemeral });
     }
     const data = await halloweenSchema.findOneAndUpdate(
       { Guild: guildId },
@@ -153,7 +153,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [configPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Halloween ping role set to ${role}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Halloween ping role set to ${role}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Guess The Number — enable ────────────────────────────────────────────────
@@ -164,7 +164,7 @@ async function handleSetupModal(interaction, client) {
     const channel = resolveChannel(guild, raw);
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Channel not found.", flags: MessageFlags.Ephemeral });
     }
     const number = Math.floor(Math.random() * 1_000_000) + 1;
     const data   = await gtnSchema.findOneAndUpdate(
@@ -177,7 +177,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Guess The Number enabled in ${channel}. Number set: \`${number}\`.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Guess The Number enabled in ${channel}. Number set: \`${number}\`.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Join To Create ───────────────────────────────────────────────────────────
@@ -193,7 +193,7 @@ async function handleSetupModal(interaction, client) {
       guild.channels.cache.find(c => c.name === rawChannel && c.type === ChannelType.GuildVoice);
     if (!createChannel || createChannel.type !== ChannelType.GuildVoice) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Create channel not found or is not a voice channel.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Create channel not found or is not a voice channel.", flags: MessageFlags.Ephemeral });
     }
 
     let categoryId = null;
@@ -202,7 +202,7 @@ async function handleSetupModal(interaction, client) {
         guild.channels.cache.find(c => c.name === rawCategory && c.type === ChannelType.GuildCategory);
       if (!cat) {
         clearModal(interaction.user.id, guildId);
-        return interaction.reply({ content: "<:crossy:1555544390221562048> Category not found.", flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: "<:crossy:1567796959648030831> Category not found.", flags: MessageFlags.Ephemeral });
       }
       categoryId = cat.id;
     }
@@ -221,7 +221,7 @@ async function handleSetupModal(interaction, client) {
     }
     clearModal(interaction.user.id, guildId);
     return interaction.reply({
-      content: `<a:tickyy:1555544712687915008> Join To Create configured!\n**Create Channel:** ${createChannel}${categoryId ? `\n**Category:** <#${categoryId}>` : ""}${limit ? `\n**Limit:** ${limit}` : ""}\n**Inherit Perms:** ${inherit ? "Yes" : "No"}`,
+      content: `<a:tickyy:1567797045253644368> Join To Create configured!\n**Create Channel:** ${createChannel}${categoryId ? `\n**Category:** <#${categoryId}>` : ""}${limit ? `\n**Limit:** ${limit}` : ""}\n**Inherit Perms:** ${inherit ? "Yes" : "No"}`,
       flags: MessageFlags.Ephemeral,
     });
   }
@@ -236,11 +236,11 @@ async function handleSetupModal(interaction, client) {
 
     if (!role) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Role not found with that ID.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Role not found with that ID.", flags: MessageFlags.Ephemeral });
     }
     if (isNaN(level) || level < 1) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Invalid level number.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Invalid level number.", flags: MessageFlags.Ephemeral });
     }
 
     let data = await levelRoleSchema.findOne({ GuildID: guildId });
@@ -257,7 +257,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Added ${role} as milestone reward at level **${level}**.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Added ${role} as milestone reward at level **${level}**.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Level Roles — remove ─────────────────────────────────────────────────────
@@ -267,12 +267,12 @@ async function handleSetupModal(interaction, client) {
     const level = parseInt(interaction.fields.getTextInputValue("lvlrole_remove_level").trim());
     if (isNaN(level)) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Invalid level number.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Invalid level number.", flags: MessageFlags.Ephemeral });
     }
     const data = await levelRoleSchema.findOne({ GuildID: guildId });
     if (!data || !data.roles.find(r => r.level === level)) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: `<:crossy:1555544390221562048> No milestone found for level **${level}**.`, flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: `<:crossy:1567796959648030831> No milestone found for level **${level}**.`, flags: MessageFlags.Ephemeral });
     }
     data.roles = data.roles.filter(r => r.level !== level);
     await data.save();
@@ -281,7 +281,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Removed milestone for level **${level}**.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Removed milestone for level **${level}**.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Reaction Role — add ──────────────────────────────────────────────────────
@@ -295,7 +295,7 @@ async function handleSetupModal(interaction, client) {
 
     if (!role) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Role not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Role not found.", flags: MessageFlags.Ephemeral });
     }
 
     await reactionRoleSchema.create({ Guild: guildId, MessageID: msgId, Emoji: emoji, Role: roleId });
@@ -315,7 +315,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Reaction role added!\n**Message:** \`${msgId}\` | **Emoji:** ${emoji} | **Role:** ${role}`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Reaction role added!\n**Message:** \`${msgId}\` | **Emoji:** ${emoji} | **Role:** ${role}`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Reaction Role — remove ───────────────────────────────────────────────────
@@ -328,13 +328,13 @@ async function handleSetupModal(interaction, client) {
 
     if (!result.deletedCount) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> No reaction role found for that message + emoji.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> No reaction role found for that message + emoji.", flags: MessageFlags.Ephemeral });
     }
     if (panel) {
       await interaction.message?.edit({ components: [buildPanel(accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Reaction role removed for message \`${msgId}\` with ${emoji}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Reaction role removed for message \`${msgId}\` with ${emoji}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Uptime Monitor — add ─────────────────────────────────────────────────────
@@ -349,7 +349,7 @@ async function handleSetupModal(interaction, client) {
 
     if (!url.startsWith("http://") && !url.startsWith("https://")) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> URL must start with `http://` or `https://`.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> URL must start with `http://` or `https://`.", flags: MessageFlags.Ephemeral });
     }
 
     let alertChannel = null;
@@ -357,7 +357,7 @@ async function handleSetupModal(interaction, client) {
       const ch = resolveChannel(guild, chRaw);
       if (!ch) {
         clearModal(interaction.user.id, guildId);
-        return interaction.reply({ content: "<:crossy:1555544390221562048> Alert channel not found.", flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: "<:crossy:1567796959648030831> Alert channel not found.", flags: MessageFlags.Ephemeral });
       }
       alertChannel = ch.id;
     }
@@ -374,7 +374,7 @@ async function handleSetupModal(interaction, client) {
     }
     clearModal(interaction.user.id, guildId);
     return interaction.reply({
-      content: `<a:tickyy:1555544712687915008> Monitor added for \`${url}\`${name ? ` ("${name}")` : ""} — checking every **${interval}m**.`,
+      content: `<a:tickyy:1567797045253644368> Monitor added for \`${url}\`${name ? ` ("${name}")` : ""} — checking every **${interval}m**.`,
       flags: MessageFlags.Ephemeral,
     });
   }
@@ -388,7 +388,7 @@ async function handleSetupModal(interaction, client) {
 
     if (!result.deletedCount) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: `<:crossy:1555544390221562048> No monitor found for URL \`${url}\`.`, flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: `<:crossy:1567796959648030831> No monitor found for URL \`${url}\`.`, flags: MessageFlags.Ephemeral });
     }
     const list = await uptimeSchema.find({ Guild: guildId });
     if (panel) {
@@ -396,7 +396,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(list, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Monitor for \`${url}\` removed.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Monitor for \`${url}\` removed.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Voice Leveling — enable ──────────────────────────────────────────────────
@@ -407,7 +407,7 @@ async function handleSetupModal(interaction, client) {
     const channel = resolveChannel(guild, raw);
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Channel not found.", flags: MessageFlags.Ephemeral });
     }
     await voiceLevelSchema.findOneAndUpdate(
       { Guild: guildId },
@@ -418,7 +418,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [await buildPanel(guildId, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Voice Leveling enabled. Level-up notifications → ${channel}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Voice Leveling enabled. Level-up notifications → ${channel}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Voice Leveling — blacklist add ───────────────────────────────────────────
@@ -431,19 +431,19 @@ async function handleSetupModal(interaction, client) {
 
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Voice channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Voice channel not found.", flags: MessageFlags.Ephemeral });
     }
     const exists = await voiceBlacklistSchema.findOne({ Guild: guildId, Channel: channel.id });
     if (exists) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> That channel is already blacklisted.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> That channel is already blacklisted.", flags: MessageFlags.Ephemeral });
     }
     await voiceBlacklistSchema.create({ Guild: guildId, Channel: channel.id });
     if (panel) {
       await interaction.message?.edit({ components: [await blacklistPanel(guildId, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> ${channel} added to the voice XP blacklist.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> ${channel} added to the voice XP blacklist.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Voice Leveling — blacklist remove ────────────────────────────────────────
@@ -456,18 +456,18 @@ async function handleSetupModal(interaction, client) {
 
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Voice channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Voice channel not found.", flags: MessageFlags.Ephemeral });
     }
     const result = await voiceBlacklistSchema.deleteOne({ Guild: guildId, Channel: channel.id });
     if (!result.deletedCount) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> That channel is not in the blacklist.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> That channel is not in the blacklist.", flags: MessageFlags.Ephemeral });
     }
     if (panel) {
       await interaction.message?.edit({ components: [await blacklistPanel(guildId, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> ${channel} removed from the voice XP blacklist.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> ${channel} removed from the voice XP blacklist.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Leveling — set channel ───────────────────────────────────────────────────
@@ -478,7 +478,7 @@ async function handleSetupModal(interaction, client) {
     const channel = resolveChannel(guild, raw);
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Channel not found.", flags: MessageFlags.Ephemeral });
     }
     const data = await levelSetup.findOneAndUpdate(
       { guildId },
@@ -490,7 +490,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Level-up notifications set to ${channel}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Level-up notifications set to ${channel}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Counting — set channel ───────────────────────────────────────────────────
@@ -501,7 +501,7 @@ async function handleSetupModal(interaction, client) {
     const channel = resolveChannel(guild, raw);
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Channel not found.", flags: MessageFlags.Ephemeral });
     }
     const data = await countingSchema.findOneAndUpdate(
       { guildId },
@@ -513,7 +513,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Counting channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Counting channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Join Ping — set channel ──────────────────────────────────────────────────
@@ -524,7 +524,7 @@ async function handleSetupModal(interaction, client) {
     const channel = resolveChannel(guild, raw);
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Channel not found.", flags: MessageFlags.Ephemeral });
     }
     const data = await joinPingSchema.findOneAndUpdate(
       { guildId },
@@ -536,7 +536,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Join-ping channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Join-ping channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Join Ping — set user ─────────────────────────────────────────────────────
@@ -554,7 +554,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Join-ping user set to <@${userId}>.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Join-ping user set to <@${userId}>.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Modmail — set category ───────────────────────────────────────────────────
@@ -566,7 +566,7 @@ async function handleSetupModal(interaction, client) {
       guild.channels.cache.find(c => c.name === raw.trim() && c.type === ChannelType.GuildCategory);
     if (!category) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Category not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Category not found.", flags: MessageFlags.Ephemeral });
     }
     const data = await modmailSchema.findOneAndUpdate(
       { guildId },
@@ -578,7 +578,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Modmail category set to **${category.name}**.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Modmail category set to **${category.name}**.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Modmail — set log channel ────────────────────────────────────────────────
@@ -589,7 +589,7 @@ async function handleSetupModal(interaction, client) {
     const channel = resolveChannel(guild, raw);
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Channel not found.", flags: MessageFlags.Ephemeral });
     }
     const data = await modmailSchema.findOneAndUpdate(
       { guildId },
@@ -601,7 +601,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Modmail log channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Modmail log channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Modmail — set staff role ─────────────────────────────────────────────────
@@ -612,7 +612,7 @@ async function handleSetupModal(interaction, client) {
     const role = resolveRole(guild, raw);
     if (!role) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Role not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Role not found.", flags: MessageFlags.Ephemeral });
     }
     const data = await modmailSchema.findOneAndUpdate(
       { guildId },
@@ -624,7 +624,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Modmail staff role set to ${role}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Modmail staff role set to ${role}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Verification — set channel ───────────────────────────────────────────────
@@ -635,7 +635,7 @@ async function handleSetupModal(interaction, client) {
     const channel = resolveChannel(guild, raw);
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Channel not found.", flags: MessageFlags.Ephemeral });
     }
     const data = await verificationSchema.findOneAndUpdate(
       { guildId },
@@ -647,7 +647,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Verification channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Verification channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Verification — set role ──────────────────────────────────────────────────
@@ -658,7 +658,7 @@ async function handleSetupModal(interaction, client) {
     const role = resolveRole(guild, raw);
     if (!role) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Role not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Role not found.", flags: MessageFlags.Ephemeral });
     }
     const data = await verificationSchema.findOneAndUpdate(
       { guildId },
@@ -670,7 +670,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Verified role set to ${role}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Verified role set to ${role}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Suggestions — set channel ────────────────────────────────────────────────
@@ -681,7 +681,7 @@ async function handleSetupModal(interaction, client) {
     const channel = resolveChannel(guild, raw);
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Channel not found.", flags: MessageFlags.Ephemeral });
     }
     const data = await suggestionSchema.findOneAndUpdate(
       { guildId },
@@ -693,7 +693,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildSetupPanel(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Suggestions channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Suggestions channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Welcome/Goodbye — set channel ────────────────────────────────────────────
@@ -707,7 +707,7 @@ async function handleSetupModal(interaction, client) {
     const channel = resolveChannel(guild, raw);
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Channel not found.", flags: MessageFlags.Ephemeral });
     }
     await Schema.findOneAndUpdate(
       { guildId },
@@ -718,7 +718,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [configSteps(type, accent)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> ${type === "welcome" ? "Welcome" : "Goodbye"} channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> ${type === "welcome" ? "Welcome" : "Goodbye"} channel set to ${channel}.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Welcome/Goodbye — set message ────────────────────────────────────────────
@@ -738,13 +738,13 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [configSteps(type, accent)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> ${type === "welcome" ? "Welcome" : "Goodbye"} message saved.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> ${type === "welcome" ? "Welcome" : "Goodbye"} message saved.`, flags: MessageFlags.Ephemeral });
   }
 
   // ── Logging — set channel for type ───────────────────────────────────────────
   if (customId === "logs_modal_channel") {
     if (!modalCtx?.logType) {
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Session expired. Please try again.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Session expired. Please try again.", flags: MessageFlags.Ephemeral });
     }
     const logSchema  = require("../../../Schemas/logschema");
     const { buildContainer } = require("../../../Commands/Setups/logging");
@@ -752,7 +752,7 @@ async function handleSetupModal(interaction, client) {
     const channel = resolveChannel(guild, raw);
     if (!channel) {
       clearModal(interaction.user.id, guildId);
-      return interaction.reply({ content: "<:crossy:1555544390221562048> Channel not found.", flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: "<:crossy:1567796959648030831> Channel not found.", flags: MessageFlags.Ephemeral });
     }
     const update = {};
     update[modalCtx.logType] = channel.id;
@@ -766,7 +766,7 @@ async function handleSetupModal(interaction, client) {
       await interaction.message?.edit({ components: [buildContainer(data, accent, client)], flags: MessageFlags.IsComponentsV2 }).catch(() => {});
     }
     clearModal(interaction.user.id, guildId);
-    return interaction.reply({ content: `<a:tickyy:1555544712687915008> Log channel for \`${modalCtx.logType}\` set to ${channel}.`, flags: MessageFlags.Ephemeral });
+    return interaction.reply({ content: `<a:tickyy:1567797045253644368> Log channel for \`${modalCtx.logType}\` set to ${channel}.`, flags: MessageFlags.Ephemeral });
   }
 
   // Unknown modal — log and silently ignore to avoid crash

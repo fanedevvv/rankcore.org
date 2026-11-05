@@ -276,8 +276,8 @@ const handlers = {
         
         const embed = new EmbedBuilder()
           .setTitle(`> Password Generated`)
-          .setAuthor({ name: `<:restrict:1555544549105999962> Password Generator` })
-          .setFooter({ text: `<:restrict:1555544549105999962> Password Generated` })
+          .setAuthor({ name: `<:restrict:1567797003638022166> Password Generator` })
+          .setFooter({ text: `<:restrict:1567797003638022166> Password Generated` })
           .addFields({ name: `• Password`, value: `> ||\`\`\`${data}\`\`\`||` })
           .setColor(client.config.embedColor);
         
@@ -710,7 +710,7 @@ const handlers = {
           
           const response = new EmbedBuilder()
             .setColor(client.config.embedColor)
-            .setTitle("<:1430986225493479485:1555544207652032633> Translator")
+            .setTitle("<:1430986225493479485:1567796921681055824> Translator")
             .addFields(
               { name: "Original:", value: text, inline: true },
               { name: "Translated:", value: translated.text, inline: true }

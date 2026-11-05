@@ -46,7 +46,7 @@ module.exports = {
 
         return interaction.reply({
           components: [new ContainerBuilder().setAccentColor(accent)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_loading:1555544489194688623>  Global AFK Set"))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_loading:1567796992556666982>  Global AFK Set"))
             .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(
               `You are now **AFK** in **${setCount}** servers.\n**Reason** — ${reason}\n\nYour status will be removed when you send a message in any server.`
@@ -70,7 +70,7 @@ module.exports = {
 
         return interaction.reply({
           components: [new ContainerBuilder().setAccentColor(accent)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_loading:1555544489194688623>  AFK Status Set"))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_loading:1567796992556666982>  AFK Status Set"))
             .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
             .addTextDisplayComponents(new TextDisplayBuilder().setContent(
               `You are now **AFK** in this server.\n**Reason** — ${reason}\n\nYour status will be removed when you next send a message.`
@@ -114,7 +114,7 @@ module.exports = {
 
       return interaction.reply({
         components: [successContainer(
-          "<:n_loading:1555544489194688623>  AFK Removed",
+          "<:n_loading:1567796992556666982>  AFK Removed",
           `Your AFK status has been cleared in **${removeCount}** servers. Welcome back!`,
           { accent, clientId: client.user.id }
         )],

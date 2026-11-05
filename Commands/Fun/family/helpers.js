@@ -20,7 +20,7 @@ async function grantAchievement(userId, achievementName, channel) {
   }
 
   if (granted && channel) {
-    await channel.send(`<:boost:1555544362455146576> <@${userId}> has earned: **${achievementName}**`);
+    await channel.send(`<:boost:1567796953599836280> <@${userId}> has earned: **${achievementName}**`);
   }
 
   return granted;

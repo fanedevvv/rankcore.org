@@ -55,7 +55,7 @@ module.exports = {
         }
 
         await interaction.followUp({
-            content: `Finished! <a:tickyy:1555544712687915008> **${successCount}** members updated. <:crossy:1555544390221562048> **${failCount}** failed.`,
+            content: `Finished! <a:tickyy:1567797045253644368> **${successCount}** members updated. <:crossy:1567796959648030831> **${failCount}** failed.`,
             ephemeral: true
         });
     }

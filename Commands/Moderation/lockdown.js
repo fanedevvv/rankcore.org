@@ -10,8 +10,8 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("lockdown").setDMPermission(false)
     .setDescription("Server lockdown management.")
-    .addSubcommand(s => s.setName("commit").setDescription("<:lockk:1555544494441635860> Lock all channels in the server. Use with caution!"))
-    .addSubcommand(s => s.setName("unlock").setDescription("<:lockk:1555544494441635860> Unlock all channels in the server."))
+    .addSubcommand(s => s.setName("commit").setDescription("<:lockk:1567796977809367122> Lock all channels in the server. Use with caution!"))
+    .addSubcommand(s => s.setName("unlock").setDescription("<:lockk:1567796977809367122> Unlock all channels in the server."))
     .addSubcommand(s => s.setName("blacklist-add").setDescription("Add a channel to the lockdown blacklist.")
       .addChannelOption(o => o.setName("channel").setDescription("Channel to protect from lockdowns.").setRequired(true)))
     .addSubcommand(s => s.setName("blacklist-remove").setDescription("Remove a channel from the lockdown blacklist.")
@@ -45,7 +45,7 @@ module.exports = {
         await data.save();
       }
       return interaction.reply({
-        components: [successContainer("<:restrict:1555544549105999962>  Channel Blacklisted",
+        components: [successContainer("<:restrict:1567797003638022166>  Channel Blacklisted",
           `${ch} will no longer be affected by server lockdowns.`, { accent, clientId: client.user.id })],
         flags: MessageFlags.IsComponentsV2,
       });
@@ -60,7 +60,7 @@ module.exports = {
       data.Channel = data.Channel.filter(id => id !== ch.id);
       await data.save();
       return interaction.reply({
-        components: [successContainer("<:restrict:1555544549105999962>  Channel Removed",
+        components: [successContainer("<:restrict:1567797003638022166>  Channel Removed",
           `${ch} has been removed from the lockdown blacklist.`, { accent, clientId: client.user.id })],
         flags: MessageFlags.IsComponentsV2,
       });
@@ -71,7 +71,7 @@ module.exports = {
       const data = await lockdownschema.findOne({ Guild: interaction.guild.id });
       const channels = data?.Channel?.map(id => `<#${id}>`).join(", ") || "None";
       return interaction.reply({
-        components: [successContainer("<:restrict:1555544549105999962>  Lockdown Blacklist",
+        components: [successContainer("<:restrict:1567797003638022166>  Lockdown Blacklist",
           `The following channels are protected from lockdowns:\n${channels}`, { accent, clientId: client.user.id })],
         flags: MessageFlags.IsComponentsV2,
       });
@@ -95,7 +95,7 @@ module.exports = {
       }
 
       const container = new ContainerBuilder().setAccentColor(ACCENT.error)
-        .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:lockk:1555544494441635860>  Server Locked Down"))
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:lockk:1567796977809367122>  Server Locked Down"))
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(
           `**${locked}** channel(s) have been locked.\n**Blacklisted** — ${blacklisted.length} channel(s) protected.\n**Initiated by** — ${interaction.user.tag}`
@@ -125,7 +125,7 @@ module.exports = {
       }
 
       const container = new ContainerBuilder().setAccentColor(ACCENT.success)
-        .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:lockk:1555544494441635860>  Server Unlocked"))
+        .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:lockk:1567796977809367122>  Server Unlocked"))
         .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true))
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(
           `**${unlocked}** channel(s) have been unlocked.\n**Restored by** — ${interaction.user.tag}`

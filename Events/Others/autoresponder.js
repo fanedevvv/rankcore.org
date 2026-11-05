@@ -126,7 +126,7 @@ function registerButtonHandler(client) {
       } else if (actionType === "dm") {
         const content = decodeURIComponent(parts[2] || "");
         await interaction.user.send(content).catch(() => {});
-        await interaction.reply({ content: "<a:tickyy:1555544712687915008> Check your DMs!", ephemeral: true });
+        await interaction.reply({ content: "<a:tickyy:1567797045253644368> Check your DMs!", ephemeral: true });
 
       } else if (actionType === "role_add") {
         const roleId = parts[2];
@@ -136,13 +136,13 @@ function registerButtonHandler(client) {
           return interaction.reply({ content: "You already have this role.", ephemeral: true });
         }
         await member.roles.add(roleId);
-        await interaction.reply({ content: "<a:tickyy:1555544712687915008> Role added!", ephemeral: true });
+        await interaction.reply({ content: "<a:tickyy:1567797045253644368> Role added!", ephemeral: true });
 
       } else if (actionType === "role_remove") {
         const roleId = parts[2];
         if (!roleId) return interaction.reply({ content: "No role configured.", ephemeral: true });
         await interaction.member.roles.remove(roleId);
-        await interaction.reply({ content: "<a:tickyy:1555544712687915008> Role removed!", ephemeral: true });
+        await interaction.reply({ content: "<a:tickyy:1567797045253644368> Role removed!", ephemeral: true });
 
       } else if (actionType === "role_toggle") {
         const roleId = parts[2];
@@ -150,16 +150,16 @@ function registerButtonHandler(client) {
         const member = interaction.member;
         if (member.roles.cache.has(roleId)) {
           await member.roles.remove(roleId);
-          await interaction.reply({ content: "<a:tickyy:1555544712687915008> Role removed!", ephemeral: true });
+          await interaction.reply({ content: "<a:tickyy:1567797045253644368> Role removed!", ephemeral: true });
         } else {
           await member.roles.add(roleId);
-          await interaction.reply({ content: "<a:tickyy:1555544712687915008> Role added!", ephemeral: true });
+          await interaction.reply({ content: "<a:tickyy:1567797045253644368> Role added!", ephemeral: true });
         }
       }
     } catch (err) {
       console.error("[AutoresponderButtonHandler]", err.message);
       if (!interaction.replied && !interaction.deferred) {
-        await interaction.reply({ content: "<:crossy:1555544390221562048> An error occurred.", ephemeral: true }).catch(() => {});
+        await interaction.reply({ content: "<:crossy:1567796959648030831> An error occurred.", ephemeral: true }).catch(() => {});
       }
     }
   });

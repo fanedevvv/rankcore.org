@@ -36,9 +36,9 @@ const {
             name: `System Status`,
             value: data
               ? `\`\`\`ansi
-  \u001b[32m□ <:LEgreen:1555544256356159600> SYSTEM ONLINE\n\u001b[32m├───> All Systems Operational\n\u001b[32m├───> Features: Fully Available\n\u001b[32m└───> Updates: Real-time Enabled\`\`\``
+  \u001b[32m□ <:LEgreen:1567796933307666515> SYSTEM ONLINE\n\u001b[32m├───> All Systems Operational\n\u001b[32m├───> Features: Fully Available\n\u001b[32m└───> Updates: Real-time Enabled\`\`\``
               : `\`\`\`ansi
-  \u001b[32m□ <:LEred:1555544262123323422> SYSTEM OFFLINE\n\u001b[32m├───> Features: NOT CONFIGURED\n\u001b[32m└───> Updates: Disabled\`\`\``,
+  \u001b[32m□ <:LEred:1567796934545121280> SYSTEM OFFLINE\n\u001b[32m├───> Features: NOT CONFIGURED\n\u001b[32m└───> Updates: Disabled\`\`\``,
           },
           {
             name: `Active Configuration`,
@@ -128,7 +128,7 @@ const {
               embed.spliceFields(0, 2, {
                 name: `System Status`,
                 value: `\`\`\`ansi
-  \u001b[32m□ <:LEgreen:1555544256356159600> SYSTEM ONLINE\n\u001b[32m├───> All Systems Operational\n\u001b[32m├───> Features: Fully Available\n\u001b[32m└───> Updates: Real-time Enabled\`\`\``,
+  \u001b[32m□ <:LEgreen:1567796933307666515> SYSTEM ONLINE\n\u001b[32m├───> All Systems Operational\n\u001b[32m├───> Features: Fully Available\n\u001b[32m└───> Updates: Real-time Enabled\`\`\``,
               }, {
                 name: `Active Configuration`,
                 value: `\`\`\`yml\n"channel": "${channel.id}"\n"blacklisted-users": "0"\`\`\``,
@@ -304,7 +304,7 @@ const {
             embed.spliceFields(0, 2, {
               name: `System Status`,
               value: `\`\`\`ansi
-  \u001b[32m□ <:LEred:1555544262123323422> SYSTEM OFFLINE\n\u001b[32m├───> Features: NOT CONFIGURED\n\u001b[32m└───> Updates: Disabled\`\`\``,
+  \u001b[32m□ <:LEred:1567796934545121280> SYSTEM OFFLINE\n\u001b[32m├───> Features: NOT CONFIGURED\n\u001b[32m└───> Updates: Disabled\`\`\``,
             }, {
               name: `Active Configuration`,
               value: `\`\`\`yml\n"channel": "Not Configured"\n"blacklisted-users": "0"\`\`\``,

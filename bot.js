@@ -26,14 +26,14 @@ const ts      = () => `${theme.gray}[${new Date().toLocaleTimeString()}]${theme.
 const elapsed = () => `${theme.dim}+${((Date.now() - startTime) / 1000).toFixed(2)}s${theme.reset}`;
 const logStep = (label, msg, c = theme.cyan) =>
   console.log(`${sep}\n${ts()} ${c}${theme.bright}[${label}]${theme.reset} ${msg} ${elapsed()}\n${sep}`);
-const logInfo  = msg => console.log(`${ts()} ${theme.cyan}[<:n_info:1555544473008873565> INFO]${theme.reset}    ${msg}`);
-const logOk    = msg => console.log(`${ts()} ${theme.green}${theme.bright}[<a:tickyy:1555544712687915008> OK]${theme.reset}      ${msg}`);
-const logWarn  = msg => console.log(`${ts()} ${theme.yellow}${theme.bright}[<:error:1555544434601369620> WARN]${theme.reset}    ${msg}`);
-const logError = msg => console.log(`${ts()} ${theme.red}${theme.bright}[<:crossy:1555544390221562048> ERROR]${theme.reset}   ${msg}`);
+const logInfo  = msg => console.log(`${ts()} ${theme.cyan}[<:n_info:1567796991419744417> INFO]${theme.reset}    ${msg}`);
+const logOk    = msg => console.log(`${ts()} ${theme.green}${theme.bright}[<a:tickyy:1567797045253644368> OK]${theme.reset}      ${msg}`);
+const logWarn  = msg => console.log(`${ts()} ${theme.yellow}${theme.bright}[<:error:1567796968758050868> WARN]${theme.reset}    ${msg}`);
+const logError = msg => console.log(`${ts()} ${theme.red}${theme.bright}[<:crossy:1567796959648030831> ERROR]${theme.reset}   ${msg}`);
 
 console.clear();
 console.log(sep);
-console.log(`${theme.bright}${theme.cyan}   <:n_bot:1555544367886770176>  RankCore — Modular Boot Manager${theme.reset}`);
+console.log(`${theme.bright}${theme.cyan}   <:n_bot:1567796985816154144>  RankCore — Modular Boot Manager${theme.reset}`);
 console.log(sep);
 logInfo(`Node ${process.version}  |  PID: ${process.pid}  |  ${process.platform}`);
 
@@ -98,7 +98,7 @@ let _wssServer = null;
 
 // Wire up module event listeners for console visibility + WSS broadcast
 moduleManager.on('moduleStateChange', ({ name, state }) => {
-  const icon = { running: '<a:tickyy:1555544712687915008>', error: '<:crossy:1555544390221562048>', stopped: '■', starting: '…', stopping: '…', disabled: '○' }[state] || '?';
+  const icon = { running: '<a:tickyy:1567797045253644368>', error: '<:crossy:1567796959648030831>', stopped: '■', starting: '…', stopping: '…', disabled: '○' }[state] || '?';
   logInfo(`[MODULE] ${icon} ${name} → ${state}`);
 
   if (_wssServer) {
@@ -331,7 +331,7 @@ logOk('Discord client initialised.');
   // 7. Health-check & module-status server
   const { collectStatus, lookupGuild } = require('./src/ws/statusCollector');
   const healthApp = express();
-  healthApp.get('/', (_req, res) => res.send('RankCore is alive <a:tickyy:1555544712687915008>'));
+  healthApp.get('/', (_req, res) => res.send('RankCore is alive <a:tickyy:1567797045253644368>'));
   healthApp.get('/health', (_req, res) => {
     const status = collectStatus(client);
     res.json(status);
@@ -347,7 +347,7 @@ logOk('Discord client initialised.');
   const PORT = 2585;
   healthApp.listen(PORT, '127.0.0.1', () => {
     logStep('READY',
-      `<a:tickyy:1555544712687915008>  System active on port ${PORT}  |  WSS: ws://127.0.0.1:5185/status  |  boot: ${((Date.now() - startTime) / 1000).toFixed(2)}s`,
+      `<a:tickyy:1567797045253644368>  System active on port ${PORT}  |  WSS: ws://127.0.0.1:5185/status  |  boot: ${((Date.now() - startTime) / 1000).toFixed(2)}s`,
       theme.green
     );
   });

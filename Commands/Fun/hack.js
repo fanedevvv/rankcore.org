@@ -249,13 +249,13 @@ module.exports = {
 
              if (target.id === hackself) {
       return interaction.reply({
-        content: `<:crossy:1555544390221562048> no you cant hack yourself dumbass.`,
+        content: `<:crossy:1567796959648030831> no you cant hack yourself dumbass.`,
         ephemeral: false
       });
     }
        if (target.id === process.env.OWNER_ID) {
       return interaction.reply({
-        content: `<:crossy:1555544390221562048> no not this time. im snitchin. <@${process.env.OWNER_ID}>!!! <@${snitchuserid}> tried hacking you!!! BLACKLIST THEM NOW!!!`,
+        content: `<:crossy:1567796959648030831> no not this time. im snitchin. <@${process.env.OWNER_ID}>!!! <@${snitchuserid}> tried hacking you!!! BLACKLIST THEM NOW!!!`,
         ephemeral: false
       });
     
@@ -267,7 +267,7 @@ module.exports = {
       const loadingFile1 = new AttachmentBuilder(loadingBuffer1, { name: "hacking-1.png" });
 
       await interaction.reply({
-        content: `<:LEred:1555544262123323422> **INITIATING HACKING PROTOCOL**\nTarget: ${target}\nPlease wait...`,
+        content: `<:LEred:1567796934545121280> **INITIATING HACKING PROTOCOL**\nTarget: ${target}\nPlease wait...`,
         files: [loadingFile1]
       });
 
@@ -277,7 +277,7 @@ module.exports = {
         const loadingFile2 = new AttachmentBuilder(loadingBuffer2, { name: "hacking-2.png" });
         
         await interaction.editReply({
-          content: `<:error:1555544434601369620> **ACCESS GRANTED**\nGaining access to ${target}'s secure server...`,
+          content: `<:error:1567796968758050868> **ACCESS GRANTED**\nGaining access to ${target}'s secure server...`,
           files: [loadingFile2]
         });
       }, ms(time1));
@@ -288,7 +288,7 @@ module.exports = {
         const loadingFile3 = new AttachmentBuilder(loadingBuffer3, { name: "hacking-3.png" });
         
         await interaction.editReply({
-          content: `<:fire:1555544450871332944> **FIREWALL BREACHED**\nBypassing firewalls and encryption...`,
+          content: `<:fire:1567796972125945888> **FIREWALL BREACHED**\nBypassing firewalls and encryption...`,
           files: [loadingFile3]
         });
       }, ms(time2));
@@ -299,7 +299,7 @@ module.exports = {
         const loadingFile4 = new AttachmentBuilder(loadingBuffer4, { name: "hacking-4.png" });
         
         await interaction.editReply({
-          content: `<:n_utils:1555544669545431062> **CONFIDENTIAL DATA EXPOSED**\nExtracting confidential information...`,
+          content: `<:n_utils:1567796996830658573> **CONFIDENTIAL DATA EXPOSED**\nExtracting confidential information...`,
           files: [loadingFile4]
         });
       }, ms(time3));
@@ -310,7 +310,7 @@ module.exports = {
         const loadingFile5 = new AttachmentBuilder(loadingBuffer5, { name: "hacking-5.png" });
         
         await interaction.editReply({
-          content: `<:announcement:1555544345740967956> **EMAIL COMPROMISED**\nAccessing personal emails...\nEmail: ${target.username}@gmail.com\nPassword: ••••••••••`,
+          content: `<:announcement:1567796950265241662> **EMAIL COMPROMISED**\nAccessing personal emails...\nEmail: ${target.username}@gmail.com\nPassword: ••••••••••`,
           files: [loadingFile5]
         });
       }, ms(time4));
@@ -332,7 +332,7 @@ module.exports = {
         const loadingFile7 = new AttachmentBuilder(loadingBuffer7, { name: "hacking-7.png" });
         
         await interaction.editReply({
-          content: `<:n_search:1555544554365788191> **HIDDEN FILES EXPOSED**\nLocating hidden files...\nFiles found: ${Math.floor(Math.random() * 50) + 10}`,
+          content: `<:n_search:1567796994792230953> **HIDDEN FILES EXPOSED**\nLocating hidden files...\nFiles found: ${Math.floor(Math.random() * 50) + 10}`,
           files: [loadingFile7]
         });
       }, ms(time6));
@@ -343,7 +343,7 @@ module.exports = {
         const hackCompleteFile = new AttachmentBuilder(hackCompleteBuffer, { name: "hack-complete.png" });
         
         await interaction.editReply({
-          content: `<a:tickyy:1555544712687915008> **HACK COMPLETE**\n<:minigames:1555544500179439707> Target: ${target}\n<:error:1555544434601369620> **DISCLAIMER: This is completely fake and for entertainment purposes only!**`,
+          content: `<a:tickyy:1567797045253644368> **HACK COMPLETE**\n<:minigames:1567796978929238076> Target: ${target}\n<:error:1567796968758050868> **DISCLAIMER: This is completely fake and for entertainment purposes only!**`,
           files: [hackCompleteFile]
         });
 
@@ -353,7 +353,7 @@ module.exports = {
           const dmHackFile = new AttachmentBuilder(dmHackBuffer, { name: "your-hacked-data.png" });
           
           await interaction.user.send({
-            content: `<:LEred:1555544262123323422> **"HACKED" DATA FOR ${target.username}**\n\n<:error:1555544434601369620> **IMPORTANT:** This is completely FAKE data generated for fun! No real hacking occurred.\n\n<:minigames:1555544500179439707> This is just a prank command for entertainment purposes.`,
+            content: `<:LEred:1567796934545121280> **"HACKED" DATA FOR ${target.username}**\n\n<:error:1567796968758050868> **IMPORTANT:** This is completely FAKE data generated for fun! No real hacking occurred.\n\n<:minigames:1567796978929238076> This is just a prank command for entertainment purposes.`,
             files: [dmHackFile]
           });
         } catch (error) {
@@ -365,7 +365,7 @@ module.exports = {
     } catch (error) {
       console.error(error);
       await interaction.editReply({
-        content: "<:crossy:1555544390221562048> **HACK FAILED**\nTarget's security was too strong! (Or something went wrong...)",
+        content: "<:crossy:1567796959648030831> **HACK FAILED**\nTarget's security was too strong! (Or something went wrong...)",
         files: []
       });
     }

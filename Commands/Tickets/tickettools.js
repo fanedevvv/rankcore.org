@@ -577,7 +577,7 @@ async function handleCloseRequest(interaction, guild, channel, ticketData, membe
 
     const embed = new EmbedBuilder()
         .setColor(0xFFB347)
-        .setTitle('<:announcement:1555544345740967956> Close Request')
+        .setTitle('<:announcement:1567796950265241662> Close Request')
         .setDescription(
             `${owner ? owner.toString() : `<@${ticketData.OwnerID}>`} — staff believe your issue has been resolved.\n\n` +
             `Please confirm below. If you still need help, click **Decline** and describe what's outstanding.`
@@ -590,12 +590,12 @@ async function handleCloseRequest(interaction, guild, channel, ticketData, membe
             .setCustomId(`ticket-close-req-confirm:${ticketData.OwnerID}`)
             .setLabel('Yes, close my ticket')
             .setStyle(ButtonStyle.Danger)
-            .setEmoji(parseEmoji('<:lockk:1555544494441635860>')),
+            .setEmoji(parseEmoji('<:lockk:1567796977809367122>')),
         new ButtonBuilder()
             .setCustomId(`ticket-close-req-decline:${ticketData.OwnerID}`)
             .setLabel('No, I still need help')
             .setStyle(ButtonStyle.Secondary)
-            .setEmoji(parseEmoji('<:restrict:1555544549105999962>')),
+            .setEmoji(parseEmoji('<:restrict:1567797003638022166>')),
     );
 
     await interaction.reply({ embeds: [embed], components: [row] });

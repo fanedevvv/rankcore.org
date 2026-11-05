@@ -19,7 +19,7 @@ async function dashboardRedirect(interaction, featureName, path) {
 
   const embed = new EmbedBuilder()
     .setColor(0x6c63ff)
-    .setTitle(`<:n_utils:1555544669545431062> Configure ${featureName}`)
+    .setTitle(`<:n_utils:1567796996830658573> Configure ${featureName}`)
     .setDescription(
       `Setup commands have moved to the **Dashboard** for a better experience.\n\n` +
       `Use the link below to configure **${featureName}** with a full visual editor, live previews, and more.\n\n` +

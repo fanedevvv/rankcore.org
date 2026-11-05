@@ -40,7 +40,7 @@ module.exports = {
         return ephErr("Already Has Role", `${user.tag} already has ${role}.`);
       await member.roles.add(role, `Role added by ${interaction.user.tag}`);
       return interaction.reply({
-        components: [successContainer("<:minigames:1555544500179439707>  Role Added", `${role} has been added to **${user.tag}**.`, { accent, clientId: client.user.id })],
+        components: [successContainer("<:minigames:1567796978929238076>  Role Added", `${role} has been added to **${user.tag}**.`, { accent, clientId: client.user.id })],
         flags: MessageFlags.IsComponentsV2,
       });
     }
@@ -54,7 +54,7 @@ module.exports = {
         return ephErr("Role Not Found", `${user.tag} does not have ${role}.`);
       await member.roles.remove(role, `Role removed by ${interaction.user.tag}`);
       return interaction.reply({
-        components: [successContainer("<:minigames:1555544500179439707>  Role Removed", `${role} has been removed from **${user.tag}**.`, { accent, clientId: client.user.id })],
+        components: [successContainer("<:minigames:1567796978929238076>  Role Removed", `${role} has been removed from **${user.tag}**.`, { accent, clientId: client.user.id })],
         flags: MessageFlags.IsComponentsV2,
       });
     }
@@ -64,7 +64,7 @@ module.exports = {
       await interaction.guild.members.fetch();
       const count = interaction.guild.members.cache.filter(m => m.roles.cache.has(role.id)).size;
       return interaction.reply({
-        components: [successContainer("<:minigames:1555544500179439707>  Role Members", `**${role.name}** has **${count}** member(s).`, {
+        components: [successContainer("<:minigames:1567796978929238076>  Role Members", `**${role.name}** has **${count}** member(s).`, {
           accent, clientId: client.user.id,
           extra: `**Role** — ${role}\n**Color** — \`${role.hexColor}\`\n**Hoisted** — ${role.hoist ? "Yes" : "No"}\n**Position** — ${role.position}`,
         })],

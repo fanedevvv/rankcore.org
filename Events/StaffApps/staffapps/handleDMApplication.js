@@ -32,7 +32,7 @@ async function handleDMApplication(interaction, panel, panelId) {
 
   if (activeDMSessions.has(userId)) {
     return ephemeralReply(
-      "<:error:1555544434601369620> You already have an active application in your DMs. Please finish or wait for it to time out."
+      "<:error:1567796968758050868> You already have an active application in your DMs. Please finish or wait for it to time out."
     );
   }
 
@@ -42,7 +42,7 @@ async function handleDMApplication(interaction, panel, panelId) {
     dmChannel = await interaction.user.createDM();
   } catch {
     return ephemeralReply(
-      "<:crossy:1555544390221562048> I couldn't open a DM with you. Please enable DMs from server members and try again."
+      "<:crossy:1567796959648030831> I couldn't open a DM with you. Please enable DMs from server members and try again."
     );
   }
 
@@ -55,7 +55,7 @@ async function handleDMApplication(interaction, panel, panelId) {
     await dmChannel.send({
       embeds: [new EmbedBuilder()
         .setColor(panel.embedColor || "#6C53FF")
-        .setTitle(`${panel.emoji || "<:files:1555544445565407352>"} ${panel.name} Application`)
+        .setTitle(`${panel.emoji || "<:files:1567796970964394044>"} ${panel.name} Application`)
         .setDescription(
           `Welcome! You're applying for **${panel.name}** in **${interaction.guild.name}**.\n\n` +
           `I'll ask you **${questions.length} question${questions.length !== 1 ? "s" : ""}** one at a time.\n` +
@@ -68,7 +68,7 @@ async function handleDMApplication(interaction, panel, panelId) {
     activeDMSessions.set(userId, true);
 
     await ephemeralReply(
-      `<:announcement:1555544345740967956> I've sent you a DM to start your **${panel.name}** application! Check your DMs.`
+      `<:announcement:1567796950265241662> I've sent you a DM to start your **${panel.name}** application! Check your DMs.`
     );
 
     // ── Ask each question sequentially ───────────────────────────────────────
@@ -102,7 +102,7 @@ async function handleDMApplication(interaction, panel, panelId) {
           await dmChannel.send({
             embeds: [new EmbedBuilder()
               .setColor(0xef4444)
-              .setDescription("<:crossy:1555544390221562048> Application cancelled. You can restart it anytime from the server.")],
+              .setDescription("<:crossy:1567796959648030831> Application cancelled. You can restart it anytime from the server.")],
           });
           return;
         }
@@ -110,7 +110,7 @@ async function handleDMApplication(interaction, panel, panelId) {
         if (response.toLowerCase() === "skip" && !isMandatory) {
           answer = "";
         } else if (response.length === 0 && isMandatory) {
-          await dmChannel.send("<:error:1555544434601369620> This question is required. Please provide an answer.");
+          await dmChannel.send("<:error:1567796968758050868> This question is required. Please provide an answer.");
           i--; // re-ask
           continue;
         } else {
@@ -122,7 +122,7 @@ async function handleDMApplication(interaction, panel, panelId) {
         await dmChannel.send({
           embeds: [new EmbedBuilder()
             .setColor(0xf59e0b)
-            .setDescription("<:1430986244921495654:1555544239792980044> Application timed out (5 minutes per question). Please restart from the server.")],
+            .setDescription("<:1430986244921495654:1567796929587576852> Application timed out (5 minutes per question). Please restart from the server.")],
         });
         return;
       }
@@ -134,7 +134,7 @@ async function handleDMApplication(interaction, panel, panelId) {
         await dmChannel.send({
           embeds: [new EmbedBuilder()
             .setColor(0x22c55e)
-            .setDescription(`<a:tickyy:1555544712687915008> Answer recorded! Moving to question **${i + 2}**...`)],
+            .setDescription(`<a:tickyy:1567797045253644368> Answer recorded! Moving to question **${i + 2}**...`)],
         });
       }
     }
@@ -154,7 +154,7 @@ async function handleDMApplication(interaction, panel, panelId) {
       await dmChannel.send({
         embeds: [new EmbedBuilder()
           .setColor(0xf59e0b)
-          .setDescription("<:error:1555544434601369620> Your application was already submitted. Please wait before trying again.")],
+          .setDescription("<:error:1567796968758050868> Your application was already submitted. Please wait before trying again.")],
       });
       return;
     }
@@ -216,10 +216,10 @@ async function handleDMApplication(interaction, panel, panelId) {
     await dmChannel.send({
       embeds: [new EmbedBuilder()
         .setColor(0x22c55e)
-        .setTitle("<a:tickyy:1555544712687915008> Application Submitted!")
+        .setTitle("<a:tickyy:1567797045253644368> Application Submitted!")
         .setDescription(
           `Your **${panel.name}** application for **${interaction.guild.name}** has been submitted.\n\n` +
-          `You'll receive a DM when your application has been reviewed. Good luck! <:eco:1555544429253890050>`
+          `You'll receive a DM when your application has been reviewed. Good luck! <:eco:1567796967197900842>`
         )
         .setFooter({ text: `Submission ID: ${submissionId}` })
         .setTimestamp()],
@@ -231,16 +231,16 @@ async function handleDMApplication(interaction, panel, panelId) {
     if (isDmDisabled) {
       try {
         if (interaction.deferred || interaction.replied) {
-          await interaction.followUp({ content: "<:crossy:1555544390221562048> Your DMs are disabled. Please enable **Allow direct messages from server members** in your privacy settings and try again.", flags: MessageFlags.Ephemeral });
+          await interaction.followUp({ content: "<:crossy:1567796959648030831> Your DMs are disabled. Please enable **Allow direct messages from server members** in your privacy settings and try again.", flags: MessageFlags.Ephemeral });
         } else {
-          await interaction.reply({ content: "<:crossy:1555544390221562048> Your DMs are disabled. Please enable **Allow direct messages from server members** in your privacy settings and try again.", flags: MessageFlags.Ephemeral });
+          await interaction.reply({ content: "<:crossy:1567796959648030831> Your DMs are disabled. Please enable **Allow direct messages from server members** in your privacy settings and try again.", flags: MessageFlags.Ephemeral });
         }
       } catch { /* interaction already expired */ }
     } else {
       console.error("[StaffApps DM Flow]", err);
       try {
         await dmChannel.send(
-          "<:crossy:1555544390221562048> Something went wrong during your application. Please try again from the server."
+          "<:crossy:1567796959648030831> Something went wrong during your application. Please try again from the server."
         );
       } catch { /* DMs closed mid-session */ }
     }

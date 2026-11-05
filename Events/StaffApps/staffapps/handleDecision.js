@@ -63,11 +63,11 @@ async function handleDecision(interaction, submissionId, decision) {
     const dmEnabled = decision === "accepted" ? panel.dmOnAccept : panel.dmOnDeny;
     if (dmEnabled) {
       const dmEmbed = new EmbedBuilder()
-        .setTitle(`${panel.emoji || "<:files:1555544445565407352>"} Application Update — ${panel.name}`)
+        .setTitle(`${panel.emoji || "<:files:1567796970964394044>"} Application Update — ${panel.name}`)
         .setColor(decision === "accepted" ? "#53FF6C" : "#f87171")
         .setDescription(
           decision === "accepted"
-            ? `<:boost:1555544362455146576> Congratulations! Your **${panel.name}** application in **${interaction.guild.name}** has been **accepted**.${panel.staffRoleId ? "\nYou've been given the staff role." : ""}`
+            ? `<:boost:1567796953599836280> Congratulations! Your **${panel.name}** application in **${interaction.guild.name}** has been **accepted**.${panel.staffRoleId ? "\nYou've been given the staff role." : ""}`
             : `Your **${panel.name}** application in **${interaction.guild.name}** has been **denied**.`
         )
         .setTimestamp();
@@ -109,8 +109,8 @@ async function handleDecision(interaction, submissionId, decision) {
 
     return interaction.editReply({
       content: `${decision === "accepted"
-        ? "<a:tickyy:1555544712687915008> Accepted"
-        : "<:crossy:1555544390221562048> Denied"} — <@${submission.userId}> has been notified.`,
+        ? "<a:tickyy:1567797045253644368> Accepted"
+        : "<:crossy:1567796959648030831> Denied"} — <@${submission.userId}> has been notified.`,
     });
 
   } catch (err) {

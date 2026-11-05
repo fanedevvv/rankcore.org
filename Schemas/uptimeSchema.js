@@ -22,7 +22,7 @@ const uptimeSchema = new mongoose.Schema({
 
   AlertDM: { type: Boolean, default: true },
 
-  // <:announcement:1555544345740967956> NEW
+  // <:announcement:1567796950265241662> NEW
   AlertChannel: { type: String, default: null }, // channelId or null
 
   RecentPings: { type: [pingEntrySchema], default: [] }

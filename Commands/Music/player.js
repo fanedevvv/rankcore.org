@@ -29,28 +29,28 @@ function buildPlayerEmbed(player, client) {
   if (!track) {
     return new EmbedBuilder()
       .setColor(0x06b6d4)
-      .setTitle('<:n_music:1555544516746940416> Music Player')
+      .setTitle('<:n_music:1567796993403658261> Music Player')
       .setDescription('Nothing is playing right now. Use `/player play <song>` to start.')
       .setFooter({ text: 'RankCore Music' });
   }
 
-  const loopIcon = player.loop === 'track' ? '<:n_music:1555544516746940416>' : player.loop === 'queue' ? '<:n_music:1555544516746940416>' : '';
+  const loopIcon = player.loop === 'track' ? '<:n_music:1567796993403658261>' : player.loop === 'queue' ? '<:n_music:1567796993403658261>' : '';
   const autoplayOn = player.data?.get?.('autoplay') ?? false;
 
   return new EmbedBuilder()
     .setColor(0x06b6d4)
-    .setTitle('<:n_music:1555544516746940416> Now Playing')
+    .setTitle('<:n_music:1567796993403658261> Now Playing')
     .setDescription(`**[${track.title}](${track.uri})**\nby **${track.author}**`)
     .addFields(
-      { name: '<:1430986244921495654:1555544239792980044> Duration',   value: `\`${convertTime(track.length, true)}\``, inline: true },
-      { name: '<:n_music:1555544516746940416> Volume',    value: `\`${player.volume}%\``, inline: true },
-      { name: '<:files:1555544445565407352> Queue',     value: `\`${player.queue.size} track(s)\``, inline: true },
-      { name: '<:n_music:1555544516746940416> Loop',      value: loopIcon || '`Off`', inline: true },
-      { name: '<:n_music:1555544516746940416> Autoplay',  value: autoplayOn ? '`On`' : '`Off`', inline: true },
-      { name: '<:user:1555544664155889668> Requested', value: `<@${track.requester?.id ?? '0'}>`, inline: true },
+      { name: '<:1430986244921495654:1567796929587576852> Duration',   value: `\`${convertTime(track.length, true)}\``, inline: true },
+      { name: '<:n_music:1567796993403658261> Volume',    value: `\`${player.volume}%\``, inline: true },
+      { name: '<:files:1567796970964394044> Queue',     value: `\`${player.queue.size} track(s)\``, inline: true },
+      { name: '<:n_music:1567796993403658261> Loop',      value: loopIcon || '`Off`', inline: true },
+      { name: '<:n_music:1567796993403658261> Autoplay',  value: autoplayOn ? '`On`' : '`Off`', inline: true },
+      { name: '<:user:1567797032423264261> Requested', value: `<@${track.requester?.id ?? '0'}>`, inline: true },
     )
     .setThumbnail(track.thumbnail ?? null)
-    .setFooter({ text: `${player.paused ? '<:n_music:1555544516746940416> Paused' : '<:n_music:1555544516746940416> Playing'} • RankCore Music` })
+    .setFooter({ text: `${player.paused ? '<:n_music:1567796993403658261> Paused' : '<:n_music:1567796993403658261> Playing'} • RankCore Music` })
     .setTimestamp();
 }
 
@@ -60,18 +60,18 @@ function buildControlRow(player) {
 
   return [
     new ActionRowBuilder().addComponents(
-      new ButtonBuilder().setCustomId('mp_prev').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(ButtonStyle.Secondary),
-      new ButtonBuilder().setCustomId('mp_playpause').setEmoji(paused ? parseEmoji('<:n_music:1555544516746940416>') : parseEmoji('<:n_music:1555544516746940416>')).setStyle(paused ? ButtonStyle.Success : ButtonStyle.Primary),
-      new ButtonBuilder().setCustomId('mp_skip').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(ButtonStyle.Secondary),
-      new ButtonBuilder().setCustomId('mp_stop').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(ButtonStyle.Danger),
-      new ButtonBuilder().setCustomId('mp_shuffle').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder().setCustomId('mp_prev').setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder().setCustomId('mp_playpause').setEmoji(paused ? parseEmoji('<:n_music:1567796993403658261>') : parseEmoji('<:n_music:1567796993403658261>')).setStyle(paused ? ButtonStyle.Success : ButtonStyle.Primary),
+      new ButtonBuilder().setCustomId('mp_skip').setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder().setCustomId('mp_stop').setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(ButtonStyle.Danger),
+      new ButtonBuilder().setCustomId('mp_shuffle').setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(ButtonStyle.Secondary),
     ),
     new ActionRowBuilder().addComponents(
-      new ButtonBuilder().setCustomId('mp_voldown').setLabel('-10').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(ButtonStyle.Secondary),
-      new ButtonBuilder().setCustomId('mp_volup').setLabel('+10').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(ButtonStyle.Secondary),
-      new ButtonBuilder().setCustomId('mp_loop').setLabel(`Loop: ${loop === 'none' ? 'Off' : loop}`).setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(loop !== 'none' ? ButtonStyle.Success : ButtonStyle.Secondary),
-      new ButtonBuilder().setCustomId('mp_autoplay').setLabel('Autoplay').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(player?.data?.get?.('autoplay') ? ButtonStyle.Success : ButtonStyle.Secondary),
-      new ButtonBuilder().setCustomId('mp_queue').setLabel('Queue').setEmoji(parseEmoji('<:files:1555544445565407352>')).setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder().setCustomId('mp_voldown').setLabel('-10').setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder().setCustomId('mp_volup').setLabel('+10').setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder().setCustomId('mp_loop').setLabel(`Loop: ${loop === 'none' ? 'Off' : loop}`).setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(loop !== 'none' ? ButtonStyle.Success : ButtonStyle.Secondary),
+      new ButtonBuilder().setCustomId('mp_autoplay').setLabel('Autoplay').setEmoji(parseEmoji('<:n_music:1567796993403658261>')).setStyle(player?.data?.get?.('autoplay') ? ButtonStyle.Success : ButtonStyle.Secondary),
+      new ButtonBuilder().setCustomId('mp_queue').setLabel('Queue').setEmoji(parseEmoji('<:files:1567796970964394044>')).setStyle(ButtonStyle.Secondary),
     ),
   ];
 }
@@ -99,12 +99,12 @@ module.exports = {
     // ── PLAY ──────────────────────────────────────────────────────────────────
     if (search) {
       const { channel } = interaction.member.voice;
-      if (!channel) return interaction.reply({ content: '<:n_music:1555544516746940416> **Join a voice channel first!**', flags: MessageFlags.Ephemeral });
+      if (!channel) return interaction.reply({ content: '<:n_music:1567796993403658261> **Join a voice channel first!**', flags: MessageFlags.Ephemeral });
       if (!channel.permissionsFor(interaction.guild.members.me).has(PermissionsBitField.Flags.Connect)) {
-        return interaction.reply({ content: '<:lockk:1555544494441635860> **I can\'t join your voice channel — missing Connect permission.**', flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: '<:lockk:1567796977809367122> **I can\'t join your voice channel — missing Connect permission.**', flags: MessageFlags.Ephemeral });
       }
 
-      await interaction.reply({ content: `<:n_search:1555544554365788191> Searching for \`${search}\`…` });
+      await interaction.reply({ content: `<:n_search:1567796994792230953> Searching for \`${search}\`…` });
 
       let player;
       try {
@@ -117,22 +117,22 @@ module.exports = {
         });
       } catch (err) {
         console.error('[player] createPlayer error:', err);
-        return interaction.editReply({ content: '<:crossy:1555544390221562048> Could not join the voice channel. Try again.' });
+        return interaction.editReply({ content: '<:crossy:1567796959648030831> Could not join the voice channel. Try again.' });
       }
 
       const res = await player.search(search, { requester: interaction.user });
-      if (!res?.tracks?.length) return interaction.editReply({ content: '<:crossy:1555544390221562048> No results found.' });
+      if (!res?.tracks?.length) return interaction.editReply({ content: '<:crossy:1567796959648030831> No results found.' });
 
       if (res.type === 'PLAYLIST') {
         for (const t of res.tracks) player.queue.add(t);
         if (!player.playing && !player.paused) player.play();
         await interaction.editReply({
-          content: `<a:tickyy:1555544712687915008> **Playlist queued:** \`${res.playlistName}\` (${res.tracks.length} tracks)`,
+          content: `<a:tickyy:1567797045253644368> **Playlist queued:** \`${res.playlistName}\` (${res.tracks.length} tracks)`,
         });
       } else {
         player.queue.add(res.tracks[0]);
         if (!player.playing && !player.paused) player.play();
-        await interaction.editReply({ content: `<a:tickyy:1555544712687915008> **Queued:** \`${res.tracks[0].title}\`` });
+        await interaction.editReply({ content: `<a:tickyy:1567797045253644368> **Queued:** \`${res.tracks[0].title}\`` });
       }
 
       // Small delay to let the player start
@@ -144,7 +144,7 @@ module.exports = {
     if (!player) {
       return search
         ? null  // already replied above
-        : interaction.reply({ content: '<:n_music:1555544516746940416> Nothing is playing right now. Use `/player play <song>` to start!', flags: MessageFlags.Ephemeral });
+        : interaction.reply({ content: '<:n_music:1567796993403658261> Nothing is playing right now. Use `/player play <song>` to start!', flags: MessageFlags.Ephemeral });
     }
 
     // Destroy old panel in this guild if exists
@@ -192,7 +192,7 @@ module.exports = {
           if (!p) break;
           p.destroy();
           collector.stop();
-          return btn.update({ embeds: [new EmbedBuilder().setColor(0xef4444).setDescription('<:n_music:1555544516746940416> Music stopped.')], components: [] });
+          return btn.update({ embeds: [new EmbedBuilder().setColor(0xef4444).setDescription('<:n_music:1567796993403658261> Music stopped.')], components: [] });
 
         case 'mp_shuffle':
           if (!p || p.queue.size === 0) break;
@@ -236,10 +236,10 @@ module.exports = {
 
         case 'mp_queue': {
           const qSize = p?.queue?.size ?? 0;
-          if (!qSize) return btn.reply({ content: '<:files:1555544445565407352> The queue is empty.', flags: MessageFlags.Ephemeral });
+          if (!qSize) return btn.reply({ content: '<:files:1567796970964394044> The queue is empty.', flags: MessageFlags.Ephemeral });
           const lines = p.queue.slice(0, 10).map((t, i) => `**${i+1}.** ${t.title}`).join('\n');
           const more  = qSize > 10 ? `\n_…and ${qSize - 10} more_` : '';
-          return btn.reply({ content: `**<:files:1555544445565407352> Queue (${qSize} tracks):**\n${lines}${more}`, flags: MessageFlags.Ephemeral });
+          return btn.reply({ content: `**<:files:1567796970964394044> Queue (${qSize} tracks):**\n${lines}${more}`, flags: MessageFlags.Ephemeral });
         }
       }
 

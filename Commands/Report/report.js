@@ -12,13 +12,13 @@ const {
 const Report = require("../../Schemas/ReportSchema");
 
 const CATEGORY_LABELS = {
-    abuse:         "<:LEred:1555544262123323422> Abuse / Harassment",
-    spam:          "<:announcement:1555544345740967956> Spam / Flooding",
-    scam:          "<:Currency:1555544251268595792> Scam / Phishing",
-    impersonation: "<:minigames:1555544500179439707> Impersonation",
-    nsfw:          "<:restrict:1555544549105999962> NSFW / Inappropriate",
-    cheating:      "<:minigames:1555544500179439707> Cheating / Exploiting",
-    other:         "<:question:1555544543741476917> Other",
+    abuse:         "<:LEred:1567796934545121280> Abuse / Harassment",
+    spam:          "<:announcement:1567796950265241662> Spam / Flooding",
+    scam:          "<:Currency:1567796932041121873> Scam / Phishing",
+    impersonation: "<:minigames:1567796978929238076> Impersonation",
+    nsfw:          "<:restrict:1567797003638022166> NSFW / Inappropriate",
+    cheating:      "<:minigames:1567796978929238076> Cheating / Exploiting",
+    other:         "<:question:1567797002555621406> Other",
 };
 
 const CATEGORY_COLORS = {
@@ -58,13 +58,13 @@ module.exports = {
                         .setDescription("Type of report")
                         .setRequired(true)
                         .addChoices(
-                            { name: "<:LEred:1555544262123323422> Abuse / Harassment",  value: "abuse" },
-                            { name: "<:announcement:1555544345740967956> Spam / Flooding",     value: "spam" },
-                            { name: "<:Currency:1555544251268595792> Scam / Phishing",     value: "scam" },
-                            { name: "<:minigames:1555544500179439707> Impersonation",       value: "impersonation" },
-                            { name: "<:restrict:1555544549105999962> NSFW / Inappropriate",value: "nsfw" },
-                            { name: "<:minigames:1555544500179439707> Cheating / Exploiting",value: "cheating" },
-                            { name: "<:question:1555544543741476917> Other",               value: "other" },
+                            { name: "<:LEred:1567796934545121280> Abuse / Harassment",  value: "abuse" },
+                            { name: "<:announcement:1567796950265241662> Spam / Flooding",     value: "spam" },
+                            { name: "<:Currency:1567796932041121873> Scam / Phishing",     value: "scam" },
+                            { name: "<:minigames:1567796978929238076> Impersonation",       value: "impersonation" },
+                            { name: "<:restrict:1567797003638022166> NSFW / Inappropriate",value: "nsfw" },
+                            { name: "<:minigames:1567796978929238076> Cheating / Exploiting",value: "cheating" },
+                            { name: "<:question:1567797002555621406> Other",               value: "other" },
                         )
                 )
                 .addStringOption(opt =>
@@ -93,12 +93,12 @@ module.exports = {
                         .setDescription("Type of report")
                         .setRequired(true)
                         .addChoices(
-                            { name: "<:LEred:1555544262123323422> Abuse / Harassment",  value: "abuse" },
-                            { name: "<:announcement:1555544345740967956> Spam / Flooding",     value: "spam" },
-                            { name: "<:Currency:1555544251268595792> Scam / Phishing",     value: "scam" },
-                            { name: "<:minigames:1555544500179439707> Impersonation",       value: "impersonation" },
-                            { name: "<:restrict:1555544549105999962> NSFW / Inappropriate",value: "nsfw" },
-                            { name: "<:question:1555544543741476917> Other",               value: "other" },
+                            { name: "<:LEred:1567796934545121280> Abuse / Harassment",  value: "abuse" },
+                            { name: "<:announcement:1567796950265241662> Spam / Flooding",     value: "spam" },
+                            { name: "<:Currency:1567796932041121873> Scam / Phishing",     value: "scam" },
+                            { name: "<:minigames:1567796978929238076> Impersonation",       value: "impersonation" },
+                            { name: "<:restrict:1567797003638022166> NSFW / Inappropriate",value: "nsfw" },
+                            { name: "<:question:1567797002555621406> Other",               value: "other" },
                         )
                 )
                 .addStringOption(opt =>
@@ -140,13 +140,13 @@ module.exports = {
                 });
             }
 
-            const STATUS_EMOJI = { open: "<:error:1555544434601369620>", reviewing: "<:n_info:1555544473008873565>", resolved: "<:LEgreen:1555544256356159600>", dismissed: "<:dot:1555544412300378243>" };
+            const STATUS_EMOJI = { open: "<:error:1567796968758050868>", reviewing: "<:n_info:1567796991419744417>", resolved: "<:LEgreen:1567796933307666515>", dismissed: "<:dot:1567796963624226826>" };
 
             const embed = new EmbedBuilder()
-                .setTitle("<:files:1555544445565407352> Your Recent Reports")
+                .setTitle("<:files:1567796970964394044> Your Recent Reports")
                 .setColor(0x3b82f6)
                 .setDescription(reports.map(r => {
-                    const status = STATUS_EMOJI[r.status] ?? "<:error:1555544434601369620>";
+                    const status = STATUS_EMOJI[r.status] ?? "<:error:1567796968758050868>";
                     const date   = new Date(r.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
                     const target = r.targetType === "user" ? `User \`${r.targetId}\`` : `Server \`${r.targetId}\``;
                     const action = r.resolution?.action ? `\n> *Action: ${r.resolution.action}*` : "";
@@ -167,7 +167,7 @@ module.exports = {
             return interaction.reply({
                 embeds: [new EmbedBuilder()
                     .setColor(Colors.Red)
-                    .setTitle("<:n_loading:1555544489194688623> Too Many Reports")
+                    .setTitle("<:n_loading:1567796992556666982> Too Many Reports")
                     .setDescription("You can submit up to **3 reports per 24 hours**. Please try again later.")],
                 ephemeral: true,
             });
@@ -185,14 +185,14 @@ module.exports = {
             // Cannot report yourself
             if (targetUser.id === reporterId) {
                 return interaction.reply({
-                    embeds: [new EmbedBuilder().setColor(Colors.Red).setDescription("<:crossy:1555544390221562048> You cannot report yourself.")],
+                    embeds: [new EmbedBuilder().setColor(Colors.Red).setDescription("<:crossy:1567796959648030831> You cannot report yourself.")],
                     ephemeral: true,
                 });
             }
             // Cannot report bots
             if (targetUser.bot) {
                 return interaction.reply({
-                    embeds: [new EmbedBuilder().setColor(Colors.Red).setDescription("<:crossy:1555544390221562048> You cannot report a bot account.")],
+                    embeds: [new EmbedBuilder().setColor(Colors.Red).setDescription("<:crossy:1567796959648030831> You cannot report a bot account.")],
                     ephemeral: true,
                 });
             }
@@ -203,7 +203,7 @@ module.exports = {
             const rawId = interaction.options.getString("server_id").trim();
             if (!/^\d{17,20}$/.test(rawId)) {
                 return interaction.reply({
-                    embeds: [new EmbedBuilder().setColor(Colors.Red).setDescription("<:crossy:1555544390221562048> That doesn't look like a valid server ID.")],
+                    embeds: [new EmbedBuilder().setColor(Colors.Red).setDescription("<:crossy:1567796959648030831> That doesn't look like a valid server ID.")],
                     ephemeral: true,
                 });
             }
@@ -221,7 +221,7 @@ module.exports = {
             return interaction.reply({
                 embeds: [new EmbedBuilder()
                     .setColor(Colors.Orange)
-                    .setTitle("<:error:1555544434601369620> Duplicate Report")
+                    .setTitle("<:error:1567796968758050868> Duplicate Report")
                     .setDescription(`You already have an open report for this ${targetType} (\`${existing.reportId}\`).\nPlease wait for it to be reviewed before submitting another.`)],
                 ephemeral: true,
             });

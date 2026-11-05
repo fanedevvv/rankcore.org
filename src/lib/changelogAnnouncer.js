@@ -16,13 +16,13 @@ const INTERVAL_MS = 60 * 1000;
 const NEWS_URL    = 'https://rankcore.org/news';
 
 const TYPES = {
-  new:      { label: 'New',      emoji: '<:sparkles:1467860962794012914>', color: 0x22c55e },
-  improved: { label: 'Improved', emoji: '<:s_curveup:1555544960156311572>', color: 0x3b82f6 },
-  fixed:    { label: 'Fixed',    emoji: '<:check:1467858539774218526>',     color: 0x14b8a6 },
-  removed:  { label: 'Removed',  emoji: '<:trash:1467860200332464221>',     color: 0x94a3b8 },
-  update:   { label: 'Update',   emoji: '<:announcement:1555544345740967956>', color: 0xef4444 },
-  security: { label: 'Security', emoji: '<:warn:1467879228249735188>',      color: 0xf59e0b },
-  premium:  { label: 'Premium',  emoji: '<:premium:1467910095911256198>',   color: 0xc084fc },
+  new:      { label: 'New',      emoji: '<:sparkles:1567797006288560209>', color: 0x22c55e },
+  improved: { label: 'Improved', emoji: '<:s_curveup:1567797004875341994>', color: 0x3b82f6 },
+  fixed:    { label: 'Fixed',    emoji: '<:check:1567796957098025071>',     color: 0x14b8a6 },
+  removed:  { label: 'Removed',  emoji: '<:trash:1567797030150213713>',     color: 0x94a3b8 },
+  update:   { label: 'Update',   emoji: '<:announcement:1567796950265241662>', color: 0xef4444 },
+  security: { label: 'Security', emoji: '<:warn:1567797033224642605>',      color: 0xf59e0b },
+  premium:  { label: 'Premium',  emoji: '<:premium:1567797001473622066>',   color: 0xc084fc },
 };
 
 let running = false;

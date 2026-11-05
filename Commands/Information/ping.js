@@ -28,9 +28,9 @@ function pingDiscordAPI() {
 
 function latencyIcon(ms) {
   if (ms < 0)   return "❓";
-  if (ms < 100) return "<:LEgreen:1555544256356159600>";
+  if (ms < 100) return "<:LEgreen:1567796933307666515>";
   if (ms < 250) return "🟡"; // ← swap for your amber emoji ID
-  return "<:LEred:1555544262123323422>";
+  return "<:LEred:1567796934545121280>";
 }
 
 function statusLabel(ms) {
@@ -58,7 +58,7 @@ module.exports = {
         new ContainerBuilder()
           .setAccentColor(0x5865f2)
           .addTextDisplayComponents(
-            new TextDisplayBuilder().setContent("## <:ping:1555544527597604968>  Pinging…")
+            new TextDisplayBuilder().setContent("## <:ping:1567796998902521920>  Pinging…")
           )
           .addSeparatorComponents(sep())
           .addTextDisplayComponents(
@@ -93,7 +93,7 @@ module.exports = {
         new ContainerBuilder()
           .setAccentColor(color)
           .addTextDisplayComponents(
-            new TextDisplayBuilder().setContent("## <:ping:1555544527597604968>  Pong!")
+            new TextDisplayBuilder().setContent("## <:ping:1567796998902521920>  Pong!")
           )
           .addSeparatorComponents(sep())
           .addTextDisplayComponents(

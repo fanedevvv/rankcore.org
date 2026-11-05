@@ -42,10 +42,10 @@ const STATUS_COLOURS = {
 const STATUS_LABELS = {
   pending:      "Pending",
   under_review: "Under Review",
-  approved:     "<a:tickyy:1555544712687915008> Approved",
-  rejected:     "<:crossy:1555544390221562048> Rejected",
-  implemented:  "<:boost:1555544362455146576> Implemented",
-  duplicate:    "<:n_music:1555544516746940416> Duplicate",
+  approved:     "<a:tickyy:1567797045253644368> Approved",
+  rejected:     "<:crossy:1567796959648030831> Rejected",
+  implemented:  "<:boost:1567796953599836280> Implemented",
+  duplicate:    "<:n_music:1567796993403658261> Duplicate",
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -63,7 +63,7 @@ function buildSuggestionEmbed(entry, config, authorTag, authorAvatar) {
     .setDescription(`> ${entry.content}`)
     .addFields(
       { name: "Status",  value: STATUS_LABELS[entry.status] ?? entry.status, inline: true },
-      { name: "Votes",   value: `<:like:1555544483821527060> **${entry.upvotes}**  ·  <:dislike:1555544406394933249> **${entry.downvotes}**  ·  ${upPct}% approval`, inline: true },
+      { name: "Votes",   value: `<:like:1567796976542814269> **${entry.upvotes}**  ·  <:dislike:1567796962416132136> **${entry.downvotes}**  ·  ${upPct}% approval`, inline: true },
       { name: "\u200B",  value: bar },
     )
     .setFooter({ text: `Suggestion #${entry.number}${config.anonymousMode ? "" : `  ·  ${authorTag}`}` })
@@ -89,12 +89,12 @@ function buildVoteRow(entry) {
     new ButtonBuilder()
       .setCustomId(`suggest_up_${entry.messageId}`)
       .setLabel(`${entry.upvotes}`)
-      .setEmoji(parseEmoji("<:like:1555544483821527060>"))
+      .setEmoji(parseEmoji("<:like:1567796976542814269>"))
       .setStyle(ButtonStyle.Success),
     new ButtonBuilder()
       .setCustomId(`suggest_down_${entry.messageId}`)
       .setLabel(`${entry.downvotes}`)
-      .setEmoji(parseEmoji("<:dislike:1555544406394933249>"))
+      .setEmoji(parseEmoji("<:dislike:1567796962416132136>"))
       .setStyle(ButtonStyle.Danger),
   );
 }
@@ -105,17 +105,17 @@ function buildReviewRow(messageId) {
     new ButtonBuilder()
       .setCustomId(`suggest_approve_${messageId}`)
       .setLabel("Approve")
-      .setEmoji(parseEmoji("<a:tickyy:1555544712687915008>"))
+      .setEmoji(parseEmoji("<a:tickyy:1567797045253644368>"))
       .setStyle(ButtonStyle.Success),
     new ButtonBuilder()
       .setCustomId(`suggest_reject_${messageId}`)
       .setLabel("Reject")
-      .setEmoji(parseEmoji("<:crossy:1555544390221562048>"))
+      .setEmoji(parseEmoji("<:crossy:1567796959648030831>"))
       .setStyle(ButtonStyle.Danger),
     new ButtonBuilder()
       .setCustomId(`suggest_implement_${messageId}`)
       .setLabel("Implemented")
-      .setEmoji(parseEmoji("<:boost:1555544362455146576>"))
+      .setEmoji(parseEmoji("<:boost:1567796953599836280>"))
       .setStyle(ButtonStyle.Primary),
   );
 }
@@ -189,7 +189,7 @@ async function checkAutoActions(client, entry, config) {
     try {
       const ch = await client.channels.fetch(targetChannelId);
       if (ch) {
-        const label = newStatus === "approved" ? "<a:tickyy:1555544712687915008> Auto-approved" : "<:crossy:1555544390221562048> Auto-rejected";
+        const label = newStatus === "approved" ? "<a:tickyy:1567797045253644368> Auto-approved" : "<:crossy:1567796959648030831> Auto-rejected";
         await ch.send({
           embeds: [new EmbedBuilder()
             .setColor(STATUS_COLOURS[newStatus])
@@ -225,11 +225,11 @@ async function handleSuggestionButton(interaction, client) {
     ]);
 
     if (!entry || entry.status !== "pending") {
-      return interaction.followUp({ content: "<:crossy:1555544390221562048> This suggestion is no longer accepting votes.", flags: MessageFlags.Ephemeral });
+      return interaction.followUp({ content: "<:crossy:1567796959648030831> This suggestion is no longer accepting votes.", flags: MessageFlags.Ephemeral });
     }
 
     if (!config?.selfVoteAllowed && entry.authorId === interaction.user.id) {
-      return interaction.followUp({ content: "<:crossy:1555544390221562048> You cannot vote on your own suggestion.", flags: MessageFlags.Ephemeral });
+      return interaction.followUp({ content: "<:crossy:1567796959648030831> You cannot vote on your own suggestion.", flags: MessageFlags.Ephemeral });
     }
 
     const userId      = interaction.user.id;
@@ -241,8 +241,8 @@ async function handleSuggestionButton(interaction, client) {
       if (isUp) { entry.upvotes   = Math.max(0, entry.upvotes - 1);   entry.upvoterIds.pull(userId); }
       else       { entry.downvotes = Math.max(0, entry.downvotes - 1); entry.downvoterIds.pull(userId); }
     } else {
-      if (alreadyUp   && !config?.allowVoteChange && !isUp) return interaction.followUp({ content: "<:crossy:1555544390221562048> You cannot change your vote.", flags: MessageFlags.Ephemeral });
-      if (alreadyDown && !config?.allowVoteChange && isUp)  return interaction.followUp({ content: "<:crossy:1555544390221562048> You cannot change your vote.", flags: MessageFlags.Ephemeral });
+      if (alreadyUp   && !config?.allowVoteChange && !isUp) return interaction.followUp({ content: "<:crossy:1567796959648030831> You cannot change your vote.", flags: MessageFlags.Ephemeral });
+      if (alreadyDown && !config?.allowVoteChange && isUp)  return interaction.followUp({ content: "<:crossy:1567796959648030831> You cannot change your vote.", flags: MessageFlags.Ephemeral });
       if (alreadyUp)   { entry.upvotes   = Math.max(0, entry.upvotes - 1);   entry.upvoterIds.pull(userId); }
       if (alreadyDown) { entry.downvotes = Math.max(0, entry.downvotes - 1); entry.downvoterIds.pull(userId); }
       if (isUp)  { entry.upvotes++;   entry.upvoterIds.push(userId); }
@@ -264,7 +264,7 @@ async function handleSuggestionButton(interaction, client) {
 
     const config = await SuggestionConfig.findOne({ guildId }).lean();
     if (!isStaff(interaction.member, config?.staffRoleIds)) {
-      return interaction.followUp({ content: "<:crossy:1555544390221562048> You don't have permission to review suggestions.", flags: MessageFlags.Ephemeral });
+      return interaction.followUp({ content: "<:crossy:1567796959648030831> You don't have permission to review suggestions.", flags: MessageFlags.Ephemeral });
     }
 
     let action, msgId;
@@ -273,9 +273,9 @@ async function handleSuggestionButton(interaction, client) {
     else                                           { action = "rejected";    msgId = id.slice(15); }
 
     const entry = await SuggestionEntry.findOne({ guildId, messageId: msgId });
-    if (!entry) return interaction.followUp({ content: "<:crossy:1555544390221562048> Suggestion not found.", flags: MessageFlags.Ephemeral });
+    if (!entry) return interaction.followUp({ content: "<:crossy:1567796959648030831> Suggestion not found.", flags: MessageFlags.Ephemeral });
     if (entry.status !== "pending" && entry.status !== "under_review") {
-      return interaction.followUp({ content: `<:crossy:1555544390221562048> This suggestion is already **${entry.status}**.`, flags: MessageFlags.Ephemeral });
+      return interaction.followUp({ content: `<:crossy:1567796959648030831> This suggestion is already **${entry.status}**.`, flags: MessageFlags.Ephemeral });
     }
 
     entry.status     = action;
@@ -337,7 +337,7 @@ module.exports = {
       const config = await SuggestionConfig.findOne({ guildId }).lean();
       if (!config || !config.channelId) {
         return interaction.reply({
-          content: "<:crossy:1555544390221562048> The suggestion system has not been configured in this server yet.",
+          content: "<:crossy:1567796959648030831> The suggestion system has not been configured in this server yet.",
           flags: MessageFlags.Ephemeral,
         });
       }
@@ -348,19 +348,19 @@ module.exports = {
 
         if (config.minLength > 0 && text.length < config.minLength) {
           return interaction.reply({
-            content: `<:crossy:1555544390221562048> Your suggestion must be at least **${config.minLength}** characters.`,
+            content: `<:crossy:1567796959648030831> Your suggestion must be at least **${config.minLength}** characters.`,
             flags: MessageFlags.Ephemeral,
           });
         }
 
         if (config.requiredRoleIds?.length) {
           const hasRole = config.requiredRoleIds.some(id => interaction.member.roles.cache.has(id));
-          if (!hasRole) return interaction.reply({ content: "<:crossy:1555544390221562048> You don't have the required role to submit suggestions.", flags: MessageFlags.Ephemeral });
+          if (!hasRole) return interaction.reply({ content: "<:crossy:1567796959648030831> You don't have the required role to submit suggestions.", flags: MessageFlags.Ephemeral });
         }
 
         if (config.blockedRoleIds?.length) {
           const blocked = config.blockedRoleIds.some(id => interaction.member.roles.cache.has(id));
-          if (blocked) return interaction.reply({ content: "<:crossy:1555544390221562048> You are not allowed to submit suggestions in this server.", flags: MessageFlags.Ephemeral });
+          if (blocked) return interaction.reply({ content: "<:crossy:1567796959648030831> You are not allowed to submit suggestions in this server.", flags: MessageFlags.Ephemeral });
         }
 
         if (config.cooldownSeconds > 0) {
@@ -369,7 +369,7 @@ module.exports = {
             const elapsed = (Date.now() - new Date(cooldown.lastSentAt).getTime()) / 1000;
             if (elapsed < config.cooldownSeconds) {
               const remaining = Math.ceil(config.cooldownSeconds - elapsed);
-              return interaction.reply({ content: `<:n_loading:1555544489194688623> Please wait **${remaining}s** before submitting another suggestion.`, flags: MessageFlags.Ephemeral });
+              return interaction.reply({ content: `<:n_loading:1567796992556666982> Please wait **${remaining}s** before submitting another suggestion.`, flags: MessageFlags.Ephemeral });
             }
           }
         }
@@ -377,14 +377,14 @@ module.exports = {
         if (config.maxActiveSuggestions > 0) {
           const activeCount = await SuggestionEntry.countDocuments({ guildId, authorId: interaction.user.id, status: "pending" });
           if (activeCount >= config.maxActiveSuggestions) {
-            return interaction.reply({ content: `<:crossy:1555544390221562048> You already have **${activeCount}** active suggestion(s). Wait for them to be resolved first.`, flags: MessageFlags.Ephemeral });
+            return interaction.reply({ content: `<:crossy:1567796959648030831> You already have **${activeCount}** active suggestion(s). Wait for them to be resolved first.`, flags: MessageFlags.Ephemeral });
           }
         }
 
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         const channel = await client.channels.fetch(config.channelId).catch(() => null);
-        if (!channel) return interaction.editReply("<:crossy:1555544390221562048> The suggestion channel no longer exists. Please contact a server admin.");
+        if (!channel) return interaction.editReply("<:crossy:1567796959648030831> The suggestion channel no longer exists. Please contact a server admin.");
 
         const count  = await SuggestionEntry.countDocuments({ guildId });
         const number = count + 1;
@@ -437,47 +437,47 @@ module.exports = {
 
         return interaction.editReply(
           config.reviewMode
-            ? "<a:tickyy:1555544712687915008> Your suggestion has been submitted for review!"
-            : `<a:tickyy:1555544712687915008> Your suggestion has been posted as **#${number}**!`
+            ? "<a:tickyy:1567797045253644368> Your suggestion has been submitted for review!"
+            : `<a:tickyy:1567797045253644368> Your suggestion has been posted as **#${number}**!`
         );
       }
 
       // ── /suggestion edit ───────────────────────────────────────────────────
       if (sub === "edit") {
-        if (!config.allowEdit) return interaction.reply({ content: "<:crossy:1555544390221562048> Editing suggestions is disabled in this server.", flags: MessageFlags.Ephemeral });
+        if (!config.allowEdit) return interaction.reply({ content: "<:crossy:1567796959648030831> Editing suggestions is disabled in this server.", flags: MessageFlags.Ephemeral });
         const msgId   = interaction.options.getString("message_id", true).trim();
         const newText = interaction.options.getString("new_text", true);
         const entry   = await SuggestionEntry.findOne({ guildId, messageId: msgId });
-        if (!entry) return interaction.reply({ content: "<:crossy:1555544390221562048> Suggestion not found.", flags: MessageFlags.Ephemeral });
-        if (entry.authorId !== interaction.user.id) return interaction.reply({ content: "<:crossy:1555544390221562048> You can only edit your own suggestions.", flags: MessageFlags.Ephemeral });
-        if (entry.upvotes > 0 || entry.downvotes > 0) return interaction.reply({ content: "<:crossy:1555544390221562048> You cannot edit a suggestion that has already received votes.", flags: MessageFlags.Ephemeral });
+        if (!entry) return interaction.reply({ content: "<:crossy:1567796959648030831> Suggestion not found.", flags: MessageFlags.Ephemeral });
+        if (entry.authorId !== interaction.user.id) return interaction.reply({ content: "<:crossy:1567796959648030831> You can only edit your own suggestions.", flags: MessageFlags.Ephemeral });
+        if (entry.upvotes > 0 || entry.downvotes > 0) return interaction.reply({ content: "<:crossy:1567796959648030831> You cannot edit a suggestion that has already received votes.", flags: MessageFlags.Ephemeral });
         entry.content = newText;
         await entry.save();
         await updatePublicMessage(client, entry, config, interaction.user.tag, interaction.user.displayAvatarURL());
-        return interaction.reply({ content: "<a:tickyy:1555544712687915008> Your suggestion has been updated.", flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: "<a:tickyy:1567797045253644368> Your suggestion has been updated.", flags: MessageFlags.Ephemeral });
       }
 
       // ── /suggestion delete ─────────────────────────────────────────────────
       if (sub === "delete") {
         const msgId = interaction.options.getString("message_id", true).trim();
         const entry = await SuggestionEntry.findOne({ guildId, messageId: msgId });
-        if (!entry) return interaction.reply({ content: "<:crossy:1555544390221562048> Suggestion not found.", flags: MessageFlags.Ephemeral });
+        if (!entry) return interaction.reply({ content: "<:crossy:1567796959648030831> Suggestion not found.", flags: MessageFlags.Ephemeral });
         const canDelete = entry.authorId === interaction.user.id || isStaff(interaction.member, config.staffRoleIds);
-        if (!canDelete) return interaction.reply({ content: "<:crossy:1555544390221562048> You can only delete your own suggestions.", flags: MessageFlags.Ephemeral });
+        if (!canDelete) return interaction.reply({ content: "<:crossy:1567796959648030831> You can only delete your own suggestions.", flags: MessageFlags.Ephemeral });
         try {
           const ch  = client.channels.cache.get(entry.channelId) ?? await client.channels.fetch(entry.channelId);
           const msg = ch?.messages.cache.get(entry.messageId) ?? await ch?.messages.fetch(entry.messageId);
           await msg?.delete();
         } catch {}
         await SuggestionEntry.deleteOne({ _id: entry._id });
-        return interaction.reply({ content: "<a:tickyy:1555544712687915008> Suggestion deleted.", flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: "<a:tickyy:1567797045253644368> Suggestion deleted.", flags: MessageFlags.Ephemeral });
       }
 
       // ── /suggestion info ───────────────────────────────────────────────────
       if (sub === "info") {
         const msgId = interaction.options.getString("message_id", true).trim();
         const entry = await SuggestionEntry.findOne({ guildId, messageId: msgId }).lean();
-        if (!entry) return interaction.reply({ content: "<:crossy:1555544390221562048> Suggestion not found.", flags: MessageFlags.Ephemeral });
+        if (!entry) return interaction.reply({ content: "<:crossy:1567796959648030831> Suggestion not found.", flags: MessageFlags.Ephemeral });
         const total = entry.upvotes + entry.downvotes;
         const embed = new EmbedBuilder()
           .setColor(STATUS_COLOURS[entry.status] ?? 0x5865f2)
@@ -485,8 +485,8 @@ module.exports = {
           .setDescription(`> ${entry.content}`)
           .addFields(
             { name: "Status",      value: STATUS_LABELS[entry.status] ?? entry.status, inline: true },
-            { name: "<:like:1555544483821527060> Upvotes",  value: String(entry.upvotes),   inline: true },
-            { name: "<:dislike:1555544406394933249> Downvotes",value: String(entry.downvotes), inline: true },
+            { name: "<:like:1567796976542814269> Upvotes",  value: String(entry.upvotes),   inline: true },
+            { name: "<:dislike:1567796962416132136> Downvotes",value: String(entry.downvotes), inline: true },
             { name: "Total Votes", value: String(total),           inline: true },
             { name: "Approval",    value: total > 0 ? `${Math.round((entry.upvotes / total) * 100)}%` : "N/A", inline: true },
             { name: "Submitted",   value: `<t:${Math.floor(new Date(entry.createdAt).getTime() / 1000)}:R>`, inline: true },
@@ -497,53 +497,53 @@ module.exports = {
 
       // ── /suggestion approve ────────────────────────────────────────────────
       if (sub === "approve") {
-        if (!isStaff(interaction.member, config.staffRoleIds)) return interaction.reply({ content: "<:crossy:1555544390221562048> You don't have permission to approve suggestions.", flags: MessageFlags.Ephemeral });
+        if (!isStaff(interaction.member, config.staffRoleIds)) return interaction.reply({ content: "<:crossy:1567796959648030831> You don't have permission to approve suggestions.", flags: MessageFlags.Ephemeral });
         const msgId = interaction.options.getString("message_id", true).trim();
         const note  = interaction.options.getString("note") ?? null;
         const entry = await SuggestionEntry.findOne({ guildId, messageId: msgId });
-        if (!entry) return interaction.reply({ content: "<:crossy:1555544390221562048> Suggestion not found.", flags: MessageFlags.Ephemeral });
-        if (entry.status === "approved") return interaction.reply({ content: "<:crossy:1555544390221562048> Already approved.", flags: MessageFlags.Ephemeral });
+        if (!entry) return interaction.reply({ content: "<:crossy:1567796959648030831> Suggestion not found.", flags: MessageFlags.Ephemeral });
+        if (entry.status === "approved") return interaction.reply({ content: "<:crossy:1567796959648030831> Already approved.", flags: MessageFlags.Ephemeral });
         entry.status = "approved"; entry.resolvedBy = interaction.user.id; entry.resolvedAt = new Date();
         if (note) entry.implementedNote = note;
         await entry.save();
         await updatePublicMessage(client, entry, config, interaction.user.tag, null);
-        if (config.dmOnResult) await dmAuthor(client, entry.authorId, new EmbedBuilder().setColor(0x22c55e).setTitle("<a:tickyy:1555544712687915008> Your suggestion was approved!").setDescription(`> ${entry.content}`).setFooter({ text: `Suggestion #${entry.number} · ${interaction.guild.name}` }).setTimestamp());
-        if (config.approvedChannelId) { try { const ch = await client.channels.fetch(config.approvedChannelId); await ch?.send({ embeds: [new EmbedBuilder().setColor(0x22c55e).setTitle(`<a:tickyy:1555544712687915008> Approved: Suggestion #${entry.number}`).setDescription(entry.content).addFields({ name: "Approved by", value: `<@${interaction.user.id}>` }).setTimestamp()] }); } catch {} }
+        if (config.dmOnResult) await dmAuthor(client, entry.authorId, new EmbedBuilder().setColor(0x22c55e).setTitle("<a:tickyy:1567797045253644368> Your suggestion was approved!").setDescription(`> ${entry.content}`).setFooter({ text: `Suggestion #${entry.number} · ${interaction.guild.name}` }).setTimestamp());
+        if (config.approvedChannelId) { try { const ch = await client.channels.fetch(config.approvedChannelId); await ch?.send({ embeds: [new EmbedBuilder().setColor(0x22c55e).setTitle(`<a:tickyy:1567797045253644368> Approved: Suggestion #${entry.number}`).setDescription(entry.content).addFields({ name: "Approved by", value: `<@${interaction.user.id}>` }).setTimestamp()] }); } catch {} }
         await SuggestionConfig.findOneAndUpdate({ guildId }, { $inc: { totalApproved: 1 } });
-        return interaction.reply({ content: `<a:tickyy:1555544712687915008> Suggestion #${entry.number} approved.`, flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: `<a:tickyy:1567797045253644368> Suggestion #${entry.number} approved.`, flags: MessageFlags.Ephemeral });
       }
 
       // ── /suggestion reject ─────────────────────────────────────────────────
       if (sub === "reject") {
-        if (!isStaff(interaction.member, config.staffRoleIds)) return interaction.reply({ content: "<:crossy:1555544390221562048> You don't have permission to reject suggestions.", flags: MessageFlags.Ephemeral });
+        if (!isStaff(interaction.member, config.staffRoleIds)) return interaction.reply({ content: "<:crossy:1567796959648030831> You don't have permission to reject suggestions.", flags: MessageFlags.Ephemeral });
         const msgId  = interaction.options.getString("message_id", true).trim();
         const reason = interaction.options.getString("reason") ?? null;
-        if (config.requireReason && !reason) return interaction.reply({ content: "<:crossy:1555544390221562048> A rejection reason is required in this server.", flags: MessageFlags.Ephemeral });
+        if (config.requireReason && !reason) return interaction.reply({ content: "<:crossy:1567796959648030831> A rejection reason is required in this server.", flags: MessageFlags.Ephemeral });
         const entry = await SuggestionEntry.findOne({ guildId, messageId: msgId });
-        if (!entry) return interaction.reply({ content: "<:crossy:1555544390221562048> Suggestion not found.", flags: MessageFlags.Ephemeral });
-        if (entry.status === "rejected") return interaction.reply({ content: "<:crossy:1555544390221562048> Already rejected.", flags: MessageFlags.Ephemeral });
+        if (!entry) return interaction.reply({ content: "<:crossy:1567796959648030831> Suggestion not found.", flags: MessageFlags.Ephemeral });
+        if (entry.status === "rejected") return interaction.reply({ content: "<:crossy:1567796959648030831> Already rejected.", flags: MessageFlags.Ephemeral });
         entry.status = "rejected"; entry.resolvedBy = interaction.user.id; entry.resolvedAt = new Date(); entry.rejectReason = reason;
         await entry.save();
         await updatePublicMessage(client, entry, config, interaction.user.tag, null);
-        if (config.dmOnResult) await dmAuthor(client, entry.authorId, new EmbedBuilder().setColor(0xef4444).setTitle("<:crossy:1555544390221562048> Your suggestion was rejected").setDescription(`> ${entry.content}`).addFields(reason ? { name: "Reason", value: reason } : { name: "\u200B", value: "\u200B" }).setFooter({ text: `Suggestion #${entry.number} · ${interaction.guild.name}` }).setTimestamp());
-        if (config.rejectedChannelId) { try { const ch = await client.channels.fetch(config.rejectedChannelId); await ch?.send({ embeds: [new EmbedBuilder().setColor(0xef4444).setTitle(`<:crossy:1555544390221562048> Rejected: Suggestion #${entry.number}`).setDescription(entry.content).addFields({ name: "Rejected by", value: `<@${interaction.user.id}>`, inline: true }, reason ? { name: "Reason", value: reason, inline: true } : { name: "\u200B", value: "\u200B", inline: true }).setTimestamp()] }); } catch {} }
+        if (config.dmOnResult) await dmAuthor(client, entry.authorId, new EmbedBuilder().setColor(0xef4444).setTitle("<:crossy:1567796959648030831> Your suggestion was rejected").setDescription(`> ${entry.content}`).addFields(reason ? { name: "Reason", value: reason } : { name: "\u200B", value: "\u200B" }).setFooter({ text: `Suggestion #${entry.number} · ${interaction.guild.name}` }).setTimestamp());
+        if (config.rejectedChannelId) { try { const ch = await client.channels.fetch(config.rejectedChannelId); await ch?.send({ embeds: [new EmbedBuilder().setColor(0xef4444).setTitle(`<:crossy:1567796959648030831> Rejected: Suggestion #${entry.number}`).setDescription(entry.content).addFields({ name: "Rejected by", value: `<@${interaction.user.id}>`, inline: true }, reason ? { name: "Reason", value: reason, inline: true } : { name: "\u200B", value: "\u200B", inline: true }).setTimestamp()] }); } catch {} }
         await SuggestionConfig.findOneAndUpdate({ guildId }, { $inc: { totalRejected: 1 } });
-        return interaction.reply({ content: `<a:tickyy:1555544712687915008> Suggestion #${entry.number} rejected.`, flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: `<a:tickyy:1567797045253644368> Suggestion #${entry.number} rejected.`, flags: MessageFlags.Ephemeral });
       }
 
       // ── /suggestion implement ──────────────────────────────────────────────
       if (sub === "implement") {
-        if (!isStaff(interaction.member, config.staffRoleIds)) return interaction.reply({ content: "<:crossy:1555544390221562048> You don't have permission to mark suggestions as implemented.", flags: MessageFlags.Ephemeral });
+        if (!isStaff(interaction.member, config.staffRoleIds)) return interaction.reply({ content: "<:crossy:1567796959648030831> You don't have permission to mark suggestions as implemented.", flags: MessageFlags.Ephemeral });
         const msgId = interaction.options.getString("message_id", true).trim();
         const note  = interaction.options.getString("note") ?? null;
         const entry = await SuggestionEntry.findOne({ guildId, messageId: msgId });
-        if (!entry) return interaction.reply({ content: "<:crossy:1555544390221562048> Suggestion not found.", flags: MessageFlags.Ephemeral });
+        if (!entry) return interaction.reply({ content: "<:crossy:1567796959648030831> Suggestion not found.", flags: MessageFlags.Ephemeral });
         entry.status = "implemented"; entry.resolvedBy = interaction.user.id; entry.resolvedAt = new Date(); entry.implementedNote = note;
         await entry.save();
         await updatePublicMessage(client, entry, config, interaction.user.tag, null);
-        if (config.dmOnResult) await dmAuthor(client, entry.authorId, new EmbedBuilder().setColor(0x06b6d4).setTitle("<:boost:1555544362455146576> Your suggestion was implemented!").setDescription(`> ${entry.content}`).addFields(note ? { name: "Note", value: note } : { name: "\u200B", value: "\u200B" }).setFooter({ text: `Suggestion #${entry.number} · ${interaction.guild.name}` }).setTimestamp());
+        if (config.dmOnResult) await dmAuthor(client, entry.authorId, new EmbedBuilder().setColor(0x06b6d4).setTitle("<:boost:1567796953599836280> Your suggestion was implemented!").setDescription(`> ${entry.content}`).addFields(note ? { name: "Note", value: note } : { name: "\u200B", value: "\u200B" }).setFooter({ text: `Suggestion #${entry.number} · ${interaction.guild.name}` }).setTimestamp());
         await SuggestionConfig.findOneAndUpdate({ guildId }, { $inc: { totalApproved: 1 } });
-        return interaction.reply({ content: `<a:tickyy:1555544712687915008> Suggestion #${entry.number} marked as implemented.`, flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: `<a:tickyy:1567797045253644368> Suggestion #${entry.number} marked as implemented.`, flags: MessageFlags.Ephemeral });
       }
 
       // ── /suggestion stats ──────────────────────────────────────────────────
@@ -557,7 +557,7 @@ module.exports = {
         ]);
         const embed = new EmbedBuilder()
           .setColor(0x5865f2)
-          .setTitle(`<:n_utils:1555544669545431062> Suggestion Stats — ${interaction.guild.name}`)
+          .setTitle(`<:n_utils:1567796996830658573> Suggestion Stats — ${interaction.guild.name}`)
           .addFields(
             { name: "Total",       value: String(total),    inline: true },
             { name: "Pending",     value: String(pending),  inline: true },

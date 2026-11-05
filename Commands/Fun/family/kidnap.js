@@ -48,7 +48,7 @@ module.exports = {
       const c = new ContainerBuilder().setAccentColor(0xE67E22)
         .addTextDisplayComponents(
           new TextDisplayBuilder().setContent(
-            `## <:n_loading:1555544489194688623> On Cooldown\nYou need to lay low for a bit!\n\n> You can try again <t:${readyAt}:R>.`
+            `## <:n_loading:1567796992556666982> On Cooldown\nYou need to lay low for a bit!\n\n> You can try again <t:${readyAt}:R>.`
           )
         );
       return interaction.reply({ flags: MessageFlags.IsComponentsV2, components: [c], flags: MessageFlags.Ephemeral });
@@ -103,7 +103,7 @@ module.exports = {
         .addSectionComponents(
           new SectionBuilder()
             .addTextDisplayComponents(
-              new TextDisplayBuilder().setContent(`## <a:tickyy:1555544712687915008> Kidnap Successful!`),
+              new TextDisplayBuilder().setContent(`## <a:tickyy:1567797045253644368> Kidnap Successful!`),
               new TextDisplayBuilder().setContent(
                 pickStory(SUCCESS_STORIES, kidnapper.username, victim.username) + "\n\n" +
                 `> **${victim.username}** is now part of **${kidnapper.username}**'s family!`

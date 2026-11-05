@@ -54,9 +54,9 @@ module.exports = function lemonSqueezyWebhook() {
       const what = result.kind === "branding" ? "Custom Branding" : getTier(result.tier).name;
       const where = result.guildId ? " for your server" : "";
       if (name === "subscription_created") {
-        await dmUser(result.userId, `<:premium:1467910095911256198> **${what}** is now active${where}. Thank you for supporting RankCore! Manage it anytime at https://dash.rankcore.org/subscriptions`);
+        await dmUser(result.userId, `<:premium:1567797001473622066> **${what}** is now active${where}. Thank you for supporting RankCore! Manage it anytime at https://dash.rankcore.org/subscriptions`);
       } else if (name === "subscription_expired") {
-        await dmUser(result.userId, `<:warn:1467879228249735188> Your **${what}** subscription${where} has ended. You can resubscribe anytime at https://dash.rankcore.org/premium`);
+        await dmUser(result.userId, `<:warn:1567797033224642605> Your **${what}** subscription${where} has ended. You can resubscribe anytime at https://dash.rankcore.org/premium`);
       }
       res.json({ received: true });
     } catch (err) {

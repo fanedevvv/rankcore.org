@@ -73,7 +73,7 @@ module.exports = {
         ? ' (**' + entries.length + ' entries** — bonus role applied!)'
         : '';
       return interaction.editReply({
-        content: 'You have entered the giveaway' + bonusMsg + '! Good luck! <:boost:1555544362455146576>',
+        content: 'You have entered the giveaway' + bonusMsg + '! Good luck! <:boost:1567796953599836280>',
       });
 
     } catch (err) {

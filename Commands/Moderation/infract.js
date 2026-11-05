@@ -10,11 +10,11 @@ const StaffCommands  = require('../../Schemas/staffCommandsSchema');
 const StaffAction    = require('../../Schemas/staffActionSchema');
 
 const INFRACTION_TYPES = [
-  { value: 'verbal_warning',  label: 'Verbal Warning',        icon: '<:error:1555544434601369620>', accent: 0xfbbf24, dm_title: 'Verbal Warning' },
-  { value: 'written_warning', label: 'Written Warning',       icon: '<:error:1555544434601369620>', accent: 0xf97316, dm_title: 'Staff Warning' },
-  { value: 'demotion',        label: 'Demotion',              icon: '<:down:1555544418407157790>',  accent: 0xa855f7, dm_title: 'Staff Demotion' },
-  { value: 'suspension',      label: 'Suspension',            icon: '<:n_music:1555544516746940416>', accent: 0xef4444, dm_title: 'Staff Suspension' },
-  { value: 'removal',         label: 'Removal / Termination', icon: '<:LEred:1555544262123323422>', accent: 0xdc2626, dm_title: 'Staff Removal' },
+  { value: 'verbal_warning',  label: 'Verbal Warning',        icon: '<:error:1567796968758050868>', accent: 0xfbbf24, dm_title: 'Verbal Warning' },
+  { value: 'written_warning', label: 'Written Warning',       icon: '<:error:1567796968758050868>', accent: 0xf97316, dm_title: 'Staff Warning' },
+  { value: 'demotion',        label: 'Demotion',              icon: '<:down:1567796964672929802>',  accent: 0xa855f7, dm_title: 'Staff Demotion' },
+  { value: 'suspension',      label: 'Suspension',            icon: '<:n_music:1567796993403658261>', accent: 0xef4444, dm_title: 'Staff Suspension' },
+  { value: 'removal',         label: 'Removal / Termination', icon: '<:LEred:1567796934545121280>', accent: 0xdc2626, dm_title: 'Staff Removal' },
 ];
 
 module.exports = {
@@ -193,7 +193,7 @@ module.exports = {
       giveRole   ? `**Role Assigned** — ${giveRole.name}`  : null,
       logChan    ? `**Logged in** — <#${logChan.id}>`      : null,
       errors.length
-        ? `\n<:error:1555544434601369620> ${errors.join('\n<:error:1555544434601369620> ')}`
+        ? `\n<:error:1567796968758050868> ${errors.join('\n<:error:1567796968758050868> ')}`
         : null,
     ].filter(Boolean).join('\n');
 

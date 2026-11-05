@@ -162,7 +162,7 @@ router.post("/api/guild/:id/invite-config/test", isAuth, checkDashboardAccess('o
     if (cfg.logChannelId) {
       const log = guild.channels.cache.get(cfg.logChannelId);
       if (await canSend(log)) {
-        let msg = `<:files:1555544445565407352> **${tag}** joined — invited by **${tag}** (\`${user.id}\`) · *test*`;
+        let msg = `<:files:1567796970964394044> **${tag}** joined — invited by **${tag}** (\`${user.id}\`) · *test*`;
         if (cfg.verboseLogs) msg += `\n> Code: \`test\` | Members: \`${guild.memberCount}\``;
         await log.send({ content: msg });
         sent.push('log line');

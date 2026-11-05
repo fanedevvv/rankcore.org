@@ -30,7 +30,7 @@ module.exports = {
 
       if (i.customId === "yesDivorce") {
         await marriageSchema.deleteMany({ $or: [{ marriedUser: intUser.id }, { marriedUser: marriageData.marriedTo }] });
-        embed.setColor("DarkRed").setTitle("Divorce Completed <:Red_Heart:1555544329605615758>").setDescription(`You are now divorced from ${partner}. What a shame.`);
+        embed.setColor("DarkRed").setTitle("Divorce Completed <:Red_Heart:1567796949271191642>").setDescription(`You are now divorced from ${partner}. What a shame.`);
       }
 
       if (i.customId === "noDivorce") {

@@ -63,7 +63,7 @@ module.exports = {
     const deletedCount = deleted?.size ?? 0;
 
     return interaction.editReply({
-      components: [successContainer("<:del:1555544395720302643>  Messages Purged",
+      components: [successContainer("<:del:1567796961334267974>  Messages Purged",
         `Successfully deleted **${deletedCount}** message(s) using the **${sub}** filter.`, {
           accent, clientId: client.user.id,
           extra: `**Filter** — \`${sub}\`\n**Requested** — ${count}\n**Deleted** — ${deletedCount}\n**Moderator** — ${interaction.user.tag}`,
