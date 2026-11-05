@@ -96,10 +96,20 @@ module.exports = (client) => {
   // ─── Start ────────────────────────────────────────────────────────────────
   // Retry on EADDRINUSE — the previous process may not have released the port yet
   // (common during PM2 solo restarts). Retry every 500ms for up to 10s.
+  // Keep idle sockets open longer than the dashboard's 5s poll interval.
+  // Node's default keepAliveTimeout is also 5s, so the dashboard would sometimes
+  // reuse a socket at the exact moment the server closed it → ECONNRESET.
+  function tuneKeepAlive(server) {
+    server.keepAliveTimeout = 65_000;
+    server.headersTimeout   = 66_000;
+    return server;
+  }
+
   function startListening(app, client) {
     const s = app.listen(INTERNAL_PORT, '127.0.0.1', () => {
       console.log(`[INTERNAL API] Listening on 127.0.0.1:${INTERNAL_PORT}`);
     });
+    tuneKeepAlive(s);
     s.on('error', (err) => {
       s.close();
       if (err.code !== 'EADDRINUSE') {
@@ -115,6 +125,7 @@ module.exports = (client) => {
           console.log(`[INTERNAL API] Listening on 127.0.0.1:${INTERNAL_PORT} (retry ${attempts})`);
           if (client._internalApiServer) client._internalApiServer = s2;
         });
+        tuneKeepAlive(s2);
         s2.on('error', (e) => {
           s2.close();
           if (e.code !== 'EADDRINUSE' || attempts >= 20) {
