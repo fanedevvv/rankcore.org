@@ -267,33 +267,6 @@ module.exports = async function handleSlashCommand(interaction, client) {
         });
     }
 
-    if (command.voters && !(await client.topgg.hasVoted(userId))) {
-        return interaction.reply({
-            embeds: [
-                new EmbedBuilder()
-                    .setTitle("Vote Required")
-                    .setDescription(
-                        `This command requires you to vote for the bot on Top.gg.\n\n` +
-                        `**Command:** \`${commandName}\`\n` +
-                        `**Requirement:** Active voter status\n` +
-                        `**Status:** Not voted\n\n` +
-                        `Click the button below to vote and unlock this command!`
-                    )
-                    .setColor("#03fcdb")
-                    .setFooter({ text: "Votes help support bot development" })
-                    .setTimestamp()
-            ],
-            components: [
-                new ActionRowBuilder().addComponents(
-                    new ButtonBuilder()
-                        .setLabel("Vote on Top.gg")
-                        .setURL(interaction.client.config?.topggURL || "https://top.gg/bot/960624234688811188")
-                        .setStyle(ButtonStyle.Link)
-                )
-            ],
-            ephemeral: true
-        });
-    }
 
     if (command.dev)
         return interaction.reply({

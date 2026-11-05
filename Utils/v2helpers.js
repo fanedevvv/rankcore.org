@@ -19,7 +19,6 @@ const { parseEmoji } = require('./emojis');
 
 const SUPPORT_URL     = "https://discord.gg/wPJ5kSM4Ea";
 const INVITE_URL      = (clientId) => `https://discord.com/api/oauth2/authorize?client_id=${clientId}&permissions=303600576574&scope=bot%20applications.commands`;
-const VOTE_URL        = "https://top.gg/bot/960624234688811188";
 
 // Default accent colours by type
 const ACCENT = {

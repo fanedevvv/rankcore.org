@@ -185,7 +185,6 @@ async function handleInfo(interaction, client) {
     .addActionRowComponents(new ActionRowBuilder().addComponents(
       new ButtonBuilder().setURL(inviteURL).setLabel("Invite Me").setStyle(ButtonStyle.Link),
       new ButtonBuilder().setURL(config.supportURL).setLabel("Support").setStyle(ButtonStyle.Link),
-      new ButtonBuilder().setURL(client.config?.topggURL || "https://top.gg/bot/960624234688811188").setLabel("Vote on Top.gg").setStyle(ButtonStyle.Link),
     ));
 
   return interaction.reply({ components: [container], flags: MessageFlags.IsComponentsV2 });

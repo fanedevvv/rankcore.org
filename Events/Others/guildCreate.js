@@ -93,10 +93,6 @@
         .setStyle(ButtonStyle.Link)
         .setURL(`https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot%20applications.commands`);
 
-      const voteButton = new ButtonBuilder()
-        .setLabel("Vote on Top.gg")
-        .setStyle(ButtonStyle.Link)
-        .setURL(client.config?.topggURL || "https://top.gg/bot/960624234688811188");
 
       const privacyButton = new ButtonBuilder()
         .setLabel("Privacy Policy")
@@ -106,7 +102,6 @@
       const buttonRow = new ActionRowBuilder().addComponents(
         supportButton,
         inviteButton,
-        voteButton,
         privacyButton
       );
 

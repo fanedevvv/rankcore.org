@@ -217,7 +217,6 @@ function makeHomeContainer({ client, servers, users, accentColor, bannerName, op
         new ButtonBuilder().setLabel("Dashboard").setStyle(ButtonStyle.Link).setURL(dashUrl),
         new ButtonBuilder().setLabel("Support").setStyle(ButtonStyle.Link).setURL("https://discord.gg/a9Kea3ymC7"),
         new ButtonBuilder().setLabel("Invite").setStyle(ButtonStyle.Link).setURL(`https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=303600576574&scope=bot%20applications.commands`),
-        new ButtonBuilder().setLabel("Vote on Top.gg").setStyle(ButtonStyle.Link).setURL(client.config?.topggURL || "https://top.gg/bot/960624234688811188"),
       )
     );
 }
@@ -268,7 +267,6 @@ function makeCategoryContainer({ client, selectedCategory, page, totalPages, ite
         new ButtonBuilder().setLabel("Dashboard").setStyle(ButtonStyle.Link).setURL(`${process.env.DASHBOARD_URL || "https://dash.rankcore.org"}/guild/${guildId}`),
         new ButtonBuilder().setLabel("Support").setStyle(ButtonStyle.Link).setURL("https://discord.gg/a9Kea3ymC7"),
         new ButtonBuilder().setLabel("Invite").setStyle(ButtonStyle.Link).setURL(`https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=303600576574&scope=bot%20applications.commands`),
-        new ButtonBuilder().setLabel("Vote on Top.gg").setStyle(ButtonStyle.Link).setURL(client.config?.topggURL || "https://top.gg/bot/960624234688811188"),
       )
     );
 }

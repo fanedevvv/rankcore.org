@@ -29,8 +29,7 @@ module.exports = {
     .addSubcommand(s => s.setName("stats").setDescription("View bot statistics: servers, users, memory usage."))
     .addSubcommand(s => s.setName("invite").setDescription("Get the bot invite link and support server link."))
     .addSubcommand(s => s.setName("dashboard").setDescription("Get a direct link to this server's dashboard."))
-    .addSubcommand(s => s.setName("support").setDescription("Get a link to the RankCore support server."))
-    .addSubcommand(s => s.setName("vote").setDescription("Vote for RankCore on bot listing sites.")),
+    .addSubcommand(s => s.setName("support").setDescription("Get a link to the RankCore support server.")),
 
   async execute(interaction, client) {
     const sub = interaction.options.getSubcommand();
@@ -114,7 +113,6 @@ module.exports = {
               new ActionRowBuilder().addComponents(
                 new ButtonBuilder().setLabel("Invite Bot").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:n_add:1567796983408754731>")).setURL(inviteUrl),
                 new ButtonBuilder().setLabel("Support Server").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:n_utils:1567796996830658573>")).setURL(config.supportURL),
-                new ButtonBuilder().setLabel("Vote on Top.gg").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:boost:1567796953599836280>")).setURL("https://top.gg/bot/960624234688811188"),
               )
             ),
         ],
@@ -161,21 +159,5 @@ module.exports = {
       });
     }
 
-    if (sub === "vote") {
-      return interaction.reply({
-        components: [
-          new ContainerBuilder().setAccentColor(accentColor)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:boost:1567796953599836280>  Vote for RankCore"))
-            .addSeparatorComponents(sep())
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("Voting helps RankCore grow! It only takes 10 seconds."))
-            .addActionRowComponents(
-              new ActionRowBuilder().addComponents(
-                new ButtonBuilder().setLabel("Vote on Top.gg").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:boost:1567796953599836280>")).setURL("https://top.gg/bot/960624234688811188"),
-              )
-            ),
-        ],
-        flags: MessageFlags.IsComponentsV2,
-      });
-    }
   },
 };

@@ -41,7 +41,6 @@ module.exports = (client) => {
       // Build URLs
       const inviteUrl = `https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot%20applications.commands`;
       const supportUrl = client.config?.supportURL || `https://discord.gg/a9Kea3ymC7`;
-      const voteUrl = client.config?.topggURL || "https://top.gg/bot/960624234688811188";
       const docsUrl = client.config?.docsUrl || `https://dash.rankcore.org/docs`;
 
       // Main info embed
@@ -133,12 +132,7 @@ module.exports = (client) => {
           .setLabel("Support Server")
           .setEmoji(parseEmoji("<:user:1567797032423264261>"))
           .setStyle(ButtonStyle.Link)
-          .setURL(supportUrl),
-        new ButtonBuilder()
-          .setLabel("Vote for Me")
-          .setEmoji(parseEmoji("<a:votes:1567797046562259015>"))
-          .setStyle(ButtonStyle.Link)
-          .setURL(voteUrl)
+          .setURL(supportUrl)
       );
 
       // Action buttons

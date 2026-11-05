@@ -645,20 +645,6 @@ document.addEventListener("DOMContentLoaded", () => {
           <svg width="13" height="13" class="text-gray-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
         </a>
 
-        <a href="https://top.gg/bot/960624234688811188" target="_blank" rel="noopener"
-          style="display:flex;align-items:center;justify-content:space-between;padding:11px 12px;margin-top:8px;border-radius:11px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);text-decoration:none;transition:border-color 0.2s;"
-          class="group hover:border-razor/20">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:28px;height:28px;border-radius:8px;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center;color:#8B5CF6;flex-shrink:0;">
-              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            </div>
-            <div>
-              <div style="font-size:12px;font-weight:700;color:white;">Vote on Top.gg</div>
-              <div style="font-size:10px;color:rgba(107,114,128,1);">Support RankCore</div>
-            </div>
-          </div>
-          <svg width="13" height="13" class="text-gray-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-        </a>
 
         <div class="rzr-legal">
           <a href="/tos" class="rzr-legal-link" target="_blank" rel="noopener">

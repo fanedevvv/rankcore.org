@@ -57,7 +57,6 @@ module.exports = {
                         ))
         ),
 
-       voters: true,
         premium: true,
         premiumTier: 'elite',
         

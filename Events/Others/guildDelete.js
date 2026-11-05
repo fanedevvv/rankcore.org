@@ -19,8 +19,7 @@ module.exports = {
 
       const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setLabel("Support Server").setStyle(ButtonStyle.Link).setURL("https://discord.gg/a9Kea3ymC7"),
-        new ButtonBuilder().setLabel("Invite Me Again").setStyle(ButtonStyle.Link).setURL(`https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot%20applications.commands`),
-        new ButtonBuilder().setLabel("Vote on Top.gg").setStyle(ButtonStyle.Link).setURL(client.config?.topggURL || "https://top.gg/bot/960624234688811188")
+        new ButtonBuilder().setLabel("Invite Me Again").setStyle(ButtonStyle.Link).setURL(`https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot%20applications.commands`)
       );
 
       owner.send({embeds:[embed],components:[row]}).catch(()=>{});
