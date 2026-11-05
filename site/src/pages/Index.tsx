@@ -69,7 +69,7 @@ const Index = () => {
             >
               Your community.
               <br />
-              <span className="text-noxx-red">Handled by RankCore.</span>
+              <span className="text-gradient">Handled by RankCore.</span>
             </motion.h1>
 
             <motion.p

@@ -6,58 +6,58 @@
 @tailwind utilities;
 
 @layer base {
-  /* Dashboard palette (Noxx/dashboard/public/noxx.css): bg #07070a, surfaces #0e0e12/#141418,
-     accent #FF2D2D, text #ebebf0 / #8888a0, hairline borders rgba(255,255,255,.055) */
+  /* RankCore palette (from the logo): cyan #38d4ff, violet #8b5cf6, magenta #e05cff on deep navy */
   :root {
-    --background: 240 18% 3%;
+    --background: 232 48% 5%;
     --foreground: 240 14% 93%;
 
-    --card: 240 13% 6%;
+    --card: 232 40% 8%;
     --card-foreground: 240 14% 93%;
 
-    --popover: 240 13% 6%;
+    --popover: 232 40% 8%;
     --popover-foreground: 240 14% 93%;
 
-    --primary: 0 100% 59%;
+    --primary: 258 90% 66%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 8% 10%;
+    --secondary: 232 30% 12%;
     --secondary-foreground: 240 14% 93%;
 
-    --muted: 240 8% 9%;
-    --muted-foreground: 240 10% 58%;
+    --muted: 232 30% 11%;
+    --muted-foreground: 230 20% 64%;
 
-    --accent: 0 100% 59%;
+    --accent: 258 90% 66%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 6% 12%;
-    --input: 240 6% 14%;
-    --ring: 0 100% 59%;
+    --border: 232 35% 16%;
+    --input: 232 30% 18%;
+    --ring: 258 90% 66%;
 
     --radius: 0.875rem;
 
     --gradient-green: 142 69% 52%;
     --gradient-purple: 250 60% 62%;
-    --gradient-pink: 330 70% 60%;
+    --gradient-pink: 289 100% 68%;
+    --gradient-cyan: 194 100% 61%;
     --gradient-yellow: 43 96% 56%;
-    --gradient-red: 0 100% 59%;
+    --gradient-red: 258 90% 66%; /* kept name: now the brand violet */
 
     --glow-green: 0 0 30px hsl(142 69% 52% / 0.3);
     --glow-purple: 0 0 30px hsl(250 60% 62% / 0.3);
     --glow-pink: 0 0 30px hsl(330 70% 60% / 0.3);
-    --glow-red: 0 0 30px hsl(0 100% 59% / 0.3);
+    --glow-red: 0 0 30px hsl(258 90% 66% / 0.35);
 
-    --sidebar-background: 240 18% 3%;
+    --sidebar-background: 232 48% 5%;
     --sidebar-foreground: 240 14% 93%;
-    --sidebar-primary: 0 100% 59%;
+    --sidebar-primary: 258 90% 66%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 8% 9%;
+    --sidebar-accent: 232 30% 11%;
     --sidebar-accent-foreground: 240 14% 93%;
-    --sidebar-border: 240 6% 12%;
-    --sidebar-ring: 0 100% 59%;
+    --sidebar-border: 232 35% 16%;
+    --sidebar-ring: 258 90% 66%;
   }
 }
 
@@ -82,7 +82,7 @@
 @layer utilities {
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--gradient-red)), hsl(var(--gradient-red) / 0.7));
+    background-image: linear-gradient(135deg, hsl(var(--gradient-cyan)), hsl(var(--gradient-red)) 55%, hsl(var(--gradient-pink)));
   }
 
   .text-gradient-warm {
@@ -91,11 +91,11 @@
   }
 
   .bg-gradient-btn-primary {
-    background: linear-gradient(135deg, hsl(var(--gradient-red)), hsl(var(--gradient-red) / 0.8));
+    background: linear-gradient(135deg, hsl(var(--gradient-cyan)), hsl(var(--gradient-red)) 55%, hsl(var(--gradient-pink)));
   }
 
   .bg-gradient-btn-secondary {
-    background: linear-gradient(135deg, hsl(var(--gradient-red) / 0.8), hsl(var(--gradient-pink)));
+    background: linear-gradient(135deg, hsl(var(--gradient-red)), hsl(var(--gradient-pink)));
   }
 
   .bg-gradient-btn-accent {
@@ -228,7 +228,7 @@
   animation: gradient-shift 4s ease infinite;
 }
 
-/* Scrollbar — thin with a red thumb, like the dashboard */
+/* Scrollbar — thin with a violet thumb, like the dashboard */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: hsl(var(--gradient-red) / 0.2); border-radius: 10px; }
