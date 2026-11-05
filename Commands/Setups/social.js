@@ -77,7 +77,7 @@ async function buildOverviewEmbed(guildId) {
       { name: '<:twitch:1467828803643511042> Twitch', value: twitchStatus, inline: true },
       { name: '🐦 Twitter / X', value: twitterStatus, inline: true },
     )
-    .setFooter({ text: 'Select a platform below to configure it • Roco' })
+    .setFooter({ text: 'Select a platform below to configure it • RankCore' })
     .setTimestamp();
 }
 
@@ -97,7 +97,7 @@ async function handleYouTubeConfig(interaction) {
       { name: 'Slots Used', value: `${configs.length}/${MAX_YOUTUBE_SETUPS}`, inline: true },
       { name: 'Poll Rate', value: '⚡ Every 30 seconds', inline: true },
     )
-    .setFooter({ text: 'Roco • YouTube Notifications' });
+    .setFooter({ text: 'RankCore • YouTube Notifications' });
 
   // Select menus for adding/removing
   const usedSlots = new Set(configs.map(c => c.SetupNumber));
@@ -220,13 +220,13 @@ async function handleYouTubeConfig(interaction) {
 
       const testEmbed = new EmbedBuilder()
         .setColor('#FF0000')
-        .setAuthor({ name: 'Roco Test Channel', iconURL: 'https://i.imgur.com/iKFGRiS.png' })
+        .setAuthor({ name: 'RankCore Test Channel', iconURL: 'https://i.imgur.com/iKFGRiS.png' })
         .setTitle('🧪 Test Notification — YouTube')
         .setURL('https://www.youtube.com')
-        .setDescription(`${config.Message}\n\n<:files:1555544445565407352> **New Upload!**\n> This is a test notification from Roco.`)
+        .setDescription(`${config.Message}\n\n<:files:1555544445565407352> **New Upload!**\n> This is a test notification from RankCore.`)
         .setThumbnail('https://i.imgur.com/iKFGRiS.png')
         .setTimestamp()
-        .setFooter({ text: 'YouTube Notifications • Roco' });
+        .setFooter({ text: 'YouTube Notifications • RankCore' });
 
       try {
         const ch = await i.client.channels.fetch(config.Channel);
@@ -266,7 +266,7 @@ async function handleTwitchConfig(interaction) {
       { name: 'Slots Used', value: `${configs.length}/${MAX_TWITCH_SETUPS}`, inline: true },
       { name: 'Poll Rate', value: '⚡ Every 30 seconds', inline: true },
     )
-    .setFooter({ text: 'Roco • Twitch Notifications' });
+    .setFooter({ text: 'RankCore • Twitch Notifications' });
 
   const usedSlots = new Set(configs.map(c => c.SetupNumber));
   const addOptions = [];
@@ -371,7 +371,7 @@ async function handleTwitchConfig(interaction) {
         .setURL('https://www.twitch.tv')
         .setDescription(`${config.Message}\n\n🔴 **TEST STREAM IS LIVE!**\n🎮 Playing **Test Game**\n👥 **1,337** viewers`)
         .setTimestamp()
-        .setFooter({ text: 'Twitch Notifications • Roco' });
+        .setFooter({ text: 'Twitch Notifications • RankCore' });
 
       try {
         const ch = await i.client.channels.fetch(config.Channel);
@@ -409,7 +409,7 @@ async function handleTwitterConfig(interaction) {
       { name: 'Slots Used', value: `${configs.length}/${MAX_TWITTER_SETUPS}`, inline: true },
       { name: 'Poll Rate', value: '⚡ Every 60 seconds', inline: true },
     )
-    .setFooter({ text: 'Roco • Twitter/X Notifications' });
+    .setFooter({ text: 'RankCore • Twitter/X Notifications' });
 
   const usedSlots = new Set(configs.map(c => c.SetupNumber));
   const addOptions = [];
@@ -512,10 +512,10 @@ async function handleTwitterConfig(interaction) {
         .setColor('#1DA1F2')
         .setAuthor({ name: `@${config.Handle} on X (Twitter)`, iconURL: 'https://i.imgur.com/C7u8gqg.png' })
         .setTitle('🧪 Test Notification — Twitter/X')
-        .setDescription(`${config.Message}\n\nThis is a test tweet from Roco! Everything is working correctly. 🎉`)
+        .setDescription(`${config.Message}\n\nThis is a test tweet from RankCore! Everything is working correctly. 🎉`)
         .addFields({ name: '🔗 View Post', value: `https://twitter.com/${config.Handle}`, inline: false })
         .setTimestamp()
-        .setFooter({ text: 'Twitter/X Notifications • Roco' });
+        .setFooter({ text: 'Twitter/X Notifications • RankCore' });
 
       try {
         const ch = await i.client.channels.fetch(config.Channel);

@@ -197,7 +197,7 @@ export const moderationGuides = {
   name:'Ghost Ping Detection', icon:'ghost', color:'#a78bfa', tags:['ghost-ping','mentions'], desc:'Catch members who ping others then immediately delete their message.',
   sections:[
     { id:'overview', title:'What is a Ghost Ping?', render:()=>`
-      <div class="prose" data-anim="fadeUp"><p>A ghost ping is when someone mentions a user then immediately deletes the message. The target gets notified but cannot see what was said. Roco detects this and posts a public warning.</p></div>
+      <div class="prose" data-anim="fadeUp"><p>A ghost ping is when someone mentions a user then immediately deletes the message. The target gets notified but cannot see what was said. RankCore detects this and posts a public warning.</p></div>
       <div class="callout warn" data-anim="fadeUp" data-delay="0.05"><i data-lucide="triangle-alert"></i><div class="callout-body"><strong>Escalating visibility</strong>Warnings stay visible longer each time: 1st offence &rarr; 15 seconds &middot; 2nd &rarr; 60 seconds &middot; 3rd+ &rarr; 500 seconds.</div></div>`},
     { id:'setup', title:'Setup', render:()=>`
       <div class="prose" data-anim="fadeUp"><p>Configure at <strong>Moderation &rarr; Anti Ghost Ping</strong> in the dashboard, or run <code>/anti-ghost-ping</code>.</p></div>

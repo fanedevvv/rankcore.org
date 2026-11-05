@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════╗
- * ║              ROCO MODULE MANAGER                        ║
+ * ║              RANKCORE MODULE MANAGER                        ║
  * ║  Central registry and lifecycle controller.             ║
  * ║  Each "module" is an isolated unit that can be          ║
  * ║  started, stopped, and restarted independently          ║

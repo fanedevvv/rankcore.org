@@ -133,7 +133,7 @@ router.get("/api-dev/avatar-proxy", isAuth, devOnly, async (req, res) => {
 
   const fetchAndSend = async (url) => {
     const upstream = await fetch(url, {
-      headers: { "User-Agent": "DiscordBot (https://rocobot.xyz, 1.0)" },
+      headers: { "User-Agent": "DiscordBot (https://rankcore.org, 1.0)" },
     });
     if (!upstream.ok) return null;
     const ct  = upstream.headers.get("content-type") || "image/png";

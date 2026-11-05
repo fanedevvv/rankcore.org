@@ -255,7 +255,7 @@ router.use((req, res, next) => {
     if (typeof body === 'string' && body.includes('</body>') && !isLegalPage && req.isAuthenticated?.()) {
       const nonce = res.locals.nonce ? ` nonce="${res.locals.nonce}"` : '';
       const footer = `
-<!-- ── Roco Footer (injected globally) ─────────────────────────────────── -->
+<!-- ── RankCore Footer (injected globally) ─────────────────────────────────── -->
 <style>
   .xyron-footer {
     width: 100%;
@@ -322,7 +322,7 @@ router.use((req, res, next) => {
     <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
       <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
     </svg>
-    &copy; <span id="xyron-year"></span> Roco Development &mdash; All Rights Reserved
+    &copy; <span id="xyron-year"></span> RankCore Development &mdash; All Rights Reserved
   </div>
   <div class="xyron-footer-right">
     <a href="/tos" class="xyron-footer-link" target="_blank" rel="noopener">
@@ -340,9 +340,9 @@ router.use((req, res, next) => {
       Privacy Controls
     </a>
     <div class="xyron-footer-sep"></div>
-    <a href="mailto:support@rocobot.xyz" class="xyron-footer-link">
+    <a href="mailto:support@rankcore.org" class="xyron-footer-link">
       <svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      support@rocobot.xyz
+      support@rankcore.org
     </a>
   </div>
 </footer>
@@ -712,7 +712,7 @@ router.use((err, req, res, _next) => {
         .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#fbbf24;margin-right:8px;animation:pulse 1.5s ease-in-out infinite;}
         @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}</style></head>
         <body><div class="box"><span class="dot"></span><h2>Bot is restarting</h2>
-        <p>Roco is coming back online. This page will refresh automatically in 10 seconds.</p>
+        <p>RankCore is coming back online. This page will refresh automatically in 10 seconds.</p>
         <p style="font-size:12px;color:#4a5068;">If this persists, check the <a href="/status" style="color:#FF3333;">status page</a>.</p>
         </div></body></html>`);
     }

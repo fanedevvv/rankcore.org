@@ -15,7 +15,7 @@ module.exports = {
         .setDescription(`Hey ${owner.user}, I noticed that **${client.user.username}** was removed from **${guild.name}**.\n\nIf this was a mistake, feel free to invite me back anytime!\n> <:1430986225493479485:1555544207652032633> Current Servers: ${client.guilds.cache.size}`)
         .setThumbnail(guild.iconURL({size:512})||client.user.displayAvatarURL())
         .setColor("#ED4245")
-        .setFooter({text:"Thank you for trying Roco 💕",iconURL:client.user.displayAvatarURL()});
+        .setFooter({text:"Thank you for trying RankCore 💕",iconURL:client.user.displayAvatarURL()});
 
       const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setLabel("Support Server").setStyle(ButtonStyle.Link).setURL("https://discord.gg/a9Kea3ymC7"),

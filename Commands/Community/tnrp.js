@@ -13,7 +13,7 @@ module.exports = {
         '> **Welcome to Tennessee State Roleplay (TNRP)** — one of the most immersive and community-driven ER:LC roleplay experiences in the South.\n\n' +'Whether you\'re a seasoned roleplayer or just getting started, TNRP offers a realistic, whitelisted environment built around quality storytelling, authentic civilian life, law enforcement, emergency services, and much more.'
       )
       .setColor(0x003F7F) // Deep Tennessee blue
-      .setThumbnail('https://rocobot.xyz/tnrp/logo.png') // Replace with actual logo if available
+      .setThumbnail('https://rankcore.org/tnrp/logo.png') // Replace with actual logo if available
       .addFields(
         {
           name: '<:1430986225493479485:1555544207652032633> What is TNRP?',
@@ -38,13 +38,13 @@ module.exports = {
         {name: '<:1430986227909263442:1555544212756242532> Quick Links',
           value:
             '**Discord:** [Join Our Server](https://discord.gg/AA5Abgxw3Z)\n' +
-            '**Website:** [rocobot.xyz/tnrp](https://rocobot.xyz/tnrp)',
+            '**Website:** [rankcore.org/tnrp](https://rankcore.org/tnrp)',
           inline: false,
         }
       )
       .setFooter({
         text: 'Tennessee State Roleplay • Serious RP | Quality Community',
-        iconURL: 'https://rocobot.xyz/tnrp/logo.png', // Replace with actual icon if available
+        iconURL: 'https://rankcore.org/tnrp/logo.png', // Replace with actual icon if available
       })
       .setTimestamp();
 
@@ -56,7 +56,7 @@ module.exports = {
         .setEmoji(parseEmoji('<:announcement:1555544345740967956>')),
       new ButtonBuilder()
         .setLabel('Visit Website')
-        .setURL('https://rocobot.xyz/tnrp')
+        .setURL('https://rankcore.org/tnrp')
         .setStyle(ButtonStyle.Link)
         .setEmoji(parseEmoji('<:1430986225493479485:1555544207652032633>'))
     );

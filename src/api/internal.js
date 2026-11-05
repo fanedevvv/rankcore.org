@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════════════╗
- * ║              ROCO INTERNAL BOT PROXY API                        ║
+ * ║              RANKCORE INTERNAL BOT PROXY API                        ║
  * ║  Port 5182 — localhost only, no auth (loopback trust)           ║
  * ║                                                                  ║
  * ║  The standalone dashboard process calls these endpoints          ║

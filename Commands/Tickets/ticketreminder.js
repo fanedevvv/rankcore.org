@@ -88,7 +88,7 @@ module.exports = {
         { name: '<:announcement:1555544345740967956> Sent by', value: `<@${member.id}>`, inline: true },
       )
       .setTimestamp()
-      .setFooter({ text: 'Roco Ticket System' });
+      .setFooter({ text: 'RankCore Ticket System' });
 
     await channel.send({
       content: pingContent,

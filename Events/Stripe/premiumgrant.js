@@ -5,7 +5,7 @@ const { PRICE_PLANS } = require('../../dashboard/webhooks/Stripe');
 const { getTier } = require('../../Utils/premiumTiers');
 
 function resolvePlan(priceId) {
-    return PRICE_PLANS[priceId] ?? { name: 'Roco Basic', tier: 'basic', durationDays: 30, emoji: '<:boost:1555544362455146576>' };
+    return PRICE_PLANS[priceId] ?? { name: 'RankCore Basic', tier: 'basic', durationDays: 30, emoji: '<:boost:1555544362455146576>' };
 }
 
 async function grantUserPremium({ discordUserId, priceId, subscriptionId }) {
@@ -151,10 +151,10 @@ module.exports = {
                 }
 
                 const embed = new EmbedBuilder()
-                    .setTitle('<:crossy:1555544390221562048> Roco Premium Expired')
+                    .setTitle('<:crossy:1555544390221562048> RankCore Premium Expired')
                     .setColor(0xe74c3c)
                     .setDescription(
-                        'Your **Roco Premium** subscription has ended and your perks have been removed.\n\n' +
+                        'Your **RankCore Premium** subscription has ended and your perks have been removed.\n\n' +
                         'You can resubscribe at any time using `/premium` to regain access.'
                     )
                     .setFooter({ text: `Subscription ID: ${subscriptionId}` })

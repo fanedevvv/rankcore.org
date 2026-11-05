@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Premium | Roco Dashboard</title>
+  <title>Premium | RankCore Dashboard</title>
   <link rel="icon" type="image/png" href="/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -108,13 +108,13 @@
       <div id="current-status" class="hidden max-w-lg mx-auto mb-8"></div>
       <div class="inline-flex items-center gap-2 bg-purple-900/30 border border-purple-700/40 rounded-full px-4 py-2 text-sm font-semibold text-purple-300 mb-5">
         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
-        Roco Premium
+        RankCore Premium
       </div>
       <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
         Upgrade your server.<br>
         <span class="bg-gradient-to-r from-blue-400 via-purple-400 to-amber-400 bg-clip-text text-transparent">Unlock everything.</span>
       </h1>
-      <p class="text-slate-400 text-lg max-w-xl mx-auto mb-8">From advanced security and image generation to custom branding on a dedicated server — Roco Premium gives your community the tools it deserves.</p>
+      <p class="text-slate-400 text-lg max-w-xl mx-auto mb-8">From advanced security and image generation to custom branding on a dedicated server — RankCore Premium gives your community the tools it deserves.</p>
       <div class="flex justify-center">
         <div class="billing-toggle">
           <button class="billing-btn active" id="btn-monthly" onclick="setBilling('monthly')">Monthly</button>
@@ -320,7 +320,7 @@
         <details class="faq-item"><summary>Can I upgrade my whole server instead of just myself?</summary><p class="faq-answer">Yes! During checkout, select your Discord server from the dropdown. All members in that server will automatically gain access to your plan's features — they don't need their own subscription.</p></details>
         <details class="faq-item"><summary>Can I cancel at any time?</summary><p class="faq-answer">Absolutely. You can cancel your subscription at any time from the <strong>Manage</strong> button on your Subscriptions page. You'll keep access until the end of your billing period.</p></details>
         <details class="faq-item"><summary>Can I upgrade or downgrade my plan?</summary><p class="faq-answer">Yes — you can switch plans at any time. Upgrades are prorated immediately, and downgrades take effect at the next renewal date.</p></details>
-        <details class="faq-item"><summary>What payment methods are accepted?</summary><p class="faq-answer">Cards (Visa, Mastercard, Amex), PayPal, Apple Pay and Google Pay. Payments are processed by Lemon Squeezy, our merchant of record — Roco never sees or stores your card details, and VAT invoices are sent to you automatically.</p></details>
+        <details class="faq-item"><summary>What payment methods are accepted?</summary><p class="faq-answer">Cards (Visa, Mastercard, Amex), PayPal, Apple Pay and Google Pay. Payments are processed by Lemon Squeezy, our merchant of record — RankCore never sees or stores your card details, and VAT invoices are sent to you automatically.</p></details>
         <details class="faq-item"><summary>Is there a refund policy?</summary><p class="faq-answer">We offer refunds within 3 days of initial purchase if you're unhappy. Reach out in our support server and we'll sort it out.</p></details>
       </div>
     </div>
@@ -356,7 +356,7 @@
         <span id="modal-icon" style="color:#a855f7; display:flex;">
           <svg id="modal-icon-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>
         </span>
-        <span id="modal-title-text">Subscribe to Roco Pro</span>
+        <span id="modal-title-text">Subscribe to RankCore Pro</span>
       </h3>
       <p class="text-slate-400 text-sm mb-5" id="modal-desc">You'll be redirected to a secure checkout.</p>
 
@@ -415,9 +415,9 @@
     };
 
     const PLAN_CFG = {
-      basic:  { color:'#3b82f6', name:'Roco Basic', svgPath:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' },
-      pro:    { color:'#a855f7', name:'Roco Pro',   svgPath:'<path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/>' },
-      elite:  { color:'#f59e0b', name:'Roco Elite', svgPath:'<path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/>' },
+      basic:  { color:'#3b82f6', name:'RankCore Basic', svgPath:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' },
+      pro:    { color:'#a855f7', name:'RankCore Pro',   svgPath:'<path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/>' },
+      elite:  { color:'#f59e0b', name:'RankCore Elite', svgPath:'<path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/>' },
     };
 
     window.setBilling = b => {
@@ -531,7 +531,7 @@ list.innerHTML = filtered.map(g => `
         });
         const data = await res.json();
         if (data.manual && data.url) {
-          alert("Online payments aren't available yet. Open a ticket in the Roco support server to get a premium code, then redeem it with /redeem in Discord.");
+          alert("Online payments aren't available yet. Open a ticket in the RankCore support server to get a premium code, then redeem it with /redeem in Discord.");
           window.open(data.url, '_blank', 'noopener'); closeModal();
         } else if (data.url) { window.location.href = data.url; return; }
         else alert(data.error || 'Something went wrong.');

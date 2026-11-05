@@ -120,11 +120,11 @@ router.post('/api/guild/:id/social/youtube/:docId/test', isAuth, checkDashboardA
       .setAuthor({ name: 'Test Channel', iconURL: 'https://i.imgur.com/iKFGRiS.png' })
       .setTitle('🧪 Test Notification — YouTube Upload')
       .setURL('https://www.youtube.com')
-      .setDescription(`${config.Message}\n\n📁 **New Upload!**\n> This is a test notification from Roco. Your YouTube alerts are working correctly.`)
+      .setDescription(`${config.Message}\n\n📁 **New Upload!**\n> This is a test notification from RankCore. Your YouTube alerts are working correctly.`)
       .addFields({ name: '▶ Watch Now', value: 'https://www.youtube.com', inline: false })
       .setThumbnail('https://i.imgur.com/iKFGRiS.png')
       .setTimestamp()
-      .setFooter({ text: 'YouTube Notifications • Roco' });
+      .setFooter({ text: 'YouTube Notifications • RankCore' });
 
     await channel.send({
       content: config.PingRole ? `<@&${config.PingRole}>` : null,
@@ -242,10 +242,10 @@ router.post('/api/guild/:id/social/twitch/:docId/test', isAuth, checkDashboardAc
       .setColor('#9147FF')
       .setTitle(`🧪 Test Notification — ${streamerName} is LIVE!`)
       .setURL(`https://twitch.tv/${streamerName}`)
-      .setDescription(`${config.Message}\n\n🔴 **TEST STREAM**\n🎮 Playing **Test Category**\n👥 **1,337** viewers\n\nThis is a test notification from Roco. Your Twitch alerts are working correctly.`)
+      .setDescription(`${config.Message}\n\n🔴 **TEST STREAM**\n🎮 Playing **Test Category**\n👥 **1,337** viewers\n\nThis is a test notification from RankCore. Your Twitch alerts are working correctly.`)
       .addFields({ name: '📺 Watch Now', value: `https://twitch.tv/${streamerName}`, inline: false })
       .setTimestamp()
-      .setFooter({ text: 'Twitch Notifications • Roco' });
+      .setFooter({ text: 'Twitch Notifications • RankCore' });
 
     await channel.send({
       content: config.PingRole ? `<@&${config.PingRole}>` : null,

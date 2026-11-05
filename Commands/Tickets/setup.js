@@ -8,7 +8,7 @@ module.exports = {
 
     async execute(interaction) {
         await interaction.reply({
-            content: `This system isn't configurable via commands! Use the dashboard: ${process.env.DASHBOARD_URL || "https://dash.rocobot.xyz"}/guild/${interaction.guild.id}/ticket`,
+            content: `This system isn't configurable via commands! Use the dashboard: ${process.env.DASHBOARD_URL || "https://dash.rankcore.org"}/guild/${interaction.guild.id}/ticket`,
             ephemeral: true,
         });
     },

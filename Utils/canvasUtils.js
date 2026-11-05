@@ -79,7 +79,7 @@ function _fetchBuffer(url, timeoutMs = 6000) {
       path:     parsed.pathname + parsed.search,
       method:   "GET",
       headers: {
-        "User-Agent": "DiscordBot (Roco, 1.0)",
+        "User-Agent": "DiscordBot (RankCore, 1.0)",
         "Accept":     "image/png,image/jpeg,image/webp,image/*",
       },
     };

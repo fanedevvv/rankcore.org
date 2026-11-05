@@ -13,6 +13,6 @@ export function copyLink() {
 export function subscribeToAlerts() {
   const email = prompt('Enter your email to receive incident notifications:');
   if (email && email.includes('@')) {
-    alert(`✓ ${email} subscribed to Roco incident alerts. (Demo — no real subscription was created)`);
+    alert(`✓ ${email} subscribed to RankCore incident alerts. (Demo — no real subscription was created)`);
   }
 }

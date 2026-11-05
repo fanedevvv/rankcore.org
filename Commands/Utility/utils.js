@@ -29,8 +29,8 @@ module.exports = {
     .addSubcommand(s => s.setName("stats").setDescription("View bot statistics: servers, users, memory usage."))
     .addSubcommand(s => s.setName("invite").setDescription("Get the bot invite link and support server link."))
     .addSubcommand(s => s.setName("dashboard").setDescription("Get a direct link to this server's dashboard."))
-    .addSubcommand(s => s.setName("support").setDescription("Get a link to the Roco support server."))
-    .addSubcommand(s => s.setName("vote").setDescription("Vote for Roco on bot listing sites.")),
+    .addSubcommand(s => s.setName("support").setDescription("Get a link to the RankCore support server."))
+    .addSubcommand(s => s.setName("vote").setDescription("Vote for RankCore on bot listing sites.")),
 
   async execute(interaction, client) {
     const sub = interaction.options.getSubcommand();
@@ -107,9 +107,9 @@ module.exports = {
       return interaction.reply({
         components: [
           new ContainerBuilder().setAccentColor(accentColor)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_add:1555544335036973106>  Invite Roco"))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_add:1555544335036973106>  Invite RankCore"))
             .addSeparatorComponents(sep())
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("Add Roco to your server or get help from our support team!"))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("Add RankCore to your server or get help from our support team!"))
             .addActionRowComponents(
               new ActionRowBuilder().addComponents(
                 new ButtonBuilder().setLabel("Invite Bot").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:n_add:1555544335036973106>")).setURL(inviteUrl),
@@ -124,7 +124,7 @@ module.exports = {
 
     if (sub === "dashboard") {
       const guildId = interaction.guild.id;
-      const dashUrl = `${process.env.DASHBOARD_URL || "https://dash.rocobot.xyz"}/guild/${guildId}`;
+      const dashUrl = `${process.env.DASHBOARD_URL || "https://dash.rankcore.org"}/guild/${guildId}`;
       return interaction.reply({
         components: [
           new ContainerBuilder().setAccentColor(accentColor)
@@ -147,13 +147,13 @@ module.exports = {
       return interaction.reply({
         components: [
           new ContainerBuilder().setAccentColor(accentColor)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_utils:1555544669545431062>  Roco Support"))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:n_utils:1555544669545431062>  RankCore Support"))
             .addSeparatorComponents(sep())
             .addTextDisplayComponents(new TextDisplayBuilder().setContent("Need help? We've got you covered."))
             .addActionRowComponents(
               new ActionRowBuilder().addComponents(
                 new ButtonBuilder().setLabel("Support Server").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:n_utils:1555544669545431062>")).setURL(config.supportURL),
-                new ButtonBuilder().setLabel("Documentation").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:files:1555544445565407352>")).setURL("https://dash.rocobot.xyz/docs"),
+                new ButtonBuilder().setLabel("Documentation").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:files:1555544445565407352>")).setURL("https://dash.rankcore.org/docs"),
               )
             ),
         ],
@@ -165,9 +165,9 @@ module.exports = {
       return interaction.reply({
         components: [
           new ContainerBuilder().setAccentColor(accentColor)
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:boost:1555544362455146576>  Vote for Roco"))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:boost:1555544362455146576>  Vote for RankCore"))
             .addSeparatorComponents(sep())
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent("Voting helps Roco grow! It only takes 10 seconds."))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent("Voting helps RankCore grow! It only takes 10 seconds."))
             .addActionRowComponents(
               new ActionRowBuilder().addComponents(
                 new ButtonBuilder().setLabel("Vote on Top.gg").setStyle(ButtonStyle.Link).setEmoji(parseEmoji("<:boost:1555544362455146576>")).setURL("https://top.gg/bot/960624234688811188"),

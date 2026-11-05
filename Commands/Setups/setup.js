@@ -3,14 +3,14 @@ const { SlashCommandBuilder, PermissionsBitField } = require("discord.js");
 const { dashboardRedirect } = require("./_dashboardRedirect");
 
 // /setup now redirects to the dashboard.
-// All feature configuration has moved to the Roco Dashboard for a better experience.
+// All feature configuration has moved to the RankCore Dashboard for a better experience.
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("setup")
     .setDMPermission(false)
     .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageGuild)
-    .setDescription("Configure any Roco feature — opens the Dashboard.")
+    .setDescription("Configure any RankCore feature — opens the Dashboard.")
     .addStringOption(o =>
       o.setName("feature")
         .setDescription("Jump straight to a specific feature (optional)")
@@ -56,7 +56,7 @@ module.exports = {
     };
     const path = feature && paths[feature.toLowerCase()] ? paths[feature.toLowerCase()] : null;
     const LABELS = {logging: "Logging", verification: "Verification", modmail: "Modmail", autorole: "Auto Role", reactionrole: "Reaction Roles", tickets: "Tickets", antighostping: "Anti Ghost Ping", antilink: "Anti Link / Automod", antiraid: "Anti Raid", antiscam: "Anti Scam", leveling: "Leveling", voiceleveling: "Voice Leveling", levelroles: "Level Roles", counting: "Counting", suggestion: "Suggestions", joinping: "Join Ping", jointocreate: "Join to Create", guessthenumber: "Guess the Number", welcome: "Welcome", goodbye: "Goodbye", booster: "Booster", sticky: "Sticky Messages", uptime: "Uptime"};
-    const featureName = feature ? (LABELS[feature.toLowerCase()] || feature) : "Roco";
-    return dashboardRedirect(interaction, featureName || "Roco Settings", path || "");
+    const featureName = feature ? (LABELS[feature.toLowerCase()] || feature) : "RankCore";
+    return dashboardRedirect(interaction, featureName || "RankCore Settings", path || "");
   },
 };

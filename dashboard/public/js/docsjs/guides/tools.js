@@ -11,14 +11,14 @@ export const toolsGuides = {
         <div class="step" data-anim="fadeUp"><div class="step-num">1</div><div class="step-body"><h5>Create a category</h5><p>Give it a name, emoji, and description. Each category can have its own channel, role access, and open/close messages.</p></div></div>
         <div class="step" data-anim="fadeUp" data-delay="0.05"><div class="step-num">2</div><div class="step-body"><h5>Set the panel channel</h5><p>Choose the channel where the ticket open button is posted.</p></div></div>
         <div class="step" data-anim="fadeUp" data-delay="0.1"><div class="step-num">3</div><div class="step-body"><h5>Assign support roles</h5><p>Roles that can see and manage tickets. Non-support members only see their own tickets.</p></div></div>
-        <div class="step" data-anim="fadeUp" data-delay="0.15"><div class="step-num">4</div><div class="step-body"><h5>Send the panel</h5><p>Click Send Panel — Roco posts the embed with the open button.</p></div></div>
+        <div class="step" data-anim="fadeUp" data-delay="0.15"><div class="step-num">4</div><div class="step-body"><h5>Send the panel</h5><p>Click Send Panel — RankCore posts the embed with the open button.</p></div></div>
       </div>`},
     { id:'commands', title:'Ticket Commands', render:()=>`
       <div class="cmd-grid" data-anim="fadeUp">
         ${[['ticket close','Close the current ticket — prompts for a reason'],['ticket add @user','Add a user to the current ticket'],['ticket remove @user','Remove a user from the current ticket'],['ticket rename','Rename the ticket channel'],['ticket transcript','Generate an HTML transcript and DM it'],['ticket claim','Claim a ticket as yours (removes other support staff)'],['ticket unclaim','Release your claim on a ticket']].map(([c,d])=>`<div class="cmd-item"><span class="cmd-name">/${c}</span><span class="cmd-desc">${d}</span></div>`).join('')}
       </div>`},
     { id:'transcripts', title:'Transcripts', render:()=>`
-      <div class="prose" data-anim="fadeUp"><p>When a ticket is closed, Roco can automatically generate a full HTML transcript and post it to a transcript log channel and/or DM the ticket opener.</p></div>
+      <div class="prose" data-anim="fadeUp"><p>When a ticket is closed, RankCore can automatically generate a full HTML transcript and post it to a transcript log channel and/or DM the ticket opener.</p></div>
       <div class="callout tip" data-anim="fadeUp" data-delay="0.05"><i data-lucide="lightbulb"></i><div class="callout-body"><strong>Transcript channel</strong>Set a dedicated transcript channel in the dashboard — every closed ticket posts its log there for audit purposes.</div></div>`},
   ]
 },

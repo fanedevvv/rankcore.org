@@ -1,7 +1,7 @@
 /**
  * premiumTiers.js
  * ─────────────────────────────────────────────────────────────────────────────
- * Single source of truth for all Roco premium tier definitions.
+ * Single source of truth for all RankCore premium tier definitions.
  *
  * TIER HIERARCHY:  free  <  basic  <  pro  <  elite
  *
@@ -49,7 +49,7 @@ const TIERS = {
     },
 
     basic: {
-        name: 'Roco Basic',
+        name: 'RankCore Basic',
         emoji: '<:boost:1555544362455146576>',
         color: 0x3b82f6,
         price: { monthly: 299, yearly: 2499 },         // €2.99 / €24.99
@@ -86,7 +86,7 @@ const TIERS = {
     },
 
     pro: {
-        name: 'Roco Pro',
+        name: 'RankCore Pro',
         emoji: '<:eco:1555544429253890050>',
         color: 0xa855f7,
         price: { monthly: 599, yearly: 4999 },         // €5.99 / €49.99
@@ -123,7 +123,7 @@ const TIERS = {
     },
 
     elite: {
-        name: 'Roco Elite',
+        name: 'RankCore Elite',
         emoji: '<:1430986209995526274:1555544172302307449>',
         color: 0xf59e0b,
         price: { monthly: 1299, yearly: 9999 },        // €12.99 / €99.99

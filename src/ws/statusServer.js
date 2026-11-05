@@ -27,7 +27,7 @@ class StatusWebSocketServer {
   async start() {
     const httpServer = http.createServer((_req, res) => {
       res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end('Roco WSS Status');
+      res.end('RankCore WSS Status');
     });
 
     this._wss = new WebSocketServer({ server: httpServer, path: '/status' });

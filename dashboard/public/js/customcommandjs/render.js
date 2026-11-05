@@ -41,7 +41,7 @@ export function updateStats() {
   const today  = new Date().toDateString();
   const custom = cmds.length;
 
-  // Roco plan cap
+  // RankCore plan cap
   const noxxLimit     = state.noxxCommandLimit;   // null = unlimited
   const noxxRemaining = noxxLimit === null ? null : Math.max(0, noxxLimit - custom);
 

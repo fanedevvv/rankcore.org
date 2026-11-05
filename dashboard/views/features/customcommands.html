@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Custom Commands — Roco</title>
+<title>Custom Commands — RankCore</title>
 <link rel="icon" type="image/png" href="/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -571,7 +571,7 @@ select.inp option{background:var(--card-2)}
     <div id="formtab-actions" class="tab-panel">
       <div class="info-banner">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-        Actions run <strong>after</strong> the response is sent. Up to <strong>10 actions</strong>. The Roco bot must have the required Discord permissions for each action.
+        Actions run <strong>after</strong> the response is sent. Up to <strong>10 actions</strong>. The RankCore bot must have the required Discord permissions for each action.
       </div>
       <div id="actionsList"></div>
       <button class="btn btn-ghost btn-sm" onclick="addAction()" style="width:100%;justify-content:center;border-style:dashed">+ Add Action</button>
@@ -601,7 +601,7 @@ select.inp option{background:var(--card-2)}
         <div class="grid2">
           <div>
             <label class="field-lbl">Author Name</label>
-            <input type="text" class="inp" id="cEmbedAuthor" placeholder="Roco Bot" maxlength="256">
+            <input type="text" class="inp" id="cEmbedAuthor" placeholder="RankCore Bot" maxlength="256">
           </div>
           <div>
             <label class="field-lbl">Author Icon URL</label>
@@ -621,7 +621,7 @@ select.inp option{background:var(--card-2)}
         <div class="grid2">
           <div>
             <label class="field-lbl">Footer Text</label>
-            <input type="text" class="inp" id="cEmbedFooter" placeholder="Powered by Roco" maxlength="2048">
+            <input type="text" class="inp" id="cEmbedFooter" placeholder="Powered by RankCore" maxlength="2048">
           </div>
           <div>
             <label class="field-lbl">Footer Icon URL</label>
@@ -957,7 +957,7 @@ function renderActions() {
         ${def.needsValue==='nickname' ? `<div><label class="field-lbl">Nickname</label><input type="text" class="inp" value="${escHtml(ac.nickname||'')}" placeholder="New nickname… supports {arg:name}" oninput="actions[${i}].nickname=this.value" maxlength="32"></div>` : ''}
         ${def.needsValue==='duration' ? `<div><label class="field-lbl">Duration (seconds)</label><input type="number" class="inp" value="${ac.duration||0}" min="1" max="2419200" oninput="actions[${i}].duration=+this.value"></div>` : ''}
         ${def.needsValue==='reason' ? `<div><label class="field-lbl">Reason</label><input type="text" class="inp" value="${escHtml(ac.reason||'')}" placeholder="Reason…" oninput="actions[${i}].reason=this.value"></div>` : ''}
-        ${def.group==='Moderation' ? `<div class="warn-banner" style="margin:0"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg> Roco must have the required permission and be higher in the role hierarchy than the target.</div>` : ''}
+        ${def.group==='Moderation' ? `<div class="warn-banner" style="margin:0"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg> RankCore must have the required permission and be higher in the role hierarchy than the target.</div>` : ''}
       </div>
       <button class="btn btn-ghost btn-sm builder-row-rm" onclick="removeAction(${i})">✕</button>
     </div>`;
@@ -1240,7 +1240,7 @@ const TEMPLATES = {
   'simple-response': { name:'info', description:'Get server information', response:'📊 **{server}** has **{memberCount}** members!\n\nYou\'re viewing this from {channel}.' },
   'mention-reply': { name:'greet', description:'Greet a user', response:'Hey {arg:user.mention}, welcome to **{server}**! 🎉', arguments:[{name:'user',description:'Who to greet',type:'User',required:true,choices:[]}] },
   'give-role': { name:'get-member', description:'Give yourself the Member role', response:'✅ Done! You\'ve been given a role.', ephemeral:true, actions:[{type:'add_role',roleId:'',channelId:'',message:'',emoji:'',argName:'',userArgName:'',nickname:'',duration:0,reason:''}] },
-  'embed-card': { name:'help', description:'Show help information', response:'Need help? Here\'s how to use this bot!', isEmbed:true, embedTitle:'📖 Help Guide', embedColor:'#6C53FF', embedFooter:'Powered by Roco' },
+  'embed-card': { name:'help', description:'Show help information', response:'Need help? Here\'s how to use this bot!', isEmbed:true, embedTitle:'📖 Help Guide', embedColor:'#6C53FF', embedFooter:'Powered by RankCore' },
   'random-response': { name:'fortune', description:'Get a random fortune', response:'🎱 Ask again later.', multiResponseEnabled:true, responseVariants:[{response:'🎱 It is certain.',weight:1},{response:'🎱 Ask again later.',weight:1},{response:'🎱 Outlook not so good.',weight:1},{response:'🎱 Signs point to yes!',weight:1}] },
   'role-from-arg': { name:'assign', description:'Assign a role to yourself', response:'✅ Done — added {arg:role.mention} to your roles.', ephemeral:true, arguments:[{name:'role',description:'Which role to assign',type:'Role',required:true,choices:[]}], actions:[{type:'add_role_arg',roleId:'',channelId:'',message:'',emoji:'',argName:'role',userArgName:'',nickname:'',duration:0,reason:''}] },
 };

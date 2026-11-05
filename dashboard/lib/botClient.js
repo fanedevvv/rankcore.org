@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════════════╗
- * ║              ROCO DASHBOARD BOT CLIENT SHIM                     ║
+ * ║              RANKCORE DASHBOARD BOT CLIENT SHIM                     ║
  * ║                                                                  ║
  * ║  Used by the standalone dashboard process.                      ║
  * ║  Mirrors the Discord.js Client API but proxies every call       ║

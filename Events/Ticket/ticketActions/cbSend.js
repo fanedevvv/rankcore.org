@@ -22,7 +22,7 @@ async function cbSendToChannel(guildId, channel, payload) {
     if (cbm.isActive(guildId)) {
       const result = await apiPost('/internal/cb/send', { guildId, channelId: channel.id, payload: norm });
       if (result?.messageId) return result.messageId;
-      console.warn(`[Ticket CB Send] failed: ${result?.error ?? 'unknown'} — falling back to Roco`);
+      console.warn(`[Ticket CB Send] failed: ${result?.error ?? 'unknown'} — falling back to RankCore`);
     }
   } catch (err) {
     console.warn(`[Ticket CB Send] CB error: ${err.message} — falling back`);

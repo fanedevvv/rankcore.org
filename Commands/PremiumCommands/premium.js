@@ -47,9 +47,9 @@ async function createCheckoutSession({ priceId, discordUserId, discordGuildId, b
 
 function buildPricingEmbed() {
     const embed = new EmbedBuilder()
-        .setTitle('<:boost:1555544362455146576> Roco Premium Plans')
+        .setTitle('<:boost:1555544362455146576> RankCore Premium Plans')
         .setDescription(
-            'Unlock the full power of Roco for your server.\n' +
+            'Unlock the full power of RankCore for your server.\n' +
             'All plans support **monthly** or **yearly** billing.\n' +
             '> *Yearly saves up to 30% compared to monthly!*'
         )
@@ -87,7 +87,7 @@ function buildPricingEmbed() {
                     '→ **Custom Branding** — your own bot name, avatar & colours',
                     '→ Unlimited commands, autoresponders, playlists & backups',
                     '→ Unlimited YouTube & Twitch notifications',
-                    '→ Priority support from the Roco team',
+                    '→ Priority support from the RankCore team',
                 ].join('\n'),
                 inline: false,
             }
@@ -238,7 +238,7 @@ module.exports = {
                 .setTitle('<:n_utils:1555544669545431062> Manage Your Subscription')
                 .setColor(0x8b5cf6)
                 .setDescription(
-                    'Manage your Roco Premium subscription, update payment details, or cancel — all from the Stripe billing portal.'
+                    'Manage your RankCore Premium subscription, update payment details, or cancel — all from the Stripe billing portal.'
                 )
                 .addFields(
                     { name: '<:1430986225493479485:1555544207652032633> Dashboard',       value: `[View Premium Page](${dashUrl}/premium)`, inline: true },
@@ -278,7 +278,7 @@ module.exports = {
                 return interaction.reply({
                     content:
                         '<:premium:1467910095911256198> Online payments aren\'t available yet.\n' +
-                        `Open a ticket in the [Roco support server](${process.env.SUPPORT_URL || 'https://discord.gg/a9Kea3ymC7'}) to get a premium code, ` +
+                        `Open a ticket in the [RankCore support server](${process.env.SUPPORT_URL || 'https://discord.gg/a9Kea3ymC7'}) to get a premium code, ` +
                         'then activate it with `/redeem code:ROCO-XXXX-XXXX-XXXX`.',
                     ephemeral: true,
                 });
@@ -306,7 +306,7 @@ module.exports = {
                     .setColor(tierCfg.color)
                     .setDescription(
                         `Click the button below to complete your secure checkout via **${provider}**.\n\n` +
-                        `> <:lockk:1555544494441635860> Payments are handled securely by ${provider}. Roco never sees your card details.\n\n` +
+                        `> <:lockk:1555544494441635860> Payments are handled securely by ${provider}. RankCore never sees your card details.\n\n` +
                         (withServer
                             ? `<a:tickyy:1555544712687915008> This subscription will also upgrade **this server** — all members will benefit!`
                             : `<:n_info:1555544473008873565> Want to upgrade your whole server too? Use \`/premium subscribe\` with **server: True**.`)

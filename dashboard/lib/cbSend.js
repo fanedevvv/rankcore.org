@@ -6,7 +6,7 @@
  * ║                                                              ║
  * ║  Drop-in replacement for channel.send() in dashboard routes. ║
  * ║  When a Custom Branding bot is active for a guild, messages  ║
- * ║  are sent through the CB bot instead of Roco, so they appear ║
+ * ║  are sent through the CB bot instead of RankCore, so they appear ║
  * ║  from the guild's branded bot identity.                      ║
  * ║                                                              ║
  * ║  Usage:                                                      ║
@@ -34,7 +34,7 @@ const cbm            = require("../../src/core/CustomBrandingManager");
  */
 async function cbSend(req, guildId, channel, payload) {
   // Normalise embeds AND components to raw JSON so they survive IPC serialisation.
-  // Applied to both the CB path AND the Roco fallback so components are always
+  // Applied to both the CB path AND the RankCore fallback so components are always
   // serialised correctly regardless of which bot ends up sending.
   const normPayload = {
     ...payload,
@@ -98,17 +98,17 @@ async function cbSend(req, guildId, channel, payload) {
       console.error(
         `[cbSend] CB send returned no messageId for guild ${guildId}, ` +
         `channel ${channel.id} — CB error: ${result?.error ?? "unknown"}. ` +
-        `Falling back to Roco.`
+        `Falling back to RankCore.`
       );
     } catch (err) {
       console.error(
         `[cbSend] CB send threw for guild ${guildId}, channel ${channel.id}: ` +
-        `${err.message}. Falling back to Roco.`
+        `${err.message}. Falling back to RankCore.`
       );
     }
   }
 
-  // ── Step 4: Roco fallback ─────────────────────────────────────────────────
+  // ── Step 4: RankCore fallback ─────────────────────────────────────────────────
   // Use normPayload here too so ActionRowBuilder components are always
   // serialised to plain JSON before hitting discord.js / the internal API.
   const msg = await channel.send(normPayload);

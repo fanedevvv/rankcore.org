@@ -70,7 +70,7 @@
           `Hey ${owner.user}, thanks for adding **${client.user.username}** to **${guild.name}**!\n\n` +
           `• Use \`/help\` to explore all my features.\n` +
           `• Join our support server if you need help.\n` +
-          `• Read how we handle data in our [Privacy Policy](https://rocobot.xyz/privacy).\n` +
+          `• Read how we handle data in our [Privacy Policy](https://rankcore.org/privacy).\n` +
           (automodCreated ? `• I turned on basic AutoMod protection (spam, mention spam, slurs). Change it anytime in Server Settings → AutoMod.\n` : "") +
           `\n` +
           `> ${client.emoji?.sparkles || "<:boost:1555544362455146576>"} **Total Commands:** ${client.commands.size}\n` +
@@ -79,7 +79,7 @@
         .setThumbnail(client.user.displayAvatarURL({ size: 512 }))
         .setColor(client.config?.embedColor || "#5865F2")
         .setFooter({
-          text: "Roco • rocobot.xyz",
+          text: "RankCore • rankcore.org",
           iconURL: client.user.displayAvatarURL(),
         });
 
@@ -101,7 +101,7 @@
       const privacyButton = new ButtonBuilder()
         .setLabel("Privacy Policy")
         .setStyle(ButtonStyle.Link)
-        .setURL("https://rocobot.xyz/privacy");
+        .setURL("https://rankcore.org/privacy");
 
       const buttonRow = new ActionRowBuilder().addComponents(
         supportButton,

@@ -1,6 +1,6 @@
 /**
  * _modUtils.js
- * Shared utilities for all Roco moderation commands.
+ * Shared utilities for all RankCore moderation commands.
  * All DM notifications use Components V2 (ContainerBuilder).
  */
 

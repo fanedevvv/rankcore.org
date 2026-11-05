@@ -423,7 +423,7 @@
             <div class="dsc-msg">
               <div class="dsc-avatar" style="background:linear-gradient(135deg,#FF333320,#6C53FF20);border:1.5px solid rgba(108,83,255,.3);overflow:hidden;padding:0"><img src="/logo.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.style.display='none';this.parentElement.textContent='🤖'"></div>
               <div class="dsc-body">
-                <span class="dsc-username">Roco<span class="dsc-tag">BOT</span></span>
+                <span class="dsc-username">RankCore<span class="dsc-tag">BOT</span></span>
                 <!-- Clickable text content -->
                 <div id="tplPrevContent" class="dsc-text prev-clickable" title="Click to edit message text" onclick="tplFocusField('tplText')" style="cursor:pointer;border-radius:4px;transition:outline .15s"></div>
                 <!-- Embed preview wrapper — individual sections are clickable -->
@@ -660,7 +660,7 @@ const gc = id => { const e=document.getElementById(id); return e?e.checked:false
 const sv = (id,v) => { const e=document.getElementById(id); if(e)e.value=v||''; };
 const sc = (id,v) => { const e=document.getElementById(id); if(e)e.checked=!!v; };
 const mdToHtml = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/`(.+?)`/g,'<code style="background:rgba(0,0,0,.3);padding:1px 4px;border-radius:3px;font-size:11px">$1</code>').replace(/~~(.+?)~~/g,'<s>$1</s>').replace(/\n/g,'<br>');
-const resolve = s => (s||'').replace(/{user}/g,'@Roco').replace(/{username}/g,'Roco').replace(/{server}/g,'My Server');
+const resolve = s => (s||'').replace(/{user}/g,'@RankCore').replace(/{username}/g,'RankCore').replace(/{server}/g,'My Server');
 
 function showToast(msg, type='success') {
   const t = document.getElementById('toast');

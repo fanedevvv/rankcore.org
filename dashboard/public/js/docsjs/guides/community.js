@@ -145,7 +145,7 @@ bassboost  soft  pop  live  karaoke</div>
       <div class="cmd-grid" data-anim="fadeUp" data-delay="0.05">
         ${[['auto-role add role:@Member type:all','Auto-assign to all new joins (humans and bots)'],['auto-role add role:@Human type:human','Assign only to human members'],['auto-role add role:@Bot type:bot','Assign only to bots'],['auto-role remove role:@Member','Remove a role from auto-assignment'],['auto-role list','View all configured auto-roles']].map(([c,d])=>`<div class="cmd-item"><span class="cmd-name">/${c}</span><span class="cmd-desc">${d}</span></div>`).join('')}
       </div>
-      <div class="callout warn" data-anim="fadeUp" data-delay="0.1"><i data-lucide="triangle-alert"></i><div class="callout-body"><strong>Role hierarchy</strong>Roco can only assign roles below its own highest role. Make sure the Roco role is above any auto-assigned roles in Server Settings → Roles.</div></div>`},
+      <div class="callout warn" data-anim="fadeUp" data-delay="0.1"><i data-lucide="triangle-alert"></i><div class="callout-body"><strong>Role hierarchy</strong>RankCore can only assign roles below its own highest role. Make sure the RankCore role is above any auto-assigned roles in Server Settings → Roles.</div></div>`},
     { id:'limits', title:'Limits by Plan', render:()=>`
       <div class="table-wrap" data-anim="fadeUp"><table class="dtable"><thead><tr><th>Plan</th><th>Auto Roles</th></tr></thead><tbody>
         <tr><td>Free</td><td>2</td></tr>
@@ -186,7 +186,7 @@ bassboost  soft  pop  live  karaoke</div>
   voice-limit:          5                   <span class="c">(default user limit, 2–10)</span>
   inherit-permissions:  true                <span class="c">(inherit category permissions)</span></div>
       </div>
-      <div class="prose" data-anim="fadeUp" data-delay="0.1"><p>When a member joins the designated channel, Roco instantly creates a new voice channel in the category and moves them in. The channel is automatically deleted when the last member leaves.</p></div>`},
+      <div class="prose" data-anim="fadeUp" data-delay="0.1"><p>When a member joins the designated channel, RankCore instantly creates a new voice channel in the category and moves them in. The channel is automatically deleted when the last member leaves.</p></div>`},
     { id:'controls', title:'Room Controls', render:()=>`
       <div class="prose" data-anim="fadeUp"><p>The room owner gets a control panel posted in their channel with buttons to:</p></div>
       <div class="card-block" data-anim="fadeUp" data-delay="0.05"><h4><i data-lucide="settings-2"></i>Owner controls</h4>
@@ -206,7 +206,7 @@ bassboost  soft  pop  live  karaoke</div>
       <div class="cmd-grid" data-anim="fadeUp">
         ${[['sticky-message set channel:#rules message:Read before posting','Set a sticky message in a channel'],['sticky-message remove channel:#rules','Remove the sticky message from a channel'],['sticky-message list','List all sticky messages across the server']].map(([c,d])=>`<div class="cmd-item"><span class="cmd-name">/${c}</span><span class="cmd-desc">${d}</span></div>`).join('')}
       </div>
-      <div class="prose" data-anim="fadeUp" data-delay="0.05"><p>When a new message is sent in the channel, Roco deletes the previous sticky and re-posts it at the bottom. This keeps important information always visible without needing a pinned message.</p></div>
+      <div class="prose" data-anim="fadeUp" data-delay="0.05"><p>When a new message is sent in the channel, RankCore deletes the previous sticky and re-posts it at the bottom. This keeps important information always visible without needing a pinned message.</p></div>
       <div class="callout info" data-anim="fadeUp" data-delay="0.1"><i data-lucide="info"></i><div class="callout-body"><strong>Content limit</strong>Sticky messages support up to 2000 characters of plain text. For rich formatted stickies, use an embed from the Embed Builder and paste its content.</div></div>`},
     { id:'limits', title:'Limits by Plan', render:()=>`
       <div class="table-wrap" data-anim="fadeUp"><table class="dtable"><thead><tr><th>Plan</th><th>Sticky Messages</th></tr></thead><tbody>

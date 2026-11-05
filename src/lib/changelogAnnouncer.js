@@ -3,8 +3,8 @@
 /**
  * Posts every changelog (published from the owner panel → Changelog tab) to the
  * updates channel, and edits the message when the changelog is edited.
- * The same entries are shown on dash.rocobot.xyz/changelogs and rocobot.xyz/news.
- * Channel: CHANGELOG_CHANNEL_ID in .env (defaults to #updates in Roco Hub).
+ * The same entries are shown on dash.rankcore.org/changelogs and rankcore.org/news.
+ * Channel: CHANGELOG_CHANNEL_ID in .env (defaults to #updates in RankCore Hub).
  */
 
 const crypto = require('crypto');
@@ -13,7 +13,7 @@ const Changelogs = require('../../Schemas/changelogs');
 
 const CHANNEL_ID  = process.env.CHANGELOG_CHANNEL_ID || '1564937854956601394';
 const INTERVAL_MS = 60 * 1000;
-const NEWS_URL    = 'https://rocobot.xyz/news';
+const NEWS_URL    = 'https://rankcore.org/news';
 
 const TYPES = {
   new:      { label: 'New',      emoji: '<:sparkles:1467860962794012914>', color: 0x22c55e },
@@ -37,13 +37,13 @@ function hashOf(entry) {
 function buildMessage(entry) {
   const c    = entry.config || {};
   const type = TYPES[c.type] || TYPES.update;
-  const title = c.title || 'Roco Update';
+  const title = c.title || 'RankCore Update';
 
   const embed = new EmbedBuilder()
     .setColor(/^#[0-9a-f]{6}$/i.test(c.color || '') ? parseInt(c.color.slice(1), 16) : type.color)
     // Custom emoji don't render in embed titles, so the heading lives in the description
     .setDescription(`## ${type.emoji} ${title}\n${c.description || ''}`.slice(0, 4096))
-    .setFooter({ text: c.footer || `${type.label} • Roco Development` })
+    .setFooter({ text: c.footer || `${type.label} • RankCore Development` })
     .setTimestamp(entry.date ? new Date(entry.date) : new Date());
 
   const row = new ActionRowBuilder().addComponents(

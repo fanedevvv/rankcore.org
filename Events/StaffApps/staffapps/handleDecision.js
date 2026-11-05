@@ -95,7 +95,7 @@ async function handleDecision(interaction, submissionId, decision) {
       );
 
       if (!edited) {
-        // Fallback: edit via Roco bot
+        // Fallback: edit via RankCore bot
         try {
           const logCh = interaction.guild.channels.cache.get(submission.logChannelId);
           if (logCh) {

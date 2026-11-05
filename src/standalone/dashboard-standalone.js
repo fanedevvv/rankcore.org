@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════════════╗
- * ║           ROCO DASHBOARD — STANDALONE PROCESS                   ║
+ * ║           RANKCORE DASHBOARD — STANDALONE PROCESS                   ║
  * ║                                                                  ║
  * ║  Runs as its own PM2 process: noxx-dashboard                    ║
  * ║                                                                  ║
@@ -81,7 +81,7 @@ const _cfgDefaults = {
   imageGenAPI:  _env.IMAGE_GEN_API_KEY || _env.imageGenAPI,
   // prefix: removed
   status:       _env.BOT_STATUS || _env.status || 'online',
-  activity:     _env.BOT_ACTIVITY || _env.activity || 'Roco',
+  activity:     _env.BOT_ACTIVITY || _env.activity || 'RankCore',
 };
 for (const [key, fallback] of Object.entries(_cfgDefaults)) {
   if ((config[key] === undefined || config[key] === null) && fallback != null) {
@@ -122,7 +122,7 @@ const mongoUrl      = process.env.mongodbURL;
 if (!sessionSecret) { err('SESSION_SECRET not set — exiting.'); process.exit(1); }
 if (!mongoUrl)      { err('mongodbURL not set — exiting.'); process.exit(1); }
 
-// Public website data (rocobot.xyz/api/site/*) — forwarded to the bot's API on
+// Public website data (rankcore.org/api/site/*) — forwarded to the bot's API on
 // 127.0.0.1:5181, which applies its own rate limiting by the visitor's IP.
 app.get('/api/site/:endpoint(stats|commands|uptime|changelogs)', async (req, res) => {
   try {

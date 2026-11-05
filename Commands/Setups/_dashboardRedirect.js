@@ -6,7 +6,7 @@
  */
 const { MessageFlags, EmbedBuilder } = require("discord.js");
 
-const DASHBOARD_BASE = `${process.env.DASHBOARD_URL || "https://dash.rocobot.xyz"}/guild`;
+const DASHBOARD_BASE = `${process.env.DASHBOARD_URL || "https://dash.rankcore.org"}/guild`;
 
 /**
  * @param {import("discord.js").ChatInputCommandInteraction} interaction
@@ -25,7 +25,7 @@ async function dashboardRedirect(interaction, featureName, path) {
       `Use the link below to configure **${featureName}** with a full visual editor, live previews, and more.\n\n` +
       `[**Open ${featureName} Settings →**](${dashUrl})`
     )
-    .setFooter({ text: "Roco Dashboard • dash.rocobot.xyz" });
+    .setFooter({ text: "RankCore Dashboard • dash.rankcore.org" });
 
   return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
 }

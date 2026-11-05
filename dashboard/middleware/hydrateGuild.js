@@ -1,5 +1,5 @@
 /**
- * ROCO Dashboard — Guild Hydration Middleware (standalone mode only)
+ * RANKCORE Dashboard — Guild Hydration Middleware (standalone mode only)
  *
  * In standalone mode, req.client is a BotClientShim. The shim's guild objects
  * start with empty caches. This middleware intercepts any request that has a

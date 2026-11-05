@@ -107,7 +107,7 @@ function buildLiveEmbed(stream, avatarUrl, customMessage) {
     )
     .addFields({ name: '📺 Watch Now', value: `https://www.twitch.tv/${stream.userLogin}`, inline: false })
     .setTimestamp(stream.startedAt)
-    .setFooter({ text: 'Twitch Live Notifications • Roco' });
+    .setFooter({ text: 'Twitch Live Notifications • RankCore' });
 
   if (stream.thumbnailUrl) embed.setImage(stream.thumbnailUrl);
   if (avatarUrl) embed.setThumbnail(avatarUrl);
@@ -121,7 +121,7 @@ function buildStreamEndedEmbed(username) {
     .setTitle(`⚫ ${username} has gone offline`)
     .setDescription(`The stream has ended. Thanks for watching!`)
     .setTimestamp()
-    .setFooter({ text: 'Twitch Live Notifications • Roco' });
+    .setFooter({ text: 'Twitch Live Notifications • RankCore' });
 }
 
 // ─── Poller ───────────────────────────────────────────────────────────────────

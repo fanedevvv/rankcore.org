@@ -117,7 +117,7 @@ router.post("/api/guild/:id/invite-config/test", isAuth, checkDashboardAccess('o
     // Welcome channel
     if (cfg.welcomeChannelId) {
       const ch = guild.channels.cache.get(cfg.welcomeChannelId);
-      if (!(await canSend(ch))) return res.status(400).json({ error: "Roco can't send messages in the welcome channel." });
+      if (!(await canSend(ch))) return res.status(400).json({ error: "RankCore can't send messages in the welcome channel." });
 
       if (cfg.embed?.enabled) {
         const e = cfg.embed;
@@ -173,7 +173,7 @@ router.post("/api/guild/:id/invite-config/test", isAuth, checkDashboardAccess('o
     res.json({ success: true, sent: sent.join(' + ') });
   } catch (err) {
     console.error('[invite test]', err);
-    res.status(500).json({ error: "Couldn't send the test message. Check Roco's permissions in that channel." });
+    res.status(500).json({ error: "Couldn't send the test message. Check RankCore's permissions in that channel." });
   }
 });
 

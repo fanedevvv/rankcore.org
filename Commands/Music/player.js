@@ -31,7 +31,7 @@ function buildPlayerEmbed(player, client) {
       .setColor(0x06b6d4)
       .setTitle('<:n_music:1555544516746940416> Music Player')
       .setDescription('Nothing is playing right now. Use `/player play <song>` to start.')
-      .setFooter({ text: 'Roco Music' });
+      .setFooter({ text: 'RankCore Music' });
   }
 
   const loopIcon = player.loop === 'track' ? '<:n_music:1555544516746940416>' : player.loop === 'queue' ? '<:n_music:1555544516746940416>' : '';
@@ -50,7 +50,7 @@ function buildPlayerEmbed(player, client) {
       { name: '<:user:1555544664155889668> Requested', value: `<@${track.requester?.id ?? '0'}>`, inline: true },
     )
     .setThumbnail(track.thumbnail ?? null)
-    .setFooter({ text: `${player.paused ? '<:n_music:1555544516746940416> Paused' : '<:n_music:1555544516746940416> Playing'} • Roco Music` })
+    .setFooter({ text: `${player.paused ? '<:n_music:1555544516746940416> Paused' : '<:n_music:1555544516746940416> Playing'} • RankCore Music` })
     .setTimestamp();
 }
 
@@ -82,7 +82,7 @@ const activePanels = new Map(); // guildId => { message, collector }
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('player')
-    .setDescription('Open the Roco music player control panel.')
+    .setDescription('Open the RankCore music player control panel.')
     .setDMPermission(false)
     .addStringOption(o => o
       .setName('play')

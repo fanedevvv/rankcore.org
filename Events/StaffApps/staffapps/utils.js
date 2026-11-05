@@ -5,7 +5,7 @@
  * Shared low-level helpers for the Staff Applications system:
  *   - nanoid          — collision-resistant random ID
  *   - getDashboardDomain / apiPost — lazy-loaded dashboard bridge
- *   - cbChannelSend / cbChannelEdit — CB-bot routing with Roco fallback
+ *   - cbChannelSend / cbChannelEdit — CB-bot routing with RankCore fallback
  */
 
 const CustomBranding = require("../../../Schemas/customBrandingSchema");
@@ -17,9 +17,9 @@ function getDashboardDomain() {
     try {
       _dashboardDomain =
         require("../../../src/config/bot").dashboard?.domain ||
-        "https://dash.rocobot.xyz";
+        "https://dash.rankcore.org";
     } catch {
-      _dashboardDomain = "https://dash.rocobot.xyz";
+      _dashboardDomain = "https://dash.rankcore.org";
     }
   }
   return _dashboardDomain;
@@ -60,10 +60,10 @@ async function cbChannelSend(guildId, channel, payload) {
       };
       const result = await apiPost("/internal/cb/send", { guildId, channelId: channel.id, payload: norm });
       if (result?.messageId) return { messageId: result.messageId, viaCB: true };
-      console.warn(`[StaffApps CB Send] failed guild ${guildId} — falling back to Roco`);
+      console.warn(`[StaffApps CB Send] failed guild ${guildId} — falling back to RankCore`);
     }
   } catch (err) {
-    console.warn(`[StaffApps CB Send] error: ${err.message} — falling back to Roco`);
+    console.warn(`[StaffApps CB Send] error: ${err.message} — falling back to RankCore`);
   }
   const msg = await channel.send(payload);
   return { messageId: msg?.id ?? null, viaCB: false };

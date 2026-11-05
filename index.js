@@ -1,5 +1,5 @@
 /**
- * Roco launcher — entry point for the Pterodactyl server (MAIN_FILE=index.js).
+ * RankCore launcher — entry point for the Pterodactyl server (MAIN_FILE=index.js).
  *
  * Pterodactyl runs a single command per server, so this file supervises the
  * three processes that PM2 used to run (see ecosystem.config.js):

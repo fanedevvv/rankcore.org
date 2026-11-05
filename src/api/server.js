@@ -1,6 +1,6 @@
 /*
  * -------------------------------
- * ROCO BOT API SERVER
+ * RANKCORE BOT API SERVER
  * -------------------------------
  * This file contains all Express.js routes and middleware for the bot's dashboard API.
  * It is loaded by the main index.js and passed the 'client' object.
@@ -148,6 +148,10 @@ module.exports = (client) => {
     // CORS — restricted to known origins
     // ──────────────────────────────────────────────
     const ALLOWED_ORIGINS = [
+        'https://rankcore.org',
+        'https://www.rankcore.org',
+        'https://dash.rankcore.org',
+        // Old domains — keep until rocobot.xyz is fully retired
         'https://rocobot.xyz',
         'https://www.rocobot.xyz',
         'https://dash.rocobot.xyz'
@@ -315,7 +319,7 @@ module.exports = (client) => {
         }
     });
 
-    // ────────── Public website (rocobot.xyz) ──────────
+    // ────────── Public website (rankcore.org) ──────────
     // Same response shapes the site previously got from its Supabase functions.
     const siteCache = { stats: null, statsAt: 0, commands: null, gateway: null, gatewayAt: 0 };
     const SITE_TTL_MS = 60_000;

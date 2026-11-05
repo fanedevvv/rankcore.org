@@ -242,7 +242,7 @@ function buildLogEmbed(data, closer, reason, docs, webTranscriptLink) {
   embed.addFields({ name: '<:files:1555544445565407352> Close Reason', value: reason });
   if (webTranscriptLink) embed.addFields({ name: '<:1430986225493479485:1555544207652032633> Online Transcript', value: `[View Transcript](${webTranscriptLink})` });
 
-  embed.setTimestamp().setFooter({ text: 'Roco Ticket System' });
+  embed.setTimestamp().setFooter({ text: 'RankCore Ticket System' });
   return embed;
 }
 

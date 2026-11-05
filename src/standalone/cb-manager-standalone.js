@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════════════╗
- * ║        ROCO CUSTOM BRANDING MANAGER — STANDALONE PROCESS        ║
+ * ║        RANKCORE CUSTOM BRANDING MANAGER — STANDALONE PROCESS        ║
  * ║                                                                  ║
  * ║  Runs as its own PM2 process: noxx-cb                           ║
  * ║                                                                  ║

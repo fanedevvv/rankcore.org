@@ -6,7 +6,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("guildredeem")
         .setContexts(InteractionContextType.Guild)
-        .setDescription("Redeem a Roco premium code for this server (same as /redeem)")
+        .setDescription("Redeem a RankCore premium code for this server (same as /redeem)")
         .addStringOption(option =>
             option.setName("code")
                 .setDescription("Your premium code, e.g. ROCO-XXXX-XXXX-XXXX")

@@ -307,7 +307,7 @@ router.delete("/api/:id/custombrand", isAuth, checkDashboardAccess('overview'), 
   }
 });
 
-// ── GET commands list (Roco commands + disabled state for this guild) ────────
+// ── GET commands list (RankCore commands + disabled state for this guild) ────────
 
 router.get("/api/:id/custombrand/commands", isAuth, checkDashboardAccess('overview'), cbAccess, async (req, res) => {
   try {
@@ -315,7 +315,7 @@ router.get("/api/:id/custombrand/commands", isAuth, checkDashboardAccess('overvi
     const fs   = require("fs");
     const path = require("path");
 
-    // Load Roco command list from disk
+    // Load RankCore command list from disk
     let allCommands = [];
     try {
       const raw = fs.readFileSync(path.join(__dirname, "../../../src/data/registeredCommands.json"), "utf8");

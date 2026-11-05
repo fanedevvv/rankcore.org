@@ -133,7 +133,7 @@ router.post("/api-dev/reports/:reportId/resolve", ...secureDevApi, async (req, r
                 { name: "\ud83c\udfaf Target",       value: `${doc.targetType === "user" ? "User" : "Server"} \`${doc.targetId}\``, inline: true },
                 { name: "\ud83d\udccc Action Taken", value: action.trim(),                         inline: false },
             )
-            .setFooter({ text: "Roco Moderation Team" })
+            .setFooter({ text: "RankCore Moderation Team" })
             .setTimestamp();
 
         await apiPost(`/internal/user/${doc.reporterId}/dm`, { embeds: [embed.toJSON()] });

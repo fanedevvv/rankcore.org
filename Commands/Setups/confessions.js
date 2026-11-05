@@ -10,7 +10,7 @@ const {
     containsBlockedWord,
 } = require("../../Utils/confessionUtils");
 
-// All setup logic has been moved to the Roco Dashboard.
+// All setup logic has been moved to the RankCore Dashboard.
 // User-facing subcommands (send, stats, blacklist, trusted) are handled here.
 
 module.exports = {

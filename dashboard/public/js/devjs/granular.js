@@ -1,5 +1,5 @@
 /**
- * ROCO Dev Panel — Granular Control
+ * RANKCORE Dev Panel — Granular Control
  * Individual enable/disable for events, slash commands, and systems.
  * Drop this file at: dashboard/public/js/devjs/granular.js
  * Then import + wire it up in devmain.js (see bottom of this file for instructions).

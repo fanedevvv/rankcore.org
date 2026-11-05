@@ -1,6 +1,6 @@
 "use strict";
 
-// Setup / config has moved to the Roco Dashboard.
+// Setup / config has moved to the RankCore Dashboard.
 // This file only registers the user-facing and staff subcommands that still
 // run through Discord slash commands.
 

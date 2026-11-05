@@ -11,13 +11,13 @@ const { ACCENT } = require('../../Utils/v2helpers');
 // ── Guide pages ───────────────────────────────────────────────────────────────
 const PAGES = [
   {
-    title: '<:files:1555544445565407352> Welcome to Roco',
+    title: '<:files:1555544445565407352> Welcome to RankCore',
     color: ACCENT.default,
     content: [
-      '**Roco** is a feature-rich Discord bot built for server management, community tools, and fun.',
+      '**RankCore** is a feature-rich Discord bot built for server management, community tools, and fun.',
       '',
       '## <:boost:1555544362455146576> Getting Started',
-      '> Use `/setup` to open the **Roco Dashboard** and configure any feature.',
+      '> Use `/setup` to open the **RankCore Dashboard** and configure any feature.',
       '> Most setup is done through the dashboard — it\'s the fastest way to get going.',
       '',
       '## <:files:1555544445565407352> Pages in this guide',
@@ -82,7 +82,7 @@ const PAGES = [
       '## Quick Start',
       '1. Join a voice channel',
       '2. Run `/music play <song name or URL>`',
-      '3. Roco will join and start playing!',
+      '3. RankCore will join and start playing!',
       '',
       '## Commands',
       '`/music play` — Play a song or playlist',
@@ -181,17 +181,17 @@ const PAGES = [
       '**<:lockk:1555544494441635860> Free**',
       '10 autoresponders • 10 custom commands • 2 ticket categories • Welcome images',
       '',
-      '**<:boost:1555544362455146576> Roco Basic** — €2.99/mo',
+      '**<:boost:1555544362455146576> RankCore Basic** — €2.99/mo',
       '25 autoresponders • Anti-Nuke/Raid • 24/7 Music • 5 playlists • Mass Role',
       '',
-      '**<:eco:1555544429253890050> Roco Pro** — €5.99/mo',
+      '**<:eco:1555544429253890050> RankCore Pro** — €5.99/mo',
       '75 autoresponders • Music filters • AI Chatbot • Image gen • VirusTotal • 20 playlists',
       '',
-      '**<:1430986209995526274:1555544172302307449> Roco Elite** — €12.99/mo',
+      '**<:1430986209995526274:1555544172302307449> RankCore Elite** — €12.99/mo',
       '**Unlimited everything** • Unlimited connection roles • Priority support',
       '',
       '## How to Upgrade',
-      'Visit the Roco Dashboard → **Premium** tab, or use `/redeem` with a token.',
+      'Visit the RankCore Dashboard → **Premium** tab, or use `/redeem` with a token.',
       '',
       '> Need help? Join our **[Support Server](https://discord.gg/a9Kea3ymC7)** and a staff member will assist you.',
     ].join('\n'),
@@ -201,7 +201,7 @@ const PAGES = [
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('guide')
-    .setDescription('Open the interactive Roco guidebook.')
+    .setDescription('Open the interactive RankCore guidebook.')
     .setDMPermission(true)
     .addIntegerOption(o => o
       .setName('page')
@@ -219,7 +219,7 @@ module.exports = {
         .setTitle(p.title)
         .setDescription(p.content)
         .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
-        .setFooter({ text: `Page ${page + 1} of ${PAGES.length} • Roco Guidebook` })
+        .setFooter({ text: `Page ${page + 1} of ${PAGES.length} • RankCore Guidebook` })
         .setTimestamp();
     };
 
@@ -227,7 +227,7 @@ module.exports = {
       new ButtonBuilder().setCustomId('guide_prev').setLabel('◀').setStyle(ButtonStyle.Secondary).setDisabled(page === 0),
       new ButtonBuilder().setCustomId('guide_home').setLabel('​').setEmoji(parseEmoji('<:n_home:1555544468193546270>')).setStyle(ButtonStyle.Secondary),
       new ButtonBuilder().setCustomId('guide_next').setLabel('​').setEmoji(parseEmoji('<:n_music:1555544516746940416>')).setStyle(ButtonStyle.Secondary).setDisabled(page >= PAGES.length - 1),
-      new ButtonBuilder().setLabel('Docs').setStyle(ButtonStyle.Link).setEmoji(parseEmoji('<:files:1555544445565407352>')).setURL('https://dash.rocobot.xyz/docs'),
+      new ButtonBuilder().setLabel('Docs').setStyle(ButtonStyle.Link).setEmoji(parseEmoji('<:files:1555544445565407352>')).setURL('https://dash.rankcore.org/docs'),
       new ButtonBuilder().setLabel('Support').setStyle(ButtonStyle.Link).setEmoji(parseEmoji('<:n_utils:1555544669545431062>')).setURL('https://discord.gg/a9Kea3ymC7'),
     );
 

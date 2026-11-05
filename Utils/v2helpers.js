@@ -1,5 +1,5 @@
 /**
- * v2helpers.js — Shared Components V2 builder utilities for Roco bot
+ * v2helpers.js — Shared Components V2 builder utilities for RankCore bot
  * Provides consistent styling and reusable builder functions across all slash commands
  */
 
@@ -61,7 +61,7 @@ function helpRow(clientId, opts = {}) {
   if (opts.invite !== false) {
     row.addComponents(
       new ButtonBuilder()
-        .setLabel("Invite Roco")
+        .setLabel("Invite RankCore")
         .setStyle(ButtonStyle.Link)
         .setEmoji(parseEmoji("<:n_add:1555544335036973106>"))
         .setURL(INVITE_URL(clientId)),

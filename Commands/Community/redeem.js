@@ -37,7 +37,7 @@ async function run(interaction) {
                 `<:time:1467826155217354834> **Duration:** ${DURATIONS[result.duration].label}\n` +
                 `<:calendar:1555544372953616426> **Expires:** ${expires}`
             )
-            .setFooter({ text: "Thanks for supporting Roco! • /premium status" })],
+            .setFooter({ text: "Thanks for supporting RankCore! • /premium status" })],
         flags: MessageFlags.Ephemeral,
     });
 }
@@ -46,7 +46,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("redeem")
         .setContexts(InteractionContextType.Guild)
-        .setDescription("Redeem a Roco premium code")
+        .setDescription("Redeem a RankCore premium code")
         .addStringOption(option =>
             option.setName("code")
                 .setDescription("Your premium code, e.g. ROCO-XXXX-XXXX-XXXX")

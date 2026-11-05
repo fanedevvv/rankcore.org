@@ -90,10 +90,10 @@ module.exports = (client) => {
         if (!granular.isEventEnabled(key)) return;   // ← granular gate
 
         // ── Custom Branding gate ─────────────────────────────────────────────
-        // If a CB bot is actively running for this guild, the main Roco bot
+        // If a CB bot is actively running for this guild, the main RankCore bot
         // should stay silent and let the CB worker handle everything.
         //
-        // EXCEPTION: Ticket and confession handlers are Roco-core features and
+        // EXCEPTION: Ticket and confession handlers are RankCore-core features and
         // must always run regardless of CB state. The CB bot does not replicate
         // ticket/confession functionality, so silencing these would break them
         // entirely for guilds that have CB enabled.
@@ -150,7 +150,7 @@ module.exports = (client) => {
 
 /**
  * Best-effort extraction of a guild ID from Discord.js event arguments.
- * Handles the most common event arg shapes used throughout Roco's event files.
+ * Handles the most common event arg shapes used throughout RankCore's event files.
  * Returns null if no guild can be determined (e.g. DM events).
  * @param {any[]} args
  * @returns {string|null}

@@ -141,7 +141,7 @@ module.exports = (client) => {
 
       let player = getPlayer(req.params.id);
       if (player && player.voiceId && player.voiceId !== voiceId)
-        return res.status(400).json({ error: 'Roco is already playing in another voice channel' });
+        return res.status(400).json({ error: 'RankCore is already playing in another voice channel' });
       if (!player) {
         player = await client.manager.createPlayer({
           guildId: req.params.id, voiceId,

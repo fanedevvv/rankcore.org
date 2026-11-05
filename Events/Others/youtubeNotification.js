@@ -66,7 +66,7 @@ function buildVideoEmbed(video, customMessage) {
     .setThumbnail(video.thumbnail)
     .addFields({ name: '▶ Watch Now', value: video.url, inline: false })
     .setTimestamp(video.publishedAt)
-    .setFooter({ text: 'YouTube Notifications • Roco' });
+    .setFooter({ text: 'YouTube Notifications • RankCore' });
 }
 
 function buildStreamEmbed(video, customMessage) {
@@ -79,7 +79,7 @@ function buildStreamEmbed(video, customMessage) {
     .setThumbnail(video.thumbnail)
     .addFields({ name: '📺 Watch Live', value: video.url, inline: false })
     .setTimestamp()
-    .setFooter({ text: 'YouTube Live Notifications • Roco' });
+    .setFooter({ text: 'YouTube Live Notifications • RankCore' });
 }
 
 // ─── Poller ───────────────────────────────────────────────────────────────────

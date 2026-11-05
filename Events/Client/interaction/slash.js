@@ -229,7 +229,7 @@ module.exports = async function handleSlashCommand(interaction, client) {
                         .setTitle(`${TIER_NAMES[requiredTier]} Required`)
                         .setColor(TIER_COLORS[requiredTier] ?? 0xa855f7)
                         .setDescription(
-                            `**\`/${commandName}\`** requires **Roco ${TIER_NAMES[requiredTier]}** or higher.\n\n` +
+                            `**\`/${commandName}\`** requires **RankCore ${TIER_NAMES[requiredTier]}** or higher.\n\n` +
                             `Upgrade your plan to unlock this command and many more powerful features.`
                         )
                         .addFields({
@@ -398,7 +398,7 @@ async function executeCustomCommand(interaction, customCmd, client) {
 
 // ==========================================================
 // Central Alert Dispatcher
-// Routes an embed to the webhook (always) and to the Roco
+// Routes an embed to the webhook (always) and to the RankCore
 // logging channel (when not a CB bot).
 // Exported so blacklist.js can also fire alerts.
 // ==========================================================

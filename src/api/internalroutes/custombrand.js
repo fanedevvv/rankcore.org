@@ -169,7 +169,7 @@ module.exports = (_client) => {
 
   // ── Command management ────────────────────────────────────────────────────
 
-  // List Roco commands with enabled/disabled state for a CB guild
+  // List RankCore commands with enabled/disabled state for a CB guild
   router.get('/internal/cb/commands/:guildId', async (req, res) => {
     try {
       const { guildId } = req.params;
@@ -273,7 +273,7 @@ module.exports = (_client) => {
 
   // ── REST proxy ────────────────────────────────────────────────────────────
   // Routes Discord REST calls through the active CB worker so slash command
-  // registrations go to the CB bot's application, not Roco's application.
+  // registrations go to the CB bot's application, not RankCore's application.
 
   router.post('/internal/cb/rest', async (req, res) => {
     try {

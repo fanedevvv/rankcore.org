@@ -102,7 +102,7 @@ export const TAB_HELP = {
       },
       {
         heading: '⚠️ Permissions reminder',
-        text: 'The Roco bot role must have the required Discord permission AND be higher in the role hierarchy than the target user for moderation actions to work.',
+        text: 'The RankCore bot role must have the required Discord permission AND be higher in the role hierarchy than the target user for moderation actions to work.',
       },
     ],
   },
@@ -254,7 +254,7 @@ export const TEMPLATES = [
       isEmbed: true,
       embedTitle: '📖 Help Guide',
       embedColor: '#6C53FF',
-      embedFooter: 'Powered by Roco',
+      embedFooter: 'Powered by RankCore',
     },
   },
   {

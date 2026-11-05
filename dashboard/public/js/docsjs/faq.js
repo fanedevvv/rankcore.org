@@ -3,9 +3,9 @@
 
 export const FAQS = {
   'getting-started': [
-    { q: 'Why doesn\'t Roco respond to commands?', a: 'Check that the Roco role has <strong>Send Messages</strong> and <strong>View Channel</strong> permissions in the channel. Also verify the bot is online with <code>/bot ping</code>.' },
-    { q: 'How do I give Roco Administrator permission?', a: 'Go to Server Settings → Roles → find the Roco role → toggle the Administrator permission ON. This is the easiest way to ensure everything works.' },
-    { q: 'Can I add Roco to multiple servers?', a: 'Yes. Use the invite link for each server separately. Each server gets its own independent configuration.' },
+    { q: 'Why doesn\'t RankCore respond to commands?', a: 'Check that the RankCore role has <strong>Send Messages</strong> and <strong>View Channel</strong> permissions in the channel. Also verify the bot is online with <code>/bot ping</code>.' },
+    { q: 'How do I give RankCore Administrator permission?', a: 'Go to Server Settings → Roles → find the RankCore role → toggle the Administrator permission ON. This is the easiest way to ensure everything works.' },
+    { q: 'Can I add RankCore to multiple servers?', a: 'Yes. Use the invite link for each server separately. Each server gets its own independent configuration.' },
     { q: 'Why can\'t I see the dashboard for my server?', a: 'You must have the <strong>Manage Server</strong> Discord permission on that server, OR have been granted a Dashboard Role by an admin in Settings → Dashboard Roles.' },
     { q: 'How do I change the command prefix?', a: 'Run <code>/prefix set [prefix]</code> in Discord, or go to Settings → Prefix in the dashboard.' },
   ],
@@ -20,9 +20,9 @@ export const FAQS = {
   'custom-commands': [
     { q: 'My command doesn\'t appear in Discord after creating it', a: 'Discord can take up to 1 hour to propagate global slash commands. Usually it\'s instant, but during Discord\'s API maintenance it can take longer. Check the Command Manager to confirm it registered.' },
     { q: 'How do I make a command only visible to admins?', a: 'Set "Required Permission" to "Administrator" in the Rules tab. Discord will automatically hide the command from users without that permission.' },
-    { q: 'I\'ve hit the 100 custom command limit — what can I do?', a: 'Discord allows 100 custom slash commands per server. Roco\'s own commands are global and don\'t count towards it, so delete custom commands you no longer use.' },
+    { q: 'I\'ve hit the 100 custom command limit — what can I do?', a: 'Discord allows 100 custom slash commands per server. RankCore\'s own commands are global and don\'t count towards it, so delete custom commands you no longer use.' },
     { q: 'Can I use {arg:name} in embed field values?', a: 'Yes — all <code>{variables}</code> including argument references work in embed titles, descriptions, author text, field names, field values, and footer text.' },
-    { q: 'What happens if an action fails (e.g. adding a role)?', a: 'The response is still sent to Discord. Actions that fail silently log an error server-side. Ensure Roco has the correct permissions and its role is above the target role.' },
+    { q: 'What happens if an action fails (e.g. adding a role)?', a: 'The response is still sent to Discord. Actions that fail silently log an error server-side. Ensure RankCore has the correct permissions and its role is above the target role.' },
     { q: 'Can I make a command that only works in specific channels?', a: 'Yes — go to the Rules tab when creating the command, and add channel IDs to the "Allowed Channels" field (one per line). Only those channels will let the command run.' },
   ],
   'ip-verification': [
@@ -37,14 +37,14 @@ export const FAQS = {
     { q: 'Is premium per-server or per-account?', a: 'Per-server (guild-scoped). One subscription covers the entire server — all members benefit from it. You can transfer it to a different server at any time.' },
     { q: 'What happens to my data if I cancel premium?', a: 'Your configuration stays but premium-only features will stop working. Data is retained for 30 days in case you resubscribe. Nothing is deleted immediately.' },
     { q: 'Can I upgrade or downgrade mid-cycle?', a: 'Yes — contact support or manage via the Stripe portal. Upgrades are prorated; downgrades take effect at the end of the billing cycle.' },
-    { q: 'I purchased premium but it\'s not showing in my server', a: 'Make sure you selected the correct server during checkout. If it\'s not applied, contact support@rocobot.xyz with your transaction receipt.' },
+    { q: 'I purchased premium but it\'s not showing in my server', a: 'Make sure you selected the correct server during checkout. If it\'s not applied, contact support@rankcore.org with your transaction receipt.' },
     { q: 'Do yearly plans auto-renew?', a: 'Yes, all subscriptions auto-renew via Stripe. You can cancel at any time from the billing portal, and access continues until the period ends.' },
   ],
   'moderation': [
     { q: 'Can I silence a ban so the user doesn\'t know why?', a: 'Yes — use the <code>silent:True</code> option with <code>/ban</code>. No DM is sent to the banned user.' },
     { q: 'How do I bulk-delete old messages?', a: 'Use <code>/purge all [amount]</code> (up to 100). Discord only allows deleting messages less than 14 days old via the API. Older messages must be deleted manually or using channel nuke.' },
     { q: 'What\'s the difference between lockdown and slowmode?', a: 'Lockdown prevents anyone from sending messages. Slowmode sets a delay between messages but still allows sending. Lockdown is for emergencies; slowmode is for managing heavy traffic.' },
-    { q: 'Why can\'t Roco kick/ban a user above me in roles?', a: 'Discord enforces role hierarchy at the API level. Roco\'s role must be higher than the target user\'s highest role. Move the Roco role higher in Server Settings → Roles.' },
+    { q: 'Why can\'t RankCore kick/ban a user above me in roles?', a: 'Discord enforces role hierarchy at the API level. RankCore\'s role must be higher than the target user\'s highest role. Move the RankCore role higher in Server Settings → Roles.' },
   ],
   'antinuke': [
     { q: 'Will anti-nuke affect legitimate admin actions?', a: 'Add trusted roles (e.g. your admin role) to the Anti-Nuke whitelist. Actions by users with trusted roles won\'t trigger anti-nuke.' },
@@ -52,20 +52,20 @@ export const FAQS = {
     { q: 'What does "remove dangerous permissions" action do?', a: 'It removes Administrator, Manage Guild, Manage Channels, Manage Roles, and Kick/Ban Members permissions from the perpetrator\'s highest role.' },
   ],
   'music': [
-    { q: 'Why isn\'t Roco playing music?', a: 'Ensure you\'re in a voice channel, and Roco has Connect and Speak permissions in that channel. Also verify the bot is online and the music system is healthy with <code>/botutils stats</code>.' },
-    { q: 'Can I use Spotify links?', a: 'Yes — paste a Spotify track, playlist, or album URL directly into <code>/music play</code>. Roco resolves it via the Spotify API.' },
+    { q: 'Why isn\'t RankCore playing music?', a: 'Ensure you\'re in a voice channel, and RankCore has Connect and Speak permissions in that channel. Also verify the bot is online and the music system is healthy with <code>/botutils stats</code>.' },
+    { q: 'Can I use Spotify links?', a: 'Yes — paste a Spotify track, playlist, or album URL directly into <code>/music play</code>. RankCore resolves it via the Spotify API.' },
     { q: 'Why does 24/7 mode disconnect after a while?', a: '24/7 mode requires Basic tier or higher. If you\'re on Basic+, check that the 24/7 option is enabled in Community → Music in the dashboard.' },
     { q: 'How many songs can I queue at once?', a: 'There\'s no hard limit on the queue itself, but playlists are capped by plan: Free: 50 tracks/playlist, Basic: 75, Pro: 200, Elite: unlimited.' },
   ],
   'custom-branding': [
-    { q: 'Will the CB bot have the same slash commands as Roco?', a: 'Yes — all Roco slash commands are registered to your bot\'s application ID when you launch Custom Branding. You can hide individual commands from your CB bot in the settings.' },
-    { q: 'Does my custom bot need to be in any servers first?', a: 'No — Roco handles everything including inviting the bot to your server when you launch from the dashboard.' },
-    { q: 'What happens if I restart the main Roco bot?', a: 'Custom Branding runs as a separate isolated process. It continues running independently and is not affected by main bot restarts.' },
+    { q: 'Will the CB bot have the same slash commands as RankCore?', a: 'Yes — all RankCore slash commands are registered to your bot\'s application ID when you launch Custom Branding. You can hide individual commands from your CB bot in the settings.' },
+    { q: 'Does my custom bot need to be in any servers first?', a: 'No — RankCore handles everything including inviting the bot to your server when you launch from the dashboard.' },
+    { q: 'What happens if I restart the main RankCore bot?', a: 'Custom Branding runs as a separate isolated process. It continues running independently and is not affected by main bot restarts.' },
     { q: 'Can multiple servers use the same CB bot?', a: 'Yes — one bot token can be used for one Custom Branding subscription. Multiple servers cannot use the same CB bot simultaneously (each needs their own subscription).' },
   ],
 
   'economy': [
-    { q: 'Is the economy global or per-server?', a: 'Global. Your coins, bank balance, and transaction history carry across every server that has Roco.' },
+    { q: 'Is the economy global or per-server?', a: 'Global. Your coins, bank balance, and transaction history carry across every server that has RankCore.' },
     { q: 'What happens to my coins if I delete my account?', a: 'All coins, bank balance, and transaction history are permanently erased. This cannot be undone.' },
     { q: 'Can I get banned for cheating the economy?', a: 'Yes. Using exploits, bots, or alternative accounts to farm coins is against the ToS and can result in an account ban.' },
     { q: 'Why did my heist fail even though I had enough coins?', a: 'Heist success is random and not guaranteed. The 1-hour cooldown applies whether you win or lose.' },
@@ -80,10 +80,10 @@ export const FAQS = {
     { q: 'Do family relationships persist across servers?', a: 'Yes. Family data (marriages, adoptions, items) is global, just like the economy.' },
   ],
   'troubleshooting': [
-    { q: "Roco was working before and suddenly stopped", a: "Check rocobot.xyz/status for any active incidents. Also check that the bot hasn't been removed from the server or had its permissions changed." },
+    { q: "RankCore was working before and suddenly stopped", a: "Check rankcore.org/status for any active incidents. Also check that the bot hasn't been removed from the server or had its permissions changed." },
     { q: 'I see a "This interaction failed" error', a: 'This usually means the bot took too long to respond (over 3 seconds) or is offline. Check the status page and try again. If persistent, it may be a database connection issue.' },
     { q: 'How do I view errors specific to my server?', a: 'Go to Settings → Guild Errors in the dashboard. This shows a log of recent bot errors, their source, and timestamp — useful for debugging specific feature failures.' },
-    { q: 'Roco kicked me from a voice channel / did something unexpected', a: 'This is usually anti-nuke or anti-raid triggering. Check Security → Anti-Nuke and Anti-Raid settings and whitelist yourself or your management roles.' },
+    { q: 'RankCore kicked me from a voice channel / did something unexpected', a: 'This is usually anti-nuke or anti-raid triggering. Check Security → Anti-Nuke and Anti-Raid settings and whitelist yourself or your management roles.' },
   ],
   'invite-tracking': [
     { q: 'Why does my invite count show 0?', a: 'Invite tracking only counts invites created after the feature was enabled. Historical invites before setup will not be counted.' },

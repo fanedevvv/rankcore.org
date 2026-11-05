@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════════╗
- * ║                  ROCO BOT — ENTRY POINT                     ║
+ * ║                  RANKCORE BOT — ENTRY POINT                     ║
  * ║  Modules are isolated.  The dashboard, music, systems,      ║
  * ║  etc. can each crash and restart without killing the bot.   ║
  * ╚══════════════════════════════════════════════════════════════╝
@@ -33,7 +33,7 @@ const logError = msg => console.log(`${ts()} ${theme.red}${theme.bright}[<:cross
 
 console.clear();
 console.log(sep);
-console.log(`${theme.bright}${theme.cyan}   <:n_bot:1555544367886770176>  Roco — Modular Boot Manager${theme.reset}`);
+console.log(`${theme.bright}${theme.cyan}   <:n_bot:1555544367886770176>  RankCore — Modular Boot Manager${theme.reset}`);
 console.log(sep);
 logInfo(`Node ${process.version}  |  PID: ${process.pid}  |  ${process.platform}`);
 
@@ -184,7 +184,7 @@ const _cfgDefaults = {
   feedback:                       _env.FEEDBACK_CHANNEL               || _env.feedback,
   dev:                            _env.DEV_USER_ID                    || _env.dev,
   status:                         _env.BOT_STATUS                     || _env.status        || 'online',
-  activity:                       _env.BOT_ACTIVITY                   || _env.activity       || 'Roco',
+  activity:                       _env.BOT_ACTIVITY                   || _env.activity       || 'RankCore',
 };
 for (const [key, fallback] of Object.entries(_cfgDefaults)) {
   if ((client.config[key] === undefined || client.config[key] === null) && fallback != null) {
@@ -247,8 +247,8 @@ logOk('Discord client initialised.');
   await moduleManager.start('triggers',         client);
   await moduleManager.start('events',           client);
 
-  // 2. Connect to MongoDB first, then start CB bots before Roco logs in
-  //    CB bots get a head-start so they're fully up before Roco hits Discord.
+  // 2. Connect to MongoDB first, then start CB bots before RankCore logs in
+  //    CB bots get a head-start so they're fully up before RankCore hits Discord.
   logStep('DB', 'Connecting to MongoDB…', theme.blue);
   await mongoose.connect(process.env.mongodbURL)
     .then(() => {
@@ -331,7 +331,7 @@ logOk('Discord client initialised.');
   // 7. Health-check & module-status server
   const { collectStatus, lookupGuild } = require('./src/ws/statusCollector');
   const healthApp = express();
-  healthApp.get('/', (_req, res) => res.send('Roco is alive <a:tickyy:1555544712687915008>'));
+  healthApp.get('/', (_req, res) => res.send('RankCore is alive <a:tickyy:1555544712687915008>'));
   healthApp.get('/health', (_req, res) => {
     const status = collectStatus(client);
     res.json(status);

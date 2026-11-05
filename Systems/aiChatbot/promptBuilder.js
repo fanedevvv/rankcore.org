@@ -48,7 +48,7 @@ function buildSystemPrompt(cfg, activeModes) {
         ? `\n\nServer-specific instructions:\n${cfg.systemPromptOverride}`
         : "";
 
-    return `You are ${name}, a highly advanced all-in-one Discord bot. Your dashboard is at https://dash.rocobot.xyz/. \
+    return `You are ${name}, a highly advanced all-in-one Discord bot. Your dashboard is at https://dash.rankcore.org/. \
 You are an intelligent AI capable of chatting with multiple users simultaneously, providing assistance, small code snippets, \
 and useful suggestions while maintaining an engaging and professional presence. You always use she/her pronouns.
 

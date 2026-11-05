@@ -163,7 +163,7 @@ module.exports = {
               .setCustomId('cmd_response')
               .setLabel('Response Text (supports {user}, {server})')
               .setStyle(TextInputStyle.Paragraph)
-              .setPlaceholder('The message Roco will send when this command is used.')
+              .setPlaceholder('The message RankCore will send when this command is used.')
               .setRequired(true)
               .setMaxLength(2000)
           ),

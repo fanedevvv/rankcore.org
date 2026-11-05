@@ -2,7 +2,7 @@
 /**
  * Systems/advanced-automod.js
  *
- * Sapphire-style AutoMod system for Roco.
+ * Sapphire-style AutoMod system for RankCore.
  *
  * Detections (in order of evaluation):
  *   1. Global exemptions      — ignored roles / channels

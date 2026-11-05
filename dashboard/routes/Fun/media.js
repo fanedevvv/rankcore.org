@@ -125,7 +125,7 @@ router.post("/api/guild/:id/music/control", isAuth, checkDashboardAccess('overvi
     // 24/7 mode requires Basic tier or higher
     const _247tier = await getGuildTier(req.user?.id, req.params.id);
     if (!getLimit(_247tier, 'music247')) {
-      return res.status(403).json({ error: '24/7 mode requires Roco Basic or higher. Upgrade at /premium.' });
+      return res.status(403).json({ error: '24/7 mode requires RankCore Basic or higher. Upgrade at /premium.' });
     }
     try {
       let data = await db247.findOne({ _id: req.params.id });

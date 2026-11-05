@@ -1,7 +1,7 @@
 "use strict";
 
 /**
- * Basic Discord-native AutoMod rules created when Roco joins a server.
+ * Basic Discord-native AutoMod rules created when RankCore joins a server.
  * Native rules created by the app also count towards Discord's "Uses AutoMod" app badge.
  * Only runs on join, so a server that deletes or edits these rules keeps its choice.
  */
@@ -51,7 +51,7 @@ async function createDefaultAutomodRules(guild) {
         enabled: true,
         eventType: AutoModerationRuleEventType.MessageSend,
         actions: block,
-        reason: "Roco default protection",
+        reason: "RankCore default protection",
       });
       created++;
     } catch (err) {

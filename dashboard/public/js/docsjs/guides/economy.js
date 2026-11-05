@@ -7,7 +7,7 @@ export const economyGuides = {
   name:'Economy', icon:'coins', color:'#f59e0b', tags:['economy','coins','bank'], desc:'Server economy with a wallet, bank, daily rewards, jobs, fishing, gambling, and more.',
   sections:[
     { id:'getting-started', title:'Getting Started', render:()=>`
-      <div class="prose" data-anim="fadeUp"><p>The economy system is global — your coins carry across all servers using Roco. Create your account once and you're ready to earn.</p></div>
+      <div class="prose" data-anim="fadeUp"><p>The economy system is global — your coins carry across all servers using RankCore. Create your account once and you're ready to earn.</p></div>
       <div class="cmd-grid" data-anim="fadeUp" data-delay="0.05">
         ${[['economy startacc','Create your economy account'],['economy balance','Check your wallet and bank balance'],['economy daily','Collect 🪙 500 coins (24h cooldown)'],['economy deleteacc','Permanently delete your economy account']].map(([c,d])=>`<div class="cmd-item"><span class="cmd-name">/${c}</span><span class="cmd-desc">${d}</span></div>`).join('')}
       </div>`},
@@ -137,7 +137,7 @@ export const economyGuides = {
       </div>`},
     { id:'information', title:'Information Commands', render:()=>`
       <div class="cmd-grid" data-anim="fadeUp">
-        ${[['userinfo user:@Alice','Detailed info about a member — join date, roles, status, ID'],['serverinfo','Server stats — member count, channels, boosts, owner, creation date'],['hack user:@Alice','Generate a fake (harmless) "hack" terminal for fun'],['report user user:@X category: reason:','Report a user to the Roco moderation team'],['report server server_id: reason:','Report a server to the Roco moderation team']].map(([c,d])=>`<div class="cmd-item"><span class="cmd-name">/${c}</span><span class="cmd-desc">${d}</span></div>`).join('')}
+        ${[['userinfo user:@Alice','Detailed info about a member — join date, roles, status, ID'],['serverinfo','Server stats — member count, channels, boosts, owner, creation date'],['hack user:@Alice','Generate a fake (harmless) "hack" terminal for fun'],['report user user:@X category: reason:','Report a user to the RankCore moderation team'],['report server server_id: reason:','Report a server to the RankCore moderation team']].map(([c,d])=>`<div class="cmd-item"><span class="cmd-name">/${c}</span><span class="cmd-desc">${d}</span></div>`).join('')}
       </div>`},
   ]
 },
@@ -146,43 +146,43 @@ export const economyGuides = {
   name:'Troubleshooting', icon:'bug', color:'#f87171', tags:['errors','troubleshoot','fix','permissions'], desc:'Common issues, error codes, permission problems, and how to resolve them.',
   sections:[
     { id:'permissions', title:'Permission Issues', render:()=>`
-      <div class="prose" data-anim="fadeUp"><p>Most Roco issues are caused by missing Discord permissions. Always check these first.</p></div>
+      <div class="prose" data-anim="fadeUp"><p>Most RankCore issues are caused by missing Discord permissions. Always check these first.</p></div>
       <div class="steps">
-        <div class="step" data-anim="fadeUp"><div class="step-num">1</div><div class="step-body"><h5>Check the Roco role position</h5><p>Roco can only manage roles <em>below</em> its own role. Go to <strong>Server Settings → Roles</strong> and drag the Roco role above any roles it needs to manage.</p></div></div>
-        <div class="step" data-anim="fadeUp" data-delay="0.05"><div class="step-num">2</div><div class="step-body"><h5>Check channel-level overrides</h5><p>A channel permission override can block Roco even if the role has the permission. Check <strong>Channel Settings → Permissions → Roco</strong> for denied permissions.</p></div></div>
-        <div class="step" data-anim="fadeUp" data-delay="0.1"><div class="step-num">3</div><div class="step-body"><h5>Grant Administrator (easiest)</h5><p>Grant the Roco role Administrator permission in Server Settings → Roles. This bypasses all channel overrides and hierarchy checks.</p></div></div>
-        <div class="step" data-anim="fadeUp" data-delay="0.15"><div class="step-num">4</div><div class="step-body"><h5>Re-invite with correct permissions</h5><p>If you added Roco with restricted permissions, re-invite using the official invite link which requests the correct scope.</p></div></div>
+        <div class="step" data-anim="fadeUp"><div class="step-num">1</div><div class="step-body"><h5>Check the RankCore role position</h5><p>RankCore can only manage roles <em>below</em> its own role. Go to <strong>Server Settings → Roles</strong> and drag the RankCore role above any roles it needs to manage.</p></div></div>
+        <div class="step" data-anim="fadeUp" data-delay="0.05"><div class="step-num">2</div><div class="step-body"><h5>Check channel-level overrides</h5><p>A channel permission override can block RankCore even if the role has the permission. Check <strong>Channel Settings → Permissions → RankCore</strong> for denied permissions.</p></div></div>
+        <div class="step" data-anim="fadeUp" data-delay="0.1"><div class="step-num">3</div><div class="step-body"><h5>Grant Administrator (easiest)</h5><p>Grant the RankCore role Administrator permission in Server Settings → Roles. This bypasses all channel overrides and hierarchy checks.</p></div></div>
+        <div class="step" data-anim="fadeUp" data-delay="0.15"><div class="step-num">4</div><div class="step-body"><h5>Re-invite with correct permissions</h5><p>If you added RankCore with restricted permissions, re-invite using the official invite link which requests the correct scope.</p></div></div>
       </div>`},
     { id:'error-codes', title:'Error Codes', render:()=>`
-      <div class="prose" data-anim="fadeUp"><p>When a command fails, Roco shows an error code. Use the table below to find the cause and fix.</p></div>
+      <div class="prose" data-anim="fadeUp"><p>When a command fails, RankCore shows an error code. Use the table below to find the cause and fix.</p></div>
       <div class="table-wrap" data-anim="fadeUp" data-delay="0.05"><table class="dtable"><thead><tr><th>Code</th><th>Meaning</th><th>Fix</th></tr></thead><tbody>
         <tr><td>300</td><td>Generic execution error</td><td>Try again. If persistent, report via <code>/report</code></td></tr>
         <tr><td>301</td><td>You lack permissions</td><td>You need the required Discord permission for this command</td></tr>
-        <tr><td>302</td><td>Roco lacks permissions</td><td>Grant Roco the missing permission — see Permissions section above</td></tr>
+        <tr><td>302</td><td>RankCore lacks permissions</td><td>Grant RankCore the missing permission — see Permissions section above</td></tr>
         <tr><td>303</td><td>Invalid arguments</td><td>Check the command options — a required field may be wrong</td></tr>
         <tr><td>304</td><td>Command on cooldown</td><td>Wait for the cooldown to expire before using the command again</td></tr>
         <tr><td>305</td><td>Command not found</td><td>The command may have been disabled — check Settings → Guild Commands</td></tr>
-        <tr><td>306</td><td>Cannot send messages here</td><td>Give Roco Send Messages permission in this channel</td></tr>
-        <tr><td>307</td><td>Cannot embed links here</td><td>Give Roco Embed Links permission in this channel</td></tr>
+        <tr><td>306</td><td>Cannot send messages here</td><td>Give RankCore Send Messages permission in this channel</td></tr>
+        <tr><td>307</td><td>Cannot embed links here</td><td>Give RankCore Embed Links permission in this channel</td></tr>
         <tr><td>308</td><td>Missing required role</td><td>You need a specific role to use this command in your server's config</td></tr>
         <tr><td>312</td><td>Button interaction expired</td><td>Interactions expire after 15 minutes — run the command again</td></tr>
         <tr><td>315</td><td>Rate limited</td><td>Too many requests — slow down and try again in a moment</td></tr>
-        <tr><td>316</td><td>User blacklisted</td><td>You've been blacklisted from Roco — contact support to appeal</td></tr>
-        <tr><td>317</td><td>Roco can't manage roles</td><td>Drag the Roco role above the target role in Server Settings</td></tr>
-        <tr><td>318</td><td>Roco can't manage channels</td><td>Grant Roco Manage Channels permission</td></tr>
-        <tr><td>319</td><td>Database error</td><td>Temporary — try again. If persistent, check rocobot.xyz/status</td></tr>
+        <tr><td>316</td><td>User blacklisted</td><td>You've been blacklisted from RankCore — contact support to appeal</td></tr>
+        <tr><td>317</td><td>RankCore can't manage roles</td><td>Drag the RankCore role above the target role in Server Settings</td></tr>
+        <tr><td>318</td><td>RankCore can't manage channels</td><td>Grant RankCore Manage Channels permission</td></tr>
+        <tr><td>319</td><td>Database error</td><td>Temporary — try again. If persistent, check rankcore.org/status</td></tr>
       </tbody></table></div>`},
     { id:'common-issues', title:'Common Issues & Fixes', render:()=>`
       <div class="faq-list" data-anim="fadeUp">
         ${[
           ['Commands not appearing in Discord','Discord can take up to 1 hour to propagate slash commands globally. If it has been over an hour, kick and re-invite the bot. Check Settings → Guild Commands to ensure the command is not disabled.'],
-          ['Bot is online but not responding','Check that the channel is not excluded from commands. Verify Roco has Read Messages, Send Messages, and View Channel in that channel. Run /bot ping to confirm connectivity.'],
+          ['Bot is online but not responding','Check that the channel is not excluded from commands. Verify RankCore has Read Messages, Send Messages, and View Channel in that channel. Run /bot ping to confirm connectivity.'],
           ['Tickets / panels not responding after restart','Button interactions are stateless — they reload from the database on every click. Ensure MongoDB is connected. Check the dashboard Error Log under Settings → Guild Errors for details.'],
           ['Leveling XP stopped awarding','The user or channel may be blacklisted from XP. Check Community → Leveling → Blacklisted Channels/Roles in the dashboard.'],
-          ['Music stops or disconnects','24/7 mode requires Basic+. Check that 24/7 is enabled in the dashboard. Also verify Roco has Connect and Speak permissions in the voice channel.'],
-          ['Auto-role not assigning','The Roco role must be above the target role in the role hierarchy. Also confirm the server hasn\'t hit the 250-role Discord limit.'],
+          ['Music stops or disconnects','24/7 mode requires Basic+. Check that 24/7 is enabled in the dashboard. Also verify RankCore has Connect and Speak permissions in the voice channel.'],
+          ['Auto-role not assigning','The RankCore role must be above the target role in the role hierarchy. Also confirm the server hasn\'t hit the 250-role Discord limit.'],
           ['Dashboard shows "No Access"','You need Manage Server permission OR a Dashboard Role assigned in Settings → Dashboard Roles. Ask a server admin to grant access.'],
-          ['IP Verification gate not working','The verification bot must be online. Check rocobot.xyz/status. Ensure the verification channel is visible to unverified members and the panel has been sent recently.'],
+          ['IP Verification gate not working','The verification bot must be online. Check rankcore.org/status. Ensure the verification channel is visible to unverified members and the panel has been sent recently.'],
         ].map(([q,a])=>`
           <div class="faq-item">
             <button class="faq-q" aria-expanded="false">
@@ -195,7 +195,7 @@ export const economyGuides = {
     { id:'getting-help', title:'Getting Help', render:()=>`
       <div class="card-block" data-anim="fadeUp"><h4><i data-lucide="help-circle"></i>Support channels</h4><div class="prose"><ul>
         <li><strong>Support server</strong> — <a href="https://discord.gg/TSHE" target="_blank">discord.gg/TSHE</a> for live support from the team</li>
-        <li><strong>Status page</strong> — <a href="/status">rocobot.xyz/status</a> for outages and incident history</li>
+        <li><strong>Status page</strong> — <a href="/status">rankcore.org/status</a> for outages and incident history</li>
         <li><strong>Error report</strong> — use <code>/report user</code> or <code>/report server</code> to flag issues to staff</li>
         <li><strong>Dashboard Error Log</strong> — Settings → Guild Errors shows recent bot errors specific to your server</li>
       </ul></div></div>
@@ -213,7 +213,7 @@ export const economyGuides = {
         <div class="code-block"><span class="v">/massrole role:@Member action:add</span>    <span class="c">add to all members</span>
 <span class="v">/massrole role:@OldRole action:remove</span> <span class="c">remove from all members</span></div>
       </div>
-      <div class="callout warn" data-anim="fadeUp" data-delay="0.1"><i data-lucide="triangle-alert"></i><div class="callout-body"><strong>Requires Pro+</strong>Mass role operations are rate-limited by Discord. Large servers may take several minutes to complete. Roco processes in batches to avoid API limits.</div></div>`},
+      <div class="callout warn" data-anim="fadeUp" data-delay="0.1"><i data-lucide="triangle-alert"></i><div class="callout-body"><strong>Requires Pro+</strong>Mass role operations are rate-limited by Discord. Large servers may take several minutes to complete. RankCore processes in batches to avoid API limits.</div></div>`},
 
 
   ]

@@ -168,7 +168,7 @@ module.exports = {
           )
           .setThumbnail(target.user.displayAvatarURL({ dynamic: true }))
           .setTimestamp()
-          .setFooter({ text: 'Logged by Roco' });
+          .setFooter({ text: 'Logged by RankCore' });
 
         await logChan.send({ embeds: [logEmbed] });
       } catch {

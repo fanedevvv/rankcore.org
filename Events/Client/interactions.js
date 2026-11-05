@@ -30,7 +30,7 @@ module.exports = {
   async execute(interaction, client) {
     try {
       // ── Custom Branding gate ───────────────────────────────────────────────
-      // When a CB bot is actively running for this guild, the main Roco bot
+      // When a CB bot is actively running for this guild, the main RankCore bot
       // must not respond to any interactions — the CB worker handles them.
       const guildId = interaction.guild?.id;
       if (guildId) {

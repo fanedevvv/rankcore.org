@@ -5,7 +5,7 @@
  * ║           CUSTOM BRANDING MANAGER  v3                       ║
  * ║                                                             ║
  * ║  Each CB bot runs as a child_process.fork() so:            ║
- * ║   • A CB bot crash NEVER takes down Roco or other bots     ║
+ * ║   • A CB bot crash NEVER takes down RankCore or other bots     ║
  * ║   • Each bot is fully isolated (memory, event-loop, etc.)  ║
  * ║   • The manager only tracks PIDs + IPC state               ║
  * ║                                                             ║
@@ -418,7 +418,7 @@ class CustomBrandingManager extends EventEmitter {
 
   /**
    * Returns true if a CB bot is currently running (state === "running") for the guild.
-   * Used to suppress normal Roco behaviour in CB-active guilds.
+   * Used to suppress normal RankCore behaviour in CB-active guilds.
    * @param {string} guildId
    * @returns {boolean}
    */

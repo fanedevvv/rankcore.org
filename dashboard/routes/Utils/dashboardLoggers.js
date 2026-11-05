@@ -2,7 +2,7 @@
 /**
  * dashboard/routes/Utils/dashboardLoggers.js
  *
- * MongoDB-backed loggers for the Roco dashboard.
+ * MongoDB-backed loggers for the RankCore dashboard.
  * Replaces the old flat JSON files:
  *   - dashboard/logs/embed_sends.json
  *   - dashboard/logs/verify/verify_sends.json

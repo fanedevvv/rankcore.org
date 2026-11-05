@@ -265,7 +265,7 @@ module.exports = {
 
           applyPresence(
             client.config.status || 'online',
-            client.config.activity || { type: ActivityType.Custom, name: '🔗 rocobot.xyz' },
+            client.config.activity || { type: ActivityType.Custom, name: '🔗 rankcore.org' },
           );
 
           logStep('PRESENCE', 'Override cleared — rotating status resumed', theme.green);

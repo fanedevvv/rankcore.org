@@ -77,7 +77,7 @@ const POST_READY_DELAY_MS = 3_000;
 const CMD_REG_INTER_DELAY_MS = 2_000;
 
 // Fixed fallback shown when no custom status is configured
-const CB_ACTIVITY_DEFAULT = { type: ActivityType.Watching, name: 'Custom Branding Roco' };
+const CB_ACTIVITY_DEFAULT = { type: ActivityType.Watching, name: 'Custom Branding RankCore' };
 
 // Map dashboard statusType strings → discord.js ActivityType integers
 const ACTIVITY_TYPE_MAP = {
@@ -233,7 +233,7 @@ function loadCommandHandlers() {
 
 // ── Build a minimal stub so interaction handlers don't crash ──────────────────
 function buildMainStub() {
-  // Load Roco's config.js directly — cb-worker is a forked child process and
+  // Load RankCore's config.js directly — cb-worker is a forked child process and
   // does NOT share memory with the parent bot.  require("./client") was returning
   // an empty module (client.js is a 0-byte placeholder) so .config was always
   // undefined.  Loading config.js directly gives us all API keys, prefix, etc.
@@ -261,7 +261,7 @@ function buildMainStub() {
     logchannel:   _env.LOG_CHANNEL_ID      || _env.logchannel,
     clientId:     _env.clientId            || _env.CLIENT_ID,
     status:       _env.BOT_STATUS          || _env.status    || "online",
-    activity:     _env.BOT_ACTIVITY        || _env.activity   || "Roco",
+    activity:     _env.BOT_ACTIVITY        || _env.activity   || "RankCore",
     botsuggestions: _env.BOT_SUGGESTIONS_CHANNEL || _env.botsuggestions,
     bugreport:    _env.BUG_REPORT_CHANNEL  || _env.bugreport,
     feedback:     _env.FEEDBACK_CHANNEL    || _env.feedback,
@@ -279,7 +279,7 @@ function buildMainStub() {
     ...(config?.embedColor  ? { embedColor:  config.embedColor  } : {}),
     ...(config?.footerText  ? { footerText:  config.footerText  } : {}),
     ...(config?.botName     ? { botName:     config.botName     } : {}),
-    // Never log CB bot command usage to Roco's logging channels
+    // Never log CB bot command usage to RankCore's logging channels
     slashCommandLoggingChannel: null,
   };
 
@@ -401,7 +401,7 @@ async function spawnClient() {
     await registerAllCommands();
 
     // Start log handlers (same as the log-handlers module does for the main bot,
-    // but without uptimePinger which is Roco-infrastructure only)
+    // but without uptimePinger which is RankCore-infrastructure only)
     try {
       const { handleLogs } = require("../../Events/Others/logsmain");
       handleLogs(cbClient);
@@ -669,7 +669,7 @@ async function registerAllCommands() {
   const rest  = getRESTClient();
   const appId = cbClient.user.id;
 
-  // Fetch which Roco commands are enabled for this guild from GuildCommandsSchema
+  // Fetch which RankCore commands are enabled for this guild from GuildCommandsSchema
   let enabledCommands = null; // null = all enabled, [] = none enabled, [items] = only those
   let commandDescriptions = {};
   console.log(`[CB-Worker] registerAllCommands starting for guildId: ${guildId}`);
@@ -687,7 +687,7 @@ async function registerAllCommands() {
     console.error(`[CB-Worker] Error fetching GuildCommands for ${guildId}:`, err.message);
   }
 
-  // ── 1. Global commands (Roco slash commands registered on the CB bot's app) ──
+  // ── 1. Global commands (RankCore slash commands registered on the CB bot's app) ──
   try {
     const cmdPath = require.resolve("../data/registeredCommands.json");
     delete require.cache[cmdPath];
@@ -948,23 +948,23 @@ function mirrorEvents() {
   const path = require("path");
 
   // Specific filenames to skip regardless of directory
-  // These are Roco-infrastructure (uptime, social notifiers, vote tracking)
+  // These are RankCore-infrastructure (uptime, social notifiers, vote tracking)
   const SKIP_FILES = new Set([
     "uptimePinger.js",
     "twitch.js",
     "twitternotification.js",
     "youtubeNotification.js",
-    "vote.js",           // top.gg vote webhooks — Roco account only
-    "guildDelete.js",    // Roco tracks when it's removed from servers — not relevant for CB
-    "logbackup.js",      // Roco log backup system
-    "changeLogs.js",     // Roco changelog announcements
+    "vote.js",           // top.gg vote webhooks — RankCore account only
+    "guildDelete.js",    // RankCore tracks when it's removed from servers — not relevant for CB
+    "logbackup.js",      // RankCore log backup system
+    "changeLogs.js",     // RankCore changelog announcements
   ]);
 
-  // Entire subdirectories to skip — these are Roco-infrastructure events that
+  // Entire subdirectories to skip — these are RankCore-infrastructure events that
   // have no business running on a per-guild custom branded bot
   const SKIP_DIRS = new Set([
     "Lavalink",     // music player events — CB bots have no music player
-    "Stripe",       // premium payment webhooks — Roco-only
+    "Stripe",       // premium payment webhooks — RankCore-only
     "interaction",  // individual interaction handlers — CB worker calls these directly
   ]);
 

@@ -23,13 +23,13 @@ module.exports = Test;
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("bot").setDescription("Roco bot commands & information")
+    .setName("bot").setDescription("RankCore bot commands & information")
     .addSubcommand(c => c.setName("suggest").setDescription("Suggest a new feature")
       .addStringOption(o => o.setName("suggestion").setDescription("Your suggestion").setRequired(true)))
     .addSubcommand(c => c.setName("info").setDescription("View detailed bot stats"))
     .addSubcommand(c => c.setName("support").setDescription("Get the support server link"))
     .addSubcommand(c => c.setName("uptime").setDescription("View bot and system uptime"))
-    .addSubcommand(c => c.setName("invite").setDescription("Invite Roco to your server"))
+    .addSubcommand(c => c.setName("invite").setDescription("Invite RankCore to your server"))
     .addSubcommand(c => c.setName("changelogs").setDescription("View latest changelogs"))
     .addSubcommand(c => c.setName("report-bug").setDescription("Report a bug to the devs")
       .addStringOption(o => o.setName("command").setDescription("The bugged command").setRequired(true))
@@ -89,7 +89,7 @@ async function handleSuggestion(interaction, client) {
     .setTimestamp().setFooter({ text: `${interaction.guild.name}` });
   const userEmbed = new EmbedBuilder().setTitle("Suggestion Sent!").setColor("#10b981")
     .setDescription(`We received your suggestion:\n>>> ${suggestion}`)
-    .setFooter({ text: "Thank you for helping improve Roco!" });
+    .setFooter({ text: "Thank you for helping improve RankCore!" });
   const sent = await deliverToDevs(client, client.config.botsuggestions, { embeds: [devEmbed], allowedMentions: { parse: [] } });
   if (!sent) return notDelivered(interaction, client);
   return interaction.reply({ embeds: [userEmbed], ephemeral: true });
@@ -115,7 +115,7 @@ async function handleInvite(interaction, client) {
 
   const container = new ContainerBuilder().setAccentColor(acc)
     .addTextDisplayComponents(new TextDisplayBuilder().setContent(`## Invite ${client.user.username}`))
-    .addTextDisplayComponents(new TextDisplayBuilder().setContent("-# Add Roco to your server or join the community"))
+    .addTextDisplayComponents(new TextDisplayBuilder().setContent("-# Add RankCore to your server or join the community"))
     .addSeparatorComponents(sep())
     .addTextDisplayComponents(new TextDisplayBuilder().setContent(
       `**Servers:** \`${client.guilds.cache.size.toLocaleString()}\`\n` +
@@ -124,7 +124,7 @@ async function handleInvite(interaction, client) {
     ))
     .addSeparatorComponents(sep())
     .addActionRowComponents(new ActionRowBuilder().addComponents(
-      new ButtonBuilder().setURL(link).setLabel("Invite Roco").setStyle(ButtonStyle.Link),
+      new ButtonBuilder().setURL(link).setLabel("Invite RankCore").setStyle(ButtonStyle.Link),
       new ButtonBuilder().setURL(config.supportURL).setLabel("Support Server").setStyle(ButtonStyle.Link),
     ));
 
@@ -145,7 +145,7 @@ async function handleUptime(interaction, client) {
       `**WebSocket Ping**\n\`\`\`${client.ws.ping} ms\`\`\``
     ))
     .addSeparatorComponents(sep())
-    .addTextDisplayComponents(new TextDisplayBuilder().setContent("-# Roco runs 24/7 — fully reliable."));
+    .addTextDisplayComponents(new TextDisplayBuilder().setContent("-# RankCore runs 24/7 — fully reliable."));
 
   return interaction.reply({ components: [container], flags: MessageFlags.IsComponentsV2 });
 }
@@ -167,7 +167,7 @@ async function handleInfo(interaction, client) {
       `> **Client ID:** \`${client.user.id}\`\n> **Creator:** \`${process.env.OWNER_ID}\`\n` +
       `> **Servers:** \`${client.guilds.cache.size.toLocaleString()}\`\n` +
       `> **Members:** \`${client.guilds.cache.reduce((a, g) => a + g.memberCount, 0).toLocaleString()}\`\n` +
-      `> **Commands:** \`${client.commands.size}\`\n> **Website:** [rocobot.xyz](https://rocobot.xyz)`
+      `> **Commands:** \`${client.commands.size}\`\n> **Website:** [rankcore.org](https://rankcore.org)`
     ))
     .addSeparatorComponents(new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(false))
     .addTextDisplayComponents(new TextDisplayBuilder().setContent(

@@ -129,7 +129,7 @@ async function renderHelpBanner(botName, avatarURL) {
 
 function makeHomeContainer({ client, servers, users, accentColor, bannerName, options, e, isOwner, guildId }) {
   const totalCmds = client.commands.size;
-  const dashUrl = `${process.env.DASHBOARD_URL || "https://dash.rocobot.xyz"}/guild/${guildId}`;
+  const dashUrl = `${process.env.DASHBOARD_URL || "https://dash.rankcore.org"}/guild/${guildId}`;
   const cmdsUrl = `${dashUrl}/commands`;
 
   const statsLine = `${e.dot || "●"} ${servers.toLocaleString()} servers  ·  ${users.toLocaleString()} members  ·  ${totalCmds} commands`;
@@ -169,7 +169,7 @@ function makeHomeContainer({ client, servers, users, accentColor, bannerName, op
       new MediaGalleryBuilder().addItems(
         new MediaGalleryItemBuilder()
           .setURL(`attachment://${bannerName}`)
-          .setDescription("Roco help banner"),
+          .setDescription("RankCore help banner"),
       )
     )
     .addTextDisplayComponents(
@@ -265,7 +265,7 @@ function makeCategoryContainer({ client, selectedCategory, page, totalPages, ite
     )
     .addActionRowComponents(
       new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setLabel("Dashboard").setStyle(ButtonStyle.Link).setURL(`${process.env.DASHBOARD_URL || "https://dash.rocobot.xyz"}/guild/${guildId}`),
+        new ButtonBuilder().setLabel("Dashboard").setStyle(ButtonStyle.Link).setURL(`${process.env.DASHBOARD_URL || "https://dash.rankcore.org"}/guild/${guildId}`),
         new ButtonBuilder().setLabel("Support").setStyle(ButtonStyle.Link).setURL("https://discord.gg/a9Kea3ymC7"),
         new ButtonBuilder().setLabel("Invite").setStyle(ButtonStyle.Link).setURL(`https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=303600576574&scope=bot%20applications.commands`),
         new ButtonBuilder().setLabel("Vote on Top.gg").setStyle(ButtonStyle.Link).setURL(client.config?.topggURL || "https://top.gg/bot/960624234688811188"),
@@ -280,7 +280,7 @@ const setPage = (cat, p) => pageMemory.set(cat, p);
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("help")
-    .setDescription("Explore all Roco commands by category."),
+    .setDescription("Explore all RankCore commands by category."),
 
   async execute(interaction, client) {
     const ownerIds = await getOwners();

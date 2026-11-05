@@ -4,7 +4,7 @@
  * BrandingSubscription
  *
  * Tracks a per-guild Custom Branding subscription, purchased independently
- * of the main Roco Premium plans. Each guild gets its own Stripe subscription.
+ * of the main RankCore Premium plans. Each guild gets its own Stripe subscription.
  *
  * Access rules:
  *   1. Guild has an active BrandingSubscription  → allowed

@@ -24,7 +24,7 @@ module.exports = (client) => {
   // Turns Discord errors into messages the dashboard can show as-is
   const fail = (res, err) => {
     if (err.code === 50013)
-      return res.status(403).json({ error: 'Roco needs the "Manage Server" permission to manage AutoMod rules.' });
+      return res.status(403).json({ error: 'RankCore needs the "Manage Server" permission to manage AutoMod rules.' });
     if (/maximum number/i.test(err.message || ''))
       return res.status(409).json({ error: 'Discord\'s AutoMod rule limit for this server is reached. Delete an unused rule in Server Settings → AutoMod.' });
     return res.status(500).json({ error: err.message });
@@ -56,7 +56,7 @@ module.exports = (client) => {
         keywords,
       });
     } catch (err) {
-      // 50013 = Missing Permissions: Roco needs Manage Server to read AutoMod rules
+      // 50013 = Missing Permissions: RankCore needs Manage Server to read AutoMod rules
       fail(res, err);
     }
   });

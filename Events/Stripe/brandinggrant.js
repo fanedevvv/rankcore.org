@@ -105,7 +105,7 @@ module.exports = {
           .setColor(0xef4444)
           .setDescription(
             "Your **Custom Branding** subscription has ended.\n\n" +
-            "The bot will revert to the default Roco branding. Your configuration has been saved — " +
+            "The bot will revert to the default RankCore branding. Your configuration has been saved — " +
             "resubscribe anytime to restore it instantly."
           )
           .addFields(

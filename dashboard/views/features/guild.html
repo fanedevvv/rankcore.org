@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guild Overview — Roco</title>
+<title>Guild Overview — RankCore</title>
 <link rel="icon" type="image/png" href="/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -446,7 +446,7 @@ body::before {
         <div class="sep"></div>
         <div id="limits-grid" class="fade-up" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));gap:.6rem;padding:1.2rem clamp(.9rem,4vw,1.5rem);"></div>
         <p id="limits-upgrade-hint" style="display:none;font-size:.7rem;text-align:center;padding:.5rem 1.5rem 1.2rem;color:var(--muted);font-family:var(--font-mono);">
-          Upgrade to <strong style="color:var(--cyan);">Roco Premium</strong> for higher limits — up to unlimited with Elite. <a href="/premium" style="color:var(--cyan);">See plans</a>
+          Upgrade to <strong style="color:var(--cyan);">RankCore Premium</strong> for higher limits — up to unlimited with Elite. <a href="/premium" style="color:var(--cyan);">See plans</a>
         </p>
       </div>
 
@@ -603,7 +603,7 @@ function applyPlanBadge(hasPremium, plan, expiresAt, source) {
   if (!hasPremium) {
     badge.classList.add('plan-free');
     badge.textContent = 'Free';
-    badge.title = 'Upgrade to Roco Premium for more features.';
+    badge.title = 'Upgrade to RankCore Premium for more features.';
     badge.style.cursor = 'pointer';
     badge.onclick = () => window.location.href = '/premium';
 
@@ -768,7 +768,7 @@ function renderLimits(data) {
   subtitle.textContent = isPremium ? `${planName} — higher limits active` : 'Free plan — upgrade for higher limits';
 
   badge.style.display = 'inline-block';
-  badge.textContent = planName.replace(/^Roco /, '');
+  badge.textContent = planName.replace(/^RankCore /, '');
   badge.style.cssText = isPremium
     ? 'display:inline-block;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#F59E0B;padding:3px 12px;border-radius:20px;font-size:.65rem;font-weight:700;font-family:"Fira Code",monospace;'
     : 'display:inline-block;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#5A6A8A;padding:3px 12px;border-radius:20px;font-size:.65rem;font-weight:700;font-family:"Fira Code",monospace;';

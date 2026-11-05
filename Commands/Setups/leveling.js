@@ -1,7 +1,7 @@
 "use strict";
 const { dashboardRedirect } = require("./_dashboardRedirect");
 
-// All setup logic has been moved to the Roco Dashboard.
+// All setup logic has been moved to the RankCore Dashboard.
 // This command now redirects users to the dashboard to configure Leveling.
 
 module.exports = {

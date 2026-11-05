@@ -334,7 +334,7 @@ manager.register({
       new Connectors.DiscordJS(client),
       Nodes,
       {
-        userAgent:        'RocoBot/1.0',
+        userAgent:        'RankCoreBot/1.0',
         resume:           false,
         moveOnDisconnect: false,
         dave:             true,

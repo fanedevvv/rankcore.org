@@ -401,16 +401,16 @@ function interpretDiscordApiError(err, data, channel, guild) {
   // Missing Permissions (50013)
   if (code === 50013 || message.includes('Missing Permissions')) {
     return (
-      'Roco is missing permissions to send messages in <#' + channel.id + '>. ' +
-      'Fix: Go to **Server Settings → Channels → ' + (channel.name || 'panel channel') + ' → Permissions** and make sure Roco has **Send Messages**, **Embed Links**, and **Use External Emojis** enabled.'
+      'RankCore is missing permissions to send messages in <#' + channel.id + '>. ' +
+      'Fix: Go to **Server Settings → Channels → ' + (channel.name || 'panel channel') + ' → Permissions** and make sure RankCore has **Send Messages**, **Embed Links**, and **Use External Emojis** enabled.'
     );
   }
 
   // Missing Access (50001) — bot cannot see the channel
   if (code === 50001 || message.includes('Missing Access')) {
     return (
-      'Roco cannot access <#' + channel.id + '>. ' +
-      'Fix: Open **Server Settings → Channels → ' + (channel.name || 'panel channel') + ' → Permissions** and add the Roco bot role with **View Channel** permission.'
+      'RankCore cannot access <#' + channel.id + '>. ' +
+      'Fix: Open **Server Settings → Channels → ' + (channel.name || 'panel channel') + ' → Permissions** and add the RankCore bot role with **View Channel** permission.'
     );
   }
 
@@ -453,14 +453,14 @@ function interpretDiscordApiError(err, data, channel, guild) {
 
   // Slow mode / rate limited
   if (status === 429 || code === 20016) {
-    return 'The channel has slowmode enabled or Roco is being rate-limited. Wait a moment and try again.';
+    return 'The channel has slowmode enabled or RankCore is being rate-limited. Wait a moment and try again.';
   }
 
   // Fallback with raw error info
   return (
     'Discord API error (code ' + (code || status || 'unknown') + '): ' + message + '\n\n' +
     'If this keeps happening, check that:\n' +
-    '• Roco has Send Messages and Embed Links permissions in the panel channel\n' +
+    '• RankCore has Send Messages and Embed Links permissions in the panel channel\n' +
     '• All category emojis are valid\n' +
     '• No embed fields exceed Discord\'s character limits'
   );

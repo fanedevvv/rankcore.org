@@ -56,7 +56,7 @@ function sanitiseError(raw) {
       (_, k) => `${k.toLowerCase()}=[REDACTED]`)
     .replace(/(?:mongodb(?:\+srv)?|redis|postgresql?|mysql|amqp):\/\/[^\s]+/gi, '[CONNECTION_STRING]')
     .replace(/\b(?:\d{1,3}\.){3}\d{1,3}(?::\d+)?\b/g, '[IP]')
-    .replace(/(?:\/(?:home|root|var|etc|opt|usr|srv|proc|app|bot|Roco)[^\s,]*|[A-Z]:\\[^\s,]+)/g, '[PATH]')
+    .replace(/(?:\/(?:home|root|var|etc|opt|usr|srv|proc|app|bot|RankCore)[^\s,]*|[A-Z]:\\[^\s,]+)/g, '[PATH]')
     .replace(/(?:src|dist|build|routes|events|commands|handlers|modules|systems)[\/\\][^\s,"']+/g, '[PATH]')
     .replace(/\bfile:\/\/[^\s]*/g, '[FILE_URL]')
     .slice(0, 300)

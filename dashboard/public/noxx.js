@@ -1,5 +1,5 @@
 /* ============================================================
-   ROCO DASHBOARD — Shared JS v3.1 (native styled selects, no rzrSelect)
+   RANKCORE DASHBOARD — Shared JS v3.1 (native styled selects, no rzrSelect)
    ============================================================ */
 
 /* ── Toast ─────────────────────────────────────────────────── */

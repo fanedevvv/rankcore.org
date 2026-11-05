@@ -9,13 +9,13 @@ const CustomBranding   = require('../../../Schemas/customBrandingSchema');
 const BOT_API = () => process.env.BOT_INTERNAL_URL || 'http://127.0.0.1:5182';
 const API_SECRET = () => process.env.INTERNAL_API_SECRET || '';
 
-// ── Helper: sync a command enable/disable to Discord (Roco or CB) ─────────────
-// For Roco: PUT guild-scoped command to appear only in that guild (enable),
+// ── Helper: sync a command enable/disable to Discord (RankCore or CB) ─────────────
+// For RankCore: PUT guild-scoped command to appear only in that guild (enable),
 //           or DELETE it (disable).
 // For CB:   hit the CB-specific internal API toggle which updates disabledCommands
 //           and sends RELOAD_COMMANDS to the live worker.
 //
-// commandPayload — the full command JSON from registeredCommands.json (only needed for enable on Roco).
+// commandPayload — the full command JSON from registeredCommands.json (only needed for enable on RankCore).
 // We lazy-load registeredCommands once per process.
 // Re-read on each call: the bot rewrites this file on every start.
 const REGISTERED_FILE = path.join(__dirname, '../../../src/data/registeredCommands.json');
@@ -50,7 +50,7 @@ async function syncCommandToDiscord(guildId, commandName, enabled) {
     return { target: 'cb' };
   }
 
-  // ── Roco path: register/deregister as a guild-scoped command ─────────────────
+  // ── RankCore path: register/deregister as a guild-scoped command ─────────────────
   // This makes it appear (or disappear) immediately in just this guild's command list.
   const r = await fetch(`${base}/internal/guild/${guildId}/commands/sync`, {
     method: 'POST', headers,
@@ -108,7 +108,7 @@ async function bulkSyncToDiscord(guildId, commandNames, enabled) {
       return { target: 'cb' };
     }
 
-    // Roco path: single bulk-sync call — 120 s, same reasoning
+    // RankCore path: single bulk-sync call — 120 s, same reasoning
     const r = await fetchWithTimeout(
       `${base}/internal/guild/${guildId}/commands/bulk-sync`,
       { method: 'POST', headers, body: JSON.stringify({ commandNames, enabled }) },

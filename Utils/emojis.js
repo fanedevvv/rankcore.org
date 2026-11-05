@@ -1,5 +1,5 @@
 /**
- * emojis.js — Central custom emoji registry for Roco bot
+ * emojis.js — Central custom emoji registry for RankCore bot
  *
  * All custom Discord emojis are defined here for easy management.
  * Import with:  const E = require('../../Utils/emojis');

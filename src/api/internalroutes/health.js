@@ -40,7 +40,7 @@ module.exports = (client) => {
       .setColor(colorInt)
       .setDescription(content.trim())
       .setTimestamp()
-      .setFooter({ text: 'Roco Dev Broadcast' });
+      .setFooter({ text: 'RankCore Dev Broadcast' });
     if (title?.trim()) embed.setTitle(title.trim());
 
     const target = (channelName || 'general').replace(/^#/, '').toLowerCase().trim();

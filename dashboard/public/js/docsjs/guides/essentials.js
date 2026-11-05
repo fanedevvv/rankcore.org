@@ -4,20 +4,20 @@
 export const essentialGuides = {
 
 'getting-started': {
-  name:'Getting Started', icon:'rocket', color:'#FF3333', tags:['setup','beginner'], desc:'Invite Roco, set up permissions, and run your first commands in under 5 minutes.',
+  name:'Getting Started', icon:'rocket', color:'#FF3333', tags:['setup','beginner'], desc:'Invite RankCore, set up permissions, and run your first commands in under 5 minutes.',
   sections:[
-    { id:'invite', title:'Inviting Roco', render:()=>`
-      <div class="prose" data-anim="fadeUp"><p>Visit <a href="https://rocobot.xyz" target="_blank">rocobot.xyz</a> and click the invite button, or run <code>/bot invite</code> in any server where Roco is already present.</p></div>
+    { id:'invite', title:'Inviting RankCore', render:()=>`
+      <div class="prose" data-anim="fadeUp"><p>Visit <a href="https://rankcore.org" target="_blank">rankcore.org</a> and click the invite button, or run <code>/bot invite</code> in any server where RankCore is already present.</p></div>
       <div class="steps">
         <div class="step" data-anim="fadeUp" data-delay="0.05"><div class="step-num">1</div><div class="step-body"><h5>Click the invite link</h5><p>Opens the Discord authorisation page. Make sure you're logged into the correct Discord account.</p></div></div>
         <div class="step" data-anim="fadeUp" data-delay="0.1"><div class="step-num">2</div><div class="step-body"><h5>Select your server</h5><p>Choose from the dropdown. You need <strong>Manage Server</strong> permission on the target server.</p></div></div>
-        <div class="step" data-anim="fadeUp" data-delay="0.15"><div class="step-num">3</div><div class="step-body"><h5>Authorise permissions</h5><p>Review and click Authorise. Roco requests only what it needs to function.</p></div></div>
+        <div class="step" data-anim="fadeUp" data-delay="0.15"><div class="step-num">3</div><div class="step-body"><h5>Authorise permissions</h5><p>Review and click Authorise. RankCore requests only what it needs to function.</p></div></div>
         <div class="step" data-anim="fadeUp" data-delay="0.2"><div class="step-num">4</div><div class="step-body"><h5>Verify it's working</h5><p>Run <code>/bot info</code> — you'll see status, latency, and shard info.</p></div></div>
       </div>
       <div class="callout tip" data-anim="fadeUp" data-delay="0.25"><i data-lucide="lightbulb"></i><div class="callout-body"><strong>Recommended permission</strong>Grant <code>Administrator</code> for the smoothest setup. At minimum: <code>Manage Roles</code>, <code>Manage Channels</code>, <code>Send Messages</code>, <code>View Channels</code>.</div></div>
       <div class="example-block" data-anim="fadeUp" data-delay="0.3">
         <div class="example-label"><i data-lucide="play-circle"></i>Quick verify command</div>
-        <div class="code-block"><span class="c">// Run in your server to confirm Roco is connected</span>
+        <div class="code-block"><span class="c">// Run in your server to confirm RankCore is connected</span>
 /bot info
 <span class="c">// Also useful:</span>
 /bot ping    <span class="c">// latency check</span>
@@ -25,12 +25,12 @@ export const essentialGuides = {
       </div>`
     },
     { id:'hierarchy', title:'Role Hierarchy', render:()=>`
-      <div class="prose" data-anim="fadeUp"><p>Move the <strong>Roco</strong> role to the <strong>top</strong> of your role list in Server Settings → Roles. Roco can only manage roles that are below its own role in the hierarchy.</p></div>
-      <div class="callout warn" data-anim="fadeUp" data-delay="0.05"><i data-lucide="triangle-alert"></i><div class="callout-body"><strong>Most common setup issue</strong>If Roco says "Missing Permissions" when adding/removing roles, the target role is above the Roco role. Move Roco higher in the list.</div></div>
+      <div class="prose" data-anim="fadeUp"><p>Move the <strong>RankCore</strong> role to the <strong>top</strong> of your role list in Server Settings → Roles. RankCore can only manage roles that are below its own role in the hierarchy.</p></div>
+      <div class="callout warn" data-anim="fadeUp" data-delay="0.05"><i data-lucide="triangle-alert"></i><div class="callout-body"><strong>Most common setup issue</strong>If RankCore says "Missing Permissions" when adding/removing roles, the target role is above the RankCore role. Move RankCore higher in the list.</div></div>
       <div class="example-block" data-anim="fadeUp" data-delay="0.1">
         <div class="example-label"><i data-lucide="list-ordered"></i>Correct role order example</div>
         <div class="code-block"><span class="c">✅ Correct order (top to bottom)</span>
-<span class="v">1.</span> Roco              <span class="c">← must be here or higher</span>
+<span class="v">1.</span> RankCore              <span class="c">← must be here or higher</span>
 <span class="v">2.</span> Server Manager
 <span class="v">3.</span> Moderator
 <span class="v">4.</span> Member
@@ -38,8 +38,8 @@ export const essentialGuides = {
       </div>`
     },
     { id:'slash-commands', title:'Slash Commands', render:()=>`
-      <div class="prose" data-anim="fadeUp"><p>Roco uses Discord's native <code>/</code> slash commands. Type <code>/</code> in any channel to browse all available commands. No Message Content Intent required.</p></div>
-      <div class="callout info" data-anim="fadeUp" data-delay="0.05"><i data-lucide="info"></i><div class="callout-body"><strong>Legacy prefix commands</strong>Roco also supports prefix commands (default <code>!</code>). Change with <code>/prefix set [prefix]</code> or from the dashboard Settings → Prefix.</div></div>
+      <div class="prose" data-anim="fadeUp"><p>RankCore uses Discord's native <code>/</code> slash commands. Type <code>/</code> in any channel to browse all available commands. No Message Content Intent required.</p></div>
+      <div class="callout info" data-anim="fadeUp" data-delay="0.05"><i data-lucide="info"></i><div class="callout-body"><strong>Legacy prefix commands</strong>RankCore also supports prefix commands (default <code>!</code>). Change with <code>/prefix set [prefix]</code> or from the dashboard Settings → Prefix.</div></div>
       <div class="example-block" data-anim="fadeUp" data-delay="0.1">
         <div class="example-label"><i data-lucide="terminal"></i>Essential first commands</div>
         <div class="code-block"><span class="v">/bot info</span>         <span class="c">bot status + latency</span>
@@ -50,7 +50,7 @@ export const essentialGuides = {
     },
     { id:'dashboard', title:'Dashboard Setup', render:()=>`
       <div class="steps">
-        <div class="step" data-anim="fadeUp"><div class="step-num">1</div><div class="step-body"><h5>Log in</h5><p>Go to <a href="https://rocobot.xyz" target="_blank">rocobot.xyz</a> and authenticate with Discord OAuth2.</p></div></div>
+        <div class="step" data-anim="fadeUp"><div class="step-num">1</div><div class="step-body"><h5>Log in</h5><p>Go to <a href="https://rankcore.org" target="_blank">rankcore.org</a> and authenticate with Discord OAuth2.</p></div></div>
         <div class="step" data-anim="fadeUp" data-delay="0.05"><div class="step-num">2</div><div class="step-body"><h5>Select your server</h5><p>Click your server card. Only servers where you have Manage Server permission appear.</p></div></div>
         <div class="step" data-anim="fadeUp" data-delay="0.1"><div class="step-num">3</div><div class="step-body"><h5>Navigate hubs</h5><p>Features are grouped: <strong>Moderation</strong>, <strong>Community</strong>, <strong>Tools</strong>, <strong>Settings</strong>. Use the sidebar to navigate.</p></div></div>
       </div>`
@@ -103,7 +103,7 @@ export const essentialGuides = {
         <div class="step" data-anim="fadeUp" data-delay="0.05"><div class="step-num">2</div><div class="step-body"><h5>Select plan and billing cycle</h5><p>Yearly saves 30–35%. Choose the server to apply it to.</p></div></div>
         <div class="step" data-anim="fadeUp" data-delay="0.1"><div class="step-num">3</div><div class="step-body"><h5>Pay via Stripe — activates instantly</h5><p>No payment data stored on our servers. Features unlock immediately.</p></div></div>
       </div>
-      <div class="callout danger" data-anim="fadeUp" data-delay="0.15"><i data-lucide="triangle-alert"></i><div class="callout-body"><strong>No chargebacks</strong>Initiating a chargeback without contacting support first results in a permanent global blacklist. Email <a href="mailto:support@rocobot.xyz">support@rocobot.xyz</a> first.</div></div>`
+      <div class="callout danger" data-anim="fadeUp" data-delay="0.15"><i data-lucide="triangle-alert"></i><div class="callout-body"><strong>No chargebacks</strong>Initiating a chargeback without contacting support first results in a permanent global blacklist. Email <a href="mailto:support@rankcore.org">support@rankcore.org</a> first.</div></div>`
     },
     { id:'redeem', title:'Redeem a Code', render:()=>`
       <div class="prose" data-anim="fadeUp"><p>Received a premium code from a giveaway or promotion?</p></div>
@@ -124,7 +124,7 @@ export const essentialGuides = {
         <tr><td>Overview</td><td>Server stats, quick actions, recent activity, bot status</td></tr>
         <tr><td>Moderation</td><td>AutoMod, Logs, Ghost Ping, Verify, Anti-Nuke, Anti-Raid, IP Verification, Mass Join, Anti-Scam</td></tr>
         <tr><td>Community</td><td>Welcome, Goodbye, Booster, Leveling, Reaction Roles, Giveaways, JTC, Suggestions, Counting, Confessions, Invite Config, UwU/Cat Lock, Music</td></tr>
-        <tr><td>Tools</td><td>Tickets, Autoresponders, Staff Apps, Embed Builder, Sticky Messages, Uptime, YouTube, Twitch, Roco AI</td></tr>
+        <tr><td>Tools</td><td>Tickets, Autoresponders, Staff Apps, Embed Builder, Sticky Messages, Uptime, YouTube, Twitch, RankCore AI</td></tr>
         <tr><td>Settings</td><td>Prefix, Command Manager, Dashboard Roles, Global Permissions, Custom Commands, Custom Branding, Auto-Role</td></tr>
       </tbody></table></div>`
     },

@@ -153,7 +153,7 @@ async function closeTicketsForMember(member, client) {
               { name: '<:files:1555544445565407352> Reason',  value: reason,               inline: false },
             )
             .setTimestamp()
-            .setFooter({ text: 'Roco Ticket System � Member Left' });
+            .setFooter({ text: 'RankCore Ticket System � Member Left' });
 
           if (webTranscriptLink) {
             logEmbed.addFields({ name: '<:1430986225493479485:1555544207652032633> Transcript', value: `[View Online](${webTranscriptLink})` });

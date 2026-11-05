@@ -104,7 +104,7 @@ async function getOrCreateWebhook(channel) {
       }
 
       hook = await channel.createWebhook({
-        name:   "Roco Logs",
+        name:   "RankCore Logs",
         avatar: channel.client.user.displayAvatarURL()
       });
     }

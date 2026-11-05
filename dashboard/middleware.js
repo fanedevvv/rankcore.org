@@ -280,7 +280,7 @@ module.exports.checkPremium = function checkPremium(minTier = 'basic') {
       const tier = await module.exports.getGuildTier(req.user.id, guildId);
       if (TIER_ORDER.indexOf(tier) < TIER_ORDER.indexOf(minTier)) {
         if (req.path.startsWith("/api")) {
-          return res.status(403).json({ error: `This feature requires Roco ${minTier} or higher. Upgrade at /premium.` });
+          return res.status(403).json({ error: `This feature requires RankCore ${minTier} or higher. Upgrade at /premium.` });
         }
         return res.redirect(`/premium?required=${minTier}`);
       }

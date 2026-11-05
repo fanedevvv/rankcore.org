@@ -119,7 +119,7 @@ export const funGuides = {
       <div class="cmd-grid" data-anim="fadeUp">
         ${[['afk set reason:Studying for exams','Mark yourself as AFK with an optional reason'],['afk set','Mark yourself as AFK with the default "AFK" status'],['afk remove','Remove your AFK status manually']].map(([c,d])=>`<div class="cmd-item"><span class="cmd-name">/${c}</span><span class="cmd-desc">${d}</span></div>`).join('')}
       </div>
-      <div class="prose" data-anim="fadeUp" data-delay="0.05"><p>While AFK, any time someone mentions you Roco sends an automatic reply: <code>@User is AFK — Studying for exams (set 5 minutes ago)</code>. Your AFK status is cleared automatically the next time you send a message.</p></div>
+      <div class="prose" data-anim="fadeUp" data-delay="0.05"><p>While AFK, any time someone mentions you RankCore sends an automatic reply: <code>@User is AFK — Studying for exams (set 5 minutes ago)</code>. Your AFK status is cleared automatically the next time you send a message.</p></div>
       <div class="callout tip" data-anim="fadeUp" data-delay="0.1"><i data-lucide="lightbulb"></i><div class="callout-body"><strong>AFK is per-server</strong>Your AFK status only applies in the server where you set it. Set it in multiple servers separately if needed.</div></div>`},
   ]
 },

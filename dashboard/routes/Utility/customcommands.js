@@ -15,14 +15,14 @@ function getClientRest(req) {
 
 // ── CB-aware client resolution ─────────────────────────────────────────────────
 // When a Custom Branding bot is active for a guild, slash commands must be
-// registered against the CB bot's application ID (not Roco's).
+// registered against the CB bot's application ID (not RankCore's).
 // We fetch the CB bot's clientId from the CustomBranding schema and use a
 // dedicated internal API route to proxy Discord REST calls through the CB worker.
 const CustomBranding = require('../../../Schemas/customBrandingSchema');
 
 /**
  * Returns { clientId, rest } — using the CB bot if one is active for the guild,
- * otherwise falling back to the main Roco client.
+ * otherwise falling back to the main RankCore client.
  * @param {import('express').Request} req
  * @param {string} guildId
  */

@@ -1,4 +1,4 @@
-// chatmain.js — Main entry point for the Roco AI chat page
+// chatmain.js — Main entry point for the RankCore AI chat page
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { loadCurrentUser }    from './chatjs/user.js';

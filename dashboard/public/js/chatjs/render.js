@@ -66,7 +66,7 @@ function _renderEmptyState(msgs) {
       <div class="hints">
         <button class="hint" onclick="window._chatHint(this)">
           <span class="hi">⚡</span>
-          <span class="ht">What can Roco do?</span>
+          <span class="ht">What can RankCore do?</span>
         </button>
         <button class="hint" onclick="window._chatHint(this)">
           <span class="hi">📋</span>

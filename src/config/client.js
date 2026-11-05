@@ -1,10 +1,10 @@
 "use strict";
 
 /**
- * client.js — Roco shared config export
+ * client.js — RankCore shared config export
  *
  * This file is required by cb-worker.js (and potentially other modules) to
- * access Roco's runtime config in child/worker processes that do not share
+ * access RankCore's runtime config in child/worker processes that do not share
  * the parent's in-memory Discord.js Client instance.
  *
  * NOTE: cb-worker.js now loads config.js directly (the correct fix), but

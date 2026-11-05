@@ -42,7 +42,7 @@ module.exports = (client) => {
       const inviteUrl = `https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot%20applications.commands`;
       const supportUrl = client.config?.supportURL || `https://discord.gg/a9Kea3ymC7`;
       const voteUrl = client.config?.topggURL || "https://top.gg/bot/960624234688811188";
-      const docsUrl = client.config?.docsUrl || `https://dash.rocobot.xyz/docs`;
+      const docsUrl = client.config?.docsUrl || `https://dash.rankcore.org/docs`;
 
       // Main info embed
       const infoEmbed = new EmbedBuilder()

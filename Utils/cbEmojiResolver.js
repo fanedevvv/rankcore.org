@@ -2,7 +2,7 @@
  * cbEmojiResolver.js — Server 2 / Custom Branding
  *
  * CB bots are separate Discord applications — they cannot use emojis that
- * belong to the main Roco bot's server. This module automatically fixes that:
+ * belong to the main RankCore bot's server. This module automatically fixes that:
  *
  *  1. On bot ready, patchCBClient() monkey-patches Discord.js send/reply/edit
  *     so EVERY outbound message (hardcoded strings, E.* usage, anything) has

@@ -2,10 +2,10 @@
 export const advancedGuides = {
 
 'custom-branding': {
-  name:'Custom Branding', icon:'paintbrush', color:'#c084fc', tags:['branding','identity','elite'], desc:'Run Roco under your own bot identity — custom name, avatar, status, and token.',
+  name:'Custom Branding', icon:'paintbrush', color:'#c084fc', tags:['branding','identity','elite'], desc:'Run RankCore under your own bot identity — custom name, avatar, status, and token.',
   sections:[
     { id:'what', title:'What is Custom Branding?', render:()=>`
-      <div class="prose" data-anim="fadeUp"><p>Custom Branding runs Roco under a completely separate Discord application — your own bot with your name, avatar, and identity. Members see YOUR bot. All features work identically behind the scenes.</p></div>
+      <div class="prose" data-anim="fadeUp"><p>Custom Branding runs RankCore under a completely separate Discord application — your own bot with your name, avatar, and identity. Members see YOUR bot. All features work identically behind the scenes.</p></div>
       <div class="card-block" data-anim="fadeUp" data-delay="0.05"><h4><i data-lucide="package"></i>What you can customise</h4><div class="prose"><ul>
         <li>Bot name (up to 32 characters)</li>
         <li>Custom avatar URL</li>
@@ -21,7 +21,7 @@ export const advancedGuides = {
         <div class="step" data-anim="fadeUp" data-delay="0.05"><div class="step-num">2</div><div class="step-body"><h5>Create a Bot user &amp; copy token</h5><p>Under the Bot tab → Add Bot → copy the token. <strong>Never share it.</strong></p></div></div>
         <div class="step" data-anim="fadeUp" data-delay="0.1"><div class="step-num">3</div><div class="step-body"><h5>Open Settings → Custom Branding</h5><p>Paste the token (stored AES-256-GCM encrypted), configure identity, click Launch.</p></div></div>
       </div>
-      <div class="callout danger" data-anim="fadeUp" data-delay="0.15"><i data-lucide="key"></i><div class="callout-body"><strong>Token security</strong>A bot token is like a password. Never share it, commit it to git, or paste it anywhere except the Roco dashboard. If compromised, regenerate it immediately in the Discord Developer Portal.</div></div>`},
+      <div class="callout danger" data-anim="fadeUp" data-delay="0.15"><i data-lucide="key"></i><div class="callout-body"><strong>Token security</strong>A bot token is like a password. Never share it, commit it to git, or paste it anywhere except the RankCore dashboard. If compromised, regenerate it immediately in the Discord Developer Portal.</div></div>`},
   ]
 },
 
@@ -34,7 +34,7 @@ export const advancedGuides = {
         <li>All roles — permissions, colours, hoisting</li>
         <li>Server icon and banner URL</li>
         <li>AFK channel and timeout settings</li>
-        <li>Roco feature configurations</li>
+        <li>RankCore feature configurations</li>
       </ul></div></div>
       <div class="tags" data-anim="fadeUp" data-delay="0.05"><span class="tag blue">Free: 2</span><span class="tag gold">Basic: 5</span><span class="tag purple">Pro: 15</span><span class="tag green">Elite: ∞</span></div>`},
     { id:'commands', title:'Commands', render:()=>`
@@ -49,22 +49,22 @@ export const advancedGuides = {
 },
 
 'ai-chatbot': {
-  name:'AI Chatbot', icon:'sparkles', color:'#8b6fff', tags:['ai','chatbot','pro'], desc:'Chat with Roco AI in the dashboard or deploy it as a live chatbot in your server channels.',
+  name:'AI Chatbot', icon:'sparkles', color:'#8b6fff', tags:['ai','chatbot','pro'], desc:'Chat with RankCore AI in the dashboard or deploy it as a live chatbot in your server channels.',
   sections:[
     { id:'overview', title:'Overview', render:()=>`
-      <div class="prose" data-anim="fadeUp"><p>Roco AI gives you two ways to use AI in your community:</p></div>
+      <div class="prose" data-anim="fadeUp"><p>RankCore AI gives you two ways to use AI in your community:</p></div>
       <div class="table-wrap" data-anim="fadeUp" data-delay="0.05"><table class="dtable"><thead><tr><th>Mode</th><th>Where</th><th>Plan</th></tr></thead><tbody>
-        <tr><td><strong>Dashboard AI Chat</strong></td><td>Chat with Roco AI at <a href="/ai">/ai</a> — private to you, no setup</td><td>All tiers (free)</td></tr>
+        <tr><td><strong>Dashboard AI Chat</strong></td><td>Chat with RankCore AI at <a href="/ai">/ai</a> — private to you, no setup</td><td>All tiers (free)</td></tr>
         <tr><td><strong>In-Server Chatbot</strong></td><td>A designated channel where your members chat with the AI</td><td>Pro+</td></tr>
       </tbody></table></div>
       <div class="callout tip" data-anim="fadeUp" data-delay="0.1"><i data-lucide="lightbulb"></i><div class="callout-body"><strong>Dashboard AI</strong>Available at <a href="/ai">/ai</a> with no configuration. Supports multi-turn conversation, code formatting, and markdown. Great for admins who want AI assistance for writing announcements, rule sets, or server descriptions.</div></div>`},
     { id:'in-server', title:'In-Server Chatbot Setup', render:()=>`
-      <div class="prose" data-anim="fadeUp"><p>The in-server chatbot makes Roco AI available to your members directly inside Discord. Go to <strong>Fun → AI Chatbot</strong> in the dashboard to configure it.</p></div>
+      <div class="prose" data-anim="fadeUp"><p>The in-server chatbot makes RankCore AI available to your members directly inside Discord. Go to <strong>Fun → AI Chatbot</strong> in the dashboard to configure it.</p></div>
       <div class="steps">
-        <div class="step" data-anim="fadeUp"><div class="step-num">1</div><div class="step-body"><h5>Choose a chatbot channel</h5><p>This is the channel where members send messages and receive AI replies. Roco responds to every message in this channel.</p></div></div>
+        <div class="step" data-anim="fadeUp"><div class="step-num">1</div><div class="step-body"><h5>Choose a chatbot channel</h5><p>This is the channel where members send messages and receive AI replies. RankCore responds to every message in this channel.</p></div></div>
         <div class="step" data-anim="fadeUp" data-delay="0.05"><div class="step-num">2</div><div class="step-body"><h5>Write a system prompt</h5><p>Define the AI's personality, focus, and rules for your server. See the <a href="#gs-prompts">Writing a Good Prompt</a> section below.</p></div></div>
         <div class="step" data-anim="fadeUp" data-delay="0.1"><div class="step-num">3</div><div class="step-body"><h5>Configure access &amp; limits</h5><p>Set allowed roles, per-user cooldown, and the model to use.</p></div></div>
-        <div class="step" data-anim="fadeUp" data-delay="0.15"><div class="step-num">4</div><div class="step-body"><h5>Enable and save</h5><p>Toggle the chatbot on — Roco starts responding in that channel immediately.</p></div></div>
+        <div class="step" data-anim="fadeUp" data-delay="0.15"><div class="step-num">4</div><div class="step-body"><h5>Enable and save</h5><p>Toggle the chatbot on — RankCore starts responding in that channel immediately.</p></div></div>
       </div>
       <div class="callout warn" data-anim="fadeUp" data-delay="0.2"><i data-lucide="triangle-alert"></i><div class="callout-body"><strong>Channel visibility</strong>Make sure the chatbot channel is clearly labelled so members know what it's for. Consider setting slowmode to avoid spam.</div></div>`},
     { id:'config', title:'Configuration Options', render:()=>`
@@ -110,7 +110,7 @@ export const advancedGuides = {
         <tr><td>Custom system prompt</td><td>—</td><td>—</td><td>✅</td><td>✅</td></tr>
         <tr><td>Model selection</td><td>—</td><td>—</td><td>✅</td><td>✅ + priority</td></tr>
       </tbody></table></div>
-      <div class="callout brand" data-anim="fadeUp" data-delay="0.05"><i data-lucide="zap"></i><div class="callout-body"><strong>Pro+ required</strong>Upgrade at <a href="/premium">rocobot.xyz/premium</a> to unlock the in-server chatbot and all configuration options.</div></div>`},
+      <div class="callout brand" data-anim="fadeUp" data-delay="0.05"><i data-lucide="zap"></i><div class="callout-body"><strong>Pro+ required</strong>Upgrade at <a href="/premium">rankcore.org/premium</a> to unlock the in-server chatbot and all configuration options.</div></div>`},
   ]
 },
 

@@ -2,7 +2,7 @@
 
 /**
  * ╔══════════════════════════════════════════════════════════════╗
- * ║               ROCO GRANULAR MANAGER                        ║
+ * ║               RANKCORE GRANULAR MANAGER                        ║
  * ║  Tracks every individual event handler, slash command,     ║
  * ║  prefix command, and system so any one of them can be      ║
  * ║  enabled or disabled at runtime without restarting.        ║

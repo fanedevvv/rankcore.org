@@ -377,7 +377,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
             </div>
             <div>
-              <div style="font-weight:900;font-size:17px;color:white;letter-spacing:-0.02em;line-height:1.1;">ROCO</div>
+              <div style="font-weight:900;font-size:17px;color:white;letter-spacing:-0.02em;line-height:1.1;">RANKCORE</div>
               <div style="font-size:9px;color:rgba(107,114,128,1);font-weight:700;text-transform:uppercase;letter-spacing:0.15em;">Dashboard</div>
             </div>
           </a>
@@ -416,7 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div>
               <div style="font-size:12px;font-weight:700;color:white;">Vote on Top.gg</div>
-              <div style="font-size:10px;color:rgba(107,114,128,1);">Support Roco</div>
+              <div style="font-size:10px;color:rgba(107,114,128,1);">Support RankCore</div>
             </div>
           </div>
           <svg width="13" height="13" class="text-gray-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>

@@ -7,7 +7,7 @@
  *   LEMONSQUEEZY_API_KEY, LEMONSQUEEZY_STORE_ID, LEMONSQUEEZY_WEBHOOK_SECRET
  *   LEMONSQUEEZY_VARIANT_<PLAN>  for each plan below (the variant ID of that product/price)
  *
- * Webhook: https://dash.rocobot.xyz/webhooks/lemonsqueezy (dashboard/webhooks/LemonSqueezy.js).
+ * Webhook: https://dash.rankcore.org/webhooks/lemonsqueezy (dashboard/webhooks/LemonSqueezy.js).
  * Every subscription_* event re-syncs premium from the subscription's current status,
  * so events can arrive late, twice or out of order without breaking anything.
  */
@@ -67,7 +67,7 @@ async function createCheckout({ plan, userId, guildId = null, email = null }) {
             custom: { discord_user_id: userId, discord_guild_id: guildId || "", plan },
           },
           product_options: {
-            redirect_url: `${process.env.DASHBOARD_URL || "https://dash.rocobot.xyz"}/subscriptions?success=1`,
+            redirect_url: `${process.env.DASHBOARD_URL || "https://dash.rankcore.org"}/subscriptions?success=1`,
           },
           expires_at: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
         },

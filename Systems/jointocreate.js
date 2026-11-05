@@ -147,7 +147,7 @@ async function postPersistentPanel(client, guild) {
     try {
         message = prev ? await prev.edit(payload) : await ch.send(payload);
     } catch {
-        throw Object.assign(new Error("Roco can't send messages in that channel."), { status: 400 });
+        throw Object.assign(new Error("RankCore can't send messages in that channel."), { status: 400 });
     }
     cfg.PanelMessageId = message.id;
     cfg.PanelMessageChannel = ch.id;

@@ -175,8 +175,8 @@ module.exports = async function handleButton(interaction, client, webhook) {
     }).join('\n');
     return interaction.editReply({
       embeds: [new EmbedBuilder()
-        .setTitle('Roco Premium Plans')
-        .setDescription(lines + `\n\n**Get Premium:** [rocobot.xyz/premium](${process.env.DASHBOARD_URL || 'https://dash.rocobot.xyz'}/premium)`)
+        .setTitle('RankCore Premium Plans')
+        .setDescription(lines + `\n\n**Get Premium:** [rankcore.org/premium](${process.env.DASHBOARD_URL || 'https://dash.rankcore.org'}/premium)`)
         .setColor(0x8b5cf6)
       ],
     }).catch(() => {});
@@ -598,7 +598,7 @@ async function handleSetupButton(interaction, client, customId) {
       userId:  interaction.user.id,
       guildId: interaction.guild?.id,
       command,
-      accent:  0x6C53FF,   // default Roco purple
+      accent:  0x6C53FF,   // default RankCore purple
       data:    null,        // will be fetched fresh inside each handler block
       _orphan: true,        // flag so handlers know no cached data exists
     };

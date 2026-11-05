@@ -150,7 +150,7 @@ function startGatewayWatchdog(client) {
             };
             // Activity texts come from src/config/bot.js → activities
             const texts = Array.isArray(client.config?.activities) && client.config.activities.length
-                ? client.config.activities : ['rocobot.xyz'];
+                ? client.config.activities : ['rankcore.org'];
             const activities = texts.map(t => ({
                 type: ActivityType.Custom,
                 name: String(t).replace(/\{(guilds|users|commands|uptime)\}/g, (_, k) => vars[k]),
@@ -180,7 +180,7 @@ function startGatewayWatchdog(client) {
         try {
             client.user.setPresence({
                 status:     client.config?.status || 'online',
-                activities: [{ type: ActivityType.Custom, name: String(client.config?.activities?.[0] || 'rocobot.xyz') }],
+                activities: [{ type: ActivityType.Custom, name: String(client.config?.activities?.[0] || 'rankcore.org') }],
             });
         } catch (_) {}
     });
@@ -222,7 +222,7 @@ function startGatewayWatchdog(client) {
                         // Set an immediate presence and restart the rotating loop
                         client.user.setPresence({
                             status:     client.config?.status || 'online',
-                            activities: [{ type: ActivityType.Custom, name: String(client.config?.activities?.[0] || 'rocobot.xyz') }],
+                            activities: [{ type: ActivityType.Custom, name: String(client.config?.activities?.[0] || 'rankcore.org') }],
                         });
                         startRotatingStatus();
                     }

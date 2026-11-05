@@ -143,7 +143,7 @@
             </svg>
           </div>
           <div>
-            <div class="ncp-brand-name">Roco</div>
+            <div class="ncp-brand-name">RankCore</div>
             <div class="ncp-brand-sub">Dashboard</div>
           </div>
         </div>
@@ -158,12 +158,12 @@
         </div>
 
         <h2 class="ncp-title" id="ncp-title">
-          ${isUpdate ? 'We&rsquo;ve updated our terms' : 'Welcome to Roco'}
+          ${isUpdate ? 'We&rsquo;ve updated our terms' : 'Welcome to RankCore'}
         </h2>
         <p class="ncp-intro">
           ${isUpdate
             ? 'We added a new <strong style="color:#8b6fff">IP Verification</strong> section to our Terms of Service and Privacy Policy. Please review the key changes below before continuing.'
-            : 'To use the Roco dashboard, please review and accept our Terms of Service and Privacy Policy. Key points are summarised below.'}
+            : 'To use the RankCore dashboard, please review and accept our Terms of Service and Privacy Policy. Key points are summarised below.'}
         </p>
 
         <div class="ncp-cards">
@@ -176,7 +176,7 @@
             </div>
             <div>
               <h4>Terms of Service</h4>
-              <p>By using Roco you agree to our usage policies, community standards, and enforcement rules. Access is a privilege that can be revoked. <a href="/tos" target="_blank">Read full Terms &rarr;</a></p>
+              <p>By using RankCore you agree to our usage policies, community standards, and enforcement rules. Access is a privilege that can be revoked. <a href="/tos" target="_blank">Read full Terms &rarr;</a></p>
             </div>
           </div>
 
@@ -231,7 +231,7 @@
 
         <p class="ncp-footer">
           Your consent is stored locally in your browser. It is never transmitted to our servers.<br>
-          Withdrawing consent: stop using Roco and contact support@rocobot.xyz.
+          Withdrawing consent: stop using RankCore and contact support@rankcore.org.
         </p>
       </div>`;
 

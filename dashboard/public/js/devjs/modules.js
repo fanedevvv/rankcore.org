@@ -1,5 +1,5 @@
 /**
- * ROCO Dev Panel — Module Manager
+ * RANKCORE Dev Panel — Module Manager
  * Handles the Modules tab: list, start, stop, restart, and per-module log viewer.
  * Uses the panel's own CSS variables / utility classes — no Tailwind dependency.
  */

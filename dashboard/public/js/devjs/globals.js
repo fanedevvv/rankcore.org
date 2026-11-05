@@ -121,7 +121,7 @@ window.testWebhook = async function testWebhook() {
   try {
     const res = await fetch('/api-dev/broadcast', {
       method: 'POST', headers: DEV_H(),
-      body: JSON.stringify({ message: msg || 'Test webhook from Roco Dev Panel — ' + new Date().toLocaleTimeString(), type: 'test' }),
+      body: JSON.stringify({ message: msg || 'Test webhook from RankCore Dev Panel — ' + new Date().toLocaleTimeString(), type: 'test' }),
     });
     const data = await res.json();
     showToast(res.ok ? 'Webhook test sent ✓' : (data.error || 'Failed to send'), !res.ok);

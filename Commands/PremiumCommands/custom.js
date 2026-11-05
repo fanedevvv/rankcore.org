@@ -260,7 +260,7 @@ Upgrade with \`/premium plans\` to unlock more.`
         const discordSlotsUsed      = customUsed + enabledNormal;
         const discordSlotsRemaining = Math.max(0, DISCORD_GUILD_CMD_LIMIT - discordSlotsUsed);
 
-        // Roco soft cap (tier-based)
+        // RankCore soft cap (tier-based)
         const noxxRemaining = limit === Infinity ? Infinity : Math.max(0, limit - customUsed);
 
         // Build command list
@@ -279,7 +279,7 @@ Upgrade with \`/premium plans\` to unlock more.`
         const filled     = Math.round((discordSlotsUsed / DISCORD_GUILD_CMD_LIMIT) * BAR_LEN);
         const barStr     = "\u2588".repeat(Math.min(filled, BAR_LEN)) + "\u2591".repeat(Math.max(0, BAR_LEN - filled));
 
-        // Roco plan cap line
+        // RankCore plan cap line
         const noxxCapLine = limit === Infinity
           ? `${tierCfg.emoji} **${tierCfg.name}** — unlimited custom commands`
           : `${tierCfg.emoji} **${tierCfg.name}** cap: **${customUsed} / ${limit}** (${noxxRemaining} remaining)`;

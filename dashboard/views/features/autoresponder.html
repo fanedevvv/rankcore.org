@@ -309,13 +309,13 @@
             <!-- bot reply -->
             <div>
               <div class="dsc-reply">
-                <span class="text-gray-200 font-semibold text-xs mr-1">Roco</span>
+                <span class="text-gray-200 font-semibold text-xs mr-1">RankCore</span>
                 <span class="text-gray-500 truncate text-xs" id="prevReplyQuote">hello</span>
               </div>
               <div class="dsc-msg">
                 <div class="dsc-avatar" style="background:linear-gradient(135deg,#FF3333,#6C53FF)">🤖</div>
                 <div class="dsc-body">
-                  <span class="dsc-username">Roco<span class="dsc-tag">BOT</span></span>
+                  <span class="dsc-username">RankCore<span class="dsc-tag">BOT</span></span>
                   <div id="prevContent" class="dsc-text"></div>
                   <div id="prevEmbed"></div>
                   <div id="prevV2"></div>
@@ -828,7 +828,7 @@ const mdToHtml = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace
   .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
   .replace(/`(.+?)`/g,'<code class="bg-black/20 px-1 rounded text-xs">$1</code>').replace(/~~(.+?)~~/g,'<s>$1</s>')
   .replace(/\n/g,'<br>');
-const resolve = s => (s||'').replace(/{user}/g,'@Roco').replace(/{username}/g,'Roco').replace(/{server}/g,'My Server');
+const resolve = s => (s||'').replace(/{user}/g,'@RankCore').replace(/{username}/g,'RankCore').replace(/{server}/g,'My Server');
 
 function updatePreview() {
   const trigger = gv('trigger')||'hello';

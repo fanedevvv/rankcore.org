@@ -38,7 +38,7 @@ try {
   }
 
   // Append and install
-  const newCron = existing + "\n# Roco encryption key backup (daily)\n" + CRON_LINE;
+  const newCron = existing + "\n# RankCore encryption key backup (daily)\n" + CRON_LINE;
   execSync(`crontab -`, { input: newCron, encoding: "utf8" });
 
   console.log("Daily encryption key backup installed in crontab:\n");

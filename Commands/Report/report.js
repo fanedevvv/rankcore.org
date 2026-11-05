@@ -44,7 +44,7 @@ async function checkRateLimit(reporterId) {
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("report")
-        .setDescription("Report a user or server to the Roco moderation team")
+        .setDescription("Report a user or server to the RankCore moderation team")
         .addSubcommand(sub =>
             sub.setName("user")
                 .setDescription("Report a Discord user")
@@ -152,7 +152,7 @@ module.exports = {
                     const action = r.resolution?.action ? `\n> *Action: ${r.resolution.action}*` : "";
                     return `${status} \`${r.reportId}\` — ${target} · ${date} · **${r.status}**${action}`;
                 }).join("\n\n"))
-                .setFooter({ text: "Reports are reviewed by the Roco team" })
+                .setFooter({ text: "Reports are reviewed by the RankCore team" })
                 .setTimestamp();
 
             return interaction.reply({ embeds: [embed], ephemeral: true });
@@ -243,7 +243,7 @@ module.exports = {
             .setTitle(`${CATEGORY_LABELS[category]} — Report Submitted`)
             .setColor(CATEGORY_COLORS[category] ?? 0x3b82f6)
             .setDescription(
-                `Your report has been submitted and will be reviewed by the Roco team.\n` +
+                `Your report has been submitted and will be reviewed by the RankCore team.\n` +
                 `We'll DM you when a decision has been made.`
             )
             .addFields(

@@ -85,7 +85,7 @@ module.exports = {
 
 // Update the entry count button on the giveaway message.
 // Routes the edit through the CB bot if the message was sent by it —
-// the main Roco bot cannot edit messages it doesn't own.
+// the main RankCore bot cannot edit messages it doesn't own.
 async function refreshEntryButton(interaction, giveaway, uniqueCount) {
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
@@ -112,11 +112,11 @@ async function refreshEntryButton(interaction, giveaway, uniqueCount) {
       });
       return;
     } catch (err) {
-      console.warn('[Giveaway] CB edit failed, falling back to Roco:', err.message);
+      console.warn('[Giveaway] CB edit failed, falling back to RankCore:', err.message);
     }
   }
 
-  // Default: edit via Roco bot
+  // Default: edit via RankCore bot
   try {
     await interaction.message.edit({ components: [row] });
   } catch (_) {

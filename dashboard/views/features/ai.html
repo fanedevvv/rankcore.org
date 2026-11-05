@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>AI System — Roco</title>
+<title>AI System — RankCore</title>
 <link rel="icon" type="image/png" href="/logo.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -201,7 +201,7 @@ input[type=range].inp{padding:.5rem 0;background:transparent;border:none;outline
             </div>
             AI System
           </div>
-          <div class="page-subtitle">Configure Roco AI · Server knowledge · Persona & behaviour</div>
+          <div class="page-subtitle">Configure RankCore AI · Server knowledge · Persona & behaviour</div>
         </div>
         <span id="statusBadge" class="status-badge off">● Disabled</span>
       </div>
@@ -272,8 +272,8 @@ input[type=range].inp{padding:.5rem 0;background:transparent;border:none;outline
         </div>
 
         <div class="card">
-          <div class="card-head"><span class="card-head-icon blue">ℹ</span> About Roco AI</div>
-          <p class="card-sub">Roco AI is powered by Gemini. Configure personality, server knowledge, and access controls.</p>
+          <div class="card-head"><span class="card-head-icon blue">ℹ</span> About RankCore AI</div>
+          <p class="card-sub">RankCore AI is powered by Gemini. Configure personality, server knowledge, and access controls.</p>
           <div style="background:var(--bg4);border:1px solid var(--border);border-radius:.75rem;padding:1rem;font-size:.8rem;line-height:1.7;color:var(--dim);">
             <div style="margin-bottom:.5rem;"><strong style="color:var(--text);">🧠 Server Context</strong><br>Feed the AI knowledge about your server — ranks, rules, lore — so it can answer questions accurately.</div>
             <div style="margin-bottom:.5rem;"><strong style="color:var(--text);">👤 Custom Persona</strong><br>Give the AI a name and personality that fits your community.</div>
@@ -301,7 +301,7 @@ input[type=range].inp{padding:.5rem 0;background:transparent;border:none;outline
           </div>
           <div class="field">
             <label class="lbl">Embed Footer Text</label>
-            <input class="inp" id="embedFooter" placeholder="Powered by Roco AI" maxlength="128"/>
+            <input class="inp" id="embedFooter" placeholder="Powered by RankCore AI" maxlength="128"/>
           </div>
           <div class="field">
             <label class="lbl">Embed Colour</label>
@@ -366,7 +366,7 @@ input[type=range].inp{padding:.5rem 0;background:transparent;border:none;outline
             <div class="field">
               <label class="lbl">Extra Context <span style="font-weight:400;text-transform:none;letter-spacing:0;">(freeform)</span></label>
               <textarea class="inp" id="extraContext" rows="4" placeholder="Anything else the AI should know: important channels, bots, partnerships, events, inside jokes, key members, etc." maxlength="2000"></textarea>
-              <div class="hint">This is injected verbatim. Be specific. Example: "The bot Roco manages moderation. The #announcements channel is for staff only."</div>
+              <div class="hint">This is injected verbatim. Be specific. Example: "The bot RankCore manages moderation. The #announcements channel is for staff only."</div>
             </div>
 
             <button class="btn btn-primary btn-full" onclick="saveServerKnowledge()">Save Server Knowledge</button>

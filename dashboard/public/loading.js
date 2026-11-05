@@ -1,5 +1,5 @@
 /**
- * loading.js — Roco Dashboard Universal Loading System
+ * loading.js — RankCore Dashboard Universal Loading System
  * Drop this into every page via <script src="/loading.js"></script>
  * Provides: page loader, progress bar, fetch interception, skeleton helpers
  */

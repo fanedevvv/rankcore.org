@@ -2,7 +2,7 @@
 /**
  * messageSaver.js
  * ─────────────────────────────────────────────────────────────────
- * MongoDB-backed saved-message store for the Roco dashboard.
+ * MongoDB-backed saved-message store for the RankCore dashboard.
  * Replaces the old flat JSON file at data/savedMessages.json.
  *
  * Each saved message is stored per-guild with a unique nanoid-style id.
