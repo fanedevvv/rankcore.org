@@ -1,0 +1,7 @@
+project_id = "cyuadohglqadzejztwuw"
+
+[functions.discord-bot-stats]
+verify_jwt = false
+
+[functions.discord-bot-commands]
+verify_jwt = false

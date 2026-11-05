@@ -1,0 +1,235 @@
+/* Same type system as the RankCore dashboard: Outfit (text + headings), Syne (stat numbers), Space Mono (labels) */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Syne:wght@600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Dashboard palette (Noxx/dashboard/public/noxx.css): bg #07070a, surfaces #0e0e12/#141418,
+     accent #FF2D2D, text #ebebf0 / #8888a0, hairline borders rgba(255,255,255,.055) */
+  :root {
+    --background: 240 18% 3%;
+    --foreground: 240 14% 93%;
+
+    --card: 240 13% 6%;
+    --card-foreground: 240 14% 93%;
+
+    --popover: 240 13% 6%;
+    --popover-foreground: 240 14% 93%;
+
+    --primary: 0 100% 59%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 8% 10%;
+    --secondary-foreground: 240 14% 93%;
+
+    --muted: 240 8% 9%;
+    --muted-foreground: 240 10% 58%;
+
+    --accent: 0 100% 59%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 6% 12%;
+    --input: 240 6% 14%;
+    --ring: 0 100% 59%;
+
+    --radius: 0.875rem;
+
+    --gradient-green: 142 69% 52%;
+    --gradient-purple: 250 60% 62%;
+    --gradient-pink: 330 70% 60%;
+    --gradient-yellow: 43 96% 56%;
+    --gradient-red: 0 100% 59%;
+
+    --glow-green: 0 0 30px hsl(142 69% 52% / 0.3);
+    --glow-purple: 0 0 30px hsl(250 60% 62% / 0.3);
+    --glow-pink: 0 0 30px hsl(330 70% 60% / 0.3);
+    --glow-red: 0 0 30px hsl(0 100% 59% / 0.3);
+
+    --sidebar-background: 240 18% 3%;
+    --sidebar-foreground: 240 14% 93%;
+    --sidebar-primary: 0 100% 59%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 8% 9%;
+    --sidebar-accent-foreground: 240 14% 93%;
+    --sidebar-border: 240 6% 12%;
+    --sidebar-ring: 0 100% 59%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Headings: Outfit, tight — like the dashboard login hero. Syne (font-wide) is for numbers/short labels. */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', system-ui, sans-serif;
+    letter-spacing: -0.03em;
+  }
+
+  ::selection { background: hsl(var(--gradient-red) / 0.3); }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--gradient-red)), hsl(var(--gradient-red) / 0.7));
+  }
+
+  .text-gradient-warm {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--gradient-red)), hsl(var(--gradient-pink)));
+  }
+
+  .bg-gradient-btn-primary {
+    background: linear-gradient(135deg, hsl(var(--gradient-red)), hsl(var(--gradient-red) / 0.8));
+  }
+
+  .bg-gradient-btn-secondary {
+    background: linear-gradient(135deg, hsl(var(--gradient-red) / 0.8), hsl(var(--gradient-pink)));
+  }
+
+  .bg-gradient-btn-accent {
+    background: linear-gradient(135deg, hsl(var(--gradient-pink)), hsl(var(--gradient-red)));
+  }
+
+  .glass-card {
+    @apply bg-card border rounded-2xl;
+    border-color: rgba(255, 255, 255, 0.055);
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 cursor-pointer;
+    transform: translateY(0);
+  }
+
+  .glass-card-hover:hover {
+    border-color: hsl(var(--gradient-red) / 0.25);
+    background: linear-gradient(180deg, hsl(var(--gradient-red) / 0.05), transparent 60%), hsl(var(--card));
+    transform: translateY(-3px);
+  }
+
+  .glow-text-green {
+    text-shadow: 0 0 20px hsl(var(--gradient-green) / 0.5);
+  }
+
+  .glow-text-purple {
+    text-shadow: 0 0 20px hsl(var(--gradient-purple) / 0.5);
+  }
+
+  .section-label {
+    @apply inline-flex items-center gap-1.5 font-mono text-[10px] font-bold tracking-[0.18em] uppercase px-3 py-1 rounded-full;
+    color: hsl(var(--gradient-red));
+    background: hsl(var(--gradient-red) / 0.08);
+    border: 1px solid hsl(var(--gradient-red) / 0.3);
+  }
+  .section-label.text-center { @apply flex w-fit mx-auto; }
+
+  /* Small uppercase mono label, as used for stat cards in the dashboard */
+  .mono-label {
+    @apply font-mono text-[10px] font-bold tracking-[0.16em] uppercase text-muted-foreground;
+  }
+
+  /* Rounded square icon holder, as in the dashboard sidebar and feature lists */
+  .icon-tile {
+    @apply inline-flex items-center justify-center shrink-0 rounded-[10px] bg-muted border;
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+
+  /* Glow button effect */
+  .btn-glow {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-glow::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, hsl(var(--gradient-red) / 0.6), transparent, hsl(var(--gradient-red) / 0.6));
+    opacity: 0;
+    transition: opacity 0.4s;
+    z-index: -1;
+    filter: blur(8px);
+  }
+
+  .btn-glow:hover::before {
+    opacity: 1;
+  }
+
+  /* Shimmer effect for badges */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.05), transparent);
+    animation: shimmer-slide 3s ease-in-out infinite;
+  }
+}
+
+/* Particle animation */
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+  50% { transform: translateY(-20px) translateX(10px); opacity: 0.8; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer-slide {
+  0% { left: -100%; }
+  50%, 100% { left: 150%; }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.animate-float-particle {
+  animation: float-particle 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+}
+
+/* Scrollbar — thin with a red thumb, like the dashboard */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: hsl(var(--gradient-red) / 0.2); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--gradient-red) / 0.4); }
