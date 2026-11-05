@@ -72,7 +72,7 @@ body::after {
 }
 #toast.show { transform: translateX(0); }
 #toast.success { background: #1a0a24; border: 1px solid rgba(192,132,252,0.35); color: #C084FC; }
-#toast.error   { background: #200f0f; border: 1px solid rgba(255,71,87,0.35); color: #f87171; }
+#toast.error   { background: #0F1120; border: 1px solid rgba(255,71,87,0.35); color: #f87171; }
 
 /* Header */
 .page-hd { margin-bottom: 1.75rem; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
@@ -155,19 +155,19 @@ input[type=text]:focus { border-color: rgba(255,110,180,0.5); box-shadow: 0 0 0 
   <style>
     @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
-    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)} 50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)} }
     @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
   </style>
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
 <body>
-<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
   <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
-    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
       <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
     </div>
-    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
   </div>
   <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
 </div>

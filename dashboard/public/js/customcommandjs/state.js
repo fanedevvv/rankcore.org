@@ -14,7 +14,7 @@ export const MAX_EMBED_FIELDS = 25;
 
 export const TYPES = {
   STRING:      { label: 'String',      icon: '🔤', color: '#6C53FF', discordType: 3  },
-  INTEGER:     { label: 'Integer',     icon: '🔢', color: '#FF3333', discordType: 4  },
+  INTEGER:     { label: 'Integer',     icon: '🔢', color: '#8B5CF6', discordType: 4  },
   NUMBER:      { label: 'Number',      icon: '🔣', color: '#53E8FF', discordType: 10 },
   BOOLEAN:     { label: 'Boolean',     icon: '⚡',  color: '#FFB347', discordType: 5  },
   USER:        { label: 'User',        icon: '👤', color: '#FF6EB4', discordType: 6  },

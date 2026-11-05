@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="/css/tailwind.css">
   <script>
     const tailwind = window.tailwind || {}; tailwind.config = {
-      theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { razor: "#FF3333", razorDark: "#CC2222", dark: "#080505", card: "#181010", panel: "#0f0f13" } } }
+      theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { razor: "#8B5CF6", razorDark: "#7C3AED", dark: "#070813", card: "#0C0E1D", panel: "#0f0f13" } } }
     }
   </script>
   <style>
@@ -33,10 +33,10 @@
     .popular-badge { position: absolute; top: 16px; right: 16px; background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; font-size: .7rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; letter-spacing: .05em; text-transform: uppercase; }
     .price-big { font-size: 3rem; font-weight: 800; line-height: 1; }
     .price-period { font-size: .85rem; color: #64748b; }
-    .price-save { font-size: .8rem; font-weight: 600; background: rgba(99,255,100,.1); color: #ff3333; padding: 2px 8px; border-radius: 999px; }
+    .price-save { font-size: .8rem; font-weight: 600; background: rgba(99,255,100,.1); color: #8B5CF6; padding: 2px 8px; border-radius: 999px; }
     .feature-row { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; font-size: .88rem; }
     .feature-row .check { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-    .check.yes { background: rgba(99,255,100,.15); color: #ff3333; }
+    .check.yes { background: rgba(99,255,100,.15); color: #8B5CF6; }
     .check.no  { background: rgba(100,116,139,.1); color: #334155; }
     .check.star { background: rgba(245,158,11,.15); color: var(--elite); }
     .cta-btn { width: 100%; padding: 14px; border-radius: 12px; font-weight: 700; font-size: .95rem; cursor: pointer; border: none; transition: all .2s; margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -76,19 +76,19 @@
   <style>
     @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
-    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)} 50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)} }
     @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
   </style>
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
 <body class="bg-grid min-h-screen">
-<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
   <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
-    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
       <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
     </div>
-    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
   </div>
   <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
 </div>
@@ -557,7 +557,7 @@ list.innerHTML = filtered.map(g => `
         const manageBtn = isDevGrant
           ? `<span style="margin-left:16px;font-size:.75rem;background:#1e293b;color:#64748b;padding:6px 12px;border-radius:8px;border:1px solid #334155;display:flex;align-items:center;gap:4px;" title="Dev grant — managed by staff">${shieldSvg} Dev Grant</span>`
           : `<button onclick="openPortal(event)" style="margin-left:16px;font-size:.75rem;background:#1e293b;color:#cbd5e1;padding:6px 12px;border-radius:8px;border:1px solid #334155;cursor:pointer;display:flex;align-items:center;gap:4px;transition:background .2s;" onmouseenter="this.style.background='#263244'" onmouseleave="this.style.background='#1e293b'">${settingsSvg} Manage</button>`;
-        box.innerHTML = `<div class="status-banner"><div class="status-dot" style="background:#ff3333;box-shadow:0 0 8px #ff3333;"></div><div class="text-sm flex-1"><strong class="text-white">${u.tierName||'Premium'}</strong><span class="text-slate-400"> · ${isDevGrant?'Granted by staff':'Renews '+exp}</span></div>${manageBtn}</div>`;
+        box.innerHTML = `<div class="status-banner"><div class="status-dot" style="background:#8B5CF6;box-shadow:0 0 8px #8B5CF6;"></div><div class="text-sm flex-1"><strong class="text-white">${u.tierName||'Premium'}</strong><span class="text-slate-400"> · ${isDevGrant?'Granted by staff':'Renews '+exp}</span></div>${manageBtn}</div>`;
         box.classList.remove('hidden');
       } catch(e) { console.error('loadStatus:', e); }
     })();

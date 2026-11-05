@@ -13,9 +13,9 @@
 * { box-sizing: border-box; }
 body { font-family: 'Plus Jakarta Sans', sans-serif; }
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0b0b14; }
+::-webkit-scrollbar-track { background: #0C0E1D; }
 ::-webkit-scrollbar-thumb { background: #2d2d3d; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #FF3333; }
+::-webkit-scrollbar-thumb:hover { background: #8B5CF6; }
 
 #toast {
   position: fixed; top: 1rem; right: 1rem; z-index: 100;
@@ -33,13 +33,13 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; }
   border-radius: 1rem; padding: 1.25rem;
   transition: border-color .15s, transform .15s;
 }
-.poll-card:hover { border-color: rgba(255,51,51,.2); transform: translateY(-1px); }
+.poll-card:hover { border-color: rgba(139,92,246,.2); transform: translateY(-1px); }
 
 .badge {
   display: inline-flex; align-items: center; gap: .3rem;
   padding: .2rem .65rem; border-radius: .4rem; font-size: .7rem; font-weight: 700;
 }
-.badge-live   { background: rgba(255,51,51,.1);  border: 1px solid rgba(255,51,51,.3);  color: #FF3333; }
+.badge-live   { background: rgba(139,92,246,.1);  border: 1px solid rgba(139,92,246,.3);  color: #8B5CF6; }
 .badge-ended  { background: rgba(107,114,128,.1); border: 1px solid rgba(107,114,128,.2); color: #9ca3af; }
 .badge-multi  { background: rgba(139,92,246,.1);  border: 1px solid rgba(139,92,246,.3);  color: #a78bfa; }
 
@@ -53,8 +53,8 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; }
   padding: .5rem 1rem; border-radius: .6rem; font-weight: 600; font-size: .85rem;
   cursor: pointer; transition: all .15s; border: none; outline: none;
 }
-.btn-primary { background: #FF3333; color: #050c07; }
-.btn-primary:hover { background: #CC2222; }
+.btn-primary { background: #8B5CF6; color: #050c07; }
+.btn-primary:hover { background: #7C3AED; }
 .btn-ghost { background: transparent; color: #9ca3af; border: 1px solid rgba(255,255,255,0.08); }
 .btn-ghost:hover { background: rgba(255,255,255,0.04); color: white; }
 .btn-danger { background: rgba(239,68,68,.1); color: #ef4444; border: 1px solid rgba(239,68,68,.2); }
@@ -66,7 +66,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; }
 
 .tabs { display: flex; gap: .5rem; margin-bottom: 1.5rem; }
 .tab { padding: .45rem 1rem; border-radius: .6rem; font-weight: 600; font-size: .85rem; cursor: pointer; border: 1px solid transparent; color: #6b7280; transition: all .15s; }
-.tab.active { background: rgba(255,51,51,.1); border-color: rgba(255,51,51,.3); color: #FF3333; }
+.tab.active { background: rgba(139,92,246,.1); border-color: rgba(139,92,246,.3); color: #8B5CF6; }
 .tab:not(.active):hover { background: rgba(255,255,255,.04); color: #9ca3af; }
 </style>
 
@@ -74,19 +74,19 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; }
   <style>
     @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
-    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)} 50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)} }
     @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
   </style>
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
-<body class="bg-[#0b0b14] text-white min-h-screen flex">
-<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+<body class="bg-[#0C0E1D] text-white min-h-screen flex">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
   <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
-    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
       <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
     </div>
-    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
   </div>
   <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
 </div>
@@ -144,7 +144,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; }
   <!-- Stats -->
   <div class="grid grid-cols-3 gap-4 mb-6">
     <div class="card text-center">
-      <p class="text-2xl font-bold text-[#FF3333]" id="stat-live">—</p>
+      <p class="text-2xl font-bold text-[#8B5CF6]" id="stat-live">—</p>
       <p class="text-xs text-gray-400 mt-1">Live Polls</p>
     </div>
     <div class="card text-center">
@@ -173,12 +173,12 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; }
 const guildId = location.pathname.split('/')[2];
 let allPolls  = [];
 let activeTab = 'live';
-const COLOURS = ['#FF3333','#a78bfa','#fbbf24','#f97316','#ef4444','#60a5fa'];
+const COLOURS = ['#8B5CF6','#a78bfa','#fbbf24','#f97316','#ef4444','#60a5fa'];
 
 function showToast(msg, ok = true) {
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.style.background = ok ? '#FF3333' : '#ef4444';
+  t.style.background = ok ? '#8B5CF6' : '#ef4444';
   t.style.color = ok ? '#050c07' : 'white';
   t.style.transform = 'translateX(0)';
   setTimeout(() => t.style.transform = 'translateX(440px)', 3000);

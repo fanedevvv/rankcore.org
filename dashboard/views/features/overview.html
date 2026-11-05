@@ -14,11 +14,11 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-      --nx-primary: #e63946;
-      --nx-primary-dim: rgba(230, 57, 70, 0.12);
+      --nx-primary: #8B5CF6;
+      --nx-primary-dim: rgba(139,92,246, 0.12);
       --nx-surface: #161a28;
       --nx-surface-2: #1c2133;
-      --nx-bg: #08090c;
+      --nx-bg: #070813;
       --nx-border: rgba(255, 255, 255, 0.06);
       --nx-border-hover: rgba(255, 255, 255, 0.12);
       --nx-text: #e8eaed;
@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
 <body>
-  <div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#08090c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-    <div style="width:50px;height:50px;border-radius:14px;background:rgba(230,57,70,.1);border:1px solid rgba(230,57,70,.2);display:flex;align-items:center;justify-content:center">
+  <div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center">
       <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
     </div>
     <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif">Loading</div>
@@ -74,7 +74,7 @@
 
       <!-- Stats Grid -->
       <div class="nx-grid nx-grid-4 mb-8">
-        <div class="nx-stat-card" style="--nx-primary: #e63946;">
+        <div class="nx-stat-card" style="--nx-primary: #8B5CF6;">
           <div class="nx-stat-label">Total Members</div>
           <div id="members" class="nx-stat-value">-</div>
         </div>
@@ -144,8 +144,8 @@
         <h3 class="font-display" style="font-size:18px;font-weight:700;margin-bottom:16px;">Quick Access</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <a href="/guild/${guildId}/hub/moderation" class="nx-quick-card">
-            <div class="nx-quick-card-icon" style="background:rgba(230,57,70,0.12);">
-              <i data-lucide="shield" style="width:20px;height:20px;stroke:#e63946;"></i>
+            <div class="nx-quick-card-icon" style="background:rgba(139,92,246,0.12);">
+              <i data-lucide="shield" style="width:20px;height:20px;stroke:#8B5CF6;"></i>
             </div>
             <div class="nx-quick-card-content">
               <div class="nx-quick-card-title">Moderation</div>
@@ -331,8 +331,8 @@
     function renderChart(labels, data) {
       const ctx = document.getElementById('growthChart').getContext('2d');
       const grad = ctx.createLinearGradient(0, 0, 0, 280);
-      grad.addColorStop(0, 'rgba(230, 57, 70, 0.25)');
-      grad.addColorStop(1, 'rgba(230, 57, 70, 0)');
+      grad.addColorStop(0, 'rgba(139,92,246, 0.25)');
+      grad.addColorStop(1, 'rgba(139,92,246, 0)');
 
       if (growthChart) {
         growthChart.data.labels = labels;
@@ -348,7 +348,7 @@
           datasets: [{
             label: 'Members',
             data,
-            borderColor: '#e63946',
+            borderColor: '#8B5CF6',
             backgroundColor: grad,
             borderWidth: 2,
             pointRadius: 0,
@@ -365,7 +365,7 @@
             tooltip: {
               backgroundColor: '#1c2133',
               titleColor: '#9aa0b0',
-              bodyColor: '#e63946',
+              bodyColor: '#8B5CF6',
               bodyFont: { family: 'Syne', size: 14, weight: '700' },
               padding: 12,
               cornerRadius: 8,

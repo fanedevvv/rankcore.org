@@ -11,16 +11,16 @@
 <link rel="stylesheet" href="/css/tailwind.css">
 <script>
 function escapeHtml(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-const tailwind=window.tailwind||{};tailwind.config={theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','sans-serif'],mono:['"JetBrains Mono"','monospace']},colors:{razor:"#FF3333",razorDark:"#CC2222",success:"#10B981",danger:"#EF4444",warning:"#F59E0B"}}}};
+const tailwind=window.tailwind||{};tailwind.config={theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','sans-serif'],mono:['"JetBrains Mono"','monospace']},colors:{razor:"#8B5CF6",razorDark:"#7C3AED",success:"#10B981",danger:"#EF4444",warning:"#F59E0B"}}}};
 </script>
 <style>
-:root{--accent:#FF3333;--accent-dim:rgba(255,51,51,.12);--bg:#0b0b14;--panel:#12121f;--panel-raised:#1a1a2e;--border:rgba(255,255,255,.07);--text:#e2e8f0;--text-muted:#6b7280;}
+:root{--accent:#8B5CF6;--accent-dim:rgba(139,92,246,.12);--bg:#0C0E1D;--panel:#12121f;--panel-raised:#1a1a2e;--border:rgba(255,255,255,.07);--text:#e2e8f0;--text-muted:#6b7280;}
 *{box-sizing:border-box;}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:#252538;border-radius:4px;}::-webkit-scrollbar-thumb:hover{background:var(--accent);}
 body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;margin:0;}
 /* ── Log card ── */
 .log-card{background:linear-gradient(145deg,rgba(255,255,255,.03) 0%,rgba(255,255,255,.01) 100%);border:1px solid rgba(255,255,255,.06);transition:all .3s cubic-bezier(.4,0,.2,1);}
-.log-card:hover{border-color:rgba(255,51,51,.35);box-shadow:0 10px 30px -10px rgba(255,51,51,.12);transform:translateY(-2px);}
+.log-card:hover{border-color:rgba(139,92,246,.35);box-shadow:0 10px 30px -10px rgba(139,92,246,.12);transform:translateY(-2px);}
 /* ── Pulse ── */
 .pulse-dot{box-shadow:0 0 0 0 rgba(16,185,129,.7);animation:pulse-g 2s infinite;}
 @keyframes pulse-g{0%{transform:scale(.95);box-shadow:0 0 0 0 rgba(16,185,129,.7);}70%{transform:scale(1);box-shadow:0 0 0 6px rgba(16,185,129,0);}100%{transform:scale(.95);box-shadow:0 0 0 0 rgba(16,185,129,0);}}
@@ -43,8 +43,8 @@ body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans
 input:checked+.toggle-track{background:var(--accent);}
 input:checked+.toggle-track::before{transform:translateX(17px);}
 /* ── Channel badge ── */
-.ch-badge{display:inline-flex;align-items:center;gap:4px;font-size:.73rem;font-weight:700;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(255,51,51,.2);border-radius:6px;padding:.18rem .5rem;cursor:pointer;transition:background .12s;white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;}
-.ch-badge:hover{background:rgba(255,51,51,.2);}
+.ch-badge{display:inline-flex;align-items:center;gap:4px;font-size:.73rem;font-weight:700;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(139,92,246,.2);border-radius:6px;padding:.18rem .5rem;cursor:pointer;transition:background .12s;white-space:nowrap;max-width:140px;overflow:hidden;text-overflow:ellipsis;}
+.ch-badge:hover{background:rgba(139,92,246,.2);}
 .ch-badge.unset{color:var(--text-muted);background:rgba(255,255,255,.04);border-color:var(--border);}
 .ch-badge.unset:hover{background:rgba(255,255,255,.08);}
 /* ── Icon btn ── */
@@ -64,7 +64,7 @@ input:checked+.toggle-track::before{transform:translateX(17px);}
 .frm-textarea:focus{border-color:var(--accent);}
 /* ── Variable chips ── */
 .var-chip{display:inline-block;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.18rem .5rem;font-size:.72rem;font-family:'JetBrains Mono',monospace;color:#94a3b8;cursor:pointer;transition:all .1s;user-select:none;}
-.var-chip:hover{background:rgba(255,51,51,.15);border-color:rgba(255,51,51,.35);color:var(--accent);}
+.var-chip:hover{background:rgba(139,92,246,.15);border-color:rgba(139,92,246,.35);color:var(--accent);}
 /* ── Toast ── */
 #toast{position:fixed;top:1.25rem;right:1.25rem;padding:.8rem 1.3rem;border-radius:12px;transform:translateX(440px);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:99999;color:#fff;font-weight:600;font-size:.875rem;display:flex;align-items:center;gap:.5rem;box-shadow:0 8px 32px rgba(0,0,0,.5);}
 /* ── Cat tabs ── */
@@ -86,9 +86,9 @@ input:checked+.toggle-track::before{transform:translateX(17px);}
 .dsc-avatar{width:36px;height:36px;border-radius:50%;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:14px}
 .dsc-body{flex:1;min-width:0}
 .dsc-username{font-weight:700;color:#fff;font-size:13px}
-.dsc-tag{color:#fff;font-size:8px;font-weight:700;background:#FF3333;padding:1px 4px;border-radius:3px;margin-left:5px;vertical-align:middle}
+.dsc-tag{color:#fff;font-size:8px;font-weight:700;background:#8B5CF6;padding:1px 4px;border-radius:3px;margin-left:5px;vertical-align:middle}
 .dsc-text{color:#dcddde;font-size:12.5px;margin-top:2px;line-height:1.4;word-break:break-word;white-space:pre-wrap}
-.dsc-embed{border-left:3px solid var(--c,#FF3333);background:#2b2d31;border-radius:0 4px 4px 0;padding:8px 12px;margin-top:5px;max-width:400px}
+.dsc-embed{border-left:3px solid var(--c,#8B5CF6);background:#2b2d31;border-radius:0 4px 4px 0;padding:8px 12px;margin-top:5px;max-width:400px}
 .dsc-embed-title{color:#fff;font-size:13px;font-weight:700;margin-bottom:2px}
 .dsc-embed-desc{color:#dcddde;font-size:12px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
 .dsc-embed-author{display:flex;align-items:center;gap:5px;margin-bottom:4px;font-size:11px;font-weight:600;color:#fff}
@@ -102,18 +102,18 @@ input:checked+.toggle-track::before{transform:translateX(17px);}
 <style>
 @keyframes nx-spin{to{transform:translate(-50%,-50%) rotate(360deg);}}
 @keyframes nx-bar-move{0%{margin-left:-40%}100%{margin-left:140%}}
-@keyframes nx-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)}50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)}}
+@keyframes nx-pulse{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)}50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)}}
 @keyframes nx-dot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1.2);opacity:1}}
 </style>
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
 
-<body class="bg-[#0b0b14] text-white">
+<body class="bg-[#0C0E1D] text-white">
 
 <!-- Loader -->
-<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
-  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center"><div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite"><img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'"></div><div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div></div>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+  <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center"><div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite"><img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'"></div><div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div></div>
   <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;">Loading&hellip;</div>
 </div>
 <script>(function(){function hide(){var l=document.getElementById('nx-loader');if(!l)return;l.style.opacity='0';l.style.visibility='hidden';setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},300);}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){setTimeout(hide,80);});}else{setTimeout(hide,80);}setTimeout(hide,1500);})();</script>
@@ -269,7 +269,7 @@ input:checked+.toggle-track::before{transform:translateX(17px);}
           </div>
           <div>
             <label class="frm-label">Color</label>
-            <input type="color" id="logEmbedColor" value="#FF3333" class="frm-input" style="height:38px;width:50px;padding:3px 6px;cursor:pointer" oninput="logUpdatePreview()">
+            <input type="color" id="logEmbedColor" value="#8B5CF6" class="frm-input" style="height:38px;width:50px;padding:3px 6px;cursor:pointer" oninput="logUpdatePreview()">
           </div>
         </div>
         <div>
@@ -333,7 +333,7 @@ input:checked+.toggle-track::before{transform:translateX(17px);}
         </div>
         <div class="p-3" style="max-height:250px;overflow-y:auto">
           <div class="dsc-msg">
-            <div class="dsc-avatar" style="background:linear-gradient(135deg,#FF333320,#6C53FF20);border:1px solid rgba(255,51,51,.3);overflow:hidden"><img src="/logo.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.style.display='none';this.parentElement.textContent='🤖'"></div>
+            <div class="dsc-avatar" style="background:linear-gradient(135deg,#8B5CF620,#6C53FF20);border:1px solid rgba(139,92,246,.3);overflow:hidden"><img src="/logo.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.style.display='none';this.parentElement.textContent='🤖'"></div>
             <div class="dsc-body">
               <span class="dsc-username">RankCore<span class="dsc-tag">BOT</span></span>
               <div id="logPrevContent" class="dsc-text"></div>
@@ -786,7 +786,7 @@ function openTplModal(evKey) {
     // Reset embed fields
     document.getElementById('logEmbedTitle').value = '';
     document.getElementById('logEmbedDesc').value = '';
-    document.getElementById('logEmbedColor').value = '#FF3333';
+    document.getElementById('logEmbedColor').value = '#8B5CF6';
     document.getElementById('logEmbedAuthor').value = '';
     document.getElementById('logEmbedAuthorIcon').value = '';
     document.getElementById('logEmbedThumb').value = '';
@@ -835,7 +835,7 @@ function clearTemplate() {
   document.getElementById('logTextInput').value = '';
   document.getElementById('logEmbedTitle').value = '';
   document.getElementById('logEmbedDesc').value = '';
-  document.getElementById('logEmbedColor').value = '#FF3333';
+  document.getElementById('logEmbedColor').value = '#8B5CF6';
   document.getElementById('logEmbedAuthor').value = '';
   document.getElementById('logEmbedAuthorIcon').value = '';
   document.getElementById('logEmbedThumb').value = '';
@@ -950,7 +950,7 @@ function logParseTemplate(json) {
     const e = json.embeds[0] || {};
     document.getElementById('logEmbedTitle').value = e.title || '';
     document.getElementById('logEmbedDesc').value = e.description || '';
-    document.getElementById('logEmbedColor').value = e.color ? '#' + e.color.toString(16).padStart(6, '0') : '#FF3333';
+    document.getElementById('logEmbedColor').value = e.color ? '#' + e.color.toString(16).padStart(6, '0') : '#8B5CF6';
     document.getElementById('logEmbedAuthor').value = e.author?.name || '';
     document.getElementById('logEmbedAuthorIcon').value = e.author?.icon_url || '';
     document.getElementById('logEmbedThumb').value = e.thumbnail?.url || '';
@@ -977,7 +977,7 @@ function logUpdatePreview() {
   } else {
     cont.innerHTML = '';
     const e = tpl.embeds[0] || {};
-    const color = e.color ? '#' + e.color.toString(16).padStart(6, '0') : '#FF3333';
+    const color = e.color ? '#' + e.color.toString(16).padStart(6, '0') : '#8B5CF6';
     emb.innerHTML = `
       <div class="dsc-embed" style="--c:${color};border-left-color:${color}">
         ${e.author ? `<div class="dsc-embed-author">${e.author.icon_url ? `<img src="${escapeHtml(e.author.icon_url)}">` : ''}${escapeHtml(e.author.name)}</div>` : ''}

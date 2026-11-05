@@ -205,7 +205,7 @@ function _showTemplatePicker() {
     <style>
       @keyframes ccOverlayIn{from{opacity:0}to{opacity:1}}
       @keyframes ccModalIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-      #cc-tp-modal{background:#0d0d1c;border:1px solid rgba(108,83,255,.25);border-radius:1.25rem;
+      #cc-tp-modal{background:#0C0E1D;border:1px solid rgba(108,83,255,.25);border-radius:1.25rem;
         width:100%;max-width:580px;max-height:88vh;overflow-y:auto;
         box-shadow:0 24px 80px rgba(0,0,0,.7);animation:ccModalIn .22s ease both;
         font-family:'Plus Jakarta Sans',system-ui,sans-serif;}
@@ -316,7 +316,7 @@ export function showTabHelp(tabName) {
   const drawer = document.createElement('div');
   drawer.id = 'cc-help-drawer';
   drawer.style.cssText = `position:fixed;top:0;right:0;bottom:0;z-index:10002;width:100%;max-width:360px;
-    background:#0d0d1c;border-left:1px solid rgba(108,83,255,.22);
+    background:#0C0E1D;border-left:1px solid rgba(108,83,255,.22);
     box-shadow:-12px 0 48px rgba(0,0,0,.6);display:flex;flex-direction:column;
     font-family:'Plus Jakarta Sans',system-ui,sans-serif;
     animation:ccDrawerIn .22s ease both`;

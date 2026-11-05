@@ -24,8 +24,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#080811;color:#fff;ma
 #toast.show{transform:translateY(0)}
 .page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:24px;flex-wrap:wrap}
 .page-header-left{display:flex;align-items:center;gap:12px}
-.page-icon{width:44px;height:44px;border-radius:12px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.page-icon svg{width:20px;height:20px;color:#FF3333}
+.page-icon{width:44px;height:44px;border-radius:12px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.page-icon svg{width:20px;height:20px;color:#8B5CF6}
 .page-header h1{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:0 0 3px}
 @media(min-width:640px){.page-header h1{font-size:26px}}
 .page-header p{font-size:12px;color:#6b7280;margin:0}
@@ -35,7 +35,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#080811;color:#fff;ma
 .tabs-inner{display:flex;white-space:nowrap;min-width:max-content}
 .tab-btn{position:relative;padding:10px 14px;font-size:12px;font-weight:700;color:#6b7280;background:none;border:none;cursor:pointer;transition:color .2s;font-family:inherit;white-space:nowrap}
 @media(min-width:480px){.tab-btn{padding:12px 18px;font-size:13px}}
-.tab-btn::after{content:'';position:absolute;bottom:-1px;left:0;width:0;height:2px;background:#FF3333;transition:width .3s;border-radius:2px}
+.tab-btn::after{content:'';position:absolute;bottom:-1px;left:0;width:0;height:2px;background:#8B5CF6;transition:width .3s;border-radius:2px}
 .tab-btn.active::after{width:100%}
 .tab-btn.active,.tab-btn:hover{color:#fff}
 .tab-view{display:none}
@@ -44,7 +44,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#080811;color:#fff;ma
 .card{background:#111120;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:20px;margin-bottom:16px}
 @media(min-width:640px){.card{padding:22px 24px}}
 .card-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;margin:0 0 16px;color:#fff}
-.card-title svg{width:15px;height:15px;color:#FF3333;flex-shrink:0}
+.card-title svg{width:15px;height:15px;color:#8B5CF6;flex-shrink:0}
 .card-sub{font-size:11px;color:#4b5563;margin:-12px 0 14px}
 .grid-2{display:grid;grid-template-columns:1fr;gap:16px}
 @media(min-width:1024px){.grid-2{grid-template-columns:1fr 1fr}}
@@ -56,7 +56,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#080811;color:#fff;ma
 .field-hint{font-size:10px;color:#374151;margin-top:4px;line-height:1.5}
 .inp{width:100%;background:#0c0c1a;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 13px;font-size:13px;color:#fff;outline:none;transition:border-color .2s,box-shadow .2s;font-family:inherit;min-height:42px;-webkit-appearance:none}
 .inp::placeholder{color:#374151}
-.inp:focus{border-color:#FF3333;box-shadow:0 0 0 3px rgba(255,51,51,.12)}
+.inp:focus{border-color:#8B5CF6;box-shadow:0 0 0 3px rgba(139,92,246,.12)}
 textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
 .tog-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:10px}
 .tog-info h3{font-weight:700;font-size:13px;margin:0 0 2px}
@@ -64,13 +64,13 @@ textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
 .tog-switch{position:relative;display:inline-block;width:42px;flex-shrink:0}
 .tog-cb{position:absolute;left:2px;top:2px;z-index:10;width:18px;height:18px;border-radius:50%;background:#fff;appearance:none;cursor:pointer;border:none;transition:transform .3s cubic-bezier(.4,0,.2,1)}
 .tog-cb:checked{transform:translateX(18px)}
-.tog-cb:checked+.tog-track{background:#FF3333;box-shadow:0 0 12px rgba(255,51,51,.3)}
+.tog-cb:checked+.tog-track{background:#8B5CF6;box-shadow:0 0 12px rgba(139,92,246,.3)}
 .tog-track{display:block;width:42px;height:22px;border-radius:999px;background:#1e1e36;cursor:pointer;transition:background .3s;border:1px solid rgba(255,255,255,.08)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 18px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;transition:all .15s;border:none;font-family:inherit;min-height:42px;white-space:nowrap}
 .btn:active{transform:scale(.97)}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
-.btn-primary{background:#FF3333;color:#0b0b14;box-shadow:0 4px 20px rgba(255,51,51,.2)}
-.btn-primary:hover:not(:disabled){background:#CC2222}
+.btn-primary{background:#8B5CF6;color:#0C0E1D;box-shadow:0 4px 20px rgba(139,92,246,.2)}
+.btn-primary:hover:not(:disabled){background:#7C3AED}
 .btn-ghost{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.1)}
 .btn-ghost:hover:not(:disabled){background:rgba(255,255,255,.1)}
 .btn-danger{background:rgba(239,68,68,.08);color:#f87171;border:1px solid rgba(239,68,68,.18)}
@@ -81,7 +81,7 @@ textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
 @media(min-width:1024px){.stats-grid{grid-template-columns:repeat(6,1fr)}}
 .stat-card{background:#111120;border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:16px;position:relative;overflow:hidden}
 .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.stat-card.green::before{background:linear-gradient(90deg,#FF3333,#CC2222)}
+.stat-card.green::before{background:linear-gradient(90deg,#8B5CF6,#7C3AED)}
 .stat-card.red::before{background:linear-gradient(90deg,#f87171,#ef4444)}
 .stat-card.orange::before{background:linear-gradient(90deg,#fb923c,#f97316)}
 .stat-card.yellow::before{background:linear-gradient(90deg,#facc15,#eab308)}
@@ -91,7 +91,7 @@ textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
 .stat-value{font-size:28px;font-weight:800;color:#fff;line-height:1;margin-bottom:2px}
 .stat-sub{font-size:10px;color:#4b5563}
 .feature-box{display:flex;align-items:flex-start;gap:10px;padding:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:10px}
-.feature-box svg{width:16px;height:16px;color:#FF3333;flex-shrink:0;margin-top:1px}
+.feature-box svg{width:16px;height:16px;color:#8B5CF6;flex-shrink:0;margin-top:1px}
 .feature-box p{font-size:12px;color:#9ca3af;margin:0;line-height:1.5}
 .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 @media(min-width:640px){.action-grid{grid-template-columns:repeat(5,1fr)}}
@@ -99,7 +99,7 @@ textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
 .action-card input[type=radio]{position:absolute;opacity:0;width:0;height:0}
 .action-card-inner{padding:12px 10px;border-radius:10px;border:1.5px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);text-align:center;transition:all .15s;cursor:pointer}
 .action-card-inner:hover{border-color:rgba(255,255,255,.15)}
-.action-card input:checked+.action-card-inner{border-color:#FF3333;background:rgba(255,51,51,.07);box-shadow:0 0 0 3px rgba(255,51,51,.1)}
+.action-card input:checked+.action-card-inner{border-color:#8B5CF6;background:rgba(139,92,246,.07);box-shadow:0 0 0 3px rgba(139,92,246,.1)}
 .action-icon{margin-bottom:6px;display:flex;align-items:center;justify-content:center}
 .action-label{font-size:11px;font-weight:700;color:#e5e7eb}
 .action-desc{font-size:10px;color:#4b5563;margin-top:2px;line-height:1.3}
@@ -107,7 +107,7 @@ textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
 .btn-style-card{position:relative;cursor:pointer}
 .btn-style-card input[type=radio]{position:absolute;opacity:0;width:0;height:0}
 .btn-style-inner{padding:10px 8px;border-radius:10px;border:1.5px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);text-align:center;transition:all .15s;cursor:pointer}
-.btn-style-card input:checked+.btn-style-inner{border-color:#FF3333;background:rgba(255,51,51,.07)}
+.btn-style-card input:checked+.btn-style-inner{border-color:#8B5CF6;background:rgba(139,92,246,.07)}
 .discord-btn{display:inline-block;padding:5px 14px;border-radius:4px;font-size:12px;font-weight:700;cursor:pointer;border:none;margin-bottom:6px}
 .discord-btn.s1{background:#5865F2;color:#fff}
 .discord-btn.s2{background:#4f545c;color:#fff}
@@ -117,7 +117,7 @@ textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
 .dp-header{height:44px;background:#2b2d31;border-bottom:1px solid #1f2023;display:flex;align-items:center;padding:0 14px;gap:8px}
 .dp-body{padding:14px}
 .dp-msg{display:flex;gap:10px}
-.dp-avatar{width:36px;height:36px;border-radius:50%;background:#FF3333;flex-shrink:0;overflow:hidden}
+.dp-avatar{width:36px;height:36px;border-radius:50%;background:#8B5CF6;flex-shrink:0;overflow:hidden}
 .dp-content{flex:1;min-width:0}
 .dp-bot-tag{background:#5865F2;font-size:9px;color:#fff;padding:1px 4px;border-radius:3px;font-weight:700}
 .dp-embed{background:#2b2d31;border-radius:6px;overflow:hidden;margin-top:8px;border-left:4px solid #6C53FF;padding:10px 12px}
@@ -129,7 +129,7 @@ textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
 .tbl tr:hover td{background:rgba(255,255,255,.02)}
 .mono{font-family:'JetBrains Mono',monospace;font-size:11px}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700}
-.badge-pass{background:rgba(255,51,51,.1);color:#FF3333;border:1px solid rgba(255,51,51,.2)}
+.badge-pass{background:rgba(139,92,246,.1);color:#8B5CF6;border:1px solid rgba(139,92,246,.2)}
 .badge-vpn{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2)}
 .badge-alt{background:rgba(251,146,60,.1);color:#fb923c;border:1px solid rgba(251,146,60,.2)}
 .badge-flag{background:rgba(234,179,8,.1);color:#facc15;border:1px solid rgba(234,179,8,.2)}
@@ -140,37 +140,37 @@ textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
 .pag{display:flex;align-items:center;gap:6px;justify-content:center;padding:14px 0}
 .pag-btn{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#9ca3af;cursor:pointer;font-size:12px;font-weight:700;transition:all .15s}
 .pag-btn:hover{background:rgba(255,255,255,.1)}
-.pag-btn.active{background:#FF3333;color:#0b0b14;border-color:#FF3333}
+.pag-btn.active{background:#8B5CF6;color:#0C0E1D;border-color:#8B5CF6}
 .pag-btn:disabled{opacity:.3;cursor:not-allowed}
 .empty-state{text-align:center;padding:40px 20px;color:#374151}
 .empty-state svg{width:36px;height:36px;margin:0 auto 10px;display:block;opacity:.3}
 .seg-group{display:flex;gap:6px;flex-wrap:wrap}
 .seg-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);color:#6b7280;transition:all .15s;font-family:inherit}
 .seg-btn:hover{border-color:rgba(255,255,255,.15);color:#fff}
-.seg-btn.active{border-color:#FF3333;background:rgba(255,51,51,.1);color:#FF3333}
+.seg-btn.active{border-color:#8B5CF6;background:rgba(139,92,246,.1);color:#8B5CF6}
 .country-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px 3px 8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;font-size:11px;font-weight:700;color:#fff}
 .country-tag button{background:none;border:none;color:#6b7280;cursor:pointer;padding:0;line-height:1;font-size:13px}
 .country-tag button:hover{color:#f87171}
 #country-tags{display:flex;flex-wrap:wrap;gap:6px;min-height:28px;padding:6px 0}
 .rzr-wrap{position:relative;width:100%;display:block}
 .rzr-wrap-parent.select-wrap::after,.rzr-wrap-parent::after{display:none!important;content:none!important}
-.rzr-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);background:#0d0d1c;color:#fff;cursor:pointer;font-size:14px;font-family:inherit;min-height:44px;width:100%;transition:border-color .15s,box-shadow .15s;user-select:none;box-sizing:border-box}
+.rzr-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);background:#0C0E1D;color:#fff;cursor:pointer;font-size:14px;font-family:inherit;min-height:44px;width:100%;transition:border-color .15s,box-shadow .15s;user-select:none;box-sizing:border-box}
 .rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
-.rzr-trigger.is-open{border-color:rgba(255,51,51,.6);box-shadow:0 0 0 3px rgba(255,51,51,.1)}
+.rzr-trigger.is-open{border-color:rgba(139,92,246,.6);box-shadow:0 0 0 3px rgba(139,92,246,.1)}
 .rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
 .rzr-label.is-ph{color:#6b7280}
 .rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
-.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#8B5CF6}
 .rzr-panel{position:fixed;z-index:999999;background:rgba(11,11,20,.98);backdrop-filter:blur(16px);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;box-shadow:0 24px 60px rgba(0,0,0,.7);overflow:hidden;animation:rzrIn .16s ease}
 @keyframes rzrIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
 .rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
-.rzr-search-inp{display:block;width:100%;background:#06060f;border:1px solid rgba(255,255,255,.09);border-radius:7px;padding:6px 11px;color:#fff;font-size:13px;font-family:inherit;outline:none;box-sizing:border-box;transition:border-color .15s}
-.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-search-inp{display:block;width:100%;background:#070813;border:1px solid rgba(255,255,255,.09);border-radius:7px;padding:6px 11px;color:#fff;font-size:13px;font-family:inherit;outline:none;box-sizing:border-box;transition:border-color .15s}
+.rzr-search-inp:focus{border-color:rgba(139,92,246,.45)}
 .rzr-list{max-height:220px;overflow-y:auto;padding:5px}
 .rzr-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 11px;border-radius:8px;cursor:pointer;font-size:13px;color:#9ca3af;transition:background .1s,color .1s}
 .rzr-item:hover{background:rgba(255,255,255,.055);color:#fff}
-.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600}
-.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item.is-sel{background:rgba(139,92,246,.13);color:#8B5CF6;font-weight:600}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#8B5CF6;opacity:0}
 .rzr-item.is-sel .rzr-item-chk{opacity:1}
 .rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
 </style>
@@ -179,19 +179,19 @@ textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
   <style>
     @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
-    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)} 50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)} }
     @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
   </style>
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
 <body>
-<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
   <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
-    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
       <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
     </div>
-    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
   </div>
   <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
 </div>
@@ -401,8 +401,8 @@ textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
               <div>
                 <label class="field-label">Risk Score Threshold (0–100)</label>
                 <div style="display:flex;align-items:center;gap:10px">
-                  <input type="range" id="vpnRiskSlider" min="0" max="100" value="70" oninput="document.getElementById('vpnRiskVal').textContent=this.value;document.getElementById('vpnRiskThreshold').value=this.value" style="flex:1;accent-color:#FF3333">
-                  <span id="vpnRiskVal" style="font-size:13px;font-weight:700;color:#FF3333;min-width:28px">70</span>
+                  <input type="range" id="vpnRiskSlider" min="0" max="100" value="70" oninput="document.getElementById('vpnRiskVal').textContent=this.value;document.getElementById('vpnRiskThreshold').value=this.value" style="flex:1;accent-color:#8B5CF6">
+                  <span id="vpnRiskVal" style="font-size:13px;font-weight:700;color:#8B5CF6;min-width:28px">70</span>
                   <input type="hidden" id="vpnRiskThreshold" value="70">
                 </div>
                 <p class="field-hint">Score ≥ this = <strong style="color:#facc15">FLAGGED</strong> (not hard-blocked). 70 recommended. Use Fail Actions tab to decide what FLAGGED does.</p>
@@ -444,7 +444,7 @@ textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
                 <input type="hidden" id="countryMode" value="off">
               </div>
               <div id="country-config" style="display:none">
-                <label class="field-label">Countries <span id="country-mode-label" style="color:#FF3333">(allow)</span></label>
+                <label class="field-label">Countries <span id="country-mode-label" style="color:#8B5CF6">(allow)</span></label>
                 <div style="display:flex;gap:8px;margin-bottom:8px">
                   <input type="text" id="countryInput" class="inp" placeholder="e.g. US, GB, DE" style="flex:1" maxlength="3" onkeydown="if(event.key==='Enter'){event.preventDefault();addCountry()}">
                   <button class="btn btn-ghost" onclick="addCountry()" style="min-height:42px;padding:8px 14px">Add</button>
@@ -467,7 +467,7 @@ textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
             </div>
           </div>
 
-          <div class="card" style="background:rgba(255,51,51,.03);border-color:rgba(255,51,51,.1)">
+          <div class="card" style="background:rgba(139,92,246,.03);border-color:rgba(139,92,246,.1)">
             <p class="card-title">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
               Encryption
@@ -536,7 +536,7 @@ textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
                 </div>
                 <div>
                   <label class="field-label">Embed Color</label>
-                  <input type="color" id="logPassColor" class="inp" value="#FF3333" style="height:42px;padding:4px 8px;cursor:pointer">
+                  <input type="color" id="logPassColor" class="inp" value="#8B5CF6" style="height:42px;padding:4px 8px;cursor:pointer">
                 </div>
               </div>
               <div>
@@ -657,7 +657,7 @@ textarea.inp{min-height:72px;resize:vertical;line-height:1.5}
             </div>
           </div>
 
-          <div class="card" style="background:rgba(255,51,51,.03);border-color:rgba(255,51,51,.1)">
+          <div class="card" style="background:rgba(139,92,246,.03);border-color:rgba(139,92,246,.1)">
             <p class="card-title">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
               Webhook Payload Example
@@ -770,9 +770,9 @@ function insertVar(fieldId, variable) {
 function toast(msg, type = 'ok') {
   const el = document.getElementById('toast');
   document.getElementById('toastMessage').textContent = msg;
-  const bg = { ok:'linear-gradient(135deg,#2e1a1a,#0d1a0d)', err:'linear-gradient(135deg,#2e1a1a,#1a0d0d)', warn:'linear-gradient(135deg,#2e251a,#1a150d)' };
+  const bg = { ok:'linear-gradient(135deg,#20243C,#0d1a0d)', err:'linear-gradient(135deg,#20243C,#0D0F1A)', warn:'linear-gradient(135deg,#2e251a,#1a150d)' };
   el.style.background = bg[type] || bg.ok;
-  el.style.border = `1px solid ${type==='err'?'#f8717133':type==='warn'?'#fb923c33':'#ff333333'}`;
+  el.style.border = `1px solid ${type==='err'?'#f8717133':type==='warn'?'#fb923c33':'#8B5CF633'}`;
   el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 3200);
 }
@@ -863,7 +863,7 @@ async function loadConfig() {
 
   setVal('logPassTitle', d.logPassTitle || '');
   setVal('logPassDesc',  d.logPassDesc  || '');
-  setVal('logPassColor', d.logPassColor || '#ff3333');
+  setVal('logPassColor', d.logPassColor || '#8B5CF6');
   setVal('logFailTitle', d.logFailTitle || '');
   setVal('logFailDesc',  d.logFailDesc  || '');
   setVal('logFailColor', d.logFailColor || '#ef4444');
@@ -972,7 +972,7 @@ function renderRecords(records) {
     const threats = [r.isVpn&&'VPN',r.isProxy&&'Proxy',r.isTor&&'Tor',r.isHosting&&'Host'].filter(Boolean)
       .map(t=>`<span class="badge badge-vpn" style="font-size:9px">${t}</span>`).join(' ') || '<span style="color:#374151;font-size:11px">Clean</span>';
     const risk  = r.riskScore != null
-      ? `<span style="font-size:12px;font-weight:700;color:${r.riskScore>=70?'#f87171':r.riskScore>=40?'#facc15':'#FF3333'}">${r.riskScore}</span><div class="risk-bar"><div class="risk-fill" style="width:${r.riskScore}%;background:${r.riskScore>=70?'#f87171':r.riskScore>=40?'#facc15':'#FF3333'}"></div></div>`
+      ? `<span style="font-size:12px;font-weight:700;color:${r.riskScore>=70?'#f87171':r.riskScore>=40?'#facc15':'#8B5CF6'}">${r.riskScore}</span><div class="risk-bar"><div class="risk-fill" style="width:${r.riskScore}%;background:${r.riskScore>=70?'#f87171':r.riskScore>=40?'#facc15':'#8B5CF6'}"></div></div>`
       : '—';
     const loc   = r.countryCode || '—';   // city hidden — too invasive
     const seen  = r.lastSeen ? new Date(r.lastSeen).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}) : '—';
@@ -1030,7 +1030,7 @@ function setCountryMode(mode) {
   if (mode === 'off') { cfg.style.display = 'none'; return; }
   cfg.style.display = 'block';
   if (mode === 'allowlist') {
-    lbl.textContent  = '(allow only)'; lbl.style.color = '#FF3333';
+    lbl.textContent  = '(allow only)'; lbl.style.color = '#8B5CF6';
     hint.textContent = 'Only these countries can verify. Everyone else is blocked.';
   } else {
     lbl.textContent  = '(block these)'; lbl.style.color = '#f87171';

@@ -11,12 +11,12 @@
   <link rel="stylesheet" href="/css/tailwind.css">
   <script>
     const tailwind = window.tailwind || {}; tailwind.config = {
-      theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { razor:"#FF3333" } } }
+      theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { razor:"#8B5CF6" } } }
     };
   </script>
   <style>
     ::-webkit-scrollbar{width:6px}
-    ::-webkit-scrollbar-track{background:#0b0b14}
+    ::-webkit-scrollbar-track{background:#0C0E1D}
     ::-webkit-scrollbar-thumb{background:#2d2d3d;border-radius:4px}
     ::-webkit-scrollbar-thumb:hover{background:#6C53FF}
 
@@ -88,19 +88,19 @@
   <style>
     @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
-    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)} 50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)} }
     @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
   </style>
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
-<body class="bg-[#0b0b14] text-white font-sans">
-<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+<body class="bg-[#0C0E1D] text-white font-sans">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
   <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
-    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
       <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
     </div>
-    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
   </div>
   <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
 </div>
@@ -313,7 +313,7 @@
                 <span class="text-gray-500 truncate text-xs" id="prevReplyQuote">hello</span>
               </div>
               <div class="dsc-msg">
-                <div class="dsc-avatar" style="background:linear-gradient(135deg,#FF3333,#6C53FF)">🤖</div>
+                <div class="dsc-avatar" style="background:linear-gradient(135deg,#8B5CF6,#6C53FF)">🤖</div>
                 <div class="dsc-body">
                   <span class="dsc-username">RankCore<span class="dsc-tag">BOT</span></span>
                   <div id="prevContent" class="dsc-text"></div>
@@ -627,9 +627,9 @@ function removeBtn(prefix, i) {
 function renderAddFields() {
   document.getElementById('fieldsList').innerHTML = addFields.map((f,i)=>`
     <div class="bg-[#14142b] rounded-xl p-3 border border-white/5 space-y-2">
-      <div class="flex gap-2"><input placeholder="Field name" value="${esc(f.name)}" oninput="addFields[${i}].name=this.value;updatePreview()" class="flex-1 bg-[#0b0b14] border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white">
+      <div class="flex gap-2"><input placeholder="Field name" value="${esc(f.name)}" oninput="addFields[${i}].name=this.value;updatePreview()" class="flex-1 bg-[#0C0E1D] border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white">
       <button onclick="removeAddField(${i})" class="text-red-400 hover:text-red-300 px-2">✕</button></div>
-      <textarea placeholder="Field value" rows="2" oninput="addFields[${i}].value=this.value;updatePreview()" class="w-full bg-[#0b0b14] border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white">${esc(f.value)}</textarea>
+      <textarea placeholder="Field value" rows="2" oninput="addFields[${i}].value=this.value;updatePreview()" class="w-full bg-[#0C0E1D] border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white">${esc(f.value)}</textarea>
       <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer"><input type="checkbox" ${f.inline?'checked':''} onchange="addFields[${i}].inline=this.checked;updatePreview()" class="accent-[#6C53FF]"> Inline</label>
     </div>`).join('');
 }
@@ -639,9 +639,9 @@ function removeAddField(i) { addFields.splice(i,1); renderAddFields(); updatePre
 function renderEditFields() {
   document.getElementById('editFieldsList').innerHTML = editFieldsData.map((f,i)=>`
     <div class="bg-[#14142b] rounded-xl p-3 border border-white/5 space-y-2">
-      <div class="flex gap-2"><input placeholder="Field name" value="${esc(f.name)}" oninput="editFieldsData[${i}].name=this.value" class="flex-1 bg-[#0b0b14] border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white">
+      <div class="flex gap-2"><input placeholder="Field name" value="${esc(f.name)}" oninput="editFieldsData[${i}].name=this.value" class="flex-1 bg-[#0C0E1D] border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white">
       <button onclick="removeEditField(${i})" class="text-red-400 hover:text-red-300 px-2">✕</button></div>
-      <textarea placeholder="Field value" rows="2" oninput="editFieldsData[${i}].value=this.value" class="w-full bg-[#0b0b14] border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white">${esc(f.value)}</textarea>
+      <textarea placeholder="Field value" rows="2" oninput="editFieldsData[${i}].value=this.value" class="w-full bg-[#0C0E1D] border border-white/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#6C53FF] text-white">${esc(f.value)}</textarea>
       <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer"><input type="checkbox" ${f.inline?'checked':''} onchange="editFieldsData[${i}].inline=this.checked" class="accent-[#6C53FF]"> Inline</label>
     </div>`).join('');
 }

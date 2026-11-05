@@ -1,14 +1,14 @@
 /* ─── Hub Design System v2 — Mobile-first grouped list ───────────────────── */
 :root {
-  --hub-bg: #05060a;
-  --hub-surface: #0b0d17;
+  --hub-bg: #070813;
+  --hub-surface: #0C0E1D;
   --hub-surface-2: #111427;
   --hub-border: rgba(255,255,255,0.055);
   --hub-border-2: rgba(255,255,255,0.1);
   --hub-text: #c8cfe0;
   --hub-text-dim: #6b7280;
   --hub-text-bright: #edf0f8;
-  --hub-accent: #FF3333;
+  --hub-accent: #8B5CF6;
   --hub-radius: 14px;
   --hub-radius-sm: 10px;
 }
@@ -30,7 +30,7 @@ html.hub-mode body {
 }
 .hub-mode ::-webkit-scrollbar { width: 3px; }
 .hub-mode ::-webkit-scrollbar-track { background: transparent; }
-.hub-mode ::-webkit-scrollbar-thumb { background: rgba(255,51,51,.15); border-radius: 10px; }
+.hub-mode ::-webkit-scrollbar-thumb { background: rgba(139,92,246,.15); border-radius: 10px; }
 
 /* ── Page header ─────────────────────────────────────────────────────────── */
 .hub-header {
@@ -239,8 +239,8 @@ html.hub-mode body {
   transition: border-color .15s, box-shadow .15s;
 }
 .hub-search-wrap:focus-within {
-  border-color: rgba(255,51,51,.3);
-  box-shadow: 0 0 0 3px rgba(255,51,51,.08);
+  border-color: rgba(139,92,246,.3);
+  box-shadow: 0 0 0 3px rgba(139,92,246,.08);
 }
 .hub-search-wrap svg {
   flex-shrink: 0;

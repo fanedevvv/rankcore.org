@@ -16,7 +16,7 @@
 
     /* ── Variables ─────────────────────────────────────────── */
     :root{
-      --accent:#6C53FF;--accent-g:#FF3333;--surface:#0f0f1c;--surface2:#13131f;--surface3:#1a1a2c;
+      --accent:#6C53FF;--accent-g:#8B5CF6;--surface:#0f0f1c;--surface2:#13131f;--surface3:#1a1a2c;
       --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
       --text-dim:#6b7280;--text-muted:#374151;
       --radius:14px;--radius-sm:10px;--radius-xs:7px;
@@ -30,7 +30,7 @@
     /* ── Buttons ─────────────────────────────────────────────── */
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:var(--radius-sm);font-weight:700;font-size:13px;cursor:pointer;transition:all .15s;border:none;font-family:inherit;min-height:38px;white-space:nowrap}
     .btn:active{transform:scale(.97)}.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
-    .btn-primary{background:var(--accent-g);color:#080810;box-shadow:0 4px 20px rgba(255,51,51,.2)}
+    .btn-primary{background:var(--accent-g);color:#080810;box-shadow:0 4px 20px rgba(139,92,246,.2)}
     .btn-primary:hover:not(:disabled){background:#45e85a}
     .btn-accent{background:var(--accent);color:#fff;box-shadow:0 4px 16px rgba(108,83,255,.25)}
     .btn-accent:hover:not(:disabled){background:#5a44e8}
@@ -122,7 +122,7 @@
     .ch-option:hover{background:rgba(255,255,255,.05)}
     .ch-option.selected{background:rgba(88,101,242,.1);outline:1px solid rgba(88,101,242,.25)}
     .ch-category{font-size:10px;font-weight:800;color:#4b5563;text-transform:uppercase;letter-spacing:.06em;padding:8px 10px 2px}
-    .wh-card{display:flex;align-items:center;gap:0;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);background:#0d0d1c;cursor:pointer;transition:all .15s}
+    .wh-card{display:flex;align-items:center;gap:0;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);background:#0C0E1D;cursor:pointer;transition:all .15s}
     .wh-card:hover{border-color:rgba(88,101,242,.4)}
     .wh-card.selected{border-color:#5865f2;background:rgba(88,101,242,.08)}
 
@@ -138,19 +138,19 @@
   <style>
     @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
-    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)} 50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)} }
     @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
   </style>
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
 <body>
-<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
   <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
-    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
       <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
     </div>
-    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
   </div>
   <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
 </div>
@@ -220,7 +220,7 @@
 <div id="templateSlide" class="fixed top-0 right-0 h-full flex flex-col z-50 transform translate-x-full" style="width:min(1100px,100vw);background:#0a0a16;border-left:1.5px solid rgba(255,255,255,.07);box-shadow:-20px 0 60px rgba(0,0,0,.6)">
 
   <!-- Header -->
-  <div class="flex items-center justify-between px-6 py-4 flex-shrink-0" style="background:#0d0d1c;border-bottom:1.5px solid rgba(255,255,255,.06)">
+  <div class="flex items-center justify-between px-6 py-4 flex-shrink-0" style="background:#0C0E1D;border-bottom:1.5px solid rgba(255,255,255,.06)">
     <div class="flex items-center gap-3 min-w-0 flex-1">
       <button onclick="closeTemplateSlide()" class="w-8 h-8 flex items-center justify-center rounded-lg transition-colors flex-shrink-0" style="color:#6b7280" onmouseover="this.style.background='rgba(255,255,255,.07)';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='#6b7280'">
         <!-- lucide: chevron-right (panel going right means close) -->
@@ -421,7 +421,7 @@
           </div>
           <div class="py-3 overflow-y-auto" style="max-height:420px;min-height:80px">
             <div class="dsc-msg">
-              <div class="dsc-avatar" style="background:linear-gradient(135deg,#FF333320,#6C53FF20);border:1.5px solid rgba(108,83,255,.3);overflow:hidden;padding:0"><img src="/logo.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.style.display='none';this.parentElement.textContent='🤖'"></div>
+              <div class="dsc-avatar" style="background:linear-gradient(135deg,#8B5CF620,#6C53FF20);border:1.5px solid rgba(108,83,255,.3);overflow:hidden;padding:0"><img src="/logo.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.style.display='none';this.parentElement.textContent='🤖'"></div>
               <div class="dsc-body">
                 <span class="dsc-username">RankCore<span class="dsc-tag">BOT</span></span>
                 <!-- Clickable text content -->
@@ -506,7 +506,7 @@
             Copy
           </button>
         </div>
-        <textarea id="tplJsonExport" rows="6" readonly class="inp text-[10px]" style="font-family:'JetBrains Mono',monospace;color:#EF4444;background:#06060f;resize:none"></textarea>
+        <textarea id="tplJsonExport" rows="6" readonly class="inp text-[10px]" style="font-family:'JetBrains Mono',monospace;color:#EF4444;background:#070813;resize:none"></textarea>
       </div>
 
     </div>
@@ -1067,7 +1067,7 @@ async function saveTemplate() {
 }
 async function duplicateTemplate(id){const t=templates.find(x=>x.id===id);if(!t)return;const copy={...JSON.parse(JSON.stringify(t)),name:`${t.name} (copy)`};delete copy.id;delete copy.createdAt;delete copy.updatedAt;try{const newId=await apiCreateTemplate(copy);templates.push({...copy,id:newId,createdAt:new Date().toISOString()});saveLocalCache(templates);renderGrid();showToast('Duplicated!');}catch(err){showToast(err.message||'Duplicate failed','error');}}
 async function deleteTemplate(id){if(!confirm('Delete this template?'))return;try{await apiDeleteTemplate(id);templates=templates.filter(t=>t.id!==id);saveLocalCache(templates);renderGrid();showToast('Deleted');}catch{showToast('Delete failed','error');}}
-function loadV2FromPayload(comps){const hint=document.getElementById('tplV2Empty');if(hint)hint.classList.remove('hidden');const d=document.createElement('div');d.className='comp-block';d.dataset.type='raw';d.innerHTML=`<div class="flex items-center justify-between mb-2"><span class="text-xs font-bold" style="color:#fcd34d">⚠ V2 JSON (raw edit)</span><button class="rm-btn" onclick="this.closest('[data-type]').remove()">Remove</button></div><textarea class="inp" style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#EF4444;background:#06060f;resize:vertical" rows="6">${esc(JSON.stringify(comps,null,2))}</textarea><p class="text-xs mt-1" style="color:#374151">Paste or edit the raw V2 components JSON array.</p>`;document.getElementById('tplV2Container').appendChild(d);hint?.classList.add('hidden');}
+function loadV2FromPayload(comps){const hint=document.getElementById('tplV2Empty');if(hint)hint.classList.remove('hidden');const d=document.createElement('div');d.className='comp-block';d.dataset.type='raw';d.innerHTML=`<div class="flex items-center justify-between mb-2"><span class="text-xs font-bold" style="color:#fcd34d">⚠ V2 JSON (raw edit)</span><button class="rm-btn" onclick="this.closest('[data-type]').remove()">Remove</button></div><textarea class="inp" style="font-size:10px;font-family:'JetBrains Mono',monospace;color:#EF4444;background:#070813;resize:vertical" rows="6">${esc(JSON.stringify(comps,null,2))}</textarea><p class="text-xs mt-1" style="color:#374151">Paste or edit the raw V2 components JSON array.</p>`;document.getElementById('tplV2Container').appendChild(d);hint?.classList.add('hidden');}
 function copyJson(){navigator.clipboard.writeText(gv('tplJsonExport')).then(()=>showToast('Copied to clipboard!')).catch(()=>showToast('Copy failed','error'));}
 
 // ══════════════════════════════════════════════════════════════════════════════

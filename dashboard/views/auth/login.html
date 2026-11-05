@@ -14,17 +14,17 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --red:       #FF3333;
-      --red-dark:  #CC2222;
-      --red-dim:   rgba(255, 51, 51, 0.15);
+      --red:       #8B5CF6;
+      --red-dark:  #7C3AED;
+      --red-dim:   rgba(139,92,246, 0.15);
       --discord:   #5865F2;
       --discord-h: #4752C4;
       --bg:        #060508;
-      --bg1:       #0d090b;
-      --bg2:       #130c0e;
+      --bg1:       #08090E;
+      --bg2:       #0B0C14;
       --border:    rgba(255,255,255,0.06);
-      --text:      #e8e0e0;
-      --muted:     #6b5f5f;
+      --text:      #E0E1E8;
+      --muted:     #5D606D;
       --font:      'Outfit', sans-serif;
       --mono:      'Space Mono', monospace;
     }
@@ -63,9 +63,9 @@
       position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
       animation: blobFloat 12s ease-in-out infinite;
     }
-    .glow-blob-1 { width: 700px; height: 700px; top: -200px; left: -200px; background: radial-gradient(circle, rgba(255,51,51,0.12) 0%, transparent 70%); animation-delay: 0s; }
+    .glow-blob-1 { width: 700px; height: 700px; top: -200px; left: -200px; background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%); animation-delay: 0s; }
     .glow-blob-2 { width: 500px; height: 500px; bottom: -150px; right: -100px; background: radial-gradient(circle, rgba(88,101,242,0.1) 0%, transparent 70%); animation-delay: -4s; }
-    .glow-blob-3 { width: 400px; height: 400px; top: 50%; left: 60%; background: radial-gradient(circle, rgba(255,51,51,0.06) 0%, transparent 70%); animation-delay: -8s; }
+    .glow-blob-3 { width: 400px; height: 400px; top: 50%; left: 60%; background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%); animation-delay: -8s; }
 
     @keyframes blobFloat {
       0%, 100% { transform: translate(0, 0) scale(1); }
@@ -98,7 +98,7 @@
       align-items: center;
       gap: 8px;
       background: var(--red-dim);
-      border: 1px solid rgba(255,51,51,0.25);
+      border: 1px solid rgba(139,92,246,0.25);
       border-radius: 100px;
       padding: 5px 14px 5px 8px;
       font-size: 11px;
@@ -132,7 +132,7 @@
     }
 
     .info-panel h1 .highlight {
-      background: linear-gradient(135deg, var(--red) 0%, #ff7a7a 100%);
+      background: linear-gradient(135deg, var(--red) 0%, #E05CFF 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -158,7 +158,7 @@
       gap: 13px;
       font-size: 13.5px;
       font-weight: 500;
-      color: #c0b0b0;
+      color: #B0B3C0;
     }
 
     .feature-icon {
@@ -211,7 +211,7 @@
 
     .card {
       width: 100%;
-      background: rgba(18, 12, 14, 0.7);
+      background: rgba(10,12,20, 0.7);
       backdrop-filter: blur(28px);
       -webkit-backdrop-filter: blur(28px);
       border: 1px solid var(--border);
@@ -220,7 +220,7 @@
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.03) inset,
         0 40px 80px rgba(0,0,0,0.5),
-        0 0 60px rgba(255,51,51,0.04);
+        0 0 60px rgba(139,92,246,0.04);
       position: relative;
       overflow: hidden;
       transform-style: preserve-3d;
@@ -253,7 +253,7 @@
 
     .logo-icon-glow {
       position: absolute; inset: -8px;
-      background: radial-gradient(circle, rgba(255,51,51,0.25) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(139,92,246,0.25) 0%, transparent 70%);
       border-radius: 50%;
       animation: logoGlow 3s ease-in-out infinite;
     }
@@ -266,8 +266,8 @@
     .logo-icon {
       position: relative;
       width: 68px; height: 68px;
-      background: linear-gradient(135deg, #1e0f11 0%, #2a1215 100%);
-      border: 1px solid rgba(255,51,51,0.3);
+      background: linear-gradient(135deg, #0F111E 0%, #12152A 100%);
+      border: 1px solid rgba(139,92,246,0.3);
       border-radius: 18px;
       display: grid;
       place-items: center;
@@ -396,7 +396,7 @@
     }
 
     .info-box-text strong {
-      color: #a09090;
+      color: #9093A0;
       font-weight: 600;
     }
 
@@ -437,7 +437,7 @@
     /* ── LOADER ── */
     @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
-    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)} 50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)} }
     @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
 
     /* ── RESPONSIVE ── */
@@ -472,14 +472,14 @@
 <body>
   <!-- Loader -->
   <div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#060508;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-    <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)">
-      <div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div>
+    <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)">
+      <div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div>
     </div>
     <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
-      <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+      <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
         <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
       </div>
-      <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+      <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
     </div>
     <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
   </div>

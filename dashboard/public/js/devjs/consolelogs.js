@@ -233,7 +233,7 @@ export function toggleAutoScroll() {
   _autoScroll = !_autoScroll;
   const btn = document.getElementById('consoleScrollBtn');
   if (btn) {
-    btn.style.color = _autoScroll ? '#FF3333' : '#b9bbbe';
+    btn.style.color = _autoScroll ? '#8B5CF6' : '#b9bbbe';
     btn.title = `Auto-scroll: ${_autoScroll ? 'ON' : 'OFF'}`;
   }
 }
@@ -268,7 +268,7 @@ export async function initConsole() {
       if (_autoScroll !== atBottom) {
         _autoScroll = atBottom;
         const btn = document.getElementById('consoleScrollBtn');
-        if (btn) btn.style.color = _autoScroll ? '#FF3333' : '#b9bbbe';
+        if (btn) btn.style.color = _autoScroll ? '#8B5CF6' : '#b9bbbe';
       }
     });
   }

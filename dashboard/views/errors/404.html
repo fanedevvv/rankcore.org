@@ -12,28 +12,28 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     :root {
-      --razor: #FF3333; --razor-dim: rgba(255,51,51,0.1);
-      --bg: #07080f; --surface: #0d0f1c; --surface-2: #131629;
+      --razor: #8B5CF6; --razor-dim: rgba(139,92,246,0.1);
+      --bg: #070813; --surface: #0d0f1c; --surface-2: #131629;
       --border: rgba(255,255,255,0.055); --border-hover: rgba(255,255,255,0.1);
       --text-muted: #4a5068; --text-dim: #7a849a; --text: #c8cfe0; --text-bright: #edf0f8;
     }
     html, body { margin:0;padding:0;height:100%; }
     body { background:var(--bg);color:var(--text);font-family:'Instrument Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden; }
     body::before { content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.5; }
-    .glow-1 { position:fixed;width:700px;height:700px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(ellipse,rgba(255,51,51,0.04) 0%,transparent 70%);pointer-events:none;z-index:0;animation:drift 20s ease-in-out infinite; }
+    .glow-1 { position:fixed;width:700px;height:700px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(ellipse,rgba(139,92,246,0.04) 0%,transparent 70%);pointer-events:none;z-index:0;animation:drift 20s ease-in-out infinite; }
     .glow-2 { position:fixed;width:500px;height:500px;bottom:-50px;right:-100px;background:radial-gradient(ellipse,rgba(123,94,167,0.06) 0%,transparent 70%);pointer-events:none;z-index:0;animation:drift 25s ease-in-out infinite reverse; }
     @keyframes drift { 0%,100%{transform:translate(-50%,-50%) scale(1)} 50%{transform:translate(calc(-50% - 30px),calc(-50% + 40px)) scale(1.05)} }
     @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
     @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
     .card { position:relative;z-index:10;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:52px 48px;max-width:460px;width:calc(100% - 32px);text-align:center;animation:fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;box-shadow:0 32px 64px rgba(0,0,0,0.5); }
-    .card::before { content:'';position:absolute;inset:0;border-radius:24px;background:linear-gradient(135deg,rgba(255,51,51,0.025) 0%,transparent 60%);pointer-events:none; }
+    .card::before { content:'';position:absolute;inset:0;border-radius:24px;background:linear-gradient(135deg,rgba(139,92,246,0.025) 0%,transparent 60%);pointer-events:none; }
     .num-404 { font-family:'Syne',sans-serif;font-size:100px;font-weight:800;line-height:1;margin:0 0 4px;color:transparent;background:linear-gradient(180deg,#edf0f8 0%,rgba(237,240,248,0.25) 100%);-webkit-background-clip:text;background-clip:text;animation:float 5s ease-in-out infinite;letter-spacing:-4px;display:block; }
-    .error-code { font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--razor);background:rgba(255,51,51,0.08);border:1px solid rgba(255,51,51,0.18);border-radius:6px;padding:4px 12px;display:inline-block;margin-bottom:20px; }
+    .error-code { font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--razor);background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.18);border-radius:6px;padding:4px 12px;display:inline-block;margin-bottom:20px; }
     h1 { font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text-bright);margin:0 0 10px;line-height:1.2; }
     .desc { font-size:14px;color:var(--text-dim);line-height:1.65;margin:0 0 32px; }
     .divider { height:1px;background:var(--border);margin:0 0 28px; }
-    .btn-primary { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 20px;background:rgba(255,51,51,0.08);border:1px solid rgba(255,51,51,0.2);border-radius:12px;color:#7effa0;font-weight:600;font-size:14px;text-decoration:none;transition:all 0.15s;margin-bottom:10px; }
-    .btn-primary:hover { background:rgba(255,51,51,0.14);border-color:rgba(255,51,51,0.35);transform:translateY(-1px); }
+    .btn-primary { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 20px;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:12px;color:#7effa0;font-weight:600;font-size:14px;text-decoration:none;transition:all 0.15s;margin-bottom:10px; }
+    .btn-primary:hover { background:rgba(139,92,246,0.14);border-color:rgba(139,92,246,0.35);transform:translateY(-1px); }
     .btn-secondary { display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 20px;background:transparent;border:1px solid var(--border);border-radius:12px;color:var(--text-dim);font-weight:600;font-size:14px;text-decoration:none;transition:all 0.15s; }
     .btn-secondary:hover { background:var(--surface-2);border-color:var(--border-hover);color:var(--text); }
     .suggestions { text-align:left;margin-bottom:28px; }
@@ -48,19 +48,19 @@
   <style>
     @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
-    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)} 50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)} }
     @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
   </style>
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
 <body>
-<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
   <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
-    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
       <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
     </div>
-    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
   </div>
   <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
 </div>

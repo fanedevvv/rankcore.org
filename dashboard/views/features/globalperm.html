@@ -13,12 +13,12 @@
     *, *::before, *::after { box-sizing: border-box; }
 
     :root {
-      --razor: #FF3333;
-      --razor-dark: #CC2222;
-      --razor-glow: rgba(255,51,51,0.18);
+      --razor: #8B5CF6;
+      --razor-dark: #7C3AED;
+      --razor-glow: rgba(139,92,246,0.18);
       --bg-base: #08080f;
       --bg-card: #111120;
-      --bg-input: #0d0d1c;
+      --bg-input: #0C0E1D;
       --bg-hover: #16162a;
       --border: rgba(255,255,255,0.07);
       --border-hover: rgba(255,255,255,0.15);
@@ -42,8 +42,8 @@
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(255,51,51,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,51,51,0.025) 1px, transparent 1px);
+        linear-gradient(rgba(139,92,246,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,92,246,0.025) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
       z-index: 0;
@@ -85,7 +85,7 @@
       width: 52px; height: 52px;
       border-radius: 16px;
       background: var(--razor-glow);
-      border: 1px solid rgba(255,51,51,0.3);
+      border: 1px solid rgba(139,92,246,0.3);
       margin-bottom: 14px;
     }
     .page-header h1 {
@@ -140,7 +140,7 @@
       flex-shrink: 0;
       transition: all 0.2s;
     }
-    .step-num.active { background: var(--razor-glow); color: var(--razor); border: 1px solid rgba(255,51,51,0.4); }
+    .step-num.active { background: var(--razor-glow); color: var(--razor); border: 1px solid rgba(139,92,246,0.4); }
     .step-header h2 { font-weight: 700; font-size: 0.9375rem; margin: 0; }
     .step-header .sub { color: var(--text-dim); font-weight: 400; font-size: 0.8rem; margin-left: 4px; }
 
@@ -176,7 +176,7 @@
       min-height: 46px;
     }
     .dropdown-trigger:hover { border-color: var(--border-hover); }
-    .dropdown-trigger.open { border-color: rgba(255,51,51,0.5); box-shadow: 0 0 0 3px rgba(255,51,51,0.08); }
+    .dropdown-trigger.open { border-color: rgba(139,92,246,0.5); box-shadow: 0 0 0 3px rgba(139,92,246,0.08); }
     .dropdown-trigger-left { display: flex; align-items: center; gap: 8px; flex: 1; flex-wrap: wrap; gap: 5px; }
     .dropdown-placeholder { color: var(--text-dim); font-size: 0.8375rem; }
     .dropdown-chevron { color: var(--text-dim); transition: transform 0.2s; flex-shrink: 0; margin-left: 8px; }
@@ -214,7 +214,7 @@
       outline: none;
       transition: border-color 0.15s;
     }
-    .dropdown-search:focus { border-color: rgba(255,51,51,0.4); }
+    .dropdown-search:focus { border-color: rgba(139,92,246,0.4); }
     .dropdown-search::placeholder { color: var(--text-muted); }
     .dropdown-list { max-height: 230px; overflow-y: auto; padding: 6px; }
     .dropdown-item {
@@ -261,8 +261,8 @@
       padding: 3px 8px;
       border-radius: 6px;
       font-size: 0.75rem; font-weight: 600;
-      background: rgba(255,51,51,0.1);
-      border: 1px solid rgba(255,51,51,0.25);
+      background: rgba(139,92,246,0.1);
+      border: 1px solid rgba(139,92,246,0.25);
       color: var(--razor);
     }
     .perm-tag {
@@ -313,7 +313,7 @@
     .action-card .emoji { font-size: 1.3rem; margin-bottom: 6px; }
     .action-card .label { font-weight: 700; font-size: 0.8rem; }
     .action-card .desc  { color: var(--text-dim); font-size: 0.72rem; margin-top: 3px; }
-    .label-allow  { color: #EF4444; }
+    .label-allow  { color: #8B5CF6; }
     .label-deny   { color: #f87171; }
     .label-none   { color: #fde047; }
     .label-remove { color: #c084fc; }
@@ -368,9 +368,9 @@
       cursor: pointer;
       background: var(--razor);
       color: #000;
-      box-shadow: 0 0 30px rgba(255,51,51,0.25), 0 4px 16px rgba(0,0,0,0.3);
+      box-shadow: 0 0 30px rgba(139,92,246,0.25), 0 4px 16px rgba(0,0,0,0.3);
     }
-    .apply-btn.ready:hover { background: #6bff82; box-shadow: 0 0 40px rgba(255,51,51,0.35), 0 4px 20px rgba(0,0,0,0.4); transform: translateY(-1px); }
+    .apply-btn.ready:hover { background: #6bff82; box-shadow: 0 0 40px rgba(139,92,246,0.35), 0 4px 20px rgba(0,0,0,0.4); transform: translateY(-1px); }
     .hint { text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
 
     /* ── Tips ── */
@@ -411,19 +411,19 @@
   <style>
     @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
-    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)} 50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)} }
     @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
   </style>
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
 <body>
-<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
   <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
-    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
       <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
     </div>
-    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
   </div>
   <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
 </div>
@@ -448,7 +448,7 @@
       <!-- Header -->
       <div class="page-header">
         <div class="page-header-icon">
-          <svg width="26" height="26" fill="none" stroke="#FF3333" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+          <svg width="26" height="26" fill="none" stroke="#8B5CF6" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/>
           </svg>
         </div>
@@ -601,7 +601,7 @@
           <div class="progress-section" id="progress-section" style="display:none">
             <div class="progress-label">
               <span>
-                <svg class="spinner" width="14" height="14" fill="none" stroke="#FF3333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                <svg class="spinner" width="14" height="14" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
                 Applying permissions…
               </span>
               <span style="font-size:0.72rem;color:var(--text-dim)">Large servers may take a while</span>

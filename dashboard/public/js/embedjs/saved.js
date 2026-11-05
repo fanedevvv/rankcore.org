@@ -274,7 +274,7 @@ export function renderTemplatesPanel() {
     <div class="text-center">
       <a id="templatesPageLink2" href="/guild/${escapeHtml(_tplPanelGuildId)}/templates" target="_blank"
          class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl transition-all"
-         style="background:rgba(255,51,51,.08);border:1px solid rgba(255,51,51,.2);color:#ff3333">
+         style="background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);color:#8B5CF6">
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         Create Templates
       </a>
@@ -304,7 +304,7 @@ export function renderTemplatesPanel() {
     ).join('');
 
     return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px;transition:border-color .15s"
-               onmouseenter="this.style.borderColor='rgba(255,51,51,.25)'" onmouseleave="this.style.borderColor='rgba(255,255,255,.065)'">
+               onmouseenter="this.style.borderColor='rgba(139,92,246,.25)'" onmouseleave="this.style.borderColor='rgba(255,255,255,.065)'">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px">
         <div style="flex:1;min-width:0">
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
@@ -318,8 +318,8 @@ export function renderTemplatesPanel() {
       ${tags ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px">${tags}</div>` : ''}
       <div style="display:flex;gap:6px">
         <button onclick="loadFromTemplate('${escapeHtml(t.id)}')"
-          style="flex:1;padding:6px 10px;font-size:12px;font-weight:600;border-radius:9px;border:1px solid rgba(255,51,51,.3);background:rgba(255,51,51,.08);color:#ff3333;cursor:pointer;transition:all .15s"
-          onmouseenter="this.style.background='rgba(255,51,51,.15)'" onmouseleave="this.style.background='rgba(255,51,51,.08)'">
+          style="flex:1;padding:6px 10px;font-size:12px;font-weight:600;border-radius:9px;border:1px solid rgba(139,92,246,.3);background:rgba(139,92,246,.08);color:#8B5CF6;cursor:pointer;transition:all .15s"
+          onmouseenter="this.style.background='rgba(139,92,246,.15)'" onmouseleave="this.style.background='rgba(139,92,246,.08)'">
           Load into Editor
         </button>
         <a href="/guild/${escapeHtml(_tplPanelGuildId)}/templates" target="_blank"

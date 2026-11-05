@@ -32,7 +32,7 @@
     }
     @keyframes ncpFadeIn{from{opacity:0}to{opacity:1}}
     #ncp-modal{
-      background:#0d0d1c;border:1px solid rgba(108,83,255,.25);
+      background:#0C0E1D;border:1px solid rgba(108,83,255,.25);
       border-radius:1.25rem;padding:2rem;
       max-width:520px;width:100%;box-sizing:border-box;
       margin:auto;

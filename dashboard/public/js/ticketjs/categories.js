@@ -27,7 +27,7 @@ export function renderCategories(cats, guildId) {
         ${c.defaultPriority ? `<span class="priority-badge priority-${c.defaultPriority}">${PRIORITY_LABELS[c.defaultPriority] || c.defaultPriority}</span>` : ''}
         ${c.staffOnly ? '<span class="cat-badge">Staff Only</span>' : ''}
         ${c.channelPrefix ? `<span class="cat-badge" style="background:rgba(99,102,241,.08);color:#818cf8;border-color:rgba(99,102,241,.2)">#${c.channelPrefix}</span>` : ''}
-        ${c.pingRoles?.length ? `<span class="cat-badge" style="background:rgba(255,51,51,.08);color:#FF3333;border-color:rgba(255,51,51,.2)">${c.pingRoles.length} ping${c.pingRoles.length !== 1 ? 's' : ''}</span>` : ''}
+        ${c.pingRoles?.length ? `<span class="cat-badge" style="background:rgba(139,92,246,.08);color:#8B5CF6;border-color:rgba(139,92,246,.2)">${c.pingRoles.length} ping${c.pingRoles.length !== 1 ? 's' : ''}</span>` : ''}
         <button onclick="editCategory('${c.value}')" class="icon-btn" title="Edit category" style="color:#6b7280">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
         </button>

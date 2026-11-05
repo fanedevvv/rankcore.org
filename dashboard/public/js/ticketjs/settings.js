@@ -23,8 +23,8 @@ window.updateTicketTypeFields = function() {
     document.querySelectorAll('.tog-row').forEach(label => {
       const radio = label.querySelector('input[type="radio"]');
       if (radio && radio.checked) {
-        label.style.background = 'rgba(255,51,51,.1)';
-        label.style.borderColor = 'rgba(255,51,51,.4)';
+        label.style.background = 'rgba(139,92,246,.1)';
+        label.style.borderColor = 'rgba(139,92,246,.4)';
       } else {
         label.style.background = 'rgba(255,255,255,.03)';
         label.style.borderColor = 'rgba(255,255,255,.05)';

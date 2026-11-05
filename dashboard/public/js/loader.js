@@ -10,7 +10,7 @@
   style.textContent = `
     #noxx-page-loader {
       position: fixed; inset: 0; z-index: 99999;
-      background: #07080f;
+      background: #070813;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 28px;
       transition: opacity 0.35s ease, visibility 0.35s ease;
@@ -19,19 +19,19 @@
 
     #noxx-page-loader .ldr-logo {
       width: 52px; height: 52px; border-radius: 14px;
-      background: rgba(255,51,51,0.1); border: 1px solid rgba(255,51,51,0.2);
+      background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2);
       display: flex; align-items: center; justify-content: center;
       animation: ldr-pulse 2s ease-in-out infinite;
     }
     #noxx-page-loader .ldr-logo img { width: 30px; height: 30px; object-fit: contain; }
     @keyframes ldr-pulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(255,51,51,0); }
-      50%      { box-shadow: 0 0 0 8px rgba(255,51,51,0.08); }
+      0%,100% { box-shadow: 0 0 0 0 rgba(139,92,246,0); }
+      50%      { box-shadow: 0 0 0 8px rgba(139,92,246,0.08); }
     }
 
     #noxx-page-loader .ldr-spinner {
       width: 48px; height: 48px; border-radius: 50%;
-      border: 3px solid rgba(255,51,51,0.12); border-top-color: #FF3333;
+      border: 3px solid rgba(139,92,246,0.12); border-top-color: #8B5CF6;
       animation: ldr-spin 0.75s linear infinite;
       position: absolute; top: 50%; left: 50%;
       transform: translate(-50%,-50%);
@@ -45,11 +45,11 @@
 
     #noxx-page-loader .ldr-bar-track {
       position: fixed; top: 0; left: 0; right: 0; height: 3px;
-      background: rgba(255,51,51,0.1);
+      background: rgba(139,92,246,0.1);
     }
     #noxx-page-loader .ldr-bar {
       height: 100%;
-      background: linear-gradient(90deg, #CC2222, #FF3333, #FF5555);
+      background: linear-gradient(90deg, #38D4FF,#8B5CF6,#E05CFF);
       background-size: 200% 100%;
       animation: ldr-bar-move 1.4s ease-in-out infinite;
       border-radius: 0 2px 2px 0; width: 40%;
@@ -84,8 +84,8 @@
     /* Global progress bar */
     #noxx-global-bar {
       position: fixed; top: 0; left: 0; height: 2px;
-      background: linear-gradient(90deg, #CC2222, #FF3333, #FF5555);
-      box-shadow: 0 0 8px rgba(255,51,51,0.7);
+      background: linear-gradient(90deg, #38D4FF,#8B5CF6,#E05CFF);
+      box-shadow: 0 0 8px rgba(139,92,246,0.7);
       z-index: 99998; width: 0%;
       transition: width 0.25s ease, opacity 0.4s ease;
       opacity: 0; pointer-events: none;
@@ -96,8 +96,8 @@
     /* Fetch indicator badge */
     #noxx-fetch-badge {
       position: fixed; bottom: 18px; right: 18px;
-      background: rgba(20, 11, 11, 0.92);
-      border: 1px solid rgba(255,51,51,0.25);
+      background: rgba(11,12,20, 0.92);
+      border: 1px solid rgba(139,92,246,0.25);
       border-radius: 20px; padding: 6px 12px 6px 8px;
       display: flex; align-items: center; gap: 6px;
       font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -110,7 +110,7 @@
     #noxx-fetch-badge.visible { transform: translateY(0); opacity: 1; }
     #noxx-fetch-badge .fb-spinner {
       width: 10px; height: 10px; border-radius: 50%;
-      border: 1.5px solid rgba(255,51,51,0.2); border-top-color: #FF3333;
+      border: 1.5px solid rgba(139,92,246,0.2); border-top-color: #8B5CF6;
       animation: ldr-spin 0.65s linear infinite;
       flex-shrink: 0;
     }

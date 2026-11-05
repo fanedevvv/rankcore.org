@@ -13,13 +13,13 @@
 *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 :root {
-  --green: #FF3333;
-  --green-dark: #CC2222;
-  --bg: #0b0b14;
+  --green: #8B5CF6;
+  --green-dark: #7C3AED;
+  --bg: #0C0E1D;
   --surface: #1a1a2e;
   --surface2: #13132a;
   --border: rgba(255,255,255,.06);
-  --border-hover: rgba(255,51,51,.25);
+  --border-hover: rgba(139,92,246,.25);
   --text: #e2e8f0;
   --muted: #6b7280;
   --muted2: #4b5563;
@@ -35,7 +35,7 @@ body {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,51,51,.3); }
+::-webkit-scrollbar-thumb:hover { background: rgba(139,92,246,.3); }
 
 /* ── Layout ── */
 .page-wrapper { display: flex; min-height: 100vh; }
@@ -62,7 +62,7 @@ body {
 .page-header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
 .page-header-icon {
   width: 42px; height: 42px; border-radius: 11px;
-  background: rgba(255,51,51,.1); border: 1px solid rgba(255,51,51,.2);
+  background: rgba(139,92,246,.1); border: 1px solid rgba(139,92,246,.2);
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .page-header-icon svg { width: 20px; height: 20px; color: var(--green); }
@@ -78,7 +78,7 @@ body {
   border-radius: 12px; padding: 14px 16px;
   transition: border-color .2s;
 }
-.stat-card:hover { border-color: rgba(255,51,51,.15); }
+.stat-card:hover { border-color: rgba(139,92,246,.15); }
 .stat-card-val { font-size: 22px; font-weight: 800; letter-spacing: -.02em; line-height: 1; }
 .stat-card-val.green { color: var(--green); }
 .stat-card-val.white { color: #fff; }
@@ -114,7 +114,7 @@ body {
   background: rgba(255,255,255,.08); border-radius: 99px;
   color: var(--muted); letter-spacing: .02em;
 }
-.tab-btn.active .tab-count { background: rgba(255,51,51,.15); color: var(--green); }
+.tab-btn.active .tab-count { background: rgba(139,92,246,.15); color: var(--green); }
 
 /* ── Section card ── */
 .section-card {
@@ -131,8 +131,8 @@ body {
 .section-card-title svg { width: 15px; height: 15px; color: var(--green); flex-shrink: 0; }
 .section-card-title .title-badge {
   font-size: 10px; font-weight: 700; padding: 2px 7px;
-  background: rgba(255,51,51,.1); color: var(--green);
-  border-radius: 99px; border: 1px solid rgba(255,51,51,.2);
+  background: rgba(139,92,246,.1); color: var(--green);
+  border-radius: 99px; border: 1px solid rgba(139,92,246,.2);
 }
 
 /* ── Form fields ── */
@@ -150,7 +150,7 @@ body {
   min-height: 44px;
 }
 .inp::placeholder { color: var(--muted2); }
-.inp:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(255,51,51,.12); }
+.inp:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(139,92,246,.12); }
 .inp option { background: #1a1a2e; }
 textarea.inp { min-height: 80px; resize: vertical; }
 
@@ -174,13 +174,13 @@ select.inp { appearance: none; padding-right: 36px; }
 
 /* ── Buttons ── */
 .btn-primary {
-  background: var(--green); color: #0b0b14;
+  background: var(--green); color: #0C0E1D;
   border: none; border-radius: 10px;
   padding: 10px 20px; font-weight: 800; font-size: 14px;
   cursor: pointer; transition: all .15s;
   font-family: 'Plus Jakarta Sans', sans-serif;
   display: inline-flex; align-items: center; gap: 7px;
-  box-shadow: 0 4px 18px rgba(255,51,51,.25);
+  box-shadow: 0 4px 18px rgba(139,92,246,.25);
   min-height: 44px;
 }
 .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
@@ -250,7 +250,7 @@ select.inp { appearance: none; padding-right: 36px; }
   padding: 2px 8px; border-radius: 99px;
   font-size: 10px; font-weight: 700; letter-spacing: .04em;
 }
-.badge-active { background: rgba(255,51,51,.12); color: var(--green); border: 1px solid rgba(255,51,51,.25); }
+.badge-active { background: rgba(139,92,246,.12); color: var(--green); border: 1px solid rgba(139,92,246,.25); }
 .badge-ended  { background: rgba(156,163,175,.1); color: #9ca3af; border: 1px solid rgba(156,163,175,.2); }
 .g-card-id { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted2); }
 
@@ -277,8 +277,8 @@ select.inp { appearance: none; padding-right: 36px; }
 
 /* ── Bonus toggle area ── */
 .bonus-panel {
-  background: rgba(255,51,51,.04);
-  border: 1px solid rgba(255,51,51,.1);
+  background: rgba(139,92,246,.04);
+  border: 1px solid rgba(139,92,246,.1);
   border-radius: 10px; padding: 14px;
   margin-top: 4px;
 }
@@ -348,7 +348,7 @@ select.inp { appearance: none; padding-right: 36px; }
   display:flex;align-items:center;justify-content:space-between;
   gap:8px;padding:10px 14px;
   border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);
-  background:#0d0d1c;color:#fff;
+  background:#0C0E1D;color:#fff;
   cursor:pointer;font-size:14px;font-family:inherit;
   min-height:44px;width:100%;
   transition:border-color .15s,box-shadow .15s;
@@ -356,13 +356,13 @@ select.inp { appearance: none; padding-right: 36px; }
 }
 .rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
 .rzr-trigger.is-open{
-  border-color:rgba(255,51,51,.6);
-  box-shadow:0 0 0 3px rgba(255,51,51,.1);
+  border-color:rgba(139,92,246,.6);
+  box-shadow:0 0 0 3px rgba(139,92,246,.1);
 }
 .rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
 .rzr-label.is-ph{color:#6b7280}
 .rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
-.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#8B5CF6}
 /* panel is appended to body — these rules still apply via the class */
 .rzr-panel{
   position:fixed;z-index:999999;
@@ -377,17 +377,17 @@ select.inp { appearance: none; padding-right: 36px; }
 .rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
 .rzr-search-inp{
   display:block;width:100%;
-  background:#06060f;border:1px solid rgba(255,255,255,.09);
+  background:#070813;border:1px solid rgba(255,255,255,.09);
   border-radius:7px;padding:6px 11px;
   color:#fff;font-size:13px;font-family:inherit;
   outline:none;box-sizing:border-box;transition:border-color .15s;
 }
-.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-search-inp:focus{border-color:rgba(139,92,246,.45)}
 .rzr-search-inp::placeholder{color:#374151}
 .rzr-list{max-height:220px;overflow-y:auto;padding:5px}
 .rzr-list::-webkit-scrollbar{width:4px}
 .rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:6px}
-.rzr-list::-webkit-scrollbar-thumb:hover{background:#FF3333}
+.rzr-list::-webkit-scrollbar-thumb:hover{background:#8B5CF6}
 .rzr-item{
   display:flex;align-items:center;justify-content:space-between;
   gap:6px;padding:8px 11px;border-radius:8px;
@@ -395,9 +395,9 @@ select.inp { appearance: none; padding-right: 36px; }
   transition:background .1s,color .1s;
 }
 .rzr-item:hover{background:rgba(255,255,255,.055);color:#fff}
-.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600}
+.rzr-item.is-sel{background:rgba(139,92,246,.13);color:#8B5CF6;font-weight:600}
 .rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#8B5CF6;opacity:0}
 .rzr-item.is-sel .rzr-item-chk{opacity:1}
 .rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
 /* ═══════════════ End Razor Custom Select ═══════════════ */
@@ -407,19 +407,19 @@ select.inp { appearance: none; padding-right: 36px; }
   <style>
     @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
-    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)} 50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)} }
     @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
   </style>
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
 <body>
-<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
   <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
-    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
       <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
     </div>
-    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
   </div>
   <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
 </div>
@@ -607,7 +607,7 @@ function escapeHtml(s) {
   <div class="modal">
     <div class="modal-header">
       <h2>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF3333" stroke-width="2" style="display:inline;margin-right:6px;vertical-align:-2px"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" style="display:inline;margin-right:6px;vertical-align:-2px"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         Edit Giveaway
       </h2>
       <button class="modal-close" onclick="closeM('m-edit')">
@@ -642,7 +642,7 @@ function escapeHtml(s) {
   <div class="modal" style="max-width:400px">
     <div class="modal-header">
       <h2>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF3333" stroke-width="2" style="display:inline;margin-right:6px;vertical-align:-2px"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" style="display:inline;margin-right:6px;vertical-align:-2px"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
         Reroll Winners
       </h2>
       <button class="modal-close" onclick="closeM('m-reroll')">

@@ -12,16 +12,16 @@
    ───────────────────────────────────────────────────────────────────── */
 :root {
   /* Core Colors */
-  --nx-bg: #08090c;
+  --nx-bg: #070813;
   --nx-bg-alt: #0c0f16;
   --nx-bg-raised: #12151f;
   --nx-surface: #161a28;
   --nx-surface-2: #1c2133;
   
   /* Brand Colors */
-  --nx-primary: #e63946;
-  --nx-primary-dim: rgba(230, 57, 70, 0.12);
-  --nx-primary-glow: rgba(230, 57, 70, 0.4);
+  --nx-primary: #8B5CF6;
+  --nx-primary-dim: rgba(139,92,246, 0.12);
+  --nx-primary-glow: rgba(139,92,246, 0.4);
   --nx-accent: #f4a261;
   --nx-accent-dim: rgba(244, 162, 97, 0.12);
   --nx-success: #2ec4b6;
@@ -35,12 +35,12 @@
   --nx-text: #e8eaed;
   --nx-text-secondary: #9aa0b0;
   --nx-text-muted: #5c6370;
-  --nx-text-inverse: #08090c;
+  --nx-text-inverse: #070813;
   
   /* Borders */
   --nx-border: rgba(255, 255, 255, 0.06);
   --nx-border-hover: rgba(255, 255, 255, 0.12);
-  --nx-border-active: rgba(230, 57, 70, 0.5);
+  --nx-border-active: rgba(139,92,246, 0.5);
   
   /* Typography */
   --nx-font: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -120,12 +120,12 @@ body::before {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(230, 57, 70, 0.2);
+  background: rgba(139,92,246, 0.2);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(230, 57, 70, 0.4);
+  background: rgba(139,92,246, 0.4);
 }
 
 /* ─────────────────────────────────────────────────────────────────────
@@ -363,7 +363,7 @@ h4 { font-size: 1.125rem; }
 }
 
 .nx-badge-premium {
-  background: linear-gradient(135deg, rgba(244, 162, 97, 0.15), rgba(230, 57, 70, 0.1));
+  background: linear-gradient(135deg, rgba(244, 162, 97, 0.15), rgba(139,92,246, 0.1));
   color: var(--nx-accent);
   border: 1px solid rgba(244, 162, 97, 0.3);
 }
@@ -530,7 +530,7 @@ h4 { font-size: 1.125rem; }
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at top right, rgba(230, 57, 70, 0.08) 0%, transparent 60%);
+  background: radial-gradient(ellipse at top right, rgba(139,92,246, 0.08) 0%, transparent 60%);
   pointer-events: none;
 }
 

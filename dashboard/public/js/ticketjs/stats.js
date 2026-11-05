@@ -54,8 +54,8 @@ function renderMiniChart(daily) {
 
     if (d.count) {
       const grad = ctx.createLinearGradient(0, y, 0, y + barH);
-      grad.addColorStop(0, '#FF3333');
-      grad.addColorStop(1, 'rgba(255,51,51,0.35)');
+      grad.addColorStop(0, '#8B5CF6');
+      grad.addColorStop(1, 'rgba(139,92,246,0.35)');
       ctx.fillStyle = grad;
     } else {
       ctx.fillStyle = 'rgba(255,255,255,0.08)';   // empty day: faint stub, not a red bar

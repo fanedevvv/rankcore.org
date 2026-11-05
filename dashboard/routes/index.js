@@ -706,14 +706,14 @@ router.use((err, req, res, _next) => {
       }
       return res.status(503).send(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bot Offline</title>
         <meta http-equiv="refresh" content="10;url=${req.path}">
-        <style>body{background:#07080f;color:#c8cfe0;font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;}
+        <style>body{background:#070813;color:#c8cfe0;font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;}
         .box{text-align:center;max-width:420px;padding:40px;background:#0d0f1c;border:1px solid rgba(255,255,255,0.06);border-radius:16px;}
         h2{color:#edf0f8;font-size:20px;margin:0 0 10px;}p{font-size:14px;color:#7a849a;line-height:1.6;margin:0 0 16px;}
         .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#fbbf24;margin-right:8px;animation:pulse 1.5s ease-in-out infinite;}
         @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}</style></head>
         <body><div class="box"><span class="dot"></span><h2>Bot is restarting</h2>
         <p>RankCore is coming back online. This page will refresh automatically in 10 seconds.</p>
-        <p style="font-size:12px;color:#4a5068;">If this persists, check the <a href="/status" style="color:#FF3333;">status page</a>.</p>
+        <p style="font-size:12px;color:#4a5068;">If this persists, check the <a href="/status" style="color:#8B5CF6;">status page</a>.</p>
         </div></body></html>`);
     }
     return;

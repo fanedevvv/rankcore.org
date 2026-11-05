@@ -604,7 +604,7 @@ export function renderTagPills(currentTags = []) {
   const container = document.getElementById('tagPills');
   if (!container) return;
   container.innerHTML = currentTags.map((t, i) => `
-    <span style="display:inline-flex;align-items:center;gap:0.3rem;background:rgba(255,51,51,0.1);border:1px solid rgba(255,51,51,0.25);color:var(--razor);padding:0.2rem 0.55rem;border-radius:99px;font-size:0.72rem;font-weight:700">
+    <span style="display:inline-flex;align-items:center;gap:0.3rem;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.25);color:var(--razor);padding:0.2rem 0.55rem;border-radius:99px;font-size:0.72rem;font-weight:700">
       ${esc(t)}
       <button onclick="removeTag(${i})" style="background:none;border:none;color:inherit;cursor:pointer;padding:0;font-size:0.75rem;line-height:1">✕</button>
     </span>

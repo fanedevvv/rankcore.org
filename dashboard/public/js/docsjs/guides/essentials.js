@@ -4,7 +4,7 @@
 export const essentialGuides = {
 
 'getting-started': {
-  name:'Getting Started', icon:'rocket', color:'#FF3333', tags:['setup','beginner'], desc:'Invite RankCore, set up permissions, and run your first commands in under 5 minutes.',
+  name:'Getting Started', icon:'rocket', color:'#8B5CF6', tags:['setup','beginner'], desc:'Invite RankCore, set up permissions, and run your first commands in under 5 minutes.',
   sections:[
     { id:'invite', title:'Inviting RankCore', render:()=>`
       <div class="prose" data-anim="fadeUp"><p>Visit <a href="https://rankcore.org" target="_blank">rankcore.org</a> and click the invite button, or run <code>/bot invite</code> in any server where RankCore is already present.</p></div>

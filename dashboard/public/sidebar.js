@@ -29,8 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
       id: "overview",
       name: "Overview",
       path: "",
-      color: "#FF3333",
-      bg: "rgba(255,51,51,0.12)",
+      color: "#8B5CF6",
+      bg: "rgba(139,92,246,0.12)",
       icon: `<svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`,
     },
     {
@@ -256,8 +256,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       .rzr-nav-btn.active {
         color: white;
-        background: var(--rzr-btn-bg, rgba(255,51,51,0.1));
-        border-color: var(--rzr-btn-color, rgba(255,51,51,0.25));
+        background: var(--rzr-btn-bg, rgba(139,92,246,0.1));
+        border-color: var(--rzr-btn-color, rgba(139,92,246,0.25));
       }
       .rzr-nav-btn .rzr-btn-icon {
         width: 36px; height: 36px; border-radius: 10px;
@@ -269,8 +269,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       .rzr-nav-btn:hover .rzr-btn-icon { background: rgba(255,255,255,0.08); color: rgba(209,213,219,1); }
       .rzr-nav-btn.active .rzr-btn-icon {
-        background: var(--rzr-btn-bg, rgba(255,51,51,0.15));
-        color: var(--rzr-btn-color, #FF3333);
+        background: var(--rzr-btn-bg, rgba(139,92,246,0.15));
+        color: var(--rzr-btn-color, #8B5CF6);
       }
       .rzr-nav-btn .rzr-btn-arrow {
         margin-left: auto; flex-shrink: 0;
@@ -279,15 +279,15 @@ document.addEventListener("DOMContentLoaded", () => {
         opacity: 0;
       }
       .rzr-nav-btn:hover .rzr-btn-arrow { opacity: 1; color: rgba(107,114,128,1); transform: translateX(2px); }
-      .rzr-nav-btn.active .rzr-btn-arrow { opacity: 1; color: var(--rzr-btn-color, #FF3333); }
+      .rzr-nav-btn.active .rzr-btn-arrow { opacity: 1; color: var(--rzr-btn-color, #8B5CF6); }
 
       /* Active glow strip on left edge */
       .rzr-nav-btn.active::before {
         content: '';
         position: absolute; left: 0; top: 20%; bottom: 20%;
         width: 3px; border-radius: 0 3px 3px 0;
-        background: var(--rzr-btn-color, #FF3333);
-        box-shadow: 0 0 8px var(--rzr-btn-color, #FF3333);
+        background: var(--rzr-btn-color, #8B5CF6);
+        box-shadow: 0 0 8px var(--rzr-btn-color, #8B5CF6);
       }
 
       #razor-sidebar .rzr-footer {
@@ -363,8 +363,8 @@ document.addEventListener("DOMContentLoaded", () => {
         border-radius: 10px; padding: 0 10px; transition: border-color .15s, box-shadow .15s;
       }
       #rzr-search-wrap:focus-within {
-        border-color: rgba(255,51,51,.3);
-        box-shadow: 0 0 0 2px rgba(255,51,51,.08);
+        border-color: rgba(139,92,246,.3);
+        box-shadow: 0 0 0 2px rgba(139,92,246,.08);
       }
       #rzr-search-wrap svg { flex-shrink: 0; color: rgba(107,114,128,1); }
       #rzr-search-input {
@@ -447,7 +447,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!el) {
           el = document.createElement('div');
           el.id = 'nx-progress';
-          el.style.cssText = 'position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);box-shadow:0 0 10px rgba(255,51,51,.7);z-index:99998;width:0%;opacity:0;pointer-events:none;';
+          el.style.cssText = 'position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);box-shadow:0 0 10px rgba(139,92,246,.7);z-index:99998;width:0%;opacity:0;pointer-events:none;';
           document.body.appendChild(el);
         }
       }
@@ -634,7 +634,7 @@ document.addEventListener("DOMContentLoaded", () => {
           style="display:flex;align-items:center;justify-content:space-between;padding:11px 12px;border-radius:11px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);text-decoration:none;transition:border-color 0.2s;"
           class="group hover:border-razor/20">
           <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:28px;height:28px;border-radius:8px;background:rgba(255,51,51,0.1);display:flex;align-items:center;justify-content:center;color:#FF3333;flex-shrink:0;">
+            <div style="width:28px;height:28px;border-radius:8px;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center;color:#8B5CF6;flex-shrink:0;">
               <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             </div>
             <div>
@@ -649,7 +649,7 @@ document.addEventListener("DOMContentLoaded", () => {
           style="display:flex;align-items:center;justify-content:space-between;padding:11px 12px;margin-top:8px;border-radius:11px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);text-decoration:none;transition:border-color 0.2s;"
           class="group hover:border-razor/20">
           <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:28px;height:28px;border-radius:8px;background:rgba(255,51,51,0.1);display:flex;align-items:center;justify-content:center;color:#FF3333;flex-shrink:0;">
+            <div style="width:28px;height:28px;border-radius:8px;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center;color:#8B5CF6;flex-shrink:0;">
               <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             </div>
             <div>

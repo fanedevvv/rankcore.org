@@ -31,7 +31,7 @@ export function updateMaintenanceBadge(enabled) {
   b.textContent = enabled ? 'MAINTENANCE' : 'ONLINE';
   b.style.cssText = enabled
     ? 'background:rgba(237,66,69,0.1);color:#ed4245;border:1px solid rgba(237,66,69,0.25);font-size:0.65rem;font-weight:800;font-family:JetBrains Mono,monospace;padding:4px 10px;border-radius:20px'
-    : 'background:rgba(255,51,51,0.1);color:var(--accent);border:1px solid rgba(255,51,51,0.2);font-size:0.65rem;font-weight:800;font-family:JetBrains Mono,monospace;padding:4px 10px;border-radius:20px';
+    : 'background:rgba(139,92,246,0.1);color:var(--accent);border:1px solid rgba(139,92,246,0.2);font-size:0.65rem;font-weight:800;font-family:JetBrains Mono,monospace;padding:4px 10px;border-radius:20px';
 }
 
 export function clearETA() {

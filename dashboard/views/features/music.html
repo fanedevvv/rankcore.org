@@ -12,7 +12,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --brand:#6C53FF;--brand-dim:rgba(108,83,255,0.15);--brand-border:rgba(108,83,255,0.25);
-  --razor:#FF3333;--bg:#080810;--bg2:#0d0d1a;--bg3:#121220;--bg4:#181828;
+  --razor:#8B5CF6;--bg:#080810;--bg2:#0d0d1a;--bg3:#121220;--bg4:#181828;
   --border:rgba(255,255,255,0.07);--border-hover:rgba(255,255,255,0.13);
   --text:#eef0f8;--text-dim:#9090b0;--text-muted:#5a5a7a;
   --red:#f87171;--red-bg:rgba(248,113,113,0.08);
@@ -25,8 +25,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 #toast{position:fixed;top:1.25rem;right:1.25rem;z-index:9999;padding:.75rem 1.25rem;border-radius:.875rem;font-size:.8125rem;font-weight:600;display:flex;align-items:center;gap:.5rem;box-shadow:0 20px 60px rgba(0,0,0,0.5);transform:translateX(120%);transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
 #toast.show{transform:translateX(0)}
-#toast.success{background:#0f2018;border:1px solid rgba(255,51,51,0.3);color:var(--razor)}
-#toast.error{background:#200f0f;border:1px solid rgba(248,113,113,0.3);color:var(--red)}
+#toast.success{background:#0f2018;border:1px solid rgba(139,92,246,0.3);color:var(--razor)}
+#toast.error{background:#0F1120;border:1px solid rgba(248,113,113,0.3);color:var(--red)}
 
 .page-hd{margin-bottom:2rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .page-title{font-size:1.75rem;font-weight:800;letter-spacing:-.025em;display:flex;align-items:center;gap:.75rem}
@@ -63,9 +63,9 @@ select option{background:var(--bg4)}
 @media(max-width:768px){.grid2,.grid3{grid-template-columns:1fr}}
 
 /* Now playing */
-.np-card{background:linear-gradient(135deg,rgba(108,83,255,0.12),rgba(255,51,51,0.06));border:1px solid rgba(108,83,255,0.2);border-radius:1.25rem;padding:1.5rem;margin-bottom:1rem;position:relative;overflow:hidden}
+.np-card{background:linear-gradient(135deg,rgba(108,83,255,0.12),rgba(139,92,246,0.06));border:1px solid rgba(108,83,255,0.2);border-radius:1.25rem;padding:1.5rem;margin-bottom:1rem;position:relative;overflow:hidden}
 .np-card::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(ellipse,rgba(108,83,255,0.1) 0%,transparent 70%);pointer-events:none}
-.np-status{display:inline-flex;align-items:center;gap:.4rem;padding:.2rem .65rem;border-radius:99px;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;background:rgba(255,51,51,0.1);border:1px solid rgba(255,51,51,0.2);color:var(--razor);margin-bottom:.875rem}
+.np-status{display:inline-flex;align-items:center;gap:.4rem;padding:.2rem .65rem;border-radius:99px;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);color:var(--razor);margin-bottom:.875rem}
 .np-status.idle{background:rgba(90,90,122,0.15);border-color:var(--border);color:var(--text-muted)}
 .np-title{font-size:1.125rem;font-weight:800;letter-spacing:-.015em;margin-bottom:.25rem}
 .np-artist{font-size:.8rem;color:var(--text-dim);margin-bottom:1rem}
@@ -103,19 +103,19 @@ select option{background:var(--bg4)}
   <style>
     @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
-    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)} 50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)} }
     @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
   </style>
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
 <body>
-<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
   <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
-    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
       <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
     </div>
-    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
   </div>
   <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
 </div>

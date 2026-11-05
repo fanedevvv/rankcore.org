@@ -21,10 +21,10 @@ tailwind.config = {
         discord: ['"gg sans"', 'sans-serif']
       },
 colors: { 
-  razor: "#FF3333",        // main green highlight
-  discordBg: "#2a1f1f",    // dark green background
-  discordDark: "#221818",  // darker green for panels
-  discordHover: "#302323"  // slightly lighter green for hover
+  razor: "#8B5CF6",        // main green highlight
+  discordBg: "#151828",    // dark green background
+  discordDark: "#141624",  // darker green for panels
+  discordHover: "#1B1E37"  // slightly lighter green for hover
 }
 
     }
@@ -35,7 +35,7 @@ colors: {
 <style>
 /* Custom Scrollbar */
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #0b0b14; }
+::-webkit-scrollbar-track { background: #0C0E1D; }
 ::-webkit-scrollbar-thumb { background: #2d2d3d; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #6C53FF; }
 
@@ -59,7 +59,7 @@ colors: {
   display:flex;align-items:center;justify-content:space-between;
   gap:8px;padding:10px 14px;
   border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);
-  background:#0d0d1c;color:#fff;
+  background:#0C0E1D;color:#fff;
   cursor:pointer;font-size:14px;font-family:inherit;
   min-height:44px;width:100%;
   transition:border-color .15s,box-shadow .15s;
@@ -67,13 +67,13 @@ colors: {
 }
 .rzr-trigger:hover{border-color:rgba(255,255,255,0.22)}
 .rzr-trigger.is-open{
-  border-color:rgba(255,51,51,.6);
-  box-shadow:0 0 0 3px rgba(255,51,51,.1);
+  border-color:rgba(139,92,246,.6);
+  box-shadow:0 0 0 3px rgba(139,92,246,.1);
 }
 .rzr-label{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.4}
 .rzr-label.is-ph{color:#6b7280}
 .rzr-chev{flex-shrink:0;color:#6b7280;display:flex;align-items:center;transition:transform .2s,color .2s}
-.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#FF3333}
+.rzr-trigger.is-open .rzr-chev{transform:rotate(180deg);color:#8B5CF6}
 /* panel is appended to body — these rules still apply via the class */
 .rzr-panel{
   position:fixed;z-index:999999;
@@ -88,17 +88,17 @@ colors: {
 .rzr-panel-search{padding:8px 8px 6px;border-bottom:1px solid rgba(255,255,255,.07)}
 .rzr-search-inp{
   display:block;width:100%;
-  background:#06060f;border:1px solid rgba(255,255,255,.09);
+  background:#070813;border:1px solid rgba(255,255,255,.09);
   border-radius:7px;padding:6px 11px;
   color:#fff;font-size:13px;font-family:inherit;
   outline:none;box-sizing:border-box;transition:border-color .15s;
 }
-.rzr-search-inp:focus{border-color:rgba(255,51,51,.45)}
+.rzr-search-inp:focus{border-color:rgba(139,92,246,.45)}
 .rzr-search-inp::placeholder{color:#374151}
 .rzr-list{max-height:220px;overflow-y:auto;padding:5px}
 .rzr-list::-webkit-scrollbar{width:4px}
 .rzr-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:6px}
-.rzr-list::-webkit-scrollbar-thumb:hover{background:#FF3333}
+.rzr-list::-webkit-scrollbar-thumb:hover{background:#8B5CF6}
 .rzr-item{
   display:flex;align-items:center;justify-content:space-between;
   gap:6px;padding:8px 11px;border-radius:8px;
@@ -106,9 +106,9 @@ colors: {
   transition:background .1s,color .1s;
 }
 .rzr-item:hover{background:rgba(255,255,255,.055);color:#fff}
-.rzr-item.is-sel{background:rgba(255,51,51,.13);color:#FF3333;font-weight:600}
+.rzr-item.is-sel{background:rgba(139,92,246,.13);color:#8B5CF6;font-weight:600}
 .rzr-item-text{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.rzr-item-chk{flex-shrink:0;font-size:11px;color:#FF3333;opacity:0}
+.rzr-item-chk{flex-shrink:0;font-size:11px;color:#8B5CF6;opacity:0}
 .rzr-item.is-sel .rzr-item-chk{opacity:1}
 .rzr-empty{padding:16px;text-align:center;color:#374151;font-size:13px}
 /* ═══════════════ End Razor Custom Select ═══════════════ */
@@ -118,20 +118,20 @@ colors: {
   <style>
     @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
-    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)} 50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)} }
     @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
   </style>
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
 
-<body class="bg-[#0b0b14] text-white font-sans">
-<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+<body class="bg-[#0C0E1D] text-white font-sans">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
   <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
-    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
       <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
     </div>
-    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
   </div>
   <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
 </div>
@@ -177,21 +177,21 @@ colors: {
     <div class="bg-[#1a1a2e] p-6 rounded-2xl border border-white/5 mb-6">
       <label class="text-xs uppercase text-gray-500 font-bold mb-2 block">Mass Join Limit</label>
       <p class="text-xs text-gray-400 mb-3">Number of joins within the time window to trigger protection</p>
-      <input type="number" id="limit" min="1" class="w-full bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-razor transition-colors">
+      <input type="number" id="limit" min="1" class="w-full bg-[#0C0E1D] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-razor transition-colors">
     </div>
 
     <!-- Time Window -->
     <div class="bg-[#1a1a2e] p-6 rounded-2xl border border-white/5 mb-6">
       <label class="text-xs uppercase text-gray-500 font-bold mb-2 block">Time Window (seconds)</label>
       <p class="text-xs text-gray-400 mb-3">Time interval to check for mass joins</p>
-      <input type="number" id="timeLimit" min="1" class="w-full bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-razor transition-colors">
+      <input type="number" id="timeLimit" min="1" class="w-full bg-[#0C0E1D] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-razor transition-colors">
     </div>
 
     <!-- Punishment -->
     <div class="bg-[#1a1a2e] p-6 rounded-2xl border border-white/5 mb-6">
       <label class="text-xs uppercase text-gray-500 font-bold mb-2 block">Punishment</label>
       <p class="text-xs text-gray-400 mb-3">Action to apply when limit is reached</p>
-      <select id="punishment" class="w-full bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-razor transition-colors">
+      <select id="punishment" class="w-full bg-[#0C0E1D] border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-razor transition-colors">
         <option value="mute">Mute User</option>
         <option value="kick">Kick User</option>
         <option value="ban">Ban User</option>
@@ -227,7 +227,7 @@ function renderJoins(list) {
   const el = document.getElementById('joins');
   if(!list.length) el.innerHTML = `<p class="text-gray-400 text-sm">No recent joins</p>`;
   else el.innerHTML = list.map(j => `
-    <div class="flex justify-between items-center bg-[#0b0b14] p-3 rounded-xl border border-white/10">
+    <div class="flex justify-between items-center bg-[#0C0E1D] p-3 rounded-xl border border-white/10">
       <span class="font-mono">${j.userId}</span>
       <span class="text-xs text-gray-400">${new Date(j.time).toLocaleTimeString()}</span>
     </div>

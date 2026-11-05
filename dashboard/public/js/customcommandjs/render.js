@@ -78,7 +78,7 @@ export function updateStats() {
       ? 'var(--danger, #ef4444)'
       : discordFree <= 10
         ? 'var(--warning, #f59e0b)'
-        : '#FF3333';
+        : '#8B5CF6';
   }
   const discordSubEl = document.getElementById('statDiscordSub');
   if (discordSubEl) {
@@ -123,8 +123,8 @@ export function renderFilterChips() {
     tagCont.innerHTML = tags.length
       ? tags.map(t => `
         <button onclick="setTagFilter('${esc(t)}')"
-          style="background:${state.filterTag===t ? 'rgba(255,51,51,0.18)' : 'rgba(255,51,51,0.07)'};
-                 border:1px solid ${state.filterTag===t ? 'rgba(255,51,51,0.4)' : 'rgba(255,51,51,0.18)'};
+          style="background:${state.filterTag===t ? 'rgba(139,92,246,0.18)' : 'rgba(139,92,246,0.07)'};
+                 border:1px solid ${state.filterTag===t ? 'rgba(139,92,246,0.4)' : 'rgba(139,92,246,0.18)'};
                  color:var(--razor);padding:0.18rem 0.6rem;border-radius:99px;font-size:0.7rem;font-weight:700;cursor:pointer;transition:all 0.15s">
           ${esc(t)}
         </button>`).join('')
@@ -192,7 +192,7 @@ function cmdListCard(cmd, i) {
         ${cmd.multiResponseEnabled ? `<span class="badge" style="background:rgba(255,179,71,0.1);color:var(--warning);border:1px solid rgba(255,179,71,0.25)">🎲 random</span>` : ''}
         ${(cmd.conditionals||[]).length ? `<span class="badge" style="background:rgba(83,232,255,0.08);color:#53E8FF;border:1px solid rgba(83,232,255,0.2)">⚙ ${cmd.conditionals.length} cond</span>` : ''}
         ${cmd.dmAllowed         ? `<span class="badge" style="background:rgba(255,255,255,0.06);color:#ccc;border:1px solid rgba(255,255,255,0.12)">DM ✓</span>` : ''}
-        ${(cmd.tags||[]).map(t => `<span class="badge" style="background:rgba(255,51,51,0.07);color:var(--razor);border:1px solid rgba(255,51,51,0.18);font-size:0.6rem">#${esc(t)}</span>`).join('')}
+        ${(cmd.tags||[]).map(t => `<span class="badge" style="background:rgba(139,92,246,0.07);color:var(--razor);border:1px solid rgba(139,92,246,0.18);font-size:0.6rem">#${esc(t)}</span>`).join('')}
         ${cmd.usageCount        ? `<span style="font-size:0.68rem;color:var(--muted)">▶ ${cmd.usageCount.toLocaleString()} uses</span>` : ''}
         ${cmd.createdAt         ? `<span>📅 ${formatDate(cmd.createdAt)}</span>` : ''}
       </div>

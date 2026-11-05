@@ -21,8 +21,8 @@
             mono: ['"JetBrains Mono"', 'monospace'] 
           },
 colors: { 
-    razor: "#FF3333",       // main green highlight
-    razorDark: "#CC2222",   // darker green accent
+    razor: "#8B5CF6",       // main green highlight
+    razorDark: "#7C3AED",   // darker green accent
     success: "#10B981",     // keep same green for success
     danger: "#EF4444"       // keep red for danger/errors
 }
@@ -53,20 +53,20 @@ colors: {
   <style>
     @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
-    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)} 50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)} }
     @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
   </style>
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
 
-<body class="bg-[#0b0b14] text-white">
-<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+<body class="bg-[#0C0E1D] text-white">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
   <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
-    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
       <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
     </div>
-    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
   </div>
   <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
 </div>
@@ -181,7 +181,7 @@ colors: {
                 <p class="text-gray-400 text-sm mb-4">Automatically punish users who ping too many people in a single message.</p>
                 <div class="flex gap-4">
                     <div class="relative flex-1">
-                        <input type="number" id="mentionLimit" class="w-full bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 text-sm input-glow outline-none text-white placeholder-gray-600 transition-all font-mono" placeholder="Max Mentions (e.g. 5)">
+                        <input type="number" id="mentionLimit" class="w-full bg-[#0C0E1D] border border-white/10 rounded-xl px-4 py-3 text-sm input-glow outline-none text-white placeholder-gray-600 transition-all font-mono" placeholder="Max Mentions (e.g. 5)">
                     </div>
                     <button onclick="saveMentionSpam()" class="bg-razor hover:bg-razor/80 text-white font-bold px-6 py-2 rounded-xl transition-all shadow-lg shadow-razor/20 text-sm">
                         Save Limit
@@ -201,7 +201,7 @@ colors: {
             <div class="p-6 flex flex-col h-full">
                 <div class="flex gap-4 mb-6">
                     <div class="relative flex-1">
-                        <input type="text" id="keywordInput" class="w-full bg-[#0b0b14] border border-white/10 rounded-xl px-4 py-3 text-sm input-glow outline-none text-white placeholder-gray-600 transition-all" placeholder="Enter word to block...">
+                        <input type="text" id="keywordInput" class="w-full bg-[#0C0E1D] border border-white/10 rounded-xl px-4 py-3 text-sm input-glow outline-none text-white placeholder-gray-600 transition-all" placeholder="Enter word to block...">
                         <div class="absolute right-3 top-3 text-gray-600">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
@@ -313,7 +313,7 @@ async function loadStatus() {
     } else {
       const escKw = v => String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       container.innerHTML = data.keywords.map(k => `
-        <div class="group flex items-center gap-2 pl-3 pr-2 py-1.5 bg-[#0b0b14] border border-white/10 rounded-lg text-sm text-gray-300 shadow-sm hover:border-razor/50 transition-colors">
+        <div class="group flex items-center gap-2 pl-3 pr-2 py-1.5 bg-[#0C0E1D] border border-white/10 rounded-lg text-sm text-gray-300 shadow-sm hover:border-razor/50 transition-colors">
           <span class="font-mono text-razor">#</span>
           <span>${escKw(k)}</span>
           <button data-keyword="${escKw(k)}" onclick="deleteKeyword(this.dataset.keyword)" class="ml-1 p-1 hover:bg-red-500/20 hover:text-red-400 rounded-md transition-colors opacity-0 group-hover:opacity-100">

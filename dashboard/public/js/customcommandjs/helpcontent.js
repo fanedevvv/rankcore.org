@@ -207,7 +207,7 @@ export const TEMPLATES = [
     name: 'Simple Response',
     desc: 'Bot replies with a plain text message',
     icon: '💬',
-    color: '#FF3333',
+    color: '#8B5CF6',
     data: {
       name: 'info',
       description: 'Get server information',

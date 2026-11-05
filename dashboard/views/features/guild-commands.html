@@ -8,9 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/tailwind.css">
-  <script>const tailwind=window.tailwind||{};tailwind.config={theme:{extend:{fontFamily:{sans:['\"Plus Jakarta Sans\"','sans-serif']},colors:{razor:"#FF3333"}}}}</script>
+  <script>const tailwind=window.tailwind||{};tailwind.config={theme:{extend:{fontFamily:{sans:['\"Plus Jakarta Sans\"','sans-serif']},colors:{razor:"#8B5CF6"}}}}</script>
   <style>
-    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#2d2d3d;border-radius:4px}::-webkit-scrollbar-thumb:hover{background:#FF3333}
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#2d2d3d;border-radius:4px}::-webkit-scrollbar-thumb:hover{background:#8B5CF6}
 
     .card{background:#161625;border-radius:16px;border:1px solid rgba(255,255,255,0.06);box-shadow:0 4px 24px rgba(0,0,0,0.3)}
 
@@ -21,7 +21,7 @@
     .toggle-slider:before{position:absolute;content:"";height:18px;width:18px;left:2px;bottom:2px;background:rgba(255,255,255,0.5);border-radius:50%;transition:.25s cubic-bezier(.4,0,.2,1)}
     .toggle-wrap.is-saving .toggle-slider{opacity:0.5;cursor:not-allowed}
     .toggle-wrap.is-saving .toggle-slider:before{animation:spin .6s linear infinite}
-    input:checked+.toggle-slider{background:#FF3333;border-color:#FF3333}
+    input:checked+.toggle-slider{background:#8B5CF6;border-color:#8B5CF6}
     input:checked+.toggle-slider:before{transform:translateX(18px);background:#000}
     @keyframes spin{to{transform:rotate(360deg)}}
 
@@ -29,7 +29,7 @@
     .cmd-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);transition:background .15s,opacity .15s}
     .cmd-row:hover{background:rgba(255,255,255,0.04)}
     .cmd-row.is-disabled{opacity:0.4}
-    .cmd-row.bulk-active{opacity:1 !important;border-color:rgba(255,51,51,0.2)}
+    .cmd-row.bulk-active{opacity:1 !important;border-color:rgba(139,92,246,0.2)}
     @keyframes fadeSlideIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
     .cmd-row{animation:fadeSlideIn .16s both}
     .cmd-row:nth-child(1){animation-delay:.02s}.cmd-row:nth-child(2){animation-delay:.04s}
@@ -42,7 +42,7 @@
 
     /* Search */
     .search-input{width:100%;background:#12121f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:13px;color:white;outline:none;transition:border-color .2s}
-    .search-input:focus{border-color:rgba(255,51,51,0.4);box-shadow:0 0 0 3px rgba(255,51,51,0.06)}
+    .search-input:focus{border-color:rgba(139,92,246,0.4);box-shadow:0 0 0 3px rgba(139,92,246,0.06)}
     .search-input::placeholder{color:#4b5563}
     .stats-pill{background:#12121f;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:6px 14px;font-size:12px;color:#6b7280;white-space:nowrap}
 
@@ -73,20 +73,20 @@
       animation:shimmer 1.2s infinite;
     }
     @keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
-    .prog-bar.enable{background:linear-gradient(90deg,#CC2222,#FF3333)}
+    .prog-bar.enable{background:linear-gradient(90deg,#7C3AED,#8B5CF6)}
     .prog-bar.disable{background:linear-gradient(90deg,#dc2626,#ef4444)}
-    .prog-bar.done{background:linear-gradient(90deg,#FF3333,#22d3ee)}
+    .prog-bar.done{background:linear-gradient(90deg,#8B5CF6,#22d3ee)}
     .prog-bar.done::after{display:none}
 
     /* Step dots */
     .step-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.15);transition:background .2s,transform .2s}
-    .step-dot.active{background:#FF3333;transform:scale(1.4)}
-    .step-dot.done{background:rgba(255,51,51,0.4)}
+    .step-dot.active{background:#8B5CF6;transform:scale(1.4)}
+    .step-dot.done{background:rgba(139,92,246,0.4)}
     .step-dot.error{background:#ef4444}
 
     /* Command flash during bulk */
     @keyframes rowFlash{
-      0%{background:rgba(255,51,51,0.12);border-color:rgba(255,51,51,0.3)}
+      0%{background:rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.3)}
       100%{background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.04)}
     }
     .cmd-row.flashed{animation:rowFlash .5s ease forwards}
@@ -107,17 +107,17 @@
 
     /* Edit description button */
     .edit-desc-btn{opacity:0;transition:opacity .15s;flex-shrink:0;padding:3px 6px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:transparent;cursor:pointer;color:#6b7280}
-    .edit-desc-btn:hover{color:#FF3333;border-color:rgba(255,51,51,0.25);background:rgba(255,51,51,0.05)}
+    .edit-desc-btn:hover{color:#8B5CF6;border-color:rgba(139,92,246,0.25);background:rgba(139,92,246,0.05)}
     .cmd-row:hover .edit-desc-btn{opacity:1}
-    .desc-custom{color:#FF3333 !important}
-    .desc-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#FF3333;margin-right:4px;vertical-align:middle;flex-shrink:0}
+    .desc-custom{color:#8B5CF6 !important}
+    .desc-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#8B5CF6;margin-right:4px;vertical-align:middle;flex-shrink:0}
 
     /* Description modal */
     #descModal{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px)}
     #descModal.hidden{display:none}
     #descModalBox{background:#161625;border:1px solid rgba(255,255,255,0.08);border-radius:16px;width:100%;max-width:480px;padding:1.5rem;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
     .desc-textarea{width:100%;background:#12121f;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;font-size:13px;color:white;outline:none;resize:vertical;min-height:80px;font-family:inherit;transition:border-color .2s}
-    .desc-textarea:focus{border-color:rgba(255,51,51,0.4);box-shadow:0 0 0 3px rgba(255,51,51,0.06)}
+    .desc-textarea:focus{border-color:rgba(139,92,246,0.4);box-shadow:0 0 0 3px rgba(139,92,246,0.06)}
     .desc-textarea::placeholder{color:#4b5563}
     .char-count{font-size:11px;text-align:right;margin-top:4px;transition:color .15s}
     .char-count.warn{color:#f59e0b}
@@ -128,19 +128,19 @@
   <style>
     @keyframes nx-spin     { to { transform: translate(-50%,-50%) rotate(360deg); } }
     @keyframes nx-bar-move { 0%{margin-left:-40%} 100%{margin-left:140%} }
-    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(255,51,51,0)} 50%{box-shadow:0 0 0 8px rgba(255,51,51,.08)} }
+    @keyframes nx-pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)} 50%{box-shadow:0 0 0 8px rgba(139,92,246,.08)} }
     @keyframes nx-dot      { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1.2);opacity:1} }
   </style>
   <link rel="stylesheet" href="/mobile.css?v=2">
 </head>
-<body class="bg-[#0b0b14] text-white font-sans">
-<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#07080f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
-  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,51,51,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#CC2222,#FF3333,#FF5555);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
+<body class="bg-[#0C0E1D] text-white font-sans">
+<div id="nx-loader" style="position:fixed;inset:0;z-index:999999;background:#070813;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .35s ease,visibility .35s ease">
+  <div style="position:fixed;top:0;left:0;right:0;height:3px;background:rgba(139,92,246,.1)"><div style="height:100%;width:40%;background:linear-gradient(90deg,#38D4FF,#8B5CF6,#E05CFF);animation:nx-bar-move 1.4s ease-in-out infinite;border-radius:0 2px 2px 0"></div></div>
   <div style="position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center">
-    <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,51,51,.1);border:1px solid rgba(255,51,51,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
+    <div style="width:50px;height:50px;border-radius:14px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);display:flex;align-items:center;justify-content:center;animation:nx-pulse 2s ease-in-out infinite">
       <img src="/logo.png" style="width:28px;height:28px;object-fit:contain" onerror="this.style.display='none'">
     </div>
-    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(255,51,51,.12);border-top-color:#FF3333;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
+    <div style="position:absolute;top:50%;left:50%;width:50px;height:50px;border-radius:50%;border:3px solid rgba(139,92,246,.12);border-top-color:#8B5CF6;animation:nx-spin .75s linear infinite;transform:translate(-50%,-50%)"></div>
   </div>
   <div style="font-size:12px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.25);font-family:system-ui,sans-serif;display:flex;align-items:center">Loading<span style="display:inline-flex;gap:2px;margin-left:3px"><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .15s infinite;display:inline-block"></span><span style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.25);animation:nx-dot 1.2s ease-in-out .3s infinite;display:inline-block"></span></span></div>
 </div>
@@ -167,7 +167,7 @@
     <!-- Header row -->
     <div class="flex items-center justify-between mb-3">
       <div class="flex items-center gap-3">
-        <div id="bulkIcon" class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(255,51,51,0.12)">
+        <div id="bulkIcon" class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(139,92,246,0.12)">
           <svg id="bulkIconSvg" class="w-4 h-4 text-razor" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
         </div>
         <div>
@@ -313,7 +313,7 @@ function toast(msg, ok=true, dur=3500){
     ? `<svg class="w-5 h-5 text-razor" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 15 4 10"/></svg>`
     : `<svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
   text.textContent = msg;
-  t.style.borderColor = ok ? 'rgba(255,51,51,0.2)' : 'rgba(239,68,68,0.2)';
+  t.style.borderColor = ok ? 'rgba(139,92,246,0.2)' : 'rgba(239,68,68,0.2)';
   t.style.opacity = '1'; t.style.pointerEvents = 'auto';
   clearTimeout(t._tid);
   t._tid = setTimeout(() => { t.style.opacity='0'; t.style.pointerEvents='none'; }, dur);
@@ -516,7 +516,7 @@ function openProgress(isEnable, total){
   bar.className    = `prog-bar ${isEnable ? 'enable' : 'disable'}`;
   label.textContent = isEnable ? 'Enabling all commands…' : 'Disabling all commands…';
   sub.textContent   = 'Saving to database';
-  icon.style.background = isEnable ? 'rgba(255,51,51,0.12)' : 'rgba(239,68,68,0.12)';
+  icon.style.background = isEnable ? 'rgba(139,92,246,0.12)' : 'rgba(239,68,68,0.12)';
   iconSvg.className = `w-4 h-4 ${isEnable ? 'text-razor' : 'text-red-400'}`;
   iconSvg.innerHTML = isEnable
     ? `<path d="M5 13l4 4L19 7"/>`
@@ -564,7 +564,7 @@ function finishProgress(success, isEnable, count){
     bar.className   = 'prog-bar done';
     label.textContent = isEnable ? `All ${count} commands enabled` : `All ${count} commands disabled`;
     sub.textContent   = 'Saved successfully';
-    icon.style.background = 'rgba(255,51,51,0.15)';
+    icon.style.background = 'rgba(139,92,246,0.15)';
     iconSvg.className = 'w-4 h-4 text-razor';
     iconSvg.innerHTML = `<path d="M5 13l4 4L19 7"/>`;
     document.getElementById('progStatus').textContent = 'Done ✓';
