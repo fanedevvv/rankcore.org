@@ -954,7 +954,6 @@ function mirrorEvents() {
     "twitch.js",
     "twitternotification.js",
     "youtubeNotification.js",
-    "vote.js",           // top.gg vote webhooks — RankCore account only
     "guildDelete.js",    // RankCore tracks when it's removed from servers — not relevant for CB
     "logbackup.js",      // RankCore log backup system
     "changeLogs.js",     // RankCore changelog announcements

@@ -83,7 +83,6 @@ require('./Utils/patchAsyncEvents').patchAsyncEvents();
 require('./Functions/globalApiShield')();
 
 const { Client, GatewayIntentBits, Collection, Partials } = require('discord.js');
-const { Api }  = require('@top-gg/sdk');
 
 // ─── Module Manager ───────────────────────────────────────────────────────────
 const { instance: moduleManager }   = require('./src/core/moduleManager');
@@ -221,7 +220,6 @@ for (const [key, fallback] of Object.entries(_cfgDefaults)) {
 })(client.config);
 client.emoji           = require('./src/data/emoji.json');
 client.logs            = require('./Utils/logs.js');
-client.topgg           = new Api(process.env.TOP_GG_TOKEN);
 client.moduleManager   = moduleManager;
 client.granularManager = granularManager;
 
@@ -293,8 +291,6 @@ logOk('Discord client initialised.');
   //     can reconnect within seconds instead of waiting for music/systems to boot.
   await moduleManager.start('internal-api',  client);
 
-  // Keep the top.gg server count accurate (needs TOP_GG_TOKEN)
-  require('./src/lib/topggStats')(client);
   require('./src/lib/changelogAnnouncer')(client);
 
   // 3. Music (needs shard context)

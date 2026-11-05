@@ -456,7 +456,6 @@ function buildAlertEmbed(type, data, client) {
                 const props = [];
                 if (command.premium)   props.push('<:boost:1567796953599836280> Premium');
                 if (command.developer) props.push('<:lockk:1567796977809367122> Developer');
-                if (command.voters)    props.push('<a:votes:1567797046562259015> Vote-locked');
                 if (command.dev)       props.push('<:error:1567796968758050868> Maintenance');
                 if (props.length)
                     embed.addFields({ name: '<:thread:1567797010692706324> Flags', value: props.join(' • '), inline: false });
