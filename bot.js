@@ -292,6 +292,8 @@ logOk('Discord client initialised.');
   await moduleManager.start('internal-api',  client);
 
   require('./src/lib/changelogAnnouncer')(client);
+  // Mesajul cu Saphirex Launcher din #descărcări se actualizează singur la fiecare release
+  require('./src/lib/saphirexLauncherMessage')(client);
 
   // 3. Music (needs shard context)
   await moduleManager.start('music', client);
