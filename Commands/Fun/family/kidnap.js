@@ -51,7 +51,7 @@ module.exports = {
             `## <:n_loading:1567796992556666982> On Cooldown\nYou need to lay low for a bit!\n\n> You can try again <t:${readyAt}:R>.`
           )
         );
-      return interaction.reply({ flags: MessageFlags.IsComponentsV2, components: [c], flags: MessageFlags.Ephemeral });
+      return interaction.reply({ flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral, components: [c] });
     }
 
     // ─── Show "planning" stage ────────────────────────────────────────────

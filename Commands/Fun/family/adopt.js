@@ -41,7 +41,8 @@ module.exports = {
       new ButtonBuilder().setCustomId("noAdopt").setLabel("Decline").setStyle(ButtonStyle.Danger)
     );
 
-    const msg = await interaction.reply({ embeds: [embed], components: [row], fetchReply: true });
+    await interaction.reply({ embeds: [embed], components: [row]});
+    const msg = await interaction.fetchReply();
     const collector = msg.createMessageComponentCollector({ time: 30000 });
 
     collector.on("collect", async (i) => {

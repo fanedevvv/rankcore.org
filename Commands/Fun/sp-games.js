@@ -27,6 +27,9 @@ const {
 } = require("discord-gamecord");
 const ms = require("ms");
 
+// discord-gamecord only accepts embed colours as "#RRGGBB" strings, while client.config.embedColor is a number
+const gameColor = (client) => '#' + (Number(client.config.embedColor) || 0x6C53FF).toString(16).padStart(6, '0');
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("games-singleplayer")
@@ -71,7 +74,7 @@ module.exports = {
             slash_command: true,
             embed: {
               title: "2048",
-              color: client.config.embedColor,
+              color: gameColor(client),
             },
             emojis: {
               up: "<:arrow:1567796951527850055>",
@@ -113,7 +116,7 @@ module.exports = {
             slash_command: true,
             embed: {
               title: "Fast Type",
-              color: client.config.embedColor,
+              color: gameColor(client),
               description: `You have {time} seconds to type the sentence below:\n\n**${randomSentence}**`,
             },
             timeoutTime: 60000,
@@ -138,7 +141,7 @@ module.exports = {
             slash_command: true,
             embed: {
               title: "Find Emoji",
-              color: client.config.embedColor,
+              color: gameColor(client),
               description: "Remember the emojis from the board below.",
               findDescription:
                 "Find the {emoji} emoji before the time runs out.",
@@ -167,7 +170,7 @@ module.exports = {
             slash_command: true,
             embed: {
               title: "Flood",
-              color: client.config.embedColor,
+              color: gameColor(client),
             },
             difficulty: 13,
             timeoutTime: 60000,
@@ -191,7 +194,7 @@ module.exports = {
             slash_command: true,
             embed: {
               title: "Who's The Pokemon",
-              color: client.config.embedColor,
+              color: gameColor(client),
             },
             timeoutTime: 60000,
             winMessage: "You guessed it right! It was a {pokemon}.",
@@ -226,7 +229,7 @@ module.exports = {
             slash_command: true,
             embed: {
               title: "Hangman",
-              color: client.config.embedColor,
+              color: gameColor(client),
             },
             hangman: {
               hat: "🎩",
@@ -255,7 +258,7 @@ module.exports = {
             slash_command: true,
             embed: {
               title: "Match Pairs",
-              color: client.config.embedColor,
+              color: gameColor(client),
               description:
                 "**Click on the buttons to match emojis with their pairs.**",
             },
@@ -295,7 +298,7 @@ module.exports = {
             slash_command: true,
             embed: {
               title: "Minesweeper",
-              color: client.config.embedColor,
+              color: gameColor(client),
               description:
                 "Click on the buttons to reveal the blocks except mines.",
             },
@@ -609,7 +612,7 @@ module.exports = {
             slash_command: true,
             embed: {
               title: "Slot Machine",
-              color: client.config.embedColor,
+              color: gameColor(client),
             },
             slots: ["🍇", "🍊", "🍋", "🍌"],
           });
@@ -628,7 +631,7 @@ module.exports = {
             embed: {
               title: "Snake Game",
               overTitle: "Game Over",
-              color: client.config.embedColor,
+              color: gameColor(client),
             },
             emojis: {
               board: "⬛",
@@ -658,7 +661,7 @@ module.exports = {
             slash_command: true,
             embed: {
               title: "Trivia",
-              color: client.config.embedColor,
+              color: gameColor(client),
               description: "You have 60 seconds to guess the answer.",
             },
             timeoutTime: 60000,
@@ -686,7 +689,7 @@ module.exports = {
             slash_command: true,
             embed: {
               title: "Wordle",
-              color: client.config.embedColor,
+              color: gameColor(client),
             },
             customWord: null,
             timeoutTime: 60000,
@@ -708,7 +711,7 @@ module.exports = {
             slash_command: true,
             embed: {
               title: "Would You Rather",
-              color: client.config.embedColor,
+              color: gameColor(client),
             },
             buttons: {
               option1: "Option 1",

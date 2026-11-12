@@ -22,7 +22,7 @@ const ACTIONS = [
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("automod")
+    .setName("advanced-automod")
     .setDescription("Configure the AutoMod system.")
 
     // ── status ────────────────────────────────────────────────────────────────

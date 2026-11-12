@@ -154,9 +154,13 @@ module.exports = {
       old.message?.edit({ components: [] }).catch(() => {});
     }
 
-    const panelMsg = search
-      ? await interaction.followUp({ embeds: [buildPlayerEmbed(player, client)], components: buildControlRow(player), fetchReply: true })
-      : await interaction.reply({ embeds: [buildPlayerEmbed(player, client)], components: buildControlRow(player), fetchReply: true });
+    let panelMsg;
+    if (search) {
+      panelMsg = await interaction.followUp({ embeds: [buildPlayerEmbed(player, client)], components: buildControlRow(player) });
+    } else {
+      await interaction.reply({ embeds: [buildPlayerEmbed(player, client)], components: buildControlRow(player) });
+      panelMsg = await interaction.fetchReply();
+    }
 
     const collector = panelMsg.createMessageComponentCollector({
       filter: i => i.customId.startsWith('mp_'),

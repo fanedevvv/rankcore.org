@@ -38,7 +38,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // popstate (back/forward)
   window.addEventListener('popstate', e => {
     if (e.state?.guide) renderGuide(e.state.guide, e.state.section || undefined);
-    else showLanding();
+    else window.showLanding();
   });
 
   // Search

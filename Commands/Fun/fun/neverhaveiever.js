@@ -74,11 +74,11 @@ module.exports = {
       return container;
     }
 
-    const msg = await interaction.reply({
+    await interaction.reply({
       flags: MessageFlags.IsComponentsV2,
-      components: [buildContainer()],
-      fetchReply: true,
+      components: [buildContainer()]
     });
+    const msg = await interaction.fetchReply();
 
     const collector = msg.createMessageComponentCollector({ time: 45000 });
 

@@ -67,7 +67,8 @@ module.exports = {
           )
         );
 
-      const msg = await interaction.reply({ flags: MessageFlags.IsComponentsV2, components: [pickRow], fetchReply: true });
+      await interaction.reply({ flags: MessageFlags.IsComponentsV2, components: [pickRow]});
+      const msg = await interaction.fetchReply();
       const col = msg.createMessageComponentCollector({
         filter: (i) => i.user.id === challenger.id,
         max: 1,
@@ -112,13 +113,13 @@ module.exports = {
     // ─── VS User ──────────────────────────────────────────────────────────
     const picks = {};
 
-    const msg = await interaction.reply({
+    await interaction.reply({
       content: `${opponent}`,
       allowedMentions: { parse: ["users"] },
       flags: MessageFlags.IsComponentsV2,
-      components: [buildWaitContainer(challenger, opponent, false)],
-      fetchReply: true,
+      components: [buildWaitContainer(challenger, opponent, false)]
     });
+    const msg = await interaction.fetchReply();
 
     const col = msg.createMessageComponentCollector({
       filter: (i) => {

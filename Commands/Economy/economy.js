@@ -205,11 +205,11 @@ module.exports = {
             )
           );
 
-        const msg = await interaction.reply({
+        await interaction.reply({
           flags: MessageFlags.IsComponentsV2,
           components: [termsContainer],
-          fetchReply: true,
         });
+        const msg = await interaction.fetchReply();
 
         const col = msg.createMessageComponentCollector({
           filter: (i) => i.user.id === uid,
@@ -219,7 +219,16 @@ module.exports = {
 
         col.on("collect", async (i) => {
           if (i.customId === "accept_terms") {
-            await User.create({ userId: uid, userName: interaction.user.username, balance: 1000 });
+            // Upsert: two open /economy startacc prompts accepted one after the other must not
+            // try to insert the same userId twice (unique index → E11000)
+            const res = await User.updateOne(
+              { userId: uid },
+              { $setOnInsert: { userId: uid, userName: interaction.user.username, balance: 1000 } },
+              { upsert: true },
+            );
+            if (!res.upsertedCount) {
+              return i.update({ components: [errorContainer("You already have an account!")] });
+            }
             const success = new ContainerBuilder().setAccentColor(0x57F287)
               .addSectionComponents(
                 new SectionBuilder()
@@ -322,9 +331,8 @@ module.exports = {
         const cd = await checkCD("beg", uid, 20 * 60000);
         if (!cd.ok) {
           return interaction.reply({
-            flags: MessageFlags.IsComponentsV2,
-            components: [cooldownContainer(`You're on cooldown! Try again in **${cd.mins} min**.`)],
-            flags: MessageFlags.Ephemeral,
+            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
+            components: [cooldownContainer(`You're on cooldown! Try again in **${cd.mins} min**.`)]
           });
         }
         const coins = Math.floor(Math.random() * 491) + 10;
@@ -354,9 +362,8 @@ module.exports = {
         const cd = await checkCD("work", uid, 30 * 60000);
         if (!cd.ok) {
           return interaction.reply({
-            flags: MessageFlags.IsComponentsV2,
-            components: [cooldownContainer(`You're still on shift! Back to work in **${cd.mins} min**.`)],
-            flags: MessageFlags.Ephemeral,
+            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
+            components: [cooldownContainer(`You're still on shift! Back to work in **${cd.mins} min**.`)]
           });
         }
 
@@ -385,9 +392,8 @@ module.exports = {
         const cd = await checkCD("fish", uid, 15 * 60000);
         if (!cd.ok) {
           return interaction.reply({
-            flags: MessageFlags.IsComponentsV2,
-            components: [cooldownContainer(`Your line is still in the water! Try again in **${cd.mins} min**.`)],
-            flags: MessageFlags.Ephemeral,
+            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
+            components: [cooldownContainer(`Your line is still in the water! Try again in **${cd.mins} min**.`)]
           });
         }
 
@@ -429,9 +435,8 @@ module.exports = {
         const cd = await checkCD("rob", uid, 30 * 60000);
         if (!cd.ok) {
           return interaction.reply({
-            flags: MessageFlags.IsComponentsV2,
-            components: [cooldownContainer(`You need to lay low for **${cd.mins} more min**.`)],
-            flags: MessageFlags.Ephemeral,
+            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
+            components: [cooldownContainer(`You need to lay low for **${cd.mins} more min**.`)]
           });
         }
 
@@ -592,7 +597,9 @@ module.exports = {
             )
           );
 
-        const msg = await interaction.reply({ flags: MessageFlags.IsComponentsV2, components: [confirm], fetchReply: true });
+        await interaction.reply({ flags: MessageFlags.IsComponentsV2, components: [confirm] });
+
+        const msg = await interaction.fetchReply();
         const col = msg.createMessageComponentCollector({ filter: (i) => i.user.id === uid, max: 1, time: 15000 });
 
         col.on("collect", async (i) => {
@@ -695,7 +702,8 @@ module.exports = {
 
         const initial = bjContainer(ph, `${dh[0]} [?]`, false);
         initial.addActionRowComponents(row);
-        const msg = await interaction.reply({ flags: MessageFlags.IsComponentsV2, components: [initial], fetchReply: true });
+        await interaction.reply({ flags: MessageFlags.IsComponentsV2, components: [initial] });
+        const msg = await interaction.fetchReply();
 
         const col = msg.createMessageComponentCollector({
           filter: (i) => i.user.id === uid && ["bj_hit", "bj_stand"].includes(i.customId),
@@ -752,9 +760,8 @@ module.exports = {
         const cd = await checkCD("heist", uid, 60 * 60000);
         if (!cd.ok) {
           return interaction.reply({
-            flags: MessageFlags.IsComponentsV2,
-            components: [cooldownContainer(`Lay low! Back in **${cd.mins} min**.`)],
-            flags: MessageFlags.Ephemeral,
+            flags: MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral,
+            components: [cooldownContainer(`Lay low! Back in **${cd.mins} min**.`)]
           });
         }
 
@@ -897,38 +904,57 @@ module.exports = {
         if (user.balance < coins)
           return interaction.reply({ flags: MessageFlags.IsComponentsV2, components: [errorContainer("Not enough coins.")] });
 
-        user.balance -= coins; await user.save();
+        // Take the bet atomically, so a parallel balance change can't be overwritten or double-spent
+        const paid = await User.findOneAndUpdate(
+          { userId: uid, balance: { $gte: coins } },
+          { $inc: { balance: -coins } },
+          { new: true },
+        );
+        if (!paid)
+          return interaction.reply({ flags: MessageFlags.IsComponentsV2, components: [errorContainer("Not enough coins.")] });
+        user.balance = paid.balance;
 
-        const Game = new Slots({
-          message: interaction,
-          isSlashGame: true,
-          embed: { title: "Slot Machine <:minigames:1567796978929238076>", color: 0x5865F2 },
-          slots: ["🍇", "🍊", "🍋", "🍌", "🍒"],
-        });
-
-        Game.startGame();
-        Game.on("gameOver", async (result) => {
-          if (result.result === "win") {
-            const win = coins * 2;
-            user.balance += win;
-            await user.save();
-            await interaction.followUp({
-              flags: MessageFlags.IsComponentsV2,
-              components: [new ContainerBuilder().setAccentColor(0x57F287)
-                .addTextDisplayComponents(new TextDisplayBuilder().setContent(
-                  `## <:minigames:1567796978929238076> You Won!\n<:boost:1567796953599836280> You won <:Currency:1567796932041121873> **${fmt(win)}**!\n<:eco:1567796967197900842> Wallet: <:Currency:1567796932041121873> **${fmt(user.balance)}**`
-                ))]
-            });
-          } else {
-            await interaction.followUp({
-              flags: MessageFlags.IsComponentsV2,
-              components: [new ContainerBuilder().setAccentColor(0xED4245)
-                .addTextDisplayComponents(new TextDisplayBuilder().setContent(
-                  `## <:minigames:1567796978929238076> You Lost\n<:error:1567796968758050868> Better luck next time! You lost <:Currency:1567796932041121873> **${fmt(coins)}**.\n<:eco:1567796967197900842> Wallet: <:Currency:1567796932041121873> **${fmt(user.balance)}**`
-                ))]
-            });
-          }
-        });
+        let Game;
+        try {
+          Game = new Slots({
+            message: interaction,
+            isSlashGame: true,
+            // discord-gamecord only accepts the colour as a string
+            embed: { title: "Slot Machine", color: "#5865F2" },
+            slots: ["🍇", "🍊", "🍋", "🍌", "🍒"],
+          });
+          Game.on("gameOver", async (result) => {
+            try {
+              if (result.result === "win") {
+                const win = coins * 2;
+                const after = await User.findOneAndUpdate({ userId: uid }, { $inc: { balance: win } }, { new: true });
+                user.balance = after.balance;
+                await interaction.followUp({
+                  flags: MessageFlags.IsComponentsV2,
+                  components: [new ContainerBuilder().setAccentColor(0x57F287)
+                    .addTextDisplayComponents(new TextDisplayBuilder().setContent(
+                      `## <:minigames:1567796978929238076> You Won!\n<:boost:1567796953599836280> You won <:Currency:1567796932041121873> **${fmt(win)}**!\n<:eco:1567796967197900842> Wallet: <:Currency:1567796932041121873> **${fmt(user.balance)}**`
+                    ))]
+                });
+              } else {
+                await interaction.followUp({
+                  flags: MessageFlags.IsComponentsV2,
+                  components: [new ContainerBuilder().setAccentColor(0xED4245)
+                    .addTextDisplayComponents(new TextDisplayBuilder().setContent(
+                      `## <:minigames:1567796978929238076> You Lost\n<:error:1567796968758050868> Better luck next time! You lost <:Currency:1567796932041121873> **${fmt(coins)}**.\n<:eco:1567796967197900842> Wallet: <:Currency:1567796932041121873> **${fmt(user.balance)}**`
+                    ))]
+                });
+              }
+            } catch (e) {
+              console.error("[Economy] slots result error:", e);
+            }
+          });
+          await Game.startGame();
+        } catch (e) {
+          // The game never ran: give the bet back
+          await User.updateOne({ userId: uid }, { $inc: { balance: coins } });
+          throw e;
+        }
         return;
       }
 

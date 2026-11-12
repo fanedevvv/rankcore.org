@@ -47,14 +47,6 @@ const nukeBatches = chunkArray(nukeCommands, 100);
 
 // Regex for racist/hate words (example, can be extended)
 // Split long word list into batches for Discord AutoMod
-function chunkArray(arr, chunkSize) {
-    const result = [];
-    for (let i = 0; i < arr.length; i += chunkSize) {
-        result.push(arr.slice(i, i + chunkSize));
-    }
-    return result;
-}
-
 // Clean words: max 10 chars
 const rawRacismWords = [
   "nigga","n1gga","nigger","n1gger","chink","ch1nk",

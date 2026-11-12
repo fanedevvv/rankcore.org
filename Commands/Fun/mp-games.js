@@ -7,6 +7,9 @@ const {
 } = require("discord.js");
 const { Connect4, RockPaperScissors, TicTacToe } = require("discord-gamecord");
 
+// discord-gamecord only accepts embed colours as "#RRGGBB" strings, while client.config.embedColor is a number
+const gameColor = (client) => '#' + (Number(client.config.embedColor) || 0x6C53FF).toString(16).padStart(6, '0');
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("games-multiplayer")
@@ -87,7 +90,7 @@ module.exports = {
             embed: {
               title: "Connect4 Game",
               statusTitle: "Status",
-              color: client.config.embedColor,
+              color: gameColor(client),
             },
             emojis: {
               board: "<:dot:1567796963624226826>",
@@ -121,7 +124,7 @@ module.exports = {
             opponent: interaction.options.getUser("user"),
             embed: {
               title: "Rock Paper Scissors",
-              color: client.config.embedColor,
+              color: gameColor(client),
               description: "Press a button below to make a choice.",
             },
             buttons: {
@@ -159,7 +162,7 @@ module.exports = {
             opponent: interaction.options.getUser("user"),
             embed: {
               title: "Tic Tac Toe",
-              color: client.config.embedColor,
+              color: gameColor(client),
               statusTitle: "Status",
               overTitle: "Game Over",
             },

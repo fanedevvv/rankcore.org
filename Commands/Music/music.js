@@ -234,7 +234,9 @@ module.exports = {
           new ButtonBuilder().setCustomId("next").setLabel("Next").setStyle(ButtonStyle.Primary).setDisabled(currentPage === totalPages - 1)
         );
 
-        const message = await interaction.reply({ embeds: [embed], components: [row], fetchReply: true });
+        await interaction.reply({ embeds: [embed], components: [row] });
+
+        const message = await interaction.fetchReply();
 
         const filter = (buttonInteraction) => buttonInteraction.user.id === interaction.user.id;
 

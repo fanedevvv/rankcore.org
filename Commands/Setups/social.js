@@ -154,7 +154,8 @@ async function handleYouTubeConfig(interaction) {
     new ButtonBuilder().setCustomId('social_back').setLabel('← Back').setStyle(ButtonStyle.Secondary)
   ));
 
-  const msg = await interaction.update({ embeds: [embed], components: rows, fetchReply: true });
+  await interaction.update({ embeds: [embed], components: rows });
+  const msg = interaction.message;
 
   const collector = msg.createMessageComponentCollector({
     filter: i => i.user.id === interaction.user.id,
@@ -306,7 +307,8 @@ async function handleTwitchConfig(interaction) {
     new ButtonBuilder().setCustomId('social_back').setLabel('← Back').setStyle(ButtonStyle.Secondary)
   ));
 
-  const msg = await interaction.update({ embeds: [embed], components: rows, fetchReply: true });
+  await interaction.update({ embeds: [embed], components: rows });
+  const msg = interaction.message;
 
   const collector = msg.createMessageComponentCollector({
     filter: i => i.user.id === interaction.user.id,
@@ -449,7 +451,8 @@ async function handleTwitterConfig(interaction) {
     new ButtonBuilder().setCustomId('social_back').setLabel('← Back').setStyle(ButtonStyle.Secondary)
   ));
 
-  const msg = await interaction.update({ embeds: [embed], components: rows, fetchReply: true });
+  await interaction.update({ embeds: [embed], components: rows });
+  const msg = interaction.message;
 
   const collector = msg.createMessageComponentCollector({
     filter: i => i.user.id === interaction.user.id,
@@ -554,14 +557,15 @@ async function handleMainMenu(interaction) {
   const row = new ActionRowBuilder().addComponents(platformSelect);
 
   const updateMethod = interaction.replied || interaction.deferred ? 'editReply' : 'reply';
-  const msg = await interaction[updateMethod]({
-    embeds: [embed],
-    components: [row],
-    fetchReply: true,
-  }).catch(async () => {
+  let msg;
+  try {
+    await interaction[updateMethod]({ embeds: [embed], components: [row] });
+    msg = await interaction.fetchReply();
+  } catch {
     // If neither reply nor editReply works, try update (for component interactions)
-    return interaction.update({ embeds: [embed], components: [row], fetchReply: true });
-  });
+    await interaction.update({ embeds: [embed], components: [row] });
+    msg = interaction.message;
+  }
 
   const collector = msg.createMessageComponentCollector({
     filter: i => i.user.id === interaction.user.id && i.customId === 'social_platform_select',

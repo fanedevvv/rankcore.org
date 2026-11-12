@@ -63,12 +63,12 @@ container.addTextDisplayComponents(
   new TextDisplayBuilder().setContent(`${user}`)
 );
 
-const msg = await interaction.reply({
+await interaction.reply({
   flags: MessageFlags.IsComponentsV2,
   components: [container],
-  allowedMentions: { parse: ["users"] },
-  fetchReply: true,
+  allowedMentions: { parse: ["users"] }
 });
+const msg = await interaction.fetchReply();
 
     const collector = msg.createMessageComponentCollector({ time: 60000 });
 

@@ -34,7 +34,7 @@ async function isSafeUrl(rawUrl) {
   try {
     addresses = await dns.lookup(parsed.hostname, { all: true });
   } catch {
-    return false; // unresolvable host
+    return null; // DNS lookup failed (often temporary) — not the same as an unsafe URL
   }
 
   for (const { address } of addresses) {
@@ -123,7 +123,9 @@ module.exports = async (client) => {
         const previousStatus = doc.LastStatus;
 
         // ── SSRF guard ───────────────────────────────────────────────────────
-        if (!(await isSafeUrl(doc.URL))) {
+        const safe = await isSafeUrl(doc.URL);
+        if (safe === null) continue; // DNS unavailable right now: skip this round, retry next tick
+        if (!safe) {
           console.warn(`[Uptime] Blocked unsafe URL for doc ${doc._id}: ${doc.URL}`);
           continue;
         }

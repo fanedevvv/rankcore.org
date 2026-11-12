@@ -65,7 +65,6 @@ router.post("/api/guild/:id/logs", isAuth, checkDashboardAccess('logs'), async (
           // New object template - validate basic structure
           if (tpl.type === 'text' || tpl.type === 'embed') {
             // Store the object as-is (MongoDB will store it as Mixed type)
-            tpl = tpl;
           } else {
             tpl = null;
           }

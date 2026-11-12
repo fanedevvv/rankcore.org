@@ -39,16 +39,16 @@ module.exports = {
         : 0x53ff6c;
 
     if (sub === "ping") {
-      const sent = await interaction.reply({
+      await interaction.reply({
         components: [
           new ContainerBuilder().setAccentColor(accentColor)
             .addTextDisplayComponents(new TextDisplayBuilder().setContent("## <:ping:1567796998902521920>  Pinging…"))
             .addSeparatorComponents(sep())
             .addTextDisplayComponents(new TextDisplayBuilder().setContent("Calculating latency…")),
         ],
-        flags: MessageFlags.IsComponentsV2,
-        fetchReply: true,
+        flags: MessageFlags.IsComponentsV2
       });
+      const sent = await interaction.fetchReply();
       const roundtrip = sent.createdTimestamp - interaction.createdTimestamp;
       const ws = client.ws.ping;
       const color = roundtrip < 100 ? 0x53ff6c : roundtrip < 250 ? 0xf59e0b : 0xef4444;

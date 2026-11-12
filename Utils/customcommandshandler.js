@@ -149,13 +149,15 @@ async function handleCustomCommand(interaction, client) {
       await interaction.reply({ content: `↗️ Response sent to <#${cmd.OutputChannelId}>`, ephemeral: true });
       // Don't pass ephemeral into the channel send
       const { ephemeral: _eph, ...channelPayload } = payload;
-      reply = await outputChannel.send({ ...channelPayload, fetchReply: true }).catch(() => null);
+      reply = await outputChannel.send({ ...channelPayload }).catch(() => null);
     } else {
       // Fallback: output channel gone/invalid — reply normally
-      reply = await interaction.reply({ ...payload, fetchReply: true });
+      await interaction.reply({ ...payload });
+      reply = await interaction.fetchReply();
     }
   } else {
-    reply = await interaction.reply({ ...payload, fetchReply: true });
+    await interaction.reply({ ...payload });
+    reply = await interaction.fetchReply();
   }
 
   // ── Attach button collector for non-link buttons ──────────────────────────

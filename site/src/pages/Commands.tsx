@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ChevronDown, Crown, Shield, Coins, Gavel, Music, Gamepad2, Wrench, TrendingUp, Gift, MessageSquare, Heart, ScrollText, ImageIcon, Bot, Users, Swords, Zap, Radio, Bell, Lock, Megaphone, Cog, Loader2, RefreshCw } from "lucide-react";
+import { Search, ChevronDown, Crown, Shield, Coins, Gavel, Music, Gamepad2, Wrench, TrendingUp, Gift, MessageSquare, Heart, ScrollText, ImageIcon, Bot, Users, Swords, Zap, Radio, Bell, Lock, Megaphone, Cog, Loader2, RefreshCw, type LucideIcon } from "lucide-react";
 import Layout from "@/components/Layout";
 import DiscordText, { stripDiscordEmoji } from "@/components/DiscordText";
 import AnimatedSection from "@/components/AnimatedSection";
@@ -8,7 +8,7 @@ import { useDiscordBotCommands, BotCommand } from "@/hooks/useDiscordBotCommands
 import { useDiscordBotStats } from "@/hooks/useDiscordBotStats";
 
 // Map parentName to category info
-const categoryMeta: Record<string, { icon: any; title: string; desc: string; color: string }> = {
+const categoryMeta: Record<string, { icon: LucideIcon; title: string; desc: string; color: string }> = {
   automod: { icon: Shield, title: "AutoMod", desc: "Automatic moderation rules", color: "bg-blue-500/20 text-blue-400" },
   antilink: { icon: Shield, title: "Anti-Link", desc: "Block unwanted links", color: "bg-blue-500/20 text-blue-400" },
   antinuke: { icon: Lock, title: "Anti-Nuke", desc: "Server nuke protection system", color: "bg-red-500/20 text-red-400" },
@@ -113,7 +113,7 @@ const defaultMeta = { icon: Cog, title: "Other", desc: "Miscellaneous commands",
 interface GroupedCategory {
   title: string;
   desc: string;
-  icon: any;
+  icon: LucideIcon;
   color: string;
   commands: BotCommand[];
 }

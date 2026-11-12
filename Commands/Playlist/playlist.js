@@ -411,7 +411,8 @@ e5732f870d366f8ef24a9603c455d66d
             .setTitle(`Select a track to add to **${playlistName}**:`)
             .setDescription(tracks.map((track, index) => `**${index + 1}**: [${track.title}](${track.uri})`).join("\n"));
 
-        const message = await interaction.reply({ embeds: [embed], fetchReply: true });
+        await interaction.reply({ embeds: [embed]});
+        const message = await interaction.fetchReply();
 
         const emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣'];
         for (const emoji of emojis.slice(0, tracks.length)) {
@@ -521,11 +522,10 @@ e5732f870d366f8ef24a9603c455d66d
 
             const row = new ActionRowBuilder().addComponents(previousButton, stopButton, nextButton);
 
-            const m = await interaction.reply({
+            await interaction.reply({
                 embeds: [embed],
-                components: [row],
-                fetchReply: true
-            });
+                components: [row]});
+            const m = await interaction.fetchReply();
 
             const collector = m.createMessageComponentCollector({
                 filter: (b) => b.user.id === interaction.user.id,

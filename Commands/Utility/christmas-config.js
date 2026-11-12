@@ -81,11 +81,11 @@ module.exports = {
         .setLabel("Disable")
     );
 
-    const reply = await interaction.reply({
+    await interaction.reply({
       embeds: [embed],
-      components: [buttons],
-      fetchReply: true,
+      components: [buttons]
     });
+    const reply = await interaction.fetchReply();
 
     const collector = reply.createMessageComponentCollector({
       filter: i => i.user.id === interaction.user.id,

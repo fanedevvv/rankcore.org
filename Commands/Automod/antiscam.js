@@ -58,7 +58,8 @@ module.exports = {
         .addActionRowComponents(helpRow(client.user.id, { invite: false }));
     };
 
-    const msg = await interaction.reply({ components: [buildPanel(data)], flags: MessageFlags.IsComponentsV2, fetchReply: true });
+    await interaction.reply({ components: [buildPanel(data)], flags: MessageFlags.IsComponentsV2});
+    const msg = await interaction.fetchReply();
     const collector = msg.createMessageComponentCollector({ filter: i => i.user.id === interaction.user.id, time: 120_000 });
     collector.on("collect", async (i) => {
       if (i.customId === "as_toggle") {

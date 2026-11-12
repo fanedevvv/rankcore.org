@@ -231,11 +231,11 @@ module.exports = {
       new ButtonBuilder().setLabel('Support').setStyle(ButtonStyle.Link).setEmoji(parseEmoji('<:n_utils:1567796996830658573>')).setURL('https://discord.gg/a9Kea3ymC7'),
     );
 
-    const msg = await interaction.reply({
+    await interaction.reply({
       embeds: [buildEmbed(currentPage)],
-      components: [buildRow(currentPage)],
-      fetchReply: true,
+      components: [buildRow(currentPage)]
     });
+    const msg = await interaction.fetchReply();
 
     const collector = msg.createMessageComponentCollector({ time: 300_000 });
 

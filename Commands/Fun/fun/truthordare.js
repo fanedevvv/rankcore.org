@@ -64,13 +64,13 @@ module.exports = {
       return container;
     }
 
-    const msg = await interaction.reply({
+    await interaction.reply({
       content: target ? `${target}` : undefined,
       allowedMentions: { parse: ["users"] },
       flags: MessageFlags.IsComponentsV2,
-      components: [buildPicker()],
-      fetchReply: true,
+      components: [buildPicker()]
     });
+    const msg = await interaction.fetchReply();
 
     const allowedId = target?.id || interaction.user.id;
     const collector = msg.createMessageComponentCollector({

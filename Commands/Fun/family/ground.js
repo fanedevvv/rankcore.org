@@ -39,7 +39,8 @@ module.exports = {
       new ButtonBuilder().setCustomId(`unground_${child.id}`).setLabel("Unground Now").setStyle(ButtonStyle.Success)
     );
 
-    const msg = await interaction.reply({ embeds: [embed], components: [row], fetchReply: true });
+    await interaction.reply({ embeds: [embed], components: [row]});
+    const msg = await interaction.fetchReply();
     const collector = msg.createMessageComponentCollector({ time: durationMs, persistent: true });
 
     collector.on("collect", async (i) => {

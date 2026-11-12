@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
     } else {
       // User already exists, find them
       const { data: users } = await supabaseAdmin.auth.admin.listUsers();
-      const existing = users?.users?.find((u: any) => u.email === "admin@yakuza.my");
+      const existing = users?.users?.find((u: { email?: string }) => u.email === "admin@yakuza.my");
       if (existing) {
         await supabaseAdmin.from("user_roles").upsert({
           user_id: existing.id,

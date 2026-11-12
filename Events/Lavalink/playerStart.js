@@ -505,13 +505,6 @@ player.textId = channel.id;
                 flags: MessageFlags.Ephemeral,
               });
               break;
-            case "equalizer":
-              player.filter("equalizer");
-              await interaction.reply({
-                content: `\`Equalizer\` filter enabled.`,
-                flags: MessageFlags.Ephemeral,
-              });
-              break;
             case "vibrato":
               player.filter("vibrato");
               await interaction.reply({

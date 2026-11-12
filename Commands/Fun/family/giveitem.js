@@ -26,11 +26,11 @@ module.exports = {
       .setPlaceholder("Select an item to give")
       .addOptions(parentData.items.map((item) => new StringSelectMenuOptionBuilder().setLabel(item).setValue(item)));
 
-    const msg = await interaction.reply({
+    await interaction.reply({
       content: `Choose an item to give to ${child}:`,
-      components: [new ActionRowBuilder().addComponents(selectMenu)],
-      fetchReply: true,
+      components: [new ActionRowBuilder().addComponents(selectMenu)]
     });
+    const msg = await interaction.fetchReply();
 
     const collector = msg.createMessageComponentCollector({ time: 60000 });
 
