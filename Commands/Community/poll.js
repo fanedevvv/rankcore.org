@@ -9,7 +9,7 @@ const {
   ContainerBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize,
   ActionRowBuilder, ButtonBuilder, ButtonStyle,
 } = require("discord.js");
-const { parseEmoji } = require('../../Utils/emojis');
+const { parseEmoji, E } = require('../../Utils/emojis');
 const { ACCENT }   = require("../../Utils/v2helpers");
 const pollSchema   = require("../../Schemas/pollDiscord");
 
@@ -27,7 +27,8 @@ const DURATION_CHOICES = [
   { name: "7 days",     value: 10080 },
 ];
 
-const OPTION_EMOJIS = ["1️⃣","2️⃣","3️⃣","4️⃣","5️⃣"];
+// RankCore number emojis (1–5), uploaded to the bot as application emojis
+const OPTION_EMOJIS = E.num.slice(0, 5);
 
 function minutesToMs(min) { return min * 60 * 1000; }
 function progressBar(pct) { const f = Math.round(pct / 10); return "█".repeat(f) + "░".repeat(10 - f); }
@@ -88,13 +89,16 @@ function buildPollContainer(accent, question, options, votes, authorTag, endTs, 
     .setSpacing(SeparatorSpacingSize.Small).setDivider(true));
 
   if (!ended) {
+    // Up to 5 option buttons fill a row (Discord max 5 per row), so "My Vote" gets its own row
     c.addActionRowComponents(new ActionRowBuilder().addComponents(
       ...options.map((_, i) =>
         new ButtonBuilder()
           .setCustomId(`poll_vote_${i}`)
-          .setLabel(OPTION_EMOJIS[i])
+          .setEmoji(parseEmoji(OPTION_EMOJIS[i]))
           .setStyle(ButtonStyle.Secondary)
       ),
+    ));
+    c.addActionRowComponents(new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId("poll_results")
         .setLabel("My Vote")
@@ -105,11 +109,13 @@ function buildPollContainer(accent, question, options, votes, authorTag, endTs, 
     c.addActionRowComponents(new ActionRowBuilder().addComponents(
       ...options.map((_, i) => {
         const isWinner = votes[i].size === maxVote && maxVote > 0;
-        return new ButtonBuilder()
+        const btn = new ButtonBuilder()
           .setCustomId(`poll_done_${i}`)
-          .setLabel(isWinner ? `${OPTION_EMOJIS[i]}` : OPTION_EMOJIS[i]).setEmoji(isWinner ? parseEmoji('<:1430986209995526274:1567796911350747206>') : undefined)
+          .setEmoji(parseEmoji(OPTION_EMOJIS[i]))
           .setStyle(isWinner ? ButtonStyle.Success : ButtonStyle.Secondary)
           .setDisabled(true);
+        if (isWinner) btn.setLabel("Winner");
+        return btn;
       })
     ));
   }
