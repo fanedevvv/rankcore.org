@@ -19,114 +19,57 @@ const joinchannelschema = require("../Schemas/jointocreatechannels");
 const jtcpanelschema = require("../Schemas/jtc-panel");
 
 // ── Control panel (shared by the per-room panel and the permanent panel) ──────
-const PANEL_FEATURES = `This **interface** can be used to manage temporary voice channels.
-
-<:1430986227909263442:1567796922863984670> **NAME:** Rename your room  
-<:1430986220011524216:1567796919244161135> **LIMIT:** Set user limit  
-<:1430986222515261441:1567796920477421698> **PRIVACY:** Lock/Unlock  
-<:1430986244921495654:1567796929587576852> **WAITING R.:** Toggle waiting mode  
-<:1430993644189520113:1567796930799607818> **ANNOUNCE:** Toggle Announce mode  
-<:1430986214764318873:1567796916551421952> **INVITE:** Create invite  
-<:1430986225493479485:1567796921681055824> **REGION:** Set RTC region  
-<:1430986233760452783:1567796924021735484> **TRANSFER:** Transfer owner  
-<:1430986212398731355:1567796915138068620> **DELETE:** Delete room
-
-**Member Management Menu:**
-<:1430986217448542329:1567796917977481319> **KICK** members
-<:1430986236746793000:1567796925451866173> **TRUST** a user
-<:1430986241565790309:1567796928140419102> **UNTRUST** a user
-<:1430986207856300180:1567796910062837931> **BLOCK** a user
-<:1430986239036625017:1567796926689185822> **UNBLOCK** a user
-<:1430986209995526274:1567796911350747206> **CLAIM** ownership (if owner leaves)
-`;
+// One source of truth for every button: the embed explains them in the same order and
+// with the same emoji as the (emoji-only) buttons below it.
+const PANEL_BUTTONS = [
+    // Row 1 — the room itself
+    [
+        { id: "name",     emoji: "<:1430986227909263442:1567796922863984670>", style: ButtonStyle.Secondary, label: "Name",     desc: "Rename the room" },
+        { id: "limit",    emoji: "<:1430986220011524216:1567796919244161135>", style: ButtonStyle.Secondary, label: "Limit",    desc: "Set the user limit" },
+        { id: "privacy",  emoji: "<:1430986222515261441:1567796920477421698>", style: ButtonStyle.Secondary, label: "Privacy",  desc: "Lock / unlock the room" },
+        { id: "wait",     emoji: "<:1430986244921495654:1567796929587576852>", style: ButtonStyle.Primary,   label: "Waiting",  desc: "Waiting room (locked, limit 1)" },
+        { id: "announce", emoji: "<:1430993644189520113:1567796930799607818>", style: ButtonStyle.Secondary, label: "Announce", desc: "Only you can speak (toggle)" },
+    ],
+    // Row 2 — members (each opens a member picker)
+    [
+        { id: "kick_menu",     emoji: "<:1430986217448542329:1567796917977481319>", style: ButtonStyle.Danger,    label: "Kick",     desc: "Disconnect a member" },
+        { id: "trust_menu",    emoji: "<:1430986236746793000:1567796925451866173>", style: ButtonStyle.Success,   label: "Trust",    desc: "Let a member join even when locked" },
+        { id: "block_menu",    emoji: "<:1430986207856300180:1567796910062837931>", style: ButtonStyle.Danger,    label: "Block",    desc: "Keep a member out of the room" },
+        { id: "transfer_menu", emoji: "<:1430986233760452783:1567796924021735484>", style: ButtonStyle.Secondary, label: "Transfer", desc: "Give the room to another member" },
+    ],
+    // Row 3 — everything else
+    [
+        { id: "invite", emoji: "<:1430986214764318873:1567796916551421952>", style: ButtonStyle.Secondary, label: "Invite", desc: "Create an invite to the room" },
+        { id: "region", emoji: "<:1430986225493479485:1567796921681055824>", style: ButtonStyle.Secondary, label: "Region", desc: "Change the voice region" },
+        { id: "claim",  emoji: "<:1430986209995526274:1567796911350747206>", style: ButtonStyle.Secondary, label: "Claim",  desc: "Take over if the owner left" },
+        { id: "delete", emoji: "<:1430986212398731355:1567796915138068620>", style: ButtonStyle.Danger,    label: "Delete", desc: "Delete the room" },
+    ],
+];
+const PANEL_SECTIONS = ["Room", "Members", "More"];
 
 function buildPanelEmbed(client, ownerId, triggerChannelId) {
     const head = ownerId
-        ? `**Room Owner:** <@${ownerId}>\n`
-        : `Join ${triggerChannelId ? `<#${triggerChannelId}>` : "the Join-to-Create channel"} to get your own room, then use the buttons below to manage it.\n`;
+        ? `**Room owner:** <@${ownerId}>`
+        : `Join ${triggerChannelId ? `<#${triggerChannelId}>` : "the Join-to-Create channel"} to get your own room, then manage it with the buttons below.`;
     return new EmbedBuilder()
         .setColor(client.config?.embedColor ?? 0x5865f2)
-        .setAuthor({ name: `${client.user.username}'s TempVoice Interface` })
-        .setDescription(head + PANEL_FEATURES)
-        .setFooter({ text: "Press the buttons below to use the interface" });
+        .setAuthor({ name: `${client.user.username} · Voice Interface`, iconURL: client.user.displayAvatarURL() })
+        .setDescription(head)
+        .addFields(PANEL_BUTTONS.map((row, i) => ({
+            name: PANEL_SECTIONS[i],
+            value: row.map(b => `${b.emoji} **${b.label}** · ${b.desc}`).join("\n"),
+        })))
+        .setFooter({ text: "Buttons match the list above, in the same order" });
 }
 
 /** suffix = the room's channel ID, or "panel" for the permanent panel (room resolved per click). */
 function buildPanelRows(suffix) {
-    const row1 = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-            .setCustomId(`jtc_name_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986227909263442:1567796922863984670>"))
-            .setLabel("NAME")
-            .setStyle(ButtonStyle.Secondary),
-        new ButtonBuilder()
-            .setCustomId(`jtc_limit_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986220011524216:1567796919244161135>"))
-            .setLabel("LIMIT")
-            .setStyle(ButtonStyle.Secondary),
-        new ButtonBuilder()
-            .setCustomId(`jtc_privacy_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986222515261441:1567796920477421698>"))
-            .setLabel("PRIVACY")
-            .setStyle(ButtonStyle.Secondary),
-        new ButtonBuilder()
-            .setCustomId(`jtc_wait_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986244921495654:1567796929587576852>"))
-            .setLabel("WAITING")
-            .setStyle(ButtonStyle.Primary),
-        new ButtonBuilder()
-            .setCustomId(`jtc_announce_${suffix}`)
-            .setEmoji(parseEmoji("<:1430993644189520113:1567796930799607818>"))
-            .setLabel("ANNOUNCE")
-            .setStyle(ButtonStyle.Secondary)
-    );
-
-    const row2 = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-            .setCustomId(`jtc_kick_menu_${suffix}`) // New Custom ID to trigger the menu
-            .setEmoji(parseEmoji("<:1430986217448542329:1567796917977481319>"))
-            .setLabel("KICK")
-            .setStyle(ButtonStyle.Danger),
-        new ButtonBuilder()
-            .setCustomId(`jtc_trust_menu_${suffix}`) // New Custom ID to trigger the menu
-            .setEmoji(parseEmoji("<:1430986236746793000:1567796925451866173>"))
-            .setLabel("TRUST")
-            .setStyle(ButtonStyle.Success),
-        new ButtonBuilder()
-            .setCustomId(`jtc_block_menu_${suffix}`) // New Custom ID to trigger the menu
-            .setEmoji(parseEmoji("<:1430986207856300180:1567796910062837931>"))
-            .setLabel("BLOCK")
-            .setStyle(ButtonStyle.Danger),
-        new ButtonBuilder()
-            .setCustomId(`jtc_transfer_menu_${suffix}`) // New Custom ID to trigger the menu
-            .setEmoji(parseEmoji("<:1430986233760452783:1567796924021735484>"))
-            .setLabel("TRANSFER")
-            .setStyle(ButtonStyle.Secondary)
-    );
-
-    const row3 = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-            .setCustomId(`jtc_invite_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986214764318873:1567796916551421952>"))
-            .setLabel("INVITE")
-            .setStyle(ButtonStyle.Secondary),
-        new ButtonBuilder()
-            .setCustomId(`jtc_region_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986225493479485:1567796921681055824>"))
-            .setLabel("REGION")
-            .setStyle(ButtonStyle.Secondary),
-        new ButtonBuilder()
-            .setCustomId(`jtc_claim_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986209995526274:1567796911350747206>"))
-            .setLabel("CLAIM")
-            .setStyle(ButtonStyle.Secondary),
-        new ButtonBuilder()
-            .setCustomId(`jtc_delete_${suffix}`)
-            .setEmoji(parseEmoji("<:1430986212398731355:1567796915138068620>"))
-            .setLabel("DELETE")
-            .setStyle(ButtonStyle.Danger)
-    );
-    return [row1, row2, row3];
+    return PANEL_BUTTONS.map(row => new ActionRowBuilder().addComponents(
+        row.map(b => new ButtonBuilder()
+            .setCustomId(`jtc_${b.id}_${suffix}`)
+            .setEmoji(parseEmoji(b.emoji))
+            .setStyle(b.style))
+    ));
 }
 
 /**
