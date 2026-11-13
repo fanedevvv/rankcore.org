@@ -30,13 +30,15 @@ function memberLine(m, cfg) {
 async function buildEmbed(guild, cfg) {
   await guild.members.fetch().catch(() => null);
 
-  const listed = new Set(); // a member only appears under their highest tier
+  // A member is listed under every tier they hold (e.g. both Owner and Manager);
+  // `listed` only counts unique people for the total.
+  const listed = new Set();
   const sections = [];
   for (const tier of (cfg.tiers || []).slice(0, 25)) {
     const role = tier.roleId && guild.roles.cache.get(tier.roleId);
     if (!role) continue;
     const members = [...role.members.values()]
-      .filter(m => !m.user.bot && !listed.has(m.id))
+      .filter(m => !m.user.bot)
       .sort((a, b) => a.displayName.localeCompare(b.displayName));
     members.forEach(m => listed.add(m.id));
     sections.push({ tier, role, members });
